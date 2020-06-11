@@ -9,3 +9,6 @@ import time  # computational time
 def function_vanilla_option_output(x, k):
     return max(0, x - np.exp(k))
 
+# given the parameter, and
+def compute_MSE(param, true_parameter):
+    return (param - true_parameter) ** 2
