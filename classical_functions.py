@@ -6,7 +6,7 @@ import scipy.integrate  # for quad
 import cmath  # complex numbers
 import time  # computational time
 import bisect
-
+import warnings
 
 # function from overflow to integrate complex functions.
 # https://stackoverflow.com/questions/5965583/use-scipy-integrate-quad-to-integrate-complex-numbers
@@ -165,11 +165,24 @@ def find_smallest_rank_leq_to_K(list, K, sorted=True):
 def test_print(str):
     print("! test ! ", str)
 
-# do a cycle over a list
+# do a cycle over a list:
+# rotate(1) : [1,2,3,4] -> [4,1,2,3]
+# does not work with numpy array, and with integers bigger than length.
 def rotate(l, n):
-    return l[-n:] + l[:-n]
+    if type(l).__module__ == np.__name__: #checks if the type of list is numpy.array
+        # BIANCA-HERE can I trigger here a warning ? How?
+        warnings.warn("The object given is not a list, but an array. The numpy function roll is used.")
 
-# using numpy
+        return np.roll(l,n)
+    if abs(n) < len(l):
+        return l[-n:] + l[:-n]
+    else :
+        # BIANCA-HERE can I trigger here a warning ? How?
+        warnings.warn("The rolling is too big, the original list is returned.")
+        return l
+
+
+# using numpy, test that a np array is invertible, first that the matrix is square, than that the rank is big enough.
 def is_invertible(a):
     return a.shape[0] == a.shape[1] and np.linalg.matrix_rank(a) == a.shape[0]
 
