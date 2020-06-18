@@ -345,23 +345,28 @@ class APlot:
         """
         Plot a line on the chosen ax.
 
-        :param a:  slope of line
-        :param b:  origin of line
-        :param xx:  data, where to have the points of the line
-        :param ax:  which ax to use, should be an integer.
-        :param param_dict:  if I want to customize the plot.
-        :return: nothing.
-        """
+        Args:
+            a: slope of line
+            b: origin of line
+            xx: data, where to have the points of the line
+            ax: which ax to use, should be an integer.
+            param_dict:  if I want to customize the plot.
 
+        Returns:
+
+        """
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=ax, param_dict=param_dict)
 
     def save_plot(self, name_save_file='image'):
-        '''
+        """
         Method for saving the plot (figure) created.
-        :param name_save_file:  what name
-        :return:  nothing.
-        '''
+
+        Args:
+            name_save_file: name of the file
+
+        Returns: nothing.
+        """
         plt.savefig(name_save_file + '.png', dpi=800)
         return
 
