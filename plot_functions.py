@@ -197,7 +197,8 @@ class APlot:
                           "linestyle": "solid",
                           "linewidth": 0.5,
                           "marker": "o",
-                          "markersize": 0.4
+                          "markersize": 0.4,
+                          "label": "plot"
                           }
 
     def __init__(self, fig_dict=None, how=(1, 1), datax=None, datay=None, sharex=False,
@@ -206,9 +207,9 @@ class APlot:
         # how should be a tuple with how I want to have axes.
         if datay is not None:
             if datax is not None:
-                plt.plot(datax, datay, **default_param_dict)  # self ????
+                plt.plot(datax, datay, **self.default_param_dict)  # BIANCA-HERE self ????
             else:
-                plt.plot(range(len(datay)), datay, **default_param_dict)
+                plt.plot(range(len(datay)), datay, **self.default_param_dict)
         else:
             self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey)
 
@@ -341,7 +342,8 @@ class APlot:
         return
 
     def plot_line(self, a, b, xx, ax=0, param_dict=default_param_dict):
-        '''
+        """
+        Plot a line on the chosen ax.
 
         :param a:  slope of line
         :param b:  origin of line
@@ -349,7 +351,8 @@ class APlot:
         :param ax:  which ax to use, should be an integer.
         :param param_dict:  if I want to customize the plot.
         :return: nothing.
-        '''
+        """
+
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=ax, param_dict=param_dict)
 
@@ -369,12 +372,24 @@ class APlot:
                         marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
             ax_bis.set_ylabel('cumulative ratio')
             ax_bis.set_ylim([0, 1.1])
-            plt.legend(loc='best')
+            ax.legend(loc='best')
         else:
             ax_bis = self.axs[ax].twinx()
             ax_bis.plot(xx, np.cumsum(yy) / (np.cumsum(yy)[-1]), color='darkorange',
                         marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
             ax_bis.set_ylabel('cumulative ratio')
             ax_bis.set_ylim([0, 1.1])
-            plt.legend(loc='best')
+            ax.legend(loc='best')
+        return
+
+    def show_legend(self, ax = None):
+        # as usually, ax is an integer.
+        if self.uni_dim:
+            self.axs.legend(loc='best')
+        else:
+            if ax is None:
+                for ax_0 in self.axs:
+                    ax_0.legend(loc='best')
+            else:
+                self.axs[ax].legend(loc='best')
         return
