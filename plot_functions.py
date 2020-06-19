@@ -222,6 +222,7 @@ class APlot:
     def check_axs(self, ax):
         if ax < 0 :
             # BIANCA RAISE ERROR
+            raise IndexError("Index is negative.")
             pass
         if ax > self.nb_of_axs:
             warnings.warn("Axs given is out of bounds. I plot upon the first axis.")
@@ -229,7 +230,7 @@ class APlot:
         return ax
 
     # always plotter first, then dict_updates (using the limits of the axis).
-    def fig_dict_update(self, ax, fig_dict, xx=None, yy=None):
+    def fig_dict_update(self, nb_ax, fig_dict, xx=None, yy=None):
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
         default_str = "Non-Defined."
@@ -237,36 +238,36 @@ class APlot:
             fig_dict = {}
 
         if 'title' in fig_dict:
-            self.axs[ax].set_title(fig_dict[('title')], fontsize=10)
+            self.axs[nb_ax].set_title(fig_dict[('title')], fontsize=10)
         else:
-            self.axs[ax].set_title(default_str, fontsize=10)
+            self.axs[nb_ax].set_title(default_str, fontsize=10)
 
         if 'xlabel' in fig_dict:
-            self.axs[ax].set_xlabel(fig_dict[('xlabel')], fontsize=10)
+            self.axs[nb_ax].set_xlabel(fig_dict[('xlabel')], fontsize=10)
         else:
-            self.axs[ax].set_xlabel(default_str, fontsize=10)
+            self.axs[nb_ax].set_xlabel(default_str, fontsize=10)
 
         if 'ylabel' in fig_dict:
-            self.axs[ax].set_ylabel(fig_dict[('ylabel')], fontsize=10)
+            self.axs[nb_ax].set_ylabel(fig_dict[('ylabel')], fontsize=10)
         else:
-            self.axs[ax].set_ylabel(default_str, fontsize=10)
+            self.axs[nb_ax].set_ylabel(default_str, fontsize=10)
 
         if 'xscale' in fig_dict:
-            self.axs[ax].set_xscale(fig_dict[('xscale')])
+            self.axs[nb_ax].set_xscale(fig_dict[('xscale')])
 
         if 'xint' in fig_dict:
             if fig_dict[('xint')]:
                 if xx is None:
                     raise ("xx has not been given.")
                 x_int = range(math.ceil(min(xx)) - 1, math.ceil(
-                    self.axs[ax](xx)) + 1)  # I need to use ceil on both if min and mself.axs[ax] are not integers ( like 0 to 1 )
-                self.axs[ax].set_xticks(x_int)
+                    self.axs[nb_ax](xx)) + 1)  # I need to use ceil on both if min and mself.axs[nb_ax] are not integers ( like 0 to 1 )
+                self.axs[nb_ax].set_xticks(x_int)
         if 'yint' in fig_dict:
             if fig_dict[('yint')]:
                 if yy is None:
                     raise ("yy has not been given.")
-                y_int = range(min(yy), math.ceil(self.axs[ax](yy)) + 1)
-                self.axs[ax].set_yticks(y_int)
+                y_int = range(min(yy), math.ceil(self.axs[nb_ax](yy)) + 1)
+                self.axs[nb_ax].set_yticks(y_int)
 
         if 'parameters' in fig_dict and 'name_parameters' in fig_dict:
             #### check if this is correct
@@ -288,20 +289,20 @@ class APlot:
                 else:
                     sous_text += ", "
 
-            bottom, top = self.axs[ax].get_ylim()
-            left, right = self.axs[ax].get_xlim()
-            self.axs[ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text, fontsize=10)
+            bottom, top = self.axs[nb_ax].get_ylim()
+            left, right = self.axs[nb_ax].get_xlim()
+            self.axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text, fontsize=10)
             plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace = 0.5)  # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
 
-    def __my_plotter(self, ax, xx, yy, param_dict):
+    def __my_plotter(self, nb_ax, xx, yy, param_dict):
         """
         A helper function to make a graph
 
         Parameters
         ----------
-        ax : Axes
+        nb_ax : Axes
             The axes to draw upon. Has to be an integer.
 
         xx : array
@@ -318,18 +319,18 @@ class APlot:
         out : list
             list of artists added
         """
-        ax = self.check_axs(ax)
-        self.axs[ax].grid(True)
-        out = self.axs[ax].plot(xx, yy, **param_dict)
+        nb_ax = self.check_axs(nb_ax)
+        self.axs[nb_ax].grid(True)
+        out = self.axs[nb_ax].plot(xx, yy, **param_dict)
         return out
 
-    def uni_plot(self, ax, xx, yy, param_dict=default_param_dict, fig_dict=None):
+    def uni_plot(self, nb_ax, xx, yy, param_dict=default_param_dict, fig_dict=None):
         """
-        Method to have 1 plot. Upon ax (int)
+        Method to have 1 plot. Upon nb_ax (int)
         """
-        self.__my_plotter(ax, xx, yy, param_dict)
+        self.__my_plotter(nb_ax, xx, yy, param_dict)
         self.fig.tight_layout()
-        self.fig_dict_update(ax, fig_dict, xx, yy)
+        self.fig_dict_update(nb_ax, fig_dict, xx, yy)
 
         return
 
@@ -338,20 +339,17 @@ class APlot:
                 param_dict_2=default_param_dict,
                 fig_dict_1=None,
                 fig_dict_2=None):
-        self.uni_plot(ax1, xx1, yy2, param_dict=param_dict_1, fig_dict=fig_dict_1)
+        self.uni_plot(ax1, xx1, yy1, param_dict=param_dict_1, fig_dict=fig_dict_1)
         self.uni_plot(ax2, xx2, yy2, param_dict=param_dict_2, fig_dict=fig_dict_2)
         return
 
     def plot_function(self, function, xx, nb_ax=0, param_dict=default_param_dict):
         # ax is an int, not necessary for uni dim case.
         yy = [function(x) for x in xx]
-        if self.uni_dim:
-            self.__my_plotter(self.axs, xx, yy, param_dict)
-        else:
-            self.__my_plotter(self.axs[nb_ax], xx, yy, param_dict)
+        self.__my_plotter(nb_ax, xx, yy, param_dict)
         return
 
-    def plot_line(self, a, b, xx, ax=0, param_dict=default_param_dict):
+    def plot_line(self, a, b, xx, nb_ax=0, param_dict=default_param_dict):
         """
         Plot a line on the chosen ax.
 
@@ -359,53 +357,44 @@ class APlot:
             a: slope of line
             b: origin of line
             xx: data, where to have the points of the line
-            ax: which ax to use, should be an integer.
+            nb_ax: which ax to use, should be an integer.
             param_dict:  if I want to customize the plot.
 
         Returns:
 
         """
         function = lambda x: a * x + b
-        return self.plot_function(function, xx, nb_ax=ax, param_dict=param_dict)
+        return self.plot_function(function, xx, nb_ax=nb_ax, param_dict=param_dict)
 
-    def cumulative_plot(self, xx, yy, ax=0):
+    def cumulative_plot(self, xx, yy, nb_ax=0):
         """
-        add cumulative plot of an axis, for the chosen data set.
+        add cumulative plot of an nb_axis, for the chosen data set.
 
         Args:
             xx: xx where points should appear
             yy: the output data.
-            ax: which axis.
+            nb_ax: which axis.
 
         Returns:
 
         """
-        if self.uni_dim:
-            ax_bis = self.axs.twinx()
-            ax_bis.plot(xx, np.cumsum(yy) / (np.cumsum(yy)[-1]), color='darkorange',
-                        marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
-            ax_bis.set_ylabel('cumulative ratio')
-            ax_bis.set_ylim([0, 1.1])
-            ax.legend(loc='best')
-        else:
-            ax_bis = self.axs[ax].twinx()
-            ax_bis.plot(xx, np.cumsum(yy) / (np.cumsum(yy)[-1]), color='darkorange',
-                        marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
-            ax_bis.set_ylabel('cumulative ratio')
-            ax_bis.set_ylim([0, 1.1])
-            ax.legend(loc='best')
+
+        ax_bis = self.axs[nb_ax].twinx()
+        ax_bis.plot(xx, np.cumsum(yy) / (np.cumsum(yy)[-1]), color='darkorange',
+                    marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
+        ax_bis.set_ylabel('cumulative ratio')
+        ax_bis.set_ylim([0, 1.1])
+        self.axs[nb_ax].legend(loc='best')
         return
 
-    def show_legend(self, ax = None):
-        # as usually, ax is an integer.
-        if self.uni_dim:
-            self.axs.legend(loc='best')
+    def show_legend(self, nb_ax = None):
+        # as usually, nb_ax is an integer.
+        # if ax is none, then every nb_ax is showing the nb_ax.
+        if nb_ax is None:
+            for nb_ax_0 in range(self.nb_of_axs):
+                self.axs[nb_ax_0].legend(loc='best')
         else:
-            if ax is None:
-                for ax_0 in self.axs:
-                    ax_0.legend(loc='best')
-            else:
-                self.axs[ax].legend(loc='best')
+            self.axs[nb_ax].legend(loc='best')
         return
 
     def save_plot(self, name_save_file='image'):
