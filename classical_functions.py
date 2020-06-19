@@ -1,12 +1,26 @@
-# parameters
-import math
-import numpy as np  # maths functions
-import matplotlib.pyplot as plt  # for plots
+# normal libraries
+import numpy as np #maths library and arrays
+import statistics as stat
+import pandas as pd #dataframes
+import seaborn as sns #envrionement for plots
+from matplotlib import pyplot as plt #ploting
+import scipy.stats #functions of statistics
 import scipy.integrate  # for quad
-import cmath  # complex numbers
-import time  # computational time
-import bisect
+import scipy.integrate  # for the method quad allows integration
+import scipy.optimize  # for knowing when a function crosses 0, for implied volatility computation.
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import time #allows to time event
 import warnings
+import math #quick math functions
+import cmath  #complex functions
+import bisect
+
+
+# my libraries
+
+# other files
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # function from overflow to integrate complex functions.
 # https://stackoverflow.com/questions/5965583/use-scipy-integrate-quad-to-integrate-complex-numbers

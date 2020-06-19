@@ -1,12 +1,24 @@
-# parameters
-import math
-import numpy as np  # maths functions
-import matplotlib.pyplot as plt  # for plots
-import scipy.integrate  # for quad
-import cmath  # complex numbers
-import time  # computational time
-
+# normal libraries
+import numpy as np #maths library and arrays
+import statistics as stat
+import pandas as pd #dataframes
+import seaborn as sns #envrionement for plots
+from matplotlib import pyplot as plt #ploting
+import scipy.stats #functions of statistics
+from operator import itemgetter  # at some point I need to get the list of ranks of a list.
+import time #allows to time event
 import warnings
+import math #quick math functions
+import cmath  #complex functions
+
+# my libraries
+
+# other files
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
 
 
 # plot graph can plot up to 2 graphs on the same figure.
