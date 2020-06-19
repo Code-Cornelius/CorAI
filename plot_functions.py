@@ -334,13 +334,13 @@ class APlot:
 
         return
 
-    def bi_plot(self, ax1, ax2, xx1, yy1, xx2, yy2,
+    def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2,
                 param_dict_1=default_param_dict,
                 param_dict_2=default_param_dict,
                 fig_dict_1=None,
                 fig_dict_2=None):
-        self.uni_plot(ax1, xx1, yy1, param_dict=param_dict_1, fig_dict=fig_dict_1)
-        self.uni_plot(ax2, xx2, yy2, param_dict=param_dict_2, fig_dict=fig_dict_2)
+        self.uni_plot(nb_ax1, xx1, yy1, param_dict=param_dict_1, fig_dict=fig_dict_1)
+        self.uni_plot(nb_ax2, xx2, yy2, param_dict=param_dict_2, fig_dict=fig_dict_2)
         return
 
     def plot_function(self, function, xx, nb_ax=0, param_dict=default_param_dict):
@@ -386,6 +386,43 @@ class APlot:
         ax_bis.set_ylim([0, 1.1])
         self.axs[nb_ax].legend(loc='best')
         return
+
+    default_param_dict_hist = {'bins': 20,
+                               "color": 'green', 'range': None,
+                               'label': "Histogram", "cumulative": True}
+    # function for plotting histograms
+    def hist(self, data, nb_of_ax,
+             param_dict_hist = default_param_dict_hist,
+             fig_dict = None):
+        self.fig_dict_update(nb_of_ax, fig_dict)
+        self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
+        #BIANCA-HERE I use errors to get away from a situation
+        try :
+            #if doesn't pop, it will be catch by except.
+            if param_dict_hist.pop("cumulative"):
+                values, base, _ = self.axs[nb_of_ax].hist(data, density=False, alpha=0.5, **param_dict_hist)
+                ax_bis = self.axs[nb_of_ax].twinx()
+                values = np.append(values, 0)
+                # I add 0 because I want to create the last line, which does not go up.
+                # I put then 0 in order to have no evolution with cumsum.
+
+                if 'total_number_of_simulations' in param_dict_hist:
+                    ax_bis.plot(base, np.cumsum(values) / param_dict_hist[('total_number_of_simulations')],
+                                color='darkorange', marker='o',
+                                linestyle='-',
+                                markersize=1, label="Cumulative Histogram")
+                else:
+                    ax_bis.plot(base, np.cumsum(values) / np.cumsum(values)[-1],
+                                color='darkorange', marker='o', linestyle='-',
+                                markersize=1, label="Cumulative Histogram")
+                ax_bis.set_ylabel("Proportion of the cumulative total.")
+
+        except KeyError: #no cumulative in the hist.
+            values, base, _ = self.axs[nb_of_ax].hist(data, density=False, alpha=0.5, **param_dict_hist)
+        return
+
+
+
 
     def show_legend(self, nb_ax = None):
         # as usually, nb_ax is an integer.
