@@ -201,9 +201,8 @@ class APlot:
                           "label": "plot"
                           }
 
-    def __init__(self, fig_dict=None, how=(1, 1), datax=None, datay=None, sharex=False,
+    def __init__(self, how=(1, 1), datax=None, datay=None, sharex=False,
                  sharey=False):  # sharex,y for sharing the same on plots.
-        self.uni_dim = (how == (1, 1))
         # how should be a tuple with how I want to have axes.
         if datay is not None:
             if datax is not None:
@@ -212,6 +211,22 @@ class APlot:
                 plt.plot(range(len(datay)), datay, **self.default_param_dict)
         else:
             self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey)
+            self.uni_dim = (how == (1, 1))
+        # two cases, if it is uni_dim, I put self.axs into a list. Otherwise, it is already a list.
+        if self.uni_dim:
+            self.axs = [self.axs]
+        # now, self.axs is always a list.
+        self.nb_of_axs = how[0] * how[1] # nb of axes upon which I can plot
+
+    # BIANCA-HERE create decorator
+    def check_axs(self, ax):
+        if ax < 0 :
+            # BIANCA RAISE ERROR
+            pass
+        if ax > self.nb_of_axs:
+            warnings.warn("Axs given is out of bounds. I plot upon the first axis.")
+            ax = 0
+        return ax
 
     # always plotter first, then dict_updates (using the limits of the axis).
     def fig_dict_update(self, ax, fig_dict, xx=None, yy=None):
@@ -222,36 +237,36 @@ class APlot:
             fig_dict = {}
 
         if 'title' in fig_dict:
-            ax.set_title(fig_dict[('title')], fontsize=10)
+            self.axs[ax].set_title(fig_dict[('title')], fontsize=10)
         else:
-            ax.set_title(default_str, fontsize=10)
+            self.axs[ax].set_title(default_str, fontsize=10)
 
         if 'xlabel' in fig_dict:
-            ax.set_xlabel(fig_dict[('xlabel')], fontsize=10)
+            self.axs[ax].set_xlabel(fig_dict[('xlabel')], fontsize=10)
         else:
-            ax.set_xlabel(default_str, fontsize=10)
+            self.axs[ax].set_xlabel(default_str, fontsize=10)
 
         if 'ylabel' in fig_dict:
-            ax.set_ylabel(fig_dict[('ylabel')], fontsize=10)
+            self.axs[ax].set_ylabel(fig_dict[('ylabel')], fontsize=10)
         else:
-            ax.set_ylabel(default_str, fontsize=10)
+            self.axs[ax].set_ylabel(default_str, fontsize=10)
 
         if 'xscale' in fig_dict:
-            ax.set_xscale(fig_dict[('xscale')])
+            self.axs[ax].set_xscale(fig_dict[('xscale')])
 
         if 'xint' in fig_dict:
             if fig_dict[('xint')]:
                 if xx is None:
                     raise ("xx has not been given.")
                 x_int = range(math.ceil(min(xx)) - 1, math.ceil(
-                    max(xx)) + 1)  # I need to use ceil on both if min and max are not integers ( like 0 to 1 )
-                ax.set_xticks(x_int)
+                    self.axs[ax](xx)) + 1)  # I need to use ceil on both if min and mself.axs[ax] are not integers ( like 0 to 1 )
+                self.axs[ax].set_xticks(x_int)
         if 'yint' in fig_dict:
             if fig_dict[('yint')]:
                 if yy is None:
                     raise ("yy has not been given.")
-                y_int = range(min(yy), math.ceil(max(yy)) + 1)
-                ax.set_yticks(y_int)
+                y_int = range(min(yy), math.ceil(self.axs[ax](yy)) + 1)
+                self.axs[ax].set_yticks(y_int)
 
         if 'parameters' in fig_dict and 'name_parameters' in fig_dict:
             #### check if this is correct
@@ -273,9 +288,9 @@ class APlot:
                 else:
                     sous_text += ", "
 
-            bottom, top = ax.get_ylim()
-            left, right = ax.get_xlim()
-            ax.text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text, fontsize=10)
+            bottom, top = self.axs[ax].get_ylim()
+            left, right = self.axs[ax].get_xlim()
+            self.axs[ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text, fontsize=10)
             plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace = 0.5)  # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
@@ -287,7 +302,7 @@ class APlot:
         Parameters
         ----------
         ax : Axes
-            The axes to draw to
+            The axes to draw upon. Has to be an integer.
 
         xx : array
            The x data
@@ -303,33 +318,28 @@ class APlot:
         out : list
             list of artists added
         """
-        ax.grid(True)
-        out = ax.plot(xx, yy, **param_dict)
+        ax = self.check_axs(ax)
+        self.axs[ax].grid(True)
+        out = self.axs[ax].plot(xx, yy, **param_dict)
         return out
 
-    def uni_plot(self, xx, yy, param_dict=default_param_dict, fig_dict=None):
+    def uni_plot(self, ax, xx, yy, param_dict=default_param_dict, fig_dict=None):
         """
-        Method to have 1 plot.
-
-        # BIANCA-HERE c'est quoi cette histoire, un tuple de longueur 1
-        #  c'est un int donc je peux pas faire self.axs[0]
+        Method to have 1 plot. Upon ax (int)
         """
-        self.__my_plotter(self.axs, xx, yy, param_dict)
+        self.__my_plotter(ax, xx, yy, param_dict)
         self.fig.tight_layout()
-        self.fig_dict_update(self.axs, fig_dict, xx, yy)
+        self.fig_dict_update(ax, fig_dict, xx, yy)
 
         return
 
-    def bi_plot(self, xx1, yy1, xx2, yy2,
+    def bi_plot(self, ax1, ax2, xx1, yy1, xx2, yy2,
                 param_dict_1=default_param_dict,
                 param_dict_2=default_param_dict,
                 fig_dict_1=None,
                 fig_dict_2=None):
-        self.__my_plotter(self.axs[0], xx1, yy1, param_dict_1)
-        self.__my_plotter(self.axs[1], xx2, yy2, param_dict_2)
-        self.fig.tight_layout()
-        self.fig_dict_update(self.axs[0], fig_dict_1, xx=xx1, yy=yy1)
-        self.fig_dict_update(self.axs[1], fig_dict_2, xx=xx2, yy=yy2)
+        self.uni_plot(ax1, xx1, yy2, param_dict=param_dict_1, fig_dict=fig_dict_1)
+        self.uni_plot(ax2, xx2, yy2, param_dict=param_dict_2, fig_dict=fig_dict_2)
         return
 
     def plot_function(self, function, xx, nb_ax=0, param_dict=default_param_dict):
@@ -358,19 +368,18 @@ class APlot:
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=ax, param_dict=param_dict)
 
-    def save_plot(self, name_save_file='image'):
+    def cumulative_plot(self, xx, yy, ax=0):
         """
-        Method for saving the plot (figure) created.
+        add cumulative plot of an axis, for the chosen data set.
 
         Args:
-            name_save_file: name of the file
+            xx: xx where points should appear
+            yy: the output data.
+            ax: which axis.
 
-        Returns: nothing.
+        Returns:
+
         """
-        plt.savefig(name_save_file + '.png', dpi=800)
-        return
-
-    def cumulative_plot(self, xx, yy, ax=0):
         if self.uni_dim:
             ax_bis = self.axs.twinx()
             ax_bis.plot(xx, np.cumsum(yy) / (np.cumsum(yy)[-1]), color='darkorange',
@@ -397,4 +406,16 @@ class APlot:
                     ax_0.legend(loc='best')
             else:
                 self.axs[ax].legend(loc='best')
+        return
+
+    def save_plot(self, name_save_file='image'):
+        """
+        Method for saving the plot (figure) created.
+
+        Args:
+            name_save_file: name of the file
+
+        Returns: nothing.
+        """
+        plt.savefig(name_save_file + '.png', dpi=800)
         return
