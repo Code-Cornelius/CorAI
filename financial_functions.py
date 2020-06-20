@@ -75,7 +75,7 @@ def BlackScholes(CallPutFlag, S, k, T, R, d, SIGMA):
 
 
 
-def implied_volatility_bisect(CallPutFlag, k, s0, T, R, d, experimented_price):
+def implied_volatility_bisect(CallPutFlag, s0, k, T, R, d, experimented_price):
     ## s0 starting point of the S's,
     ## S realisation of the S_T
 
@@ -94,7 +94,7 @@ def implied_volatility_bisect(CallPutFlag, k, s0, T, R, d, experimented_price):
         return 0
 
 
-def implied_volatility_newton(CallPutFlag, k, s0, T, R, d, experimented_price):
+def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     """
     Compute Implied Volatility by newton's method.
 
