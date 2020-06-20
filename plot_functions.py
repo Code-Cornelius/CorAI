@@ -213,16 +213,18 @@ class APlot:
                           "label": "plot"
                           }
 
-    def __init__(self, how=(1, 1), datax=None, datay=None, sharex=False,
+    def __init__(self, figsize =(10, 8), how=(1, 1), datax=None, datay=None, sharex=False,
                  sharey=False):  # sharex,y for sharing the same on plots.
         # how should be a tuple with how I want to have axes.
         if datay is not None:
             if datax is not None:
+                plt.figure(figsize= figsize)
                 plt.plot(datax, datay, **self.default_param_dict)  # BIANCA-HERE self ????
             else:
+                plt.figure(figsize=figsize)
                 plt.plot(range(len(datay)), datay, **self.default_param_dict)
         else:
-            self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey)
+            self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize = figsize)
             self.uni_dim = (how == (1, 1))
         # two cases, if it is uni_dim, I put self.axs into a list. Otherwise, it is already a list.
         if self.uni_dim:

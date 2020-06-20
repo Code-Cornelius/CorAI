@@ -68,7 +68,8 @@ def BlackScholesCore(CallPutFlag, DF, F, X, T, SIGMA):
 ##  Black-Scholes Pricing Function
 def BlackScholes(CallPutFlag, S, k, T, R, d, SIGMA):
     K = np.exp(k)
-    ## X: strike price, exp(k)
+    ## X: strike price,
+    ## the log strik price k, we change it for the normal strike price K = exp(k)
     ## S c'est S_0
     ## R, d: continuous interest rate and dividend
     return BlackScholesCore(CallPutFlag, np.exp(-R * T), np.exp((R - d) * T) * S, K, T, SIGMA)
