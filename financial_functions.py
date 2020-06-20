@@ -75,14 +75,14 @@ def BlackScholes(CallPutFlag, S, k, T, R, d, SIGMA):
 
 
 
-def implied_volatility_bisect(k, s0, T, R, experimented_price):
+def implied_volatility_bisect(CallPutFlag, k, s0, T, R, d, experimented_price):
     ## s0 starting point of the S's,
     ## S realisation of the S_T
 
     # Bisection algorithm when the Lee-Li algorithm breaks down
     def smileMin(vol, *args):
         k, s0, T, r, price = args
-        return price - BlackScholes(True, s0, k, T, r, 0., vol)
+        return price - BlackScholes(CallPutFlag, s0, k, T, r, d, vol)
 
     vMin, vMax = 0.00001, 20.
     # in order to find the implied volatility, one has to find the value at which smileMin crosses zero.
@@ -94,8 +94,7 @@ def implied_volatility_bisect(k, s0, T, R, experimented_price):
         return 0
 
 
-
-def implied_volatility_newton(k, s0, T, R, experimented_price):
+def implied_volatility_newton(CallPutFlag, k, s0, T, R, d, experimented_price):
     """
     Compute Implied Volatility by newton's method.
 
@@ -112,7 +111,7 @@ def implied_volatility_newton(k, s0, T, R, experimented_price):
     ## s0 starting point of the S's,
     ## S realisation of the S_T
 
-    fx = lambda varSIGMA : BlackScholes(True, s0, k, T, R, 0, varSIGMA) - experimented_price
+    fx = lambda varSIGMA : BlackScholes(CallPutFlag, s0, k, T, R, d, varSIGMA) - experimented_price
     # invariant of call or put
     K = np.exp(k)
     dfx = lambda varSIGMA : BlackScholesVegaCore(   np.exp(-R * T), np.exp((R - 0) * T) * s0, K, T, varSIGMA   )
