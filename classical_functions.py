@@ -24,16 +24,31 @@ import bisect
 
 # function from overflow to integrate complex functions.
 # https://stackoverflow.com/questions/5965583/use-scipy-integrate-quad-to-integrate-complex-numbers
-def complex_quadrature(func, a, b, **kwargs):
+def complex_quadrature(func, a, b, *args, **kwargs):
+    '''
+    Complex quadra over real line, is harder than real, so here is a built function
+
+    Args:
+        func: integrands
+        a: lower bound
+        b: higher bounds
+        *args: for the function
+        **kwargs: for the function
+
+    Returns:
+        a 3-tuple : (integral, real error, imagi error).
+    '''
     def real_func(x):
         return func(x).real
 
     def imag_func(x):
         return func(x).imag
 
-    real_integral = scipy.integrate.quad(real_func, a, b, **kwargs)
-    imag_integral = scipy.integrate.quad(imag_func, a, b, **kwargs)
-    return (real_integral[0] + 1j * imag_integral[0], real_integral[1:], imag_integral[1:])
+    real_integral = scipy.integrate.quad(real_func, a, b, *args, **kwargs)
+    imag_integral = scipy.integrate.quad(imag_func, a, b, *args, **kwargs)
+    return (real_integral[0] + 1j * imag_integral[0],
+            real_integral[1:],
+            imag_integral[1:])
 
 
 # useful function that I put at the end of certain functions to know how long they runned.
@@ -73,11 +88,11 @@ def time_computational(A, B, title="no title"):
 
 
 # return the image of func(tt)
-def evaluate_function(func, tt, *args):
-    ## args if addit parameters are required
+def evaluate_function(func, tt, *args, **kwargs):
+    ## args if additionnal parameters are required
     im = np.zeros(len(tt))
     for i in range(len(tt)):
-        im[i] = func(tt[i], *args)
+        im[i] = func(tt[i], *args, **kwargs)
     return im
 
 
