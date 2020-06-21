@@ -1,20 +1,32 @@
 import functools
+from inspect import signature  # know signature of a function
 
+def f(z, a, c, b):
+    return z + 10*a + 100*c + 1000*b
+
+print(
+
+)
+import time
+
+time.sleep(1000)
 
 class Memoization:
-    def __init__(self, func, key_names):
+    def __init__(self, func, key_names = None):
         functools.update_wrapper(self, func)
         self.func = func
-        self.key_names = key_names
         self.dictionary = {}
+        if key_names is not None:
+            self.key_names = key_names
+        else :
+            self.key_names = { (signature(self.func).parameters.values())[0] : 0 } # getting the first parameter
 
     def __call__(self, *args, **kwargs):
         keys = []
 
-        # Todo: make safe, get might return none, explode if it does
         # get all the elements that build the key
         for key in self.key_names:
-            keys.append(kwargs.get(key))
+            keys.append(kwargs[key])
 
         # pack them into a tuple
         key = tuple(keys)

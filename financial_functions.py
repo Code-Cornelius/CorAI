@@ -111,10 +111,13 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     """
     ## s0 starting point of the S's,
     ## S realisation of the S_T
-
     fx = lambda varSIGMA : BlackScholes(CallPutFlag, s0, k, T, R, d, varSIGMA) - experimented_price
     # invariant of call or put
     K = np.exp(k)
     dfx = lambda varSIGMA : BlackScholesVegaCore(   np.exp(-R * T), np.exp((R - 0) * T) * s0, K, T, varSIGMA   )
+    try :
+        return classical_functions.newtons_method(fx, dfx, 0.2)
+    except :
+        warnings.warn("Bisect didn't find the $\sigma_{IMP}$, returned 0.")
+        return 0
 
-    return classical_functions.newtons_method(fx, dfx, 0.2)
