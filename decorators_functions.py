@@ -1,16 +1,6 @@
 import functools
 from inspect import signature  # know signature of a function
 
-def f(z, a, c, b):
-    return z + 10*a + 100*c + 1000*b
-
-print(
-
-)
-import time
-
-time.sleep(1000)
-
 class Memoization:
     def __init__(self, func, key_names = None):
         functools.update_wrapper(self, func)
