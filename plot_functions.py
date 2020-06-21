@@ -213,7 +213,7 @@ class APlot:
                           "label": "plot"
                           }
 
-    def __init__(self, figsize =(10, 8), how=(1, 1), datax=None, datay=None, sharex=False,
+    def __init__(self, figsize =(7, 5), how=(1, 1), datax=None, datay=None, sharex=False,
                  sharey=False):  # sharex,y for sharing the same on plots.
         # how should be a tuple with how I want to have axes.
         if datay is not None:
@@ -229,6 +229,8 @@ class APlot:
         # two cases, if it is uni_dim, I put self.axs into a list. Otherwise, it is already a list.
         if self.uni_dim:
             self.axs = [self.axs]
+        else :
+            self.axs = self.axs.flatten()
         # now, self.axs is always a list.
         self.nb_of_axs = how[0] * how[1] # nb of axes upon which I can plot
 
@@ -238,7 +240,7 @@ class APlot:
             # BIANCA RAISE ERROR
             raise IndexError("Index is negative.")
             pass
-        if ax > self.nb_of_axs:
+        if ax >= self.nb_of_axs:
             warnings.warn("Axs given is out of bounds. I plot upon the first axis.")
             ax = 0
         return ax
@@ -247,6 +249,7 @@ class APlot:
     def fig_dict_update(self, nb_ax, fig_dict, xx=None, yy=None):
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
+        nb_ax = self.check_axs(nb_ax)
         default_str = "Non-Defined."
         if fig_dict == None:
             fig_dict = {}
@@ -410,7 +413,6 @@ class APlot:
              fig_dict = None):
         self.fig_dict_update(nb_of_ax, fig_dict)
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
-        #BIANCA-HERE I use errors to get away from a situation
         try :
             #if doesn't pop, it will be catch by except.
             if param_dict_hist.pop("cumulative"):
