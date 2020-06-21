@@ -10,7 +10,8 @@ import time #allows to time event
 import warnings
 import math #quick math functions
 import cmath  #complex functions
-
+sns.set()
+np.random.seed(124)
 # my libraries
 
 # other files
