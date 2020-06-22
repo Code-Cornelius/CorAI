@@ -220,20 +220,20 @@ class APlot:
         if datay is not None:
             if datax is not None:
                 plt.figure(figsize= figsize)
-                plt.plot(datax, datay, **self.default_param_dict)  # BIANCA-HERE self ????
+                plt.plot(datax, datay, **APlot.default_param_dict)
             else:
                 plt.figure(figsize=figsize)
-                plt.plot(range(len(datay)), datay, **self.default_param_dict)
+                plt.plot(range(len(datay)), datay, **APlot.default_param_dict)
         else:
             self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize = figsize)
             self.uni_dim = (how == (1, 1))
-        # two cases, if it is uni_dim, I put self.axs into a list. Otherwise, it is already a list.
-        if self.uni_dim:
-            self.axs = [self.axs]
-        else :
-            self.axs = self.axs.flatten()
-        # now, self.axs is always a list.
-        self.nb_of_axs = how[0] * how[1] # nb of axes upon which I can plot
+            # two cases, if it is uni_dim, I put self.axs into a list. Otherwise, it is already a list.
+            if self.uni_dim:
+                self.axs = [self.axs]
+            else :
+                self.axs = self.axs.flatten()
+            # now, self.axs is always a list.
+            self.nb_of_axs = how[0] * how[1] # nb of axes upon which I can plot
 
     # BIANCA-HERE create decorator
     def check_axs(self, ax):
