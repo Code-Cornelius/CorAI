@@ -19,7 +19,8 @@ def Memoization(key_names):
             # get all the elements that build the key
             for key in self.key_names:
                 keys.append(kwargs[key])
-            key = tuple(keys) # pack them into a tuple
+            key = (*keys,)
+            #key = tuple(keys) # pack them into a tuple
 
             if key not in self.dictionary:
                 self.dictionary[key] = self.func(*args, **kwargs)
