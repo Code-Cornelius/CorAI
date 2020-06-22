@@ -130,9 +130,8 @@ def newtons_method(f, df, x0, e=10 ** (-10), tol=10 ** (-10)):
     number_of_step_crash = 0
     step = 1
     while f(x0) > e or step > tol:
-        if number_of_step_crash > np.power(10, 9):
+        if step == np.inf or number_of_step_crash > np.power(10, 9): # function too flat.
             raise Exception("Is the function flat enough ?")
-        #TODO perhaps catch error for cases where IMP is zero.
         number_of_step_crash += 1
         old_x0 = x0
         x0 = x0 - f(x0) / df(x0)

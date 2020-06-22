@@ -15,7 +15,7 @@ def Memoization(key_names):
         def __call__(self, *args, **kwargs):
             keys = []
 
-        # get all the elements that build the key
+            # get all the elements that build the key
             for key in self.key_names:
                 keys.append(kwargs[key])
 
