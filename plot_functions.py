@@ -252,7 +252,7 @@ class APlot:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
         nb_ax = self.check_axs(nb_ax)
         default_str = "Non-Defined."
-        if fig_dict == None:
+        if fig_dict is None:
             fig_dict = {}
 
         if 'title' in fig_dict:
@@ -405,11 +405,12 @@ class APlot:
         self.axs[nb_ax].legend(loc='best')
         return
 
+    #TODO update default instead of changing
     default_param_dict_hist = {'bins': 20,
                                "color": 'green', 'range': None,
                                'label': "Histogram", "cumulative": True}
     # function for plotting histograms
-    def hist(self, data, nb_of_ax,
+    def hist(self, data, nb_of_ax=0,
              param_dict_hist = default_param_dict_hist,
              fig_dict = None):
         self.fig_dict_update(nb_of_ax, fig_dict)
