@@ -235,19 +235,17 @@ class APlot:
             # now, self.axs is always a list.
             self.nb_of_axs = how[0] * how[1] # nb of axes upon which I can plot
 
-    # BIANCA-HERE create decorator
+
     def check_axs(self, ax):
-        if ax < 0 :
-            # BIANCA RAISE ERROR
+        if ax < 0:
             raise IndexError("Index is negative.")
-            pass
         if ax >= self.nb_of_axs:
             warnings.warn("Axs given is out of bounds. I plot upon the first axis.")
             ax = 0
         return ax
 
     # always plotter first, then dict_updates (using the limits of the axis).
-    def fig_dict_update(self, nb_ax, fig_dict, xx=None, yy=None):
+    def set_fig_dict(self, nb_ax, fig_dict, xx=None, yy=None):
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
         nb_ax = self.check_axs(nb_ax)
@@ -348,7 +346,7 @@ class APlot:
         """
         self.__my_plotter(nb_ax, xx, yy, param_dict)
         self.fig.tight_layout()
-        self.fig_dict_update(nb_ax, fig_dict, xx, yy)
+        self.set_fig_dict(nb_ax, fig_dict, xx, yy)
 
         return
 
@@ -413,7 +411,7 @@ class APlot:
     def hist(self, data, nb_of_ax=0,
              param_dict_hist = default_param_dict_hist,
              fig_dict = None):
-        self.fig_dict_update(nb_of_ax, fig_dict)
+        self.set_fig_dict(nb_of_ax, fig_dict)
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
         try :
             #if doesn't pop, it will be catch by except.
