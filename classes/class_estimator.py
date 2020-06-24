@@ -11,7 +11,7 @@ class Estimator:
     def append(self, new_df):
         self.DF = (self.DF).append(new_df)
 
-    def function_upon_separeted_data(self, separator, fct, name, **kwargs):
+    def function_upon_separated_data(self, separator, fct, name, **kwargs):
         # separator is a string
         # fct is a fct
         # name is the name of a column where the data will lie.

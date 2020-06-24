@@ -150,8 +150,8 @@ class Graph_Estimator:
             estimator = Estimator(data.copy())
 
             self.test_true_value(data)
-            estimator.function_upon_separeted_data("value", computation_function, "computation",
-                                                     true_parameter=estimator.DF["true value"].mean())
+            estimator.function_upon_separated_data("value", computation_function, "computation",
+                                                   true_parameter=estimator.DF["true value"].mean())
 
             comp_sum += estimator.DF.groupby([name_column_evolution])["computation"].sum()#.values
 
@@ -163,4 +163,13 @@ class Graph_Estimator:
         fig_dict = self.get_computation_plot_fig_dict()
         plot.set_fig_dict(0, fig_dict)
 
-        # TODO I NEED THE HISTOGRAM OF LAST VALUE IN compute_MSE...
+        #I create a histogram:
+        # first, find the DF with only the last estimation, which should always be the max value of column_evolution.
+        max_value_evol = self.estimator.DF[name_column_evolution].max()
+        hist_DF = self.estimator.DF[ self.estimator.DF[name_column_evolution] == max_value_evol].copy()
+
+        #BIANCA-HERE this is not good!!
+        old_estimator_DF = self.estimator.DF
+        self.estimator.DF = hist_DF
+        self.draw_histogram()
+        self.estimator.DF = old_estimator_DF
