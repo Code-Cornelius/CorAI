@@ -2,6 +2,7 @@
 from abc import abstractmethod
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # my libraries
 from classes.class_estimator import Estimator
@@ -109,11 +110,13 @@ class Graph_Estimator:
             if separator_colour is not None:
                 estimator = Estimator(data)
                 coloured_dict, coloured_keys = estimator.slice_DF([separator_colour])
-                for coloured_key in coloured_keys:
+                color = plt.cm.Dark2.colors  #np.linspace(0, 1, len(coloured_keys))))
+                for coloured_key, c in zip(coloured_keys,color):
                     coloured_data = coloured_dict.get_group(coloured_key)
                     coloured_data = self.get_plot_data(coloured_data)
                     # todo colours and labels
-                    plot.uni_plot(0, estimation, coloured_data)
+                    plot.uni_plot(0, estimation, coloured_data,
+                                  param_dict={"color": c, "linestyle": "solid","linewidth": 0.8,"label": coloured_key})
             else:
                 data = self.get_plot_data(data)
                 plot.uni_plot(0, estimation, data)
@@ -123,6 +126,16 @@ class Graph_Estimator:
             plot.show_legend()
 
     def test_true_value(self, data):
+        '''
+        test if there is only one true value i  the given sliced data.
+        It could lead to potential big errors.
+
+        Args:
+            data: sliced data from estimator.DF
+
+        Returns:
+
+        '''
         if data['true value'].nunique() != 1:
             raise ("Error because you are estimating different parameters, but still compounding the MSE error together.")
 
@@ -132,6 +145,16 @@ class Graph_Estimator:
 
     @abstractmethod
     def rescale_sum(self, sum, times):
+        '''
+        rescale the data depending on the nb_of_guesses. Useful for some properties of the estimator.
+
+        Args:
+            sum:
+            times:
+
+        Returns:
+
+        '''
         pass
 
     @abstractmethod
