@@ -1,8 +1,11 @@
 # normal libraries
 from abc import abstractmethod
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 # my libraries
+import recurrent_functions
 from class_estimator import Estimator
 from plot_functions import APlot
 
@@ -55,6 +58,7 @@ class Graph:
     @abstractmethod
     def get_fig_dict_plot(self, separators, key):
         pass
+
     def histogram_of_realisations_of_estimator(self, separators=None):
         if separators is None:
             separators = self.separators
@@ -86,8 +90,8 @@ class Graph:
             # min and max
             minimum, maximum, estimation = self.get_extremes(data)
 
-            plot.uni_plot(0, estimation, minimum, param_dict = {"color": 'r', "linestyle": "dashdot","linewidth": 0.5,"label": "min"})
-            plot.uni_plot(0, estimation, maximum, param_dict = {"color": 'r', "linestyle": "dashdot","linewidth": 0.5,"label": "max"})
+            plot.uni_plot(0, estimation, minimum, param_dict={"color": 'r', "linestyle": "dashdot","linewidth": 0.5,"label": "min"})
+            plot.uni_plot(0, estimation, maximum, param_dict={"color": 'r', "linestyle": "dashdot","linewidth": 0.5,"label": "max"})
 
             # true value line
             true_values = self.get_true_values(data)
@@ -109,3 +113,44 @@ class Graph:
             fig_dict = self.get_fig_dict_plot(separators, key)
             plot.set_fig_dict(0, fig_dict)
             plot.show_legend()
+
+    def test_true_value(self, data):
+        if data['true value'].nunique() != 1:
+            raise ("Error because you are estimating different parameters, but still compounding the MSE error together.")
+
+    @abstractmethod
+    def get_times_plot(self, mini_T, times):
+        pass
+
+    @abstractmethod
+    def rescale_sum(self, DF_MSE, times):
+        pass
+
+    @abstractmethod
+    def get_MSE_plot_fig_dict(self):
+        pass
+
+    def MSE_convergence_estimators_limit_time(self, mini_T, times, separators=None):
+        if separators is None:
+            separators = self.separators
+
+        global_dict, keys = self.estimator.slice_DF(separators)
+
+        DF_MSE = np.zeros(global_dict['T_max'].nunique())
+        for key in keys:
+            data = global_dict.get_group(key)
+            estimator = Estimator(data.copy())
+
+            self.test_true_value(data)
+            estimator.function_upon_separeted_data("value", recurrent_functions.compute_MSE, "compute_MSE",
+                                                     true_parameter=estimator.DF["true value"].mean())
+
+            DF_MSE += estimator.DF.groupby(['T_max'])["compute_MSE"].sum()
+
+        TIMES_plot = self.get_times_plot(mini_T, times)
+        MSE_reals = self.rescale_sum(DF_MSE, times)
+
+        plot = APlot()
+        plot.uni_plot(0, TIMES_plot, MSE_reals)
+        fig_dict = self.get_MSE_plot_fig_dict()
+        plot.set_fig_dict(0, fig_dict)
