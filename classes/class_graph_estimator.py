@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 # my libraries
 from classes.class_estimator import Estimator
 from plot_functions import APlot
+import classical_functions
+
 
 class Graph_Estimator:
 
@@ -39,7 +41,7 @@ class Graph_Estimator:
         pass
 
     @abstractmethod
-    def get_fig_dict_hist(self, separators, key):
+    def get_dict_fig_hist(self, separators, key):
         pass
 
     @abstractmethod
@@ -70,8 +72,10 @@ class Graph_Estimator:
             data = data.values
             plot = APlot()
             param_dict = self.get_dict_param_for_plot(key, mean)
-            fig_dict = self.get_fig_dict_hist(separators, key)
+            fig_dict = self.get_dict_fig_hist(separators, key)
             plot.hist(data=data, param_dict_hist=param_dict, fig_dict=fig_dict)
+            name_file =  classical_functions.tuple_to_str(key) + 'histogram'
+            plot.save_plot(name_save_file=name_file)
 
 
 
@@ -81,7 +85,7 @@ class Graph_Estimator:
 
         Args:
             separators:
-            separator_colour:
+            separator_colour: the column of the dataframe to consider for color discrimination
 
         Returns:
 
@@ -124,6 +128,8 @@ class Graph_Estimator:
             fig_dict = self.get_fig_dict_plot(separators, key)
             plot.set_fig_dict(0, fig_dict)
             plot.show_legend()
+            name_file =  classical_functions.tuple_to_str(key) + 'evol_estimation'
+            plot.save_plot(name_save_file=name_file)
 
     def test_true_value(self, data):
         '''
@@ -185,7 +191,7 @@ class Graph_Estimator:
         plot.uni_plot(0, TIMES_plot, comp_sum)
         fig_dict = self.get_computation_plot_fig_dict()
         plot.set_fig_dict(0, fig_dict)
-
+        plot.save_plot(name_save_file='MSE_comput')
         #I create a histogram:
         # first, find the DF with only the last estimation, which should always be the max value of column_evolution.
         max_value_evol = self.estimator.DF[name_column_evolution].max()
@@ -196,3 +202,4 @@ class Graph_Estimator:
         self.estimator.DF = hist_DF
         self.draw_histogram()
         self.estimator.DF = old_estimator_DF
+

@@ -218,3 +218,12 @@ def is_invertible(a):
 
 def inverse_mult(x, vect):
     return (x * np.reciprocal(vect.astype(float)))
+
+
+
+def tuple_to_str(my_tuple):
+    my_str = ''
+    for i in range(len(my_tuple)):
+        my_str += str(my_tuple[i]) + '_'
+
+    return my_str
