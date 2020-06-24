@@ -7,7 +7,7 @@ import numpy as np
 from classes.class_estimator import Estimator
 from plot_functions import APlot
 
-class Graph:
+class Graph_Estimator:
 
     def __init__(self, estimator, separators=None):
         self.estimator = estimator
@@ -20,8 +20,8 @@ class Graph:
         # get the max value which is M-1
         return cls(estimator)
 
-    def generate_title(self, names, values, extra_text=None, extra_arguments=None):
-        title = ""
+    def generate_title(self, names, values, before_text = "", extra_text=None, extra_arguments=[]): # extra_argument is empty list that isn't used.
+        title = before_text
         for (name, value) in zip(names, values):
             title += ", " + name + " = " + str(value)
 
@@ -30,11 +30,11 @@ class Graph:
         return title
 
     @abstractmethod
-    def get_range(self, key, mean):
+    def get_optimal_range_histogram(self, key, mean):
         pass
 
     @abstractmethod
-    def get_param_info(self, key, mean):
+    def get_dict_param_for_plot(self, key, mean):
         pass
 
     @abstractmethod
@@ -57,7 +57,7 @@ class Graph:
     def get_fig_dict_plot(self, separators, key):
         pass
 
-    def histogram_of_realisations_of_estimator(self, separators=None):
+    def draw_histogram(self, separators=None):
         if separators is None:
             separators = self.separators
 
@@ -68,13 +68,23 @@ class Graph:
             mean = data.mean()
             data = data.values
             plot = APlot()
-            param_dict = self.get_param_info(key, mean)
+            param_dict = self.get_dict_param_for_plot(key, mean)
             fig_dict = self.get_fig_dict_hist(separators, key)
             plot.hist(data=data, param_dict_hist=param_dict, fig_dict=fig_dict)
 
 
 
-    def estimation_hawkes_parameter_over_time(self, separators=None, separator_colour=None):
+    def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None):
+        '''
+        plot the evolution of the estimators over the attribute given by get_plot_data.
+
+        Args:
+            separators:
+            separator_colour:
+
+        Returns:
+
+        '''
 
         if separators is None:
             separators = self.separators
@@ -128,13 +138,13 @@ class Graph:
     def get_computation_plot_fig_dict(self):
         pass
 
-    def convergence_estimators_limit_time(self, mini_T, times, name_column_evolution, computation_function, separators=None):
+    def convergence_estimators_limit(self, mini_T, times, name_column_evolution, computation_function, separators=None):
         if separators is None:
             separators = self.separators
 
         global_dict, keys = self.estimator.slice_DF(separators)
 
-        comp_sum = np.zeros(len(global_dict['T_max'].nunique()))
+        comp_sum = np.zeros(self.estimator.DF[name_column_evolution].nunique())
         for key in keys:
             data = global_dict.get_group(key)
             estimator = Estimator(data.copy())
