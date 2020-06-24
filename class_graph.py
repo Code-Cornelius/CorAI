@@ -123,34 +123,36 @@ class Graph:
         pass
 
     @abstractmethod
-    def rescale_sum(self, DF_MSE, times):
+    def rescale_sum(self, sum, times):
         pass
 
     @abstractmethod
-    def get_MSE_plot_fig_dict(self):
+    def get_computation_plot_fig_dict(self):
         pass
 
-    def MSE_convergence_estimators_limit_time(self, mini_T, times, separators=None):
+    def convergence_estimators_limit_time(self, mini_T, times, name_column_evolution, computation_function, separators=None):
         if separators is None:
             separators = self.separators
 
         global_dict, keys = self.estimator.slice_DF(separators)
 
-        DF_MSE = np.zeros(global_dict['T_max'].nunique())
+        comp_sum = np.zeros(len(global_dict['T_max'].nunique()))
         for key in keys:
             data = global_dict.get_group(key)
             estimator = Estimator(data.copy())
 
             self.test_true_value(data)
-            estimator.function_upon_separeted_data("value", recurrent_functions.compute_MSE, "compute_MSE",
+            estimator.function_upon_separeted_data("value", computation_function, "computation",
                                                      true_parameter=estimator.DF["true value"].mean())
 
-            DF_MSE += estimator.DF.groupby(['T_max'])["compute_MSE"].sum()
+            comp_sum += estimator.DF.groupby([name_column_evolution])["computation"].sum()#.values
 
         TIMES_plot = self.get_times_plot(mini_T, times)
-        MSE_reals = self.rescale_sum(DF_MSE, times)
+        comp_sum = self.rescale_sum(comp_sum, times).values
 
         plot = APlot()
-        plot.uni_plot(0, TIMES_plot, MSE_reals)
-        fig_dict = self.get_MSE_plot_fig_dict()
+        plot.uni_plot(0, TIMES_plot, comp_sum)
+        fig_dict = self.get_computation_plot_fig_dict()
         plot.set_fig_dict(0, fig_dict)
+
+        # TODO I NEED THE HISTOGRAM OF LAST VALUE IN compute_MSE...
