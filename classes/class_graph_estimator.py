@@ -2,11 +2,9 @@
 from abc import abstractmethod
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
 
 # my libraries
-import recurrent_functions
-from class_estimator import Estimator
+from classes.class_estimator import Estimator
 from plot_functions import APlot
 
 class Graph:
