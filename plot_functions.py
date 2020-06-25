@@ -415,8 +415,7 @@ class APlot:
             self.set_dict_fig(nb_of_ax, dict_fig)
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
-        classical_functions.up(dict_param_hist, APlot.default_dict_plot_param)
-        dict_param_hist.update(APlot.default_dict_param_hist)
+        classical_functions.up(dict_param_hist, APlot.default_dict_param_hist)
         try :
             #if doesn't pop, it will be catch by except.
             if dict_param_hist.pop("cumulative"):
