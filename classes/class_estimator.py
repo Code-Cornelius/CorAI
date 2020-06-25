@@ -29,14 +29,21 @@ class Estimator:
         self.DF[name] = self.DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
         return
 
-    def mean(self, name, separators):
+    def mean(self, name, separators = None):
         ## name is the name of a column where the data lies.
-        return self.DF.groupby(separators)[name].mean()
+        if separators is not None:
+            return self.DF.groupby(separators)[name].mean()
+        else :
+            return self.DF[name].mean()
+
 
     # it corresponds to S^2. This is the empirical estimator of the variance.
-    def estimator_variance(self, name, ddof=1):
+    def estimator_variance(self, name, separators = None, ddof=1):
         ## ddof is by how much one normalize the results (usually  / n-1). This gives the unbiased estimator of the variance if the mean is known.
-        return self.DF[name].var(ddof=ddof)
+        if separators is not None:
+            return self.DF.groupby(separators)[name].var(ddof=ddof)
+        else :
+            return self.DF[name].var(ddof=ddof)
 
     def to_csv(self, path, **kwargs):
         self.DF.to_csv(path, **kwargs)

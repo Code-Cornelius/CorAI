@@ -73,7 +73,7 @@ class Graph_Estimator:
             plot = APlot()
             param_dict = self.get_dict_param_for_plot(key, mean)
             fig_dict = self.get_dict_fig_hist(separators, key)
-            plot.hist(data=data, param_dict_hist=param_dict, fig_dict=fig_dict)
+            plot.hist(data=data, dict_param_hist=param_dict, fig_dict=fig_dict)
             name_file =  classical_functions.tuple_to_str(key) + 'histogram'
             plot.save_plot(name_save_file=name_file)
 
@@ -103,30 +103,29 @@ class Graph_Estimator:
             # min and max
             minimum, maximum, estimation = self.get_extremes(data)
 
-            plot.uni_plot(0, estimation, minimum, param_dict={"color": 'r', "linestyle": "dashdot","linewidth": 0.5,"label": "min"})
-            plot.uni_plot(0, estimation, maximum, param_dict={"color": 'r', "linestyle": "dashdot","linewidth": 0.5,"label": "max"})
+            plot.uni_plot(0, estimation, minimum, dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "min"})
+            plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "max"})
 
             # true value line
             true_values = self.get_true_values(data)
-            plot.uni_plot(0, estimation, true_values, param_dict = {"color": 'r', "linestyle": "solid","linewidth": 0.4,"label": "true value"})
+            plot.uni_plot(0, estimation, true_values, dict_plot_param= {"color": 'r', "linestyle": "solid", "linewidth": 0.4, "label": "true value"})
 
             # crazy stuff
             if separator_colour is not None:
                 estimator = Estimator(data)
                 coloured_dict, coloured_keys = estimator.groupby_DF([separator_colour])
-                color = plt.cm.Dark2.colors  #np.linspace(0, 1, len(coloured_keys))))
+                color = plt.cm.Dark2.colors  #Dark2 is qualitative cm and pretty dark cool colors.
                 for coloured_key, c in zip(coloured_keys,color):
                     coloured_data = coloured_dict.get_group(coloured_key)
                     coloured_data = self.get_plot_data(coloured_data)
-                    # todo colours and labels
                     plot.uni_plot(0, estimation, coloured_data,
-                                  param_dict={"color": c, "linestyle": "solid","linewidth": 0.8,"label": coloured_key})
+                                  dict_plot_param={"color": c, "linestyle": "solid", "linewidth": 0.8, "label": coloured_key})
             else:
                 data = self.get_plot_data(data)
                 plot.uni_plot(0, estimation, data)
 
             fig_dict = self.get_fig_dict_plot(separators, key)
-            plot.set_fig_dict(0, fig_dict)
+            plot.set_dict_fig(0, fig_dict)
             plot.show_legend()
             name_file =  classical_functions.tuple_to_str(key) + 'evol_estimation'
             plot.save_plot(name_save_file=name_file)
@@ -190,7 +189,7 @@ class Graph_Estimator:
         plot = APlot()
         plot.uni_plot(0, TIMES_plot, comp_sum)
         fig_dict = self.get_computation_plot_fig_dict()
-        plot.set_fig_dict(0, fig_dict)
+        plot.set_dict_fig(0, fig_dict)
         plot.save_plot(name_save_file='MSE_comput')
         #I create a histogram:
         # first, find the DF with only the last estimation, which should always be the max value of column_evolution.
