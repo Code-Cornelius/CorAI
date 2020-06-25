@@ -9,6 +9,15 @@ class Estimator:
         return repr(self.DF)
 
     def append(self, new_df):
+        '''
+        redefine the method append from DF at the estimator level.
+
+        Args:
+            new_df:
+
+        Returns:
+
+        '''
         self.DF = (self.DF).append(new_df)
 
     def function_upon_separated_data(self, separator, fct, name, **kwargs):
@@ -33,6 +42,16 @@ class Estimator:
         self.DF.to_csv(path, **kwargs)
         return
 
-    def slice_DF(self, separators):
+    def groupby_DF(self, separators):
+        '''
+        groupby a DF.
+
+        Args:
+            separators:
+
+        Returns:
+            tuple with the groupby as well as the keys in order to iterate over it.
+
+        '''
         dictionary = self.DF.groupby(separators)
         return dictionary, dictionary.groups.keys()

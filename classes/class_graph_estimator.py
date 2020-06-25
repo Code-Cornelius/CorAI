@@ -64,7 +64,7 @@ class Graph_Estimator:
         if separators is None:
             separators = self.separators
 
-        global_dict, keys = self.estimator.slice_DF(separators)
+        global_dict, keys = self.estimator.groupby_DF(separators)
 
         for key in keys:
             data = global_dict.get_group(key)['value']
@@ -94,7 +94,7 @@ class Graph_Estimator:
         if separators is None:
             separators = self.separators
 
-        global_dict, keys = self.estimator.slice_DF(separators)
+        global_dict, keys = self.estimator.groupby_DF(separators)
 
         for key in keys:
             data = global_dict.get_group(key)
@@ -113,7 +113,7 @@ class Graph_Estimator:
             # crazy stuff
             if separator_colour is not None:
                 estimator = Estimator(data)
-                coloured_dict, coloured_keys = estimator.slice_DF([separator_colour])
+                coloured_dict, coloured_keys = estimator.groupby_DF([separator_colour])
                 color = plt.cm.Dark2.colors  #np.linspace(0, 1, len(coloured_keys))))
                 for coloured_key, c in zip(coloured_keys,color):
                     coloured_data = coloured_dict.get_group(coloured_key)
@@ -171,7 +171,7 @@ class Graph_Estimator:
         if separators is None:
             separators = self.separators
 
-        global_dict, keys = self.estimator.slice_DF(separators)
+        global_dict, keys = self.estimator.groupby_DF(separators)
 
         comp_sum = np.zeros(self.estimator.DF[name_column_evolution].nunique())
         for key in keys:
