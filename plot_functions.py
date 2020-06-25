@@ -402,7 +402,6 @@ class APlot:
         self.axs[nb_ax].legend(loc='best')
         return
 
-    #TODO update default instead of changing
     default_dict_param_hist = {'bins': 20,
                                "color": 'green', 'range': None,
                                'label': "Histogram", "cumulative": True}
@@ -410,8 +409,11 @@ class APlot:
     def hist(self, data, nb_of_ax=0,
              dict_param_hist = default_dict_param_hist,
              fig_dict = None):
-        self.set_dict_fig(nb_of_ax, fig_dict)
+        if fig_dict is not None:
+            self.set_dict_fig(nb_of_ax, fig_dict)
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
+
+        dict_param_hist.update(APlot.default_dict_param_hist)
         try :
             #if doesn't pop, it will be catch by except.
             if dict_param_hist.pop("cumulative"):
