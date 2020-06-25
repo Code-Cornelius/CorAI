@@ -333,6 +333,7 @@ class APlot:
         out : list
             list of artists added
         """
+        dict_plot_param.update( APlot.default_dict_plot_param )
         nb_ax = self.check_axs(nb_ax)
         self.axs[nb_ax].grid(True)
         out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
