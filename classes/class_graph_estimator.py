@@ -37,7 +37,7 @@ class Graph_Estimator:
         pass
 
     @abstractmethod
-    def get_dict_param_for_plot(self, key, mean):
+    def get_dict_plot_param_for_hist(self, key, mean):
         pass
 
     @abstractmethod
@@ -45,19 +45,36 @@ class Graph_Estimator:
         pass
 
     @abstractmethod
-    def get_extremes(self, data):
+    def get_evolution_parameter(self, data):
         pass
 
     @abstractmethod
-    def get_true_values(self, data):
+    def get_evolution_extremes(self, data):
         pass
 
     @abstractmethod
-    def get_plot_data(self, data):
+    def get_evolution_true_value(self, data):
         pass
 
     @abstractmethod
-    def get_fig_dict_plot(self, separators, key):
+    def get_evolution_plot_data(self, data):
+        pass
+
+    @abstractmethod
+    def get_evolution_specific_data(self, data, str):
+        '''
+        returns the data grouped by the particular attribute,
+        and we focus on data given by column str, computing the means and returning an array.
+
+        :param data:
+        :param str:
+        :return:
+        '''
+        pass
+
+
+    @abstractmethod
+    def get_dict_fig_evolution_parameter_over_time(self, separators, key):
         pass
 
     def draw_histogram(self, separators=None):
@@ -71,9 +88,9 @@ class Graph_Estimator:
             mean = data.mean()
             data = data.values
             plot = APlot()
-            param_dict = self.get_dict_param_for_plot(key, mean)
+            param_dict = self.get_dict_plot_param_for_hist(key, mean)
             fig_dict = self.get_dict_fig_hist(separators, key)
-            plot.hist(data=data, dict_param_hist=param_dict, fig_dict=fig_dict)
+            plot.hist(data=data, dict_param_hist=param_dict, dict_fig=fig_dict)
             name_file =  classical_functions.tuple_to_str(key) + 'histogram'
             plot.save_plot(name_save_file=name_file)
 
@@ -96,19 +113,21 @@ class Graph_Estimator:
 
         global_dict, keys = self.estimator.groupby_DF(separators)
 
+        #interesting times:
+        estimation = self.get_evolution_parameter(self.estimator.DF)
         for key in keys:
             data = global_dict.get_group(key)
             plot = APlot()
 
             # min and max
-            minimum, maximum, estimation = self.get_extremes(data)
+            minimum, maximum = self.get_evolution_extremes(data)
 
-            plot.uni_plot(0, estimation, minimum, dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "min"})
-            plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "max"})
+            plot.uni_plot(0, estimation, minimum, dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "min", 'marker':''})
+            plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "max", 'marker':''})
 
             # true value line
-            true_values = self.get_true_values(data)
-            plot.uni_plot(0, estimation, true_values, dict_plot_param= {"color": 'r', "linestyle": "solid", "linewidth": 0.4, "label": "true value"})
+            true_values = self.get_evolution_true_value(data)
+            plot.uni_plot(0, estimation, true_values, dict_plot_param= {"color": 'r', "linestyle": "solid", "linewidth": 0.4, "label": "true value", 'marker':''})
 
             # crazy stuff
             if separator_colour is not None:
@@ -117,14 +136,14 @@ class Graph_Estimator:
                 color = plt.cm.Dark2.colors  #Dark2 is qualitative cm and pretty dark cool colors.
                 for coloured_key, c in zip(coloured_keys,color):
                     coloured_data = coloured_dict.get_group(coloured_key)
-                    coloured_data = self.get_plot_data(coloured_data)
+                    coloured_data = self.get_evolution_plot_data(coloured_data)
                     plot.uni_plot(0, estimation, coloured_data,
                                   dict_plot_param={"color": c, "linestyle": "solid", "linewidth": 0.8, "label": coloured_key})
             else:
-                data = self.get_plot_data(data)
+                data = self.get_evolution_plot_data(data)
                 plot.uni_plot(0, estimation, data)
 
-            fig_dict = self.get_fig_dict_plot(separators, key)
+            fig_dict = self.get_dict_fig_evolution_parameter_over_time(separators, key)
             plot.set_dict_fig(0, fig_dict)
             plot.show_legend()
             name_file =  classical_functions.tuple_to_str(key) + 'evol_estimation'
@@ -145,20 +164,18 @@ class Graph_Estimator:
             raise ("Error because you are estimating different parameters, but still compounding the MSE error together.")
 
     @abstractmethod
-    def get_times_plot(self, mini_T, times):
+    def rescale_time_plot(self, mini_T, times):
         pass
 
     @abstractmethod
     def rescale_sum(self, sum, times):
         '''
-        rescale the data depending on the nb_of_guesses. Useful for some properties of the estimator.
+        rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes.
+        Abstract method allows me to use specific scaling factor.
 
-        Args:
-            sum:
-            times:
-
-        Returns:
-
+        :param sum:
+        :param times:
+        :return:
         '''
         pass
 
@@ -183,7 +200,7 @@ class Graph_Estimator:
 
             comp_sum += estimator.DF.groupby([name_column_evolution])["computation"].sum()#.values
 
-        TIMES_plot = self.get_times_plot(mini_T, times)
+        TIMES_plot = self.rescale_time_plot(mini_T, times)
         comp_sum = self.rescale_sum(comp_sum, times).values
 
         plot = APlot()

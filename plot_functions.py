@@ -13,6 +13,7 @@ import cmath  #complex functions
 sns.set()
 
 # my libraries
+import classical_functions
 
 # other files
 
@@ -242,7 +243,7 @@ class APlot:
 
             # we set the default param of the fig:
             for i in range(self.nb_of_axs):
-                self.set_dict_fig(self, i, None)
+                self.set_dict_fig(i, None)
 
 
     def check_axs(self, ax):
@@ -263,12 +264,12 @@ class APlot:
             dict_fig = {}
         default_dict = {'title': default_str, 'xlabel':default_str, 'ylabel':default_str,
                         'xscale':'linear', 'xint': False, 'yint': False}
-        dict_fig.update( default_dict )
+        classical_functions.up(dict_fig, default_dict)
 
         self.axs[nb_ax].set_title(dict_fig[('title')], fontsize=10)
         self.axs[nb_ax].set_xlabel(dict_fig[('xlabel')], fontsize=10)
         self.axs[nb_ax].set_ylabel(dict_fig[('ylabel')], fontsize=10)
-        self.axs[nb_ax].set_xscale(dict_fig[('xscale')], fontsize=10)
+        self.axs[nb_ax].set_xscale(dict_fig[('xscale')])
 
         if dict_fig[('xint')]:
             if xx is None:
@@ -333,7 +334,7 @@ class APlot:
         out : list
             list of artists added
         """
-        dict_plot_param.update( APlot.default_dict_plot_param )
+        classical_functions.up(dict_plot_param, APlot.default_dict_plot_param )
         nb_ax = self.check_axs(nb_ax)
         self.axs[nb_ax].grid(True)
         out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
@@ -409,11 +410,12 @@ class APlot:
     # function for plotting histograms
     def hist(self, data, nb_of_ax=0,
              dict_param_hist = default_dict_param_hist,
-             fig_dict = None):
-        if fig_dict is not None:
-            self.set_dict_fig(nb_of_ax, fig_dict)
+             dict_fig = None):
+        if dict_fig is not None:
+            self.set_dict_fig(nb_of_ax, dict_fig)
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
+        classical_functions.up(dict_param_hist, APlot.default_dict_plot_param)
         dict_param_hist.update(APlot.default_dict_param_hist)
         try :
             #if doesn't pop, it will be catch by except.
