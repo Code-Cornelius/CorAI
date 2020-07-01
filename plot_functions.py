@@ -254,8 +254,9 @@ class APlot:
             ax = 0
         return ax
 
-    # always plotter first, then dict_updates (using the limits of the axis).
+
     def set_dict_fig(self, nb_ax, dict_fig, xx=None, yy=None):
+    # always plotter first, then dict_updates (using the limits of the axis).
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
         nb_ax = self.check_axs(nb_ax)
@@ -407,10 +408,10 @@ class APlot:
     default_dict_param_hist = {'bins': 20,
                                "color": 'green', 'range': None,
                                'label': "Histogram", "cumulative": True}
-    # function for plotting histograms
     def hist(self, data, nb_of_ax=0,
              dict_param_hist = default_dict_param_hist,
              dict_fig = None):
+    # function for plotting histograms
         if dict_fig is not None:
             self.set_dict_fig(nb_of_ax, dict_fig)
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
