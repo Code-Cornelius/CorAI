@@ -74,8 +74,14 @@ class Graph_Estimator:
 
 
     @abstractmethod
+    def get_computation_plot_fig_dict(self):
+        pass
+
+    @abstractmethod
     def get_dict_fig_evolution_parameter_over_time(self, separators, key):
         pass
+
+
 
     def draw_histogram(self, separators=None):
         if separators is None:
@@ -94,7 +100,35 @@ class Graph_Estimator:
             name_file =  classical_functions.tuple_to_str(key) + 'histogram'
             plot.save_plot(name_save_file=name_file)
 
+    def test_true_value(self, data):
+        '''
+        test if there is only one true value i  the given sliced data.
+        It could lead to potential big errors.
 
+        Args:
+            data: sliced data from estimator.DF
+
+        Returns:
+
+        '''
+        if data['true value'].nunique() != 1:
+            raise ("Error because you are estimating different parameters, but still compounding the MSE error together.")
+
+    @abstractmethod
+    def rescale_time_plot(self, mini_T, times):
+        pass
+
+    @abstractmethod
+    def rescale_sum(self, sum, times):
+        '''
+        rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes.
+        Abstract method allows me to use specific scaling factor.
+
+        :param sum:
+        :param times:
+        :return:
+        '''
+        pass
 
     def draw_evolution_parameter_over_time(self, separators=None, separator_colour=None):
         '''
@@ -149,40 +183,6 @@ class Graph_Estimator:
             name_file =  classical_functions.tuple_to_str(key) + 'evol_estimation'
             plot.save_plot(name_save_file=name_file)
 
-    def test_true_value(self, data):
-        '''
-        test if there is only one true value i  the given sliced data.
-        It could lead to potential big errors.
-
-        Args:
-            data: sliced data from estimator.DF
-
-        Returns:
-
-        '''
-        if data['true value'].nunique() != 1:
-            raise ("Error because you are estimating different parameters, but still compounding the MSE error together.")
-
-    @abstractmethod
-    def rescale_time_plot(self, mini_T, times):
-        pass
-
-    @abstractmethod
-    def rescale_sum(self, sum, times):
-        '''
-        rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes.
-        Abstract method allows me to use specific scaling factor.
-
-        :param sum:
-        :param times:
-        :return:
-        '''
-        pass
-
-    @abstractmethod
-    def get_computation_plot_fig_dict(self):
-        pass
-
     def convergence_estimators_limit(self, mini_T, times, name_column_evolution, computation_function, separators=None):
         if separators is None:
             separators = self.separators
@@ -218,4 +218,3 @@ class Graph_Estimator:
         self.estimator.DF = hist_DF
         self.draw_histogram()
         self.estimator.DF = old_estimator_DF
-
