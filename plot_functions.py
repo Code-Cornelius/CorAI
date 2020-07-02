@@ -14,7 +14,7 @@ sns.set()
 
 # my libraries
 import classical_functions
-
+from metaclass_register import *
 # other files
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -204,7 +204,7 @@ def hist(data, bins, title, labels, range=None, total_number_of_simulations=None
 ######################################### new plot functions
 
 
-class APlot:
+class APlot(metaclass=register):
     # APlot is the class for my plots. APlot is one figure.
 
     default_dict_plot_param = {"color": 'm',
@@ -314,7 +314,7 @@ class APlot:
 
     def __my_plotter(self, nb_ax, xx, yy, dict_plot_param):
         """
-        Foo helper function to make a graph
+        A helper function to make a graph
 
         Parameters
         ----------

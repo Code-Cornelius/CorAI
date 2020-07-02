@@ -26,42 +26,42 @@ class register(type):
 
 
 
+# #
+# class Foo(metaclass=register):
+#     @dec_register
+#     def __init__(self):
+#         pass
 #
-class Foo(metaclass=register):
-    @dec_register
-    def __init__(self):
-        pass
-
-    def print_register(self):
-        print("coucou")
-
-class Boo(metaclass=register):
-    @dec_register
-    def __init__(self):
-        pass
-    def print_register(self):
-        print("coucou")
-
-f = Foo()
-f_ = Foo()
-b = Boo()
-print(f.list_register_instances)
-print(b.list_register_instances)
-
-print(dict_register_classes)
-
-f.print_register()
-
-
-
-# example without anything fancy:
-class Foo:
-    instances = []
-    def __init__(self):
-        self.__class__.instances.append(self)
-
-    @classmethod
-    def printInstances(cls):
-        for instance in cls.instances:
-            print(instance)
-Foo.printInstances()
+#     def print_register(self):
+#         print("coucou")
+#
+# class Boo(metaclass=register):
+#     @dec_register
+#     def __init__(self):
+#         pass
+#     def print_register(self):
+#         print("coucou")
+#
+# f = Foo()
+# f_ = Foo()
+# b = Boo()
+# print(f.list_register_instances)
+# print(b.list_register_instances)
+#
+# print(dict_register_classes)
+#
+# f.print_register()
+#
+#
+#
+# # example without anything fancy:
+# class Foo:
+#     instances = []
+#     def __init__(self):
+#         self.__class__.instances.append(self)
+#
+#     @classmethod
+#     def printInstances(cls):
+#         for instance in cls.instances:
+#             print(instance)
+# Foo.printInstances()
