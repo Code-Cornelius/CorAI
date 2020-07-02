@@ -314,7 +314,7 @@ class APlot:
 
     def __my_plotter(self, nb_ax, xx, yy, dict_plot_param):
         """
-        A helper function to make a graph
+        Foo helper function to make a graph
 
         Parameters
         ----------
