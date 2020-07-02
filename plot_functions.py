@@ -44,7 +44,7 @@ def plot_graph(data_x, data_y, title=["No title", "No title"], labels=["No label
         nb_parameters = len(parameters)
         sous_text = " Parameters : \n"
         for i in range(nb_parameters):
-            sous_text += str(name_parameters[i]) + " = {}".format(parameters[i])
+            sous_text += str(name_parameters[i]) + f" = {parameters[i]}"
             # end of the list, we finish by a full stop.
             if i == nb_parameters - 1:
                 sous_text += "."
@@ -293,7 +293,7 @@ class APlot:
             nb_parameters = len(parameters)
             sous_text = " Parameters : \n"
             for i in range(nb_parameters):
-                sous_text += str(name_parameters[i]) + " = {}".format(parameters[i])
+                sous_text += str(name_parameters[i]) + f" = {parameters[i]}"
                 # end of the list, we finish by a full stop.
                 if i == nb_parameters - 1:
                     sous_text += "."

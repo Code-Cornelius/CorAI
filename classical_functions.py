@@ -62,23 +62,23 @@ def time_computational(A, B, title="no title"):
     if s == 0:
         ts = ""
     if s == 1:
-        ts = "{:d} second ".format(s)
+        ts = f"{s:d} second "
     if s != 1 and s != 0:
-        ts = "{:d} seconds ".format(s)
+        ts = f"{s:d} seconds "
 
     if m == 0:
         tm = ""
     if m == 1:
-        tm = "{:d} minut ".format(m)
+        tm = f"{m:d} minut "
     if m != 1 and m != 0:
-        tm = "{:d} minuts ".format(m)
+        tm = f"{m:d} minuts "
 
     if h == 0:
         th = ""
     if h == 1:
-        th = "{:d} hour ".format(h)
+        th = f"{h:d} hour "
     if h != 1 and h != 0:
-        th = "{:d} hours ".format(h)
+        th = f"{h:d} hours "
 
     if h == s and s == m and m == 0:
         ts = " 0.1 second "
