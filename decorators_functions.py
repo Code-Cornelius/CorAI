@@ -51,10 +51,33 @@ def timer(func):
 
 
 
-
 def set_new_methods(**kwargs):
+    ''' set new methods to a class, any number.
+
+    Args:
+        **kwargs: name of method given by key, body by value.
+
+    Returns:
+
+    '''
     def wrapper(cls):
         for key in kwargs:
             setattr(cls, key, kwargs[key])
+        return cls
+    return wrapper
+
+
+def set_new_class_methods(**kwargs):
+    ''' set new methods to a class, any number.
+
+    Args:
+        **kwargs: name of method given by key, body by value.
+
+    Returns:
+
+    '''
+    def wrapper(cls):
+        for key in kwargs:
+            setattr(cls, key, classmethod(kwargs[key]))
         return cls
     return wrapper
