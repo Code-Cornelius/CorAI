@@ -214,7 +214,7 @@ class APlot(metaclass=register):
                           "markersize": 0.4,
                           "label": "plot"
                                }
-
+    @deco_register
     def __init__(self, how=(1, 1), datax=None, datay=None, figsize =(7, 5), sharex=False,
                  sharey=False):  # sharex,y for sharing the same on plots.
         # how should be a tuple with how I want to have axes.

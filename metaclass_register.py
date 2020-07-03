@@ -3,11 +3,13 @@
 import functools
 
 
-def dec_register(func):
+def deco_register(func):
     @functools.wraps(func)
     def wrapper_register(*args, **kwargs):
         # args[0] is self.
         (args[0].__class__.list_register_instances).append(args[0])
+        #debug
+        # #print("inside : ", args[0].list_register_instances)
         return func(*args, **kwargs)
     return wrapper_register
 
@@ -28,28 +30,30 @@ class register(type):
     def print_register(self):
         for element in self.list_register_instances:
             print(element)
+        return self.list_register_instances
 
     def print_register_class(cls):
         for element in cls.list_register_instances:
             print(element)
+        return cls.list_register_instances
 
 #
-class Foo(metaclass=register):
-    @dec_register
-    def __init__(self):
-        print("inside : " , self.list_register_instances)
-        pass
-
-    def print_register(self):
-        print("coucou")
-
-class Boo(metaclass=register):
-    @dec_register
-    def __init__(self):
-        print("inside : " , self.list_register_instances)
-        pass
-    def print_register(self):
-        print("coucou")
+# class Foo(metaclass=register):
+#     @deco_register
+#     def __init__(self):
+#         print("inside : " , self.list_register_instances)
+#         pass
+#
+#     def print_register(self):
+#         print("coucou")
+#
+# class Boo(metaclass=register):
+#     @deco_register
+#     def __init__(self):
+#         print("inside : " , self.list_register_instances)
+#         pass
+#     def print_register(self):
+#         print("coucou")
 
 # f = Foo()
 # f = Foo()
