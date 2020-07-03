@@ -24,7 +24,8 @@ class register(type):
         print(" inside " , dict_register_classes)
 
         cls.list_register_instances = []
-        cls.print_register = meta.print_register
+        cls.print_register = classmethod(meta.print_register) # a method inside metaclass is a class method.
+        # On the other hand, classmethod is binding the method to both class method and object method scope.
         return cls
 
     def print_register(self):
@@ -54,7 +55,7 @@ class register(type):
 #         pass
 #     def print_register(self):
 #         print("coucou")
-
+#
 # f = Foo()
 # f = Foo()
 # f_ = Foo()
@@ -62,8 +63,13 @@ class register(type):
 # print(f.list_register_instances)
 # print(b.list_register_instances)
 # print(dict_register_classes)
-
-
+#
+# print("1")
+# f.print_register()
+# print("2")
+# Foo.print_register_class()
+# print("4")
+# Foo.print_register()
 
 
 # example without anything fancy:
