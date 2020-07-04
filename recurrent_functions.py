@@ -42,13 +42,16 @@ def phi(x):
 
 
 
-def phi_numpy(x):
-    """
-    Gaussian density PDF
-    Args:
-        x: optimized for np.arrays
+# def phi_numpy(x):
+#     """
+#     Gaussian density PDF
+#     Args:
+#         x: optimized for np.arrays
+#
+#     Returns: returns an array with the gaussian density
+#
+#     """
+#     return np.exp(-x * x / 2.) / np.sqrt(2 * np.pi)
 
-    Returns: returns an array with the gaussian density
-
-    """
-    return np.exp(-x * x / 2.) / np.sqrt(2 * np.pi)
+def phi_numpy(x,mu,sigma):
+    return scipy.stats.norm(mu, sigma).pdf(x)

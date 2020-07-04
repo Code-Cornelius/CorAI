@@ -21,7 +21,6 @@ class register(type):
     # before any class' init with that meta, put the decorator !
     def __new__(meta, name, bases, attrs):
         dict_register_classes[name] = cls = type.__new__(meta, name, bases, attrs)  # assigniation from right to left
-        print(" inside " , dict_register_classes)
 
         cls.list_register_instances = []
         cls.print_register = classmethod(meta.print_register) # a method inside metaclass is a class method.
