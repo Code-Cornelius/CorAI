@@ -14,25 +14,15 @@ import math #quick math functions
 import cmath  #complex functions
 
 # my libraries
-
+import errors.error_convergence as error
 
 # other files
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# parameters
-import math
-import numpy as np  # maths functions
-import matplotlib.pyplot as plt  # for plots
-import scipy.stats  # that's for cdf in BS
-import scipy.integrate  # for the method quad allows integration
-import scipy.optimize  # for knowing when a function crosses 0, for implied volatility computation.
-import cmath  # complex numbers
-import time  # computational time
-import classical_functions
 
 def function_vanilla_option_output(x, k):
-    return max(0, x - np.exp(k))
+    return np.max(0, x - np.exp(k))
 
 # given the parameter, and
 def compute_MSE(param, true_parameter):
@@ -47,7 +37,18 @@ def phi(x):
     Returns: returns an array with the gaussian density
 
     """
+    error.deprecated_function(reason="phi chose numpy.")
     return np.exp(-x * x / 2.) / np.sqrt(2 * np.pi)
 
 
 
+def phi_numpy(x):
+    """
+    Gaussian density PDF
+    Args:
+        x: optimized for np.arrays
+
+    Returns: returns an array with the gaussian density
+
+    """
+    return np.exp(-x * x / 2.) / np.sqrt(2 * np.pi)

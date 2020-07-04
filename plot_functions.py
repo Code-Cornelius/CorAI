@@ -15,6 +15,7 @@ sns.set()
 # my libraries
 import classical_functions
 from metaclass_register import *
+from errors.error_convergence import *
 # other files
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,7 +38,7 @@ def plot_graph(data_x, data_y, title=["No title", "No title"], labels=["No label
                parameters=None, name_parameters=None,
                name_save_file=None):
     plt.figure(figsize=(10, 5))
-    warnings.warn("Function is deprecated. Use new version with class APlot.")
+    deprecated_function(reason="plot_graph. Use new version with class APlot.")
 
     markersize = 0.4
     if parameters is not None:
@@ -164,7 +165,7 @@ def plot_graph(data_x, data_y, title=["No title", "No title"], labels=["No label
 
 # function for plotting histograms
 def hist(data, bins, title, labels, range=None, total_number_of_simulations=None):
-    warnings.warn("Function is deprecated. Use new version.")
+    deprecated_function(reason="hist. Use new version with class APlot.")
     plt.figure(figsize=(10, 5))
     ax = plt.axes()
     plt.ylabel("Nb of realisation inside a bin.")
