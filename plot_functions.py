@@ -260,6 +260,7 @@ class APlot(metaclass=register):
     # always plotter first, then dict_updates (using the limits of the axis).
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
+        fontsize = 12
         nb_ax = self.check_axs(nb_ax)
         default_str = "Non-Defined."
         if dict_fig is None:
@@ -268,9 +269,9 @@ class APlot(metaclass=register):
                         'xscale':'linear', 'xint': False, 'yint': False}
         classical_functions.up(dict_fig, default_dict)
 
-        self.axs[nb_ax].set_title(dict_fig[('title')], fontsize=10)
-        self.axs[nb_ax].set_xlabel(dict_fig[('xlabel')], fontsize=10)
-        self.axs[nb_ax].set_ylabel(dict_fig[('ylabel')], fontsize=10)
+        self.axs[nb_ax].set_title(dict_fig[('title')], fontsize=fontsize)
+        self.axs[nb_ax].set_xlabel(dict_fig[('xlabel')], fontsize=fontsize)
+        self.axs[nb_ax].set_ylabel(dict_fig[('ylabel')], fontsize=fontsize)
         self.axs[nb_ax].set_xscale(dict_fig[('xscale')])
 
         if dict_fig[('xint')]:
@@ -308,7 +309,7 @@ class APlot(metaclass=register):
 
             bottom, top = self.axs[nb_ax].get_ylim()
             left, right = self.axs[nb_ax].get_xlim()
-            self.axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text, fontsize=10)
+            self.axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text, fontsize=fontsize-1)
             plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace = 0.5)  # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
