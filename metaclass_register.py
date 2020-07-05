@@ -8,22 +8,23 @@ def deco_register(func):
     def wrapper_register(*args, **kwargs):
         # args[0] is self.
         (args[0].__class__.list_register_instances).append(args[0])
-        #debug
+        # debug
         # #print("inside : ", args[0].list_register_instances)
         return func(*args, **kwargs)
+
     return wrapper_register
 
 
-
-
 dict_register_classes = {}
+
+
 class register(type):
     # before any class' init with that meta, put the decorator !
     def __new__(meta, name, bases, attrs):
         dict_register_classes[name] = cls = type.__new__(meta, name, bases, attrs)  # assigniation from right to left
 
         cls.list_register_instances = []
-        cls.print_register = classmethod(meta.print_register) # a method inside metaclass is a class method.
+        cls.print_register = classmethod(meta.print_register)  # a method inside metaclass is a class method.
         # On the other hand, classmethod is binding the method to both class method and object method scope.
         return cls
 
@@ -36,6 +37,7 @@ class register(type):
         for element in cls.list_register_instances:
             print(element)
         return cls.list_register_instances
+
 
 #
 # class Foo(metaclass=register):
@@ -74,6 +76,7 @@ class register(type):
 # example without anything fancy:
 class Foo:
     list_register_instances = []
+
     def __init__(self):
         self.__class__.list_register_instances.append(self)
 

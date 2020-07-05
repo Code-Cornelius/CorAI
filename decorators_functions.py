@@ -2,6 +2,7 @@ import functools
 import time
 from inspect import signature  # know signature of a function
 
+
 def Memoization(key_names):
     class MemoizationClass:
         def __init__(self, func):
@@ -21,7 +22,7 @@ def Memoization(key_names):
             for key in self.key_names:
                 keys.append(kwargs[key])
             key = (*keys,)
-            #key = tuple(keys) # pack them into a tuple
+            # key = tuple(keys) # pack them into a tuple
 
             if key not in self.dictionary:
                 self.dictionary[key] = self.func(*args, **kwargs)
@@ -34,21 +35,19 @@ def Memoization(key_names):
     return MemoizationClass
 
 
-
-
 def timer(func):
     """Print the runtime of the decorated function"""
+
     @functools.wraps(func)
     def wrapper_timer(*args, **kwargs):
-        start_time = time.perf_counter()    # 1
+        start_time = time.perf_counter()  # 1
         value = func(*args, **kwargs)
-        end_time = time.perf_counter()      # 2
-        run_time = end_time - start_time    # 3
+        end_time = time.perf_counter()  # 2
+        run_time = end_time - start_time  # 3
         print(f"Finished {func.__name__!r} in {run_time:.4f} secs")
         return value
+
     return wrapper_timer
-
-
 
 
 def set_new_methods(**kwargs):
@@ -60,10 +59,12 @@ def set_new_methods(**kwargs):
     Returns:
 
     '''
+
     def wrapper(cls):
         for key in kwargs:
             setattr(cls, key, kwargs[key])
         return cls
+
     return wrapper
 
 
@@ -76,8 +77,10 @@ def set_new_class_methods(**kwargs):
     Returns:
 
     '''
+
     def wrapper(cls):
         for key in kwargs:
             setattr(cls, key, classmethod(kwargs[key]))
         return cls
+
     return wrapper

@@ -1,27 +1,27 @@
 # normal libraries
-import numpy as np #maths library and arrays
+import numpy as np  # maths library and arrays
 import statistics as stat
-import pandas as pd #dataframes
-import seaborn as sns #envrionement for plots
-from matplotlib import pyplot as plt #ploting
-import scipy.stats #functions of statistics
+import pandas as pd  # dataframes
+import seaborn as sns  # envrionement for plots
+from matplotlib import pyplot as plt  # ploting
+import scipy.stats  # functions of statistics
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time #allows to time event
+import time  # allows to time event
 import warnings
-import math #quick math functions
-import cmath  #complex functions
+import math  # quick math functions
+import cmath  # complex functions
+
 sns.set()
 
 # my libraries
 import classical_functions
 from metaclass_register import *
 from errors.error_convergence import *
+
+
 # other files
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 # plot graph can plot up to 2 graphs on the same figure.
@@ -209,43 +209,43 @@ class APlot(metaclass=register):
     # APlot is the class for my plots. APlot is one figure.
 
     default_dict_plot_param = {"color": 'm',
-                          "linestyle": "solid",
-                          "linewidth": 0.5,
-                          "marker": "o",
-                          "markersize": 0.4,
-                          "label": "plot"
+                               "linestyle": "solid",
+                               "linewidth": 0.5,
+                               "marker": "o",
+                               "markersize": 0.4,
+                               "label": "plot"
                                }
+
     @deco_register
-    def __init__(self, how=(1, 1), datax=None, datay=None, figsize =(7, 5), sharex=False,
+    def __init__(self, how=(1, 1), datax=None, datay=None, figsize=(7, 5), sharex=False,
                  sharey=False):  # sharex,y for sharing the same on plots.
         # how should be a tuple with how I want to have axes.
         if datay is not None:
             if datax is not None:
-                plt.figure(figsize= figsize)
+                plt.figure(figsize=figsize)
                 plt.plot(datax, datay, **APlot.default_dict_plot_param)
             else:
                 plt.figure(figsize=figsize)
                 plt.plot(range(len(datay)), datay, **APlot.default_dict_plot_param)
 
-        else: # corresponds to the case where we want to plot something
-            #creation of the figu
-            self.fig, self.axs = plt.subplots(*how, sharex= sharex, sharey= sharey, figsize = figsize)
+        else:  # corresponds to the case where we want to plot something
+            # creation of the figu
+            self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize=figsize)
             # true or false uni plot
             self.uni_dim = (how == (1, 1))
             # two cases, if it is uni_dim, I put self.axs into a list. Otherwise, it is already a list.
             # having a list is easier to deal with.
             if self.uni_dim:
                 self.axs = [self.axs]
-            else :
+            else:
                 # the axs are matrices, I need a list.
                 self.axs = self.axs.flatten()
             # now, self.axs is always a list (uni dimensional).
-            self.nb_of_axs = how[0] * how[1] # nb of axes upon which I can plot
+            self.nb_of_axs = how[0] * how[1]  # nb of axes upon which I can plot
 
             # we set the default param of the fig:
             for i in range(self.nb_of_axs):
                 self.set_dict_fig(i, None)
-
 
     def check_axs(self, ax):
         if ax < 0:
@@ -255,9 +255,8 @@ class APlot(metaclass=register):
             ax = 0
         return ax
 
-
     def set_dict_fig(self, nb_ax, dict_fig, xx=None, yy=None):
-    # always plotter first, then dict_updates (using the limits of the axis).
+        # always plotter first, then dict_updates (using the limits of the axis).
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
         fontsize = 12
@@ -265,20 +264,21 @@ class APlot(metaclass=register):
         default_str = "Non-Defined."
         if dict_fig is None:
             dict_fig = {}
-        default_dict = {'title': default_str, 'xlabel':default_str, 'ylabel':default_str,
-                        'xscale':'linear', 'xint': False, 'yint': False}
+        default_dict = {'title': default_str, 'xlabel': default_str, 'ylabel': default_str,
+                        'xscale': 'linear', 'xint': False, 'yint': False}
         classical_functions.up(dict_fig, default_dict)
 
-        self.axs[nb_ax].set_title(dict_fig[('title')], fontsize=fontsize)
-        self.axs[nb_ax].set_xlabel(dict_fig[('xlabel')], fontsize=fontsize)
-        self.axs[nb_ax].set_ylabel(dict_fig[('ylabel')], fontsize=fontsize)
-        self.axs[nb_ax].set_xscale(dict_fig[('xscale')])
+        self.axs[nb_ax].set_title(dict_fig['title'], fontsize=fontsize)
+        self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=fontsize)
+        self.axs[nb_ax].set_ylabel(dict_fig['ylabel'], fontsize=fontsize)
+        self.axs[nb_ax].set_xscale(dict_fig['xscale'])
 
-        if dict_fig[('xint')]:
+        if dict_fig['xint']:
             if xx is None:
                 raise ("xx has not been given.")
             x_int = range(math.ceil(min(xx)) - 1, math.ceil(
-                self.axs[nb_ax](xx)) + 1)  # I need to use ceil on both if min and mself.axs[nb_ax] are not integers ( like 0 to 1 )
+                self.axs[nb_ax](
+                    xx)) + 1)  # I need to use ceil on both if min and mself.axs[nb_ax] are not integers ( like 0 to 1 )
             self.axs[nb_ax].set_xticks(x_int)
         if dict_fig[('yint')]:
             if yy is None:
@@ -309,8 +309,9 @@ class APlot(metaclass=register):
 
             bottom, top = self.axs[nb_ax].get_ylim()
             left, right = self.axs[nb_ax].get_xlim()
-            self.axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text, fontsize=fontsize-1)
-            plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace = 0.5)  # bottom is how much low;
+            self.axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text,
+                                 fontsize=fontsize - 1)
+            plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace=0.5)  # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
 
@@ -337,7 +338,7 @@ class APlot(metaclass=register):
         out : list
             list of artists added
         """
-        classical_functions.up(dict_plot_param, APlot.default_dict_plot_param )
+        classical_functions.up(dict_plot_param, APlot.default_dict_plot_param)
         nb_ax = self.check_axs(nb_ax)
         self.axs[nb_ax].grid(True)
         out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
@@ -410,17 +411,18 @@ class APlot(metaclass=register):
     default_dict_param_hist = {'bins': 20,
                                "color": 'green', 'range': None,
                                'label': "Histogram", "cumulative": True}
+
     def hist(self, data, nb_of_ax=0,
-             dict_param_hist = default_dict_param_hist,
-             dict_fig = None):
-    # function for plotting histograms
+             dict_param_hist=default_dict_param_hist,
+             dict_fig=None):
+        # function for plotting histograms
         if dict_fig is not None:
             self.set_dict_fig(nb_of_ax, dict_fig)
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
         classical_functions.up(dict_param_hist, APlot.default_dict_param_hist)
-        try :
-            #if doesn't pop, it will be catch by except.
+        try:
+            # if doesn't pop, it will be catch by except.
             if dict_param_hist.pop("cumulative"):
                 values, base, _ = self.axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
                 ax_bis = self.axs[nb_of_ax].twinx()
@@ -439,14 +441,11 @@ class APlot(metaclass=register):
                                 markersize=1, label="Cumulative Histogram")
                 ax_bis.set_ylabel("Proportion of the cumulative total.")
 
-        except KeyError: #no cumulative in the hist.
+        except KeyError:  # no cumulative in the hist.
             values, base, _ = self.axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
         return
 
-
-
-
-    def show_legend(self, nb_ax = None):
+    def show_legend(self, nb_ax=None):
         # as usually, nb_ax is an integer.
         # if ax is none, then every nb_ax is showing the nb_ax.
         if nb_ax is None:
