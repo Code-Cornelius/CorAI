@@ -259,7 +259,7 @@ class APlot(metaclass=register):
         # always plotter first, then dict_updates (using the limits of the axis).
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
-        fontsize = 12
+        fontsize = 13
         nb_ax = self.check_axs(nb_ax)
         default_str = "Non-Defined."
         if dict_fig is None:
@@ -272,6 +272,8 @@ class APlot(metaclass=register):
         self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=fontsize)
         self.axs[nb_ax].set_ylabel(dict_fig['ylabel'], fontsize=fontsize)
         self.axs[nb_ax].set_xscale(dict_fig['xscale'])
+        self.axs[nb_ax].tick_params(labelsize=fontsize-1)
+
 
         if dict_fig['xint']:
             if xx is None:
@@ -454,9 +456,9 @@ class APlot(metaclass=register):
         # if ax is none, then every nb_ax is showing the nb_ax.
         if nb_ax is None:
             for nb_ax_0 in range(self.nb_of_axs):
-                self.axs[nb_ax_0].legend(loc='best')
+                self.axs[nb_ax_0].legend(loc='best', fontsize = 12)
         else:
-            self.axs[nb_ax].legend(loc='best')
+            self.axs[nb_ax].legend(loc='best', fontsize = 12)
         return
 
     def save_plot(self, name_save_file='image'):
