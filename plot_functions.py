@@ -255,7 +255,7 @@ class APlot(metaclass=register):
             ax = 0
         return ax
 
-    def set_dict_fig(self, nb_ax, dict_fig, xx=None, yy=None):
+    def set_dict_fig(self, nb_ax = 0, dict_fig = None, xx=None, yy=None):
         # always plotter first, then dict_updates (using the limits of the axis).
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
@@ -386,6 +386,10 @@ class APlot(metaclass=register):
         """
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
+
+    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=default_dict_plot_param ):
+        return self.uni_plot(nb_ax = nb_ax, xx = np.full(len(yy),x), yy = yy, dict_plot_param=dict_plot_param)
+
 
     def cumulative_plot(self, xx, yy, nb_ax=0):
         """
