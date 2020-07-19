@@ -84,3 +84,27 @@ def set_new_class_methods(**kwargs):
         return cls
 
     return wrapper
+
+
+
+
+
+def prediction_total_time():
+    return
+
+import numpy as np
+
+def f():
+    A = np.full((1000,1000),10)
+    np.exp(A)
+
+for i in range(100):
+    # a chaque fois que j'appelle la fonction, estimer le temps totale (donc en fct du nombre d'itération total).
+    # besoin d'un multiplicateur de complexité. Si par exemple je fais n range.
+    # Et que j'ai calculé sur les m premiers un temps moyens de tau,
+    # si je garde la moyenne, ça va me prendre tau * (n-m) de temps.
+    # par contre avec une complexité de 2, je peux dire que entre le début et la fin des for, je prendrai deux fois plus de temps.
+
+    new_time = time.time()
+    f()
+    new_time = time.time() - new_time

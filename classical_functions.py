@@ -243,3 +243,8 @@ def up(my_dict, new_dict):
         if key not in my_dict:
             my_dict[key] = new_dict[key]
     return
+
+
+def mean_list(my_list):
+    # the default behaviour if list is empty, it returns 0.
+    return float(sum(my_list)) / max(len(my_list), 1)
