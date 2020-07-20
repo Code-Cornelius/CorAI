@@ -92,9 +92,12 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
             end_time = time.perf_counter()
             run_time = end_time - start_time
             list_deco_estimation_times.append(run_time)
-            print(list_deco_estimation_times)
             total_run_time = classical_functions.mean_list(list_deco_estimation_times)* (total_nb_tries - actual_state[0]) * multiplicator_factor
-            print(f"estimated time left to finish the task: {total_run_time}")
+            s, m, h, _ = classical_functions.time_convertisor(total_run_time, format=2) # the _ is second frac.
+            ts, tm, th = classical_functions.time_text(s, m, h, 0)
+            print("/"*78)
+            print(f"estimated time left before completion: {''.join([th,tm,ts])}")
+            print("/"*78)
             # TODO 20/07/2020 nie_k: perhaps print iff the actual state is in a certain position
             return value
 
@@ -107,28 +110,28 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
 
 
 # test
-import numpy as np
-
-N1 = 10
-N2 = 10
-total_nb_tries = N1 * N2
-actual_state = [0]
-
-
-
-
-
-
-@prediction_total_time(total_nb_tries = total_nb_tries,
-                       multiplicator_factor = 1,
-                       actual_state = actual_state)
-def f():
-    A = np.full((10000,1000),10)
-    np.exp(A)
-
-
-
-for j in range(N1):
-    for i in range(N2):
-        actual_state[0] += 1
-        f()
+# import numpy as np
+#
+# N1 = 10
+# N2 = 10
+# total_nb_tries = N1 * N2
+# actual_state = [0]
+#
+#
+#
+#
+#
+#
+# @prediction_total_time(total_nb_tries = total_nb_tries,
+#                        multiplicator_factor = 1,
+#                        actual_state = actual_state)
+# def f():
+#     A = np.full((10000,1000),10)
+#     np.exp(A)
+#
+#
+#
+# for j in range(N1):
+#     for i in range(N2):
+#         actual_state[0] += 1
+#         f()

@@ -51,39 +51,64 @@ def complex_quadrature(func, a, b, *args, **kwargs):
             imag_integral[1:])
 
 
-# useful function that I put at the end of certain functions to know how long they runned.
-# Print the time in a human format.
-def time_computational(A, B, title="no title"):
-    seconds = B - A
-    seconds = round(seconds)
-    m, s = divmod(seconds, 60)
-    h, m = divmod(m, 60)
-    beg = " Program : " + title + ", took roughly :"
+def time_convertisor(seconds, format=0):
+    '''instead of converting the seconds in minuts outside, one can do it here.
+
+    Args:
+        seconds: runtime
+        format:  0 is in seconds (no change), 1 is in min, 2 is in hour.
+
+    Returns:
+        converted time.
+
+    '''
+    seconds_int = round(seconds)
+    seconds_frac = seconds - seconds_int
+    if format == 0:
+        return seconds_int,seconds_frac
+    else:
+        m, s = divmod(seconds_int, 60)
+        if format == 1:
+            return s,m,seconds_frac
+        else :
+            h, m = divmod(m, 60)
+            return s, m, h,seconds_frac
+
+def time_text(s, m,h, seconds_frac = 0):
     if s == 0:
         ts = ""
-    if s == 1:
-        ts = f"{s:d} second "
-    if s != 1 and s != 0:
+    elif s == 1:
+        ts = f"{s + seconds_frac:d} second "
+    else:
         ts = f"{s:d} seconds "
 
     if m == 0:
         tm = ""
-    if m == 1:
+    elif m == 1:
         tm = f"{m:d} minut "
-    if m != 1 and m != 0:
+    else:
         tm = f"{m:d} minuts "
 
     if h == 0:
         th = ""
-    if h == 1:
+    elif h == 1:
         th = f"{h:d} hour "
-    if h != 1 and h != 0:
+    else:
         th = f"{h:d} hours "
 
     if h == s and s == m and m == 0:
-        ts = " 0.1 second "
+        ts = " {} second ".format(seconds_frac)
+    return ts,tm,th
+
+# useful function that I put at the end of certain functions to know how long they runned.
+# Print the time in a human format.
+def time_computational(A, B, title="no title"):
+    seconds = B - A
+    beg = " Program : " + title + ", took roughly :"
     print(100 * '~')
-    print(beg + th + tm + ts + 'to run.')
+    s,m, h, seconds_frac = time_convertisor(seconds, format = 2)
+    ts,tm,th = time_text(s,m,h,seconds_frac)
+    print(''.join([beg,th,tm,ts,'to run.']) )
     return
 
 
