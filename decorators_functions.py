@@ -77,7 +77,8 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
     Args:
         total_nb_tries: total number of iteration, this is the complexity of the algo.
         multiplicator_factor: how the complexity of the function evolves throughout the loop.
-        actual_state: how much to reduce the time incrementally.
+        actual_state: how much to reduce the time incrementally. I don't know how to do properly. I need an object that changes inside the function but from outside.
+        for that reason I use the property of mutable object. ACTUAL_STATE IS A LIST!
 
     Returns:
 
@@ -94,6 +95,7 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
             print(list_deco_estimation_times)
             total_run_time = classical_functions.mean_list(list_deco_estimation_times)* (total_nb_tries - actual_state[0]) * multiplicator_factor
             print(f"estimated time left to finish the task: {total_run_time}")
+            # TODO 20/07/2020 nie_k: perhaps print iff the actual state is in a certain position
             return value
 
         return wrapper_estimation_timer
