@@ -2,6 +2,8 @@ import functools
 import time
 from inspect import signature  # know signature of a function
 
+import classical_functions
+
 
 def Memoization(key_names):
     class MemoizationClass:
@@ -40,7 +42,7 @@ def timer(func):
 
     @functools.wraps(func)
     def wrapper_timer(*args, **kwargs):
-        start_time = time.perf_counter()  # 1
+        start_time = time.perf_counter()  # time.perf_counter() the most precise available clock.
         value = func(*args, **kwargs)
         end_time = time.perf_counter()  # 2
         run_time = end_time - start_time  # 3
@@ -51,13 +53,13 @@ def timer(func):
 
 
 def set_new_methods(**kwargs):
-    ''' set new methods to a class, any number.
+    ''' set a set of new methods to a class, any quantity of methods.
 
     Args:
         **kwargs: name of method given by key, body by value.
 
     Returns:
-
+        It returns the new class
     '''
 
     def wrapper(cls):
@@ -68,43 +70,63 @@ def set_new_methods(**kwargs):
     return wrapper
 
 
-def set_new_class_methods(**kwargs):
-    ''' set new methods to a class, any number.
+
+def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
+    '''
 
     Args:
-        **kwargs: name of method given by key, body by value.
+        total_nb_tries: total number of iteration, this is the complexity of the algo.
+        multiplicator_factor: how the complexity of the function evolves throughout the loop.
+        actual_state: how much to reduce the time incrementally.
 
     Returns:
 
     '''
+    def decorator_prediction_total_time(func):
+        list_deco_estimation_times = []
+        @functools.wraps(func)
+        def wrapper_estimation_timer(*args, **kwargs):
+            start_time = time.perf_counter()  # time.perf_counter() the most precise available clock.
+            value = func(*args, **kwargs)
+            end_time = time.perf_counter()
+            run_time = end_time - start_time
+            list_deco_estimation_times.append(run_time)
+            print(list_deco_estimation_times)
+            total_run_time = classical_functions.mean_list(list_deco_estimation_times)* (total_nb_tries - actual_state[0]) * multiplicator_factor
+            print(f"estimated time left to finish the task: {total_run_time}")
+            return value
 
-    def wrapper(cls):
-        for key in kwargs:
-            setattr(cls, key, classmethod(kwargs[key]))
-        return cls
-
-    return wrapper
+        return wrapper_estimation_timer
+    return decorator_prediction_total_time
 
 
 
 
 
-def prediction_total_time():
-    return
 
+# test
 import numpy as np
 
+N1 = 10
+N2 = 10
+total_nb_tries = N1 * N2
+actual_state = [0]
+
+
+
+
+
+
+@prediction_total_time(total_nb_tries = total_nb_tries,
+                       multiplicator_factor = 1,
+                       actual_state = actual_state)
 def f():
-    A = np.full((1000,1000),10)
+    A = np.full((10000,1000),10)
     np.exp(A)
 
-for i in range(100):
-    # a chaque fois que j'appelle la fonction, estimer le temps totale (donc en fct du nombre d'itération total).
-    # besoin d'un multiplicateur de complexité. Si par exemple je fais n range.
-    # Et que j'ai calculé sur les m premiers un temps moyens de tau,
-    # si je garde la moyenne, ça va me prendre tau * (n-m) de temps.
-    # par contre avec une complexité de 2, je peux dire que entre le début et la fin des for, je prendrai deux fois plus de temps.
 
-    new_time = time.time()
-    f()
-    new_time = time.time() - new_time
+
+for j in range(N1):
+    for i in range(N2):
+        actual_state[0] += 1
+        f()
