@@ -85,6 +85,7 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
     '''
     def decorator_prediction_total_time(func):
         list_deco_estimation_times = []
+        beginning_time = time.perf_counter()
         @functools.wraps(func)
         def wrapper_estimation_timer(*args, **kwargs):
             start_time = time.perf_counter()  # time.perf_counter() the most precise available clock.
@@ -95,8 +96,15 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
             total_run_time = classical_functions.mean_list(list_deco_estimation_times)* (total_nb_tries - actual_state[0]) * multiplicator_factor
             s, m, h, _ = classical_functions.time_convertisor(total_run_time, format=2) # the _ is second frac.
             ts, tm, th = classical_functions.time_text(s, m, h, 0)
+            str1 = ''.join([th,tm,ts])
+
+            total_run_time = time.perf_counter() - beginning_time
+            s, m, h, _ = classical_functions.time_convertisor(total_run_time, format=2) # the _ is second frac.
+            ts, tm, th = classical_functions.time_text(s, m, h, 0)
+            str2 =  ''.join([th,tm,ts])
+
             print("/"*78)
-            print(f"estimated time left before completion: {''.join([th,tm,ts])}")
+            print(f"estimated time left before completion: {str1}. Total time: {str2}.")
             print("/"*78)
             # TODO 20/07/2020 nie_k: perhaps print iff the actual state is in a certain position
             return value
