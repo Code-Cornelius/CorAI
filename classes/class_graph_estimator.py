@@ -25,6 +25,7 @@ class Graph_Estimator:
 
     def generate_title(self, names, values, before_text = "", extra_text=None, extra_arguments=[]): # extra_argument is empty list that isn't used.
         title = before_text
+        # TODO 23/07/2020 nie_k:  do not use + since it is not optimized. Can be done better.
         for (name, value) in zip(names, values):
             title += ", " + name + " = " + str(value)
 
