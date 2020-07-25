@@ -126,7 +126,10 @@ def trapeze_int(t, y):
     ans = 0
     # corresponds to the case where the path is degenerated, only one point.
     if len(t) <= 1:
+        warnings.warn("Object of length 1.")
         return 0
+
+
     # corresponds to the case where the vector is constant.
     # Then in order to reduce the computation, I return the product of the length time with the constant.
     if (len(set(y)) <= 1):
