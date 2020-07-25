@@ -219,3 +219,8 @@ class Graph_Estimator:
         self.estimator.DF = hist_DF
         self.draw_histogram()
         self.estimator.DF = old_estimator_DF
+
+    # method for putting higher csv than on DF.
+    def to_csv(self, path, **kwargs):
+        self.DF.to_csv(path, **kwargs)
+        return
