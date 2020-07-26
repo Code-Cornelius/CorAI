@@ -148,7 +148,7 @@ class Graph_Estimator:
 
         global_dict, keys = self.estimator.groupby_DF(separators)
 
-        #interesting times:
+        #we get back the interesting values, the one that evolves through the chosen dimension:
         estimation = self.get_evolution_parameter(self.estimator.DF)
         for key in keys:
             data = global_dict.get_group(key)

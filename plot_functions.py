@@ -205,6 +205,34 @@ def hist(data, bins, title, labels, range=None, total_number_of_simulations=None
 ######################################### new plot functions
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class APlot(metaclass=register):
     # APlot is the class for my plots. APlot is one figure.
 
@@ -472,3 +500,16 @@ class APlot(metaclass=register):
         """
         plt.savefig(name_save_file + '.png', dpi=800)
         return
+
+
+#test register
+# import numpy as np
+# xx = np.linspace(0,1000,10000)
+# yy = xx*2
+# aplot = APlot(how = (1,1))
+# aplot.uni_plot(nb_ax = 0, xx = xx, yy = yy)
+# my_list = aplot.print_register()
+#
+# for i in my_list:
+#     i.plot_vertical_line(200, np.linspace(0,10000,100000), nb_ax=0 )
+# plt.show()
