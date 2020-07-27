@@ -271,13 +271,17 @@ class APlot(metaclass=register):
             # now, self.axs is always a list (uni dimensional).
             self.nb_of_axs = how[0] * how[1]  # nb of axes upon which I can plot
 
+
+            # for the axs_bis, I store the axs inside this guy:
+            self.axs_bis = [0] * self.nb_of_axs # a list full of zeros.
+
             # we set the default param of the fig:
             for i in range(self.nb_of_axs):
                 self.set_dict_fig(i, None)
 
     def check_axs(self, ax):
         if ax < 0:
-            raise IndexError("Index is negative.")
+            warnings.warn("Axs given is negative. Lists are cyclic.")
         if ax >= self.nb_of_axs:
             warnings.warn("Axs given is out of bounds. I plot upon the first axis.")
             ax = 0
@@ -345,7 +349,7 @@ class APlot(metaclass=register):
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
 
-    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param):
+    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis = False):
         """
         A helper function to make a graph
 
@@ -370,8 +374,13 @@ class APlot(metaclass=register):
         """
         classical_functions.up(dict_plot_param, APlot.default_dict_plot_param)
         nb_ax = self.check_axs(nb_ax)
-        self.axs[nb_ax].grid(True)
-        out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
+        if not bis: #bis is plot on second axis.
+            out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
+            #self.axs[nb_ax].grid(True)
+        else :
+            out = self.axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
+            self.axs[nb_ax].grid(None)
+            self.axs_bis[nb_ax].grid(None)
         return out
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None):
@@ -384,6 +393,21 @@ class APlot(metaclass=register):
             self.set_dict_fig(nb_ax, dict_fig, xx, yy)
 
         return
+
+
+
+    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None):
+        """ for now I add the ax bis to self.axs at the end. Access through -1.
+        """
+        if not self.axs_bis[nb_ax] : # self.axs_bis[nb_ax] == 0
+            self.axs_bis[nb_ax] = self.axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
+        self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis = True)
+        self.fig.tight_layout()
+        if dict_fig is not None:
+            self.set_dict_fig(nb_ax, dict_fig, xx, yy)
+        return
+
+
 
     def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2,
                 dict_plot_param_1=default_dict_plot_param,
