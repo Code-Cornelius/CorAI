@@ -1,3 +1,4 @@
+import pandas as pd
 
 class Estimator:
     # DF is a dataframe from pandas. Storing information inside is quite easy, easily printable and easy to collect back.
@@ -7,6 +8,12 @@ class Estimator:
 
     def __repr__(self):
         return repr(self.DF)
+
+    @classmethod
+    def from_path(cls, path):
+        # path has to be raw. with \\
+        return cls(pd.read_csv(path))
+
 
     def append(self, new_df):
         '''

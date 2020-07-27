@@ -20,8 +20,9 @@ class Graph_Estimator:
     def from_path(cls, path):
         # path has to be raw. with \\
         estimator = Estimator(pd.read_csv(path))
-        # get the max value which is M-1
-        return cls(estimator)
+        return cls(estimator, None)
+
+
 
     def generate_title(self, names, values, before_text = "", extra_text=None, extra_arguments=[]): # extra_argument is empty list that isn't used.
         title = before_text
