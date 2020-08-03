@@ -196,6 +196,7 @@ def my_list_argmin(list):
     return list.index(min(list))
 
 #when applied to an empty array, returns 0, which is the behaviour one would expect.
+# this functions is for np.arrays
 def find_smallest_rank_leq_to_K(list, K, sorted=True):
     if np.isscalar(list):
         raise Exception("Object is not a list.")

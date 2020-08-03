@@ -174,7 +174,7 @@ class Graph_Estimator:
                     coloured_data = coloured_dict.get_group(coloured_key)
                     coloured_data = self.get_evolution_plot_data(coloured_data)
                     plot.uni_plot(0, estimation, coloured_data,
-                                  dict_plot_param={"color": c, "linestyle": "solid", "linewidth": 0.8, "label": coloured_key})
+                                  dict_plot_param={"color": c, "linestyle": "solid", "linewidth": 1.1, "label": coloured_key})
             else:
                 data = self.get_evolution_plot_data(data)
                 plot.uni_plot(0, estimation, data)

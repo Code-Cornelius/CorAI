@@ -102,10 +102,8 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
             s, m, h, _ = classical_functions.time_convertisor(total_run_time, format=2) # the _ is second frac.
             ts, tm, th = classical_functions.time_text(s, m, h, 0)
             str2 =  ''.join([th,tm,ts])
-
-            print("/"*78)
-            print(f"estimated time left before completion: {str1}. Total time: {str2}.")
-            print("/"*78)
+            
+            print(''.join(["/"*15, f"estimated time left before completion: {str1}. Total time: {str2}.", "/"*15 ]))
             # TODO 20/07/2020 nie_k: perhaps print iff the actual state is in a certain position
             return value
 
