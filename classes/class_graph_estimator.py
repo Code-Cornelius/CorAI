@@ -51,13 +51,13 @@ class Graph_Estimator:
     def get_dict_fig_hist(self, separators, key):
         pass
 
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def get_evolution_parameter(data):
         pass
 
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def get_evolution_extremes(data):
         pass
 
