@@ -277,3 +277,22 @@ def up(my_dict, new_dict):
 def mean_list(my_list):
     # the default behaviour if list is empty, it returns 0.
     return float(sum(my_list)) / max(len(my_list), 1)
+
+import itertools
+
+
+def roundrobin(*iterables):
+    "roundrobin('ABC', 'D', 'EF') --> A D E B F C"
+    # [k for k in roundrobin(list, list_dash)]
+    # Recipe credited to George Sakkis
+    pending = len(iterables)
+    nexts = itertools.cycle(iter(it).__next__ for it in iterables)
+    while pending:
+        try:
+            for next in nexts:
+                yield next()
+        except StopIteration:
+            pending -= 1
+            nexts = itertools.cycle(itertools.islice(nexts, pending))
+
+roundrobin()
