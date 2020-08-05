@@ -26,12 +26,17 @@ class Graph_Estimator:
 
     def generate_title(self, names, values, before_text = "", extra_text=None, extra_arguments=[]): # extra_argument is empty list that isn't used.
         title = before_text
+        #when a before text is given  I add to it a going to the line. Otherwise no need to jump.
+        if title != "":
+            title = ''.join([title, '\n'])
         # TODO 23/07/2020 nie_k:  do not use + since it is not optimized. Can be done better.
-        for (name, value) in zip(names, values):
-            title += ", " + name + " = " + str(value)
-
+        list_param = [str for str in classical_functions.roundrobin(names, [" : "]*len(values), values, [", "]*(len(values)-1)  ) ]
+        str_param = ''.join([str(elem) for elem in list_param])
         if extra_text is not None:
-            title += "\n" + extra_text.format(*extra_arguments)
+            # title = ''.join([title, ', ', names, ' : ', values, "\n", extra_text.format(*extra_arguments)] )
+            title = ''.join([title, str_param, "\n", extra_text.format(*extra_arguments), '.'])
+        else:
+            title = ''.join([title, '\n', str_param, '.'])
         return title
 
     @abstractmethod
@@ -47,11 +52,13 @@ class Graph_Estimator:
         pass
 
     @abstractmethod
-    def get_evolution_parameter(self, data):
+    @staticmethod
+    def get_evolution_parameter(data):
         pass
 
     @abstractmethod
-    def get_evolution_extremes(self, data):
+    @staticmethod
+    def get_evolution_extremes(data):
         pass
 
     @abstractmethod
@@ -76,7 +83,8 @@ class Graph_Estimator:
 
 
     @abstractmethod
-    def get_computation_plot_fig_dict(self):
+    def get_computation_plot_fig_dict(self, convergence_in):
+        # convergence_in is simply a check parameter. Perhaps we will erase it, but it is actually usefull in graph estimator hawkes.
         pass
 
     @abstractmethod
@@ -150,6 +158,8 @@ class Graph_Estimator:
         global_dict, keys = self.estimator.groupby_DF(separators)
 
         #we get back the interesting values, the one that evolves through the chosen dimension:
+
+        #todo change that getter bc not using self.
         estimation = self.get_evolution_parameter(self.estimator.DF)
         for key in keys:
             data = global_dict.get_group(key)
@@ -196,7 +206,7 @@ class Graph_Estimator:
             data = global_dict.get_group(key)
             estimator = Estimator(data.copy())
 
-            self.test_true_value(data)
+            self.test_true_value(data) # test if there is only one true value i  the given sliced data. It could lead to potential big errors.
             estimator.function_upon_separated_data("value", computation_function, "computation",
                                                    true_parameter=estimator.DF["true value"].mean())
 
@@ -206,10 +216,11 @@ class Graph_Estimator:
         comp_sum = self.rescale_sum(comp_sum, times).values
 
         plot = APlot()
-        plot.uni_plot(0, TIMES_plot, comp_sum)
-        fig_dict = self.get_computation_plot_fig_dict()
+        plot.uni_plot(0, TIMES_plot, comp_sum, dict_plot_param= {"linewidth" : 2})
+        fig_dict = self.get_computation_plot_fig_dict(convergence_in = "MSE")
         plot.set_dict_fig(0, fig_dict)
-        plot.save_plot(name_save_file='MSE_comput')
+        plot.save_plot(name_save_file=''.join([computation_function.__name__,'_comput']) )
+
         #I create a histogram:
         # first, find the DF with only the last estimation, which should always be the max value of column_evolution.
         max_value_evol = self.estimator.DF[name_column_evolution].max()
