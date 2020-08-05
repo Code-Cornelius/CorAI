@@ -14,7 +14,7 @@ import math  # quick math functions
 import cmath  # complex functions
 
 # my libraries
-import errors.error_convergence as error
+import errors.Error_convergence as error
 
 
 # other files
