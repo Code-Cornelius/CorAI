@@ -226,7 +226,7 @@ class Graph_Estimator:
         max_value_evol = self.estimator.DF[name_column_evolution].max()
         hist_DF = self.estimator.DF[ self.estimator.DF[name_column_evolution] == max_value_evol].copy()
 
-        #BIANCA-HERE this is not good!!
+        #BIANCA-HERE this is not good!
         old_estimator_DF = self.estimator.DF
         self.estimator.DF = hist_DF
         self.draw_histogram()

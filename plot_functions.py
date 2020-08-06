@@ -354,13 +354,16 @@ class APlot(metaclass=register):
 
         return
 
-    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None):
+    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None, tight = True):
         """ for now I add the ax bis to self.axs at the end. Access through -1.
         """
         if not self.axs_bis[nb_ax]:  # self.axs_bis[nb_ax] == 0
             self.axs_bis[nb_ax] = self.axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis=True)
-        self.fig.tight_layout()
+
+        if tight:
+            self.fig.tight_layout()
+
         if dict_fig is not None:
             self.set_dict_fig(nb_ax, dict_fig, xx, yy)
         return
