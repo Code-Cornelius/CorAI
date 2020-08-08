@@ -232,7 +232,7 @@ class APlot(metaclass=register):
 
 
             # for the axs_bis, I store the axs inside this guy:
-            self.axs_bis = [0] * self.nb_of_axs # a list full of zeros.
+            self.axs_bis = [None] * self.nb_of_axs # a list full of zeros.
 
             # we set the default param of the fig:
             for i in range(self.nb_of_axs):
@@ -335,11 +335,11 @@ class APlot(metaclass=register):
         nb_ax = self.check_axs(nb_ax)
         if not bis:  # bis is plot on second axis.
             out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
-            # self.axs[nb_ax].grid(True)
+            self.axs[nb_ax].grid(True)
         else:
             out = self.axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
-            self.axs[nb_ax].grid(None)
-            self.axs_bis[nb_ax].grid(None)
+            self.axs[nb_ax].grid(False)
+            self.axs_bis[nb_ax].grid(False)
         return out
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None, tight=True):
@@ -357,7 +357,9 @@ class APlot(metaclass=register):
     def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None, tight = True):
         """ for now I add the ax bis to self.axs at the end. Access through -1.
         """
-        if not self.axs_bis[nb_ax]:  # self.axs_bis[nb_ax] == 0
+
+        #
+        if self.axs_bis[nb_ax] is None:  # axis not created yet.
             self.axs_bis[nb_ax] = self.axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis=True)
 
