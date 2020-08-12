@@ -85,9 +85,9 @@ def time_text(s, m,h, seconds_frac = 0):
     if m == 0:
         tm = ""
     elif m == 1:
-        tm = f"{m:d} minut "
+        tm = f"{m:d} minute "
     else:
-        tm = f"{m:d} minuts "
+        tm = f"{m:d} minutes "
 
     if h == 0:
         th = ""
