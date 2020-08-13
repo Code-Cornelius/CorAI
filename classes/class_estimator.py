@@ -52,6 +52,7 @@ class Estimator:
         else :
             return self.DF[name].var(ddof=ddof)
 
+    # method that level up the method to csv of dataframes.
     def to_csv(self, path, **kwargs):
         self.DF.to_csv(path, **kwargs)
         return

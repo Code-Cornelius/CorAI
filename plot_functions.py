@@ -342,7 +342,7 @@ class APlot(metaclass=register):
             self.axs_bis[nb_ax].grid(False)
         return out
 
-    def uni_plot(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None, tight=True):
+    def uni_plot(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight=True):
         """
         Method to have 1 plot. Upon nb_ax (int)
         """
@@ -354,7 +354,7 @@ class APlot(metaclass=register):
 
         return
 
-    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param, dict_fig=None, tight = True):
+    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight = True):
         """ for now I add the ax bis to self.axs at the end. Access through -1.
         """
 
@@ -371,21 +371,21 @@ class APlot(metaclass=register):
         return
 
     def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2,
-                dict_plot_param_1=default_dict_plot_param,
-                dict_plot_param_2=default_dict_plot_param,
+                dict_plot_param_1=default_dict_plot_param.copy(),
+                dict_plot_param_2=default_dict_plot_param.copy(),
                 dict_fig_1=None,
                 dict_fig_2=None):
         self.uni_plot(nb_ax1, xx1, yy1, dict_plot_param=dict_plot_param_1, dict_fig=dict_fig_1)
         self.uni_plot(nb_ax2, xx2, yy2, dict_plot_param=dict_plot_param_2, dict_fig=dict_fig_2)
         return
 
-    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=default_dict_plot_param):
+    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
         # ax is an int, not necessary for uni dim case.
         yy = [function(x) for x in xx]
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         return
 
-    def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=default_dict_plot_param):
+    def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
         """
         Plot a line on the chosen ax.
 
@@ -402,7 +402,7 @@ class APlot(metaclass=register):
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
-    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=default_dict_plot_param):
+    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
         return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param)
 
     def cumulative_plot(self, xx, yy, nb_ax=0):
@@ -431,14 +431,17 @@ class APlot(metaclass=register):
                                'label': "Histogram", "cumulative": True}
 
     def hist(self, data, nb_of_ax=0,
-             dict_param_hist=default_dict_param_hist,
+             dict_param_hist=default_dict_param_hist.copy(), # I need to copy because I am updating it. In particular I pop the cumulative.
              dict_fig=None):
+
         # function for plotting histograms
         if dict_fig is not None:
             self.set_dict_fig(nb_of_ax, dict_fig)
+        self.axs[nb_of_ax].set_xlabel("Realisation")
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
         classical_functions.up(dict_param_hist, APlot.default_dict_param_hist)
+
         try:
             # if doesn't pop, it will be catch by except.
             if dict_param_hist.pop("cumulative"):
