@@ -403,7 +403,7 @@ class APlot(metaclass=register):
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
     def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
-        return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param)
+        return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param, tight = False)
 
     def cumulative_plot(self, xx, yy, nb_ax=0):
         """
