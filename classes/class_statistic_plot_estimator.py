@@ -21,6 +21,7 @@ from plot_functions import APlot
 import recurrent_functions
 from classes.class_estimator import Estimator
 from classes.class_graph_estimator import Graph_Estimator
+from classes import class_histogram_estimator
 
 np.random.seed(124)
 
@@ -29,12 +30,11 @@ import errors.Error_convergence
 import errors.Warning_deprecated
 import errors.Error_forbidden
 
-# other files
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-class FunctionPlot_estimator(Graph_Estimator):
+class Statistic_plot_estimator(Graph_Estimator):
     def __init__(self, estimator, separators=None):
         super().__init__(estimator = estimator, separators = separators)
 
@@ -90,16 +90,6 @@ class FunctionPlot_estimator(Graph_Estimator):
         max_value_evol = self.estimator.DF[name_column_evolution].max()
         hist_DF = self.estimator.DF[ self.estimator.DF[name_column_evolution] == max_value_evol].copy() #copy() for independance
 
-        #BIANCA-HERE this is not good!
-        old_estimator_DF = self.estimator.DF
-        self.estimator.DF = hist_DF
-
-        Histogram_estimator(hist_DF, )
-
-        class Histogram_estimator(Graph_Estimator):
-            def __init__(self, estimator, separators=None):
-                super().__init__(estimator=estimator, separators=separators)
-
-
-        self.draw_histogram()
-        self.estimator.DF = old_estimator_DF
+        my_hist = class_histogram_estimator.Histogram_estimator(hist_DF, separators= separators)
+        my_hist.draw_histogram()
+        return

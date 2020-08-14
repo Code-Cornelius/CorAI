@@ -40,15 +40,7 @@ class Graph_Estimator(Root_Graph):
             title = ''.join([title, '\n', str_param, '.'])
         return title
 
-    @staticmethod
-    @abstractmethod
-    def get_evolution_parameter(data):
-        pass
 
-    @staticmethod
-    @abstractmethod
-    def get_evolution_extremes(data):
-        pass
 
     def test_true_value(self, data):
         '''

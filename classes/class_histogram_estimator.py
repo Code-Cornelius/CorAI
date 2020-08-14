@@ -63,5 +63,5 @@ class Histogram_estimator(Graph_Estimator):
             param_dict = self.get_dict_plot_param_for_hist(key, mean)
             fig_dict = self.get_dict_fig_hist(separators, key)
             plot.hist(data=data, dict_param_hist=param_dict, dict_fig=fig_dict)
-            name_file =  classical_functions.tuple_to_str(key) + 'histogram'
+            name_file =  ''.join([classical_functions.tuple_to_str(key), 'histogram'])
             plot.save_plot(name_save_file=name_file)

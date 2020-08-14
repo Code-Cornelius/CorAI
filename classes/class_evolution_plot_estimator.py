@@ -37,6 +37,20 @@ class Evolution_plot_estimator(Graph_Estimator):
     def __init__(self, estimator, separators=None):
         super().__init__(estimator = estimator, separators = separators)
 
+    # TODO 14/08/2020 nie_k:  abstract evolution_name parameter
+
+
+    @classmethod
+    @abstractmethod
+    def get_evolution_parameter(cls, data):
+        pass
+
+    @classmethod
+    @abstractmethod
+    def get_evolution_extremes(cls, data):
+        pass
+
+
     @abstractmethod
     def get_evolution_true_value(self, data):
         pass
@@ -120,5 +134,5 @@ class Evolution_plot_estimator(Graph_Estimator):
             fig_dict = self.get_dict_fig_evolution_parameter_over_time(separators, key)
             plot.set_dict_fig(0, fig_dict)
             plot.show_legend()
-            name_file = classical_functions.tuple_to_str(key) + 'evol_estimation'
+            name_file = ''.join([classical_functions.tuple_to_str(key),'evol_estimation'])
             plot.save_plot(name_save_file=name_file)
