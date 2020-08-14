@@ -104,7 +104,6 @@ class Evolution_plot_estimator(Graph_Estimator):
             plot.uni_plot(0, estimation, true_values,
                           dict_plot_param={"color": 'r', "linestyle": "solid", "linewidth": 0.4,
                                            "label": "true value", 'marker': ''})
-
             # crazy stuff
             if separator_colour is not None:
                 estimator = Estimator(data)
@@ -125,3 +124,9 @@ class Evolution_plot_estimator(Graph_Estimator):
             plot.show_legend()
             name_file = ''.join([classical_functions.tuple_to_str(key),'evol_estimation'])
             plot.save_plot(name_save_file=name_file)
+
+        # either coloured keys have been defined or not. I retrieve them in order to know what color to put upon which kernel.
+        if separator_colour is not None:
+            return plot, coloured_keys
+        else :
+            return plot, None
