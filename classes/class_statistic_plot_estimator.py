@@ -59,7 +59,7 @@ class Statistic_plot_estimator(Graph_Estimator):
         '''
         pass
 
-    def convergence_estimators_limit(self, mini_T, times, name_column_evolution, computation_function, separators=None):
+    def convergence_estimators_limit(self, mini_T, times, name_column_evolution, computation_function, class_for_hist, *args, separators=None, **kwargs):
         if separators is None:
             separators = self.separators
 
@@ -88,8 +88,11 @@ class Statistic_plot_estimator(Graph_Estimator):
         #I create a histogram:
         # first, find the DF with only the last estimation, which should always be the max value of column_evolution.
         max_value_evol = self.estimator.DF[name_column_evolution].max()
-        hist_DF = self.estimator.DF[ self.estimator.DF[name_column_evolution] == max_value_evol].copy() #copy() for independance
 
-        my_hist = class_histogram_estimator.Histogram_estimator(hist_DF, separators= separators)
+        #BIANCA class for estimator...
+        hist_DF = self.estimator.__class__( self.estimator.DF[ self.estimator.DF[name_column_evolution] == max_value_evol].copy() )#copy() for independance
+
+        # BIANCA how to get the class histogram Hawkes here?
+        my_hist = class_for_hist(hist_DF, *args, **kwargs)
         my_hist.draw_histogram()
         return
