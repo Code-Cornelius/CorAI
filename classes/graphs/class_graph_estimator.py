@@ -72,9 +72,9 @@ class Graph_Estimator(Root_Graph):
 
 
     @property
-    def separator(self):
+    def separators(self):
         return self._separators
 
-    @separator.setter
-    def separator(self, new_separator):
+    @separators.setter
+    def separators(self, new_separator):
         self._separators = new_separator
