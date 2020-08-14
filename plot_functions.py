@@ -3,6 +3,7 @@ import numpy as np  # maths library and arrays
 import statistics as stat
 import pandas as pd  # dataframes
 import seaborn as sns  # envrionement for plots
+from errors.Error_forbidden import Error_forbidden
 from matplotlib import pyplot as plt  # ploting
 import scipy.stats  # functions of statistics
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
@@ -16,6 +17,8 @@ sns.set()
 # my libraries
 import classical_functions
 from metaclass_register import *
+
+#errors:
 from errors.Error_convergence import *
 from errors.Warning_deprecated import deprecated_function
 
@@ -331,16 +334,19 @@ class APlot(metaclass=register):
         out : list
             list of artists added
         """
-        classical_functions.up(dict_plot_param, APlot.default_dict_plot_param)
-        nb_ax = self.check_axs(nb_ax)
-        if not bis:  # bis is plot on second axis.
-            out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
-            self.axs[nb_ax].grid(True)
+        if len(xx) == len(yy):
+            classical_functions.up(dict_plot_param, APlot.default_dict_plot_param)
+            nb_ax = self.check_axs(nb_ax)
+            if not bis:  # bis is plot on second axis.
+                out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
+                self.axs[nb_ax].grid(True)
+            else:
+                out = self.axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
+                self.axs[nb_ax].grid(False)
+                self.axs_bis[nb_ax].grid(False)
+            return out
         else:
-            out = self.axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
-            self.axs[nb_ax].grid(False)
-            self.axs_bis[nb_ax].grid(False)
-        return out
+            Error_forbidden("Inputs plot not of matching size.")
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight=True):
         """
@@ -351,6 +357,7 @@ class APlot(metaclass=register):
             self.fig.tight_layout()
         if dict_fig is not None:
             self.set_dict_fig(nb_ax, dict_fig, xx, yy)
+
 
         return
 
