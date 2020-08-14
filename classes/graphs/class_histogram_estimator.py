@@ -32,15 +32,15 @@ class Histogram_estimator(Graph_Estimator):
     #  #############################################################################
     # plot
 
-    def get_range_histogram(self, key, mean):
+    def get_range(self, key, mean):
         return None
 
     @abstractmethod
-    def get_dict_plot_param_for_hist(self, key, mean):
+    def get_dict_param(self, key, mean):
         pass
 
     @abstractmethod
-    def get_dict_fig_hist(self, separators, key):
+    def get_dict_fig(self, separators, key):
         pass
 
     def draw(self, separators=None):
@@ -51,8 +51,8 @@ class Histogram_estimator(Graph_Estimator):
             mean = data.mean()
             data = data.values
             plot = APlot()
-            param_dict = self.get_dict_plot_param_for_hist(key, mean)
-            fig_dict = self.get_dict_fig_hist(separators, key)
+            param_dict = self.get_dict_param(key, mean)
+            fig_dict = self.get_dict_fig(separators, key)
             plot.hist(data=data, dict_param_hist=param_dict, dict_fig=fig_dict)
             name_file =  ''.join([classical_functions.tuple_to_str(key), 'histogram'])
             plot.save_plot(name_save_file=name_file)
