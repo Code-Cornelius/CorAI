@@ -14,14 +14,26 @@ np.random.seed(124)
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Histogram_estimator(Graph_Estimator):
+    # abstract nb_of_bins parameter
+    @property
+    @abstractmethod
+    def nb_of_bins(self):
+        pass
+
+
     def __init__(self, estimator, separators=None):
         super().__init__(estimator = estimator, separators = separators)
 
-    #todo not abstract but gives back None or whatsoever default.
-    # I can't not redefine it if it s not abstract, but I want to be able to not write it down if there is no optimal range.
-    @abstractmethod
-    def get_optimal_range_histogram(self, key, mean):
-        pass
+    # section ######################################################################
+    #  #############################################################################
+    # data
+
+    # section ######################################################################
+    #  #############################################################################
+    # plot
+
+    def get_range_histogram(self, key, mean):
+        return None
 
     @abstractmethod
     def get_dict_plot_param_for_hist(self, key, mean):

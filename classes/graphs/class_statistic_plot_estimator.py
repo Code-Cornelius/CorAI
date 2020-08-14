@@ -19,18 +19,29 @@ class Statistic_plot_estimator(Graph_Estimator):
     def __init__(self, estimator, separators=None):
         super().__init__(estimator = estimator, separators = separators)
 
-    @abstractmethod
-    def get_computation_plot_fig_dict(self, convergence_in):
-        # convergence_in is simply a check parameter. Perhaps we will erase it, but it is actually usefull in graph estimator hawkes.
-        pass
+
+    # section ######################################################################
+    #  #############################################################################
+    # data
 
     @abstractmethod
     def rescale_time_plot(self, rescale_factor, times):
+        '''
+        In order to plot not wrt time but wrt to a rescale factor.
+
+        Args:
+            rescale_factor:
+            times:
+
+        Returns:
+
+        '''
         pass
 
     @abstractmethod
     def rescale_sum(self, sum, times):
         """Rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes. Abstract method allows me to use specific scaling factor.
+        I use it in order to normalize the sums.
 
         Args:
             sum:
@@ -41,7 +52,18 @@ class Statistic_plot_estimator(Graph_Estimator):
         """
         pass
 
-    def convergence_estimators_limit(self, mini_T, times, name_column_evolution, computation_function, class_for_hist, *args, separators=None, **kwargs):
+    # section ######################################################################
+    #  #############################################################################
+    # plot
+
+    @abstractmethod
+    def get_dict_fig(self, convergence_in):
+        # convergence_in is simply a check parameter. It discriminates the dict_fig.
+        pass
+
+
+
+    def draw(self, mini_T, times, name_column_evolution, computation_function, class_for_hist, *args, separators=None, **kwargs):
         if separators is None:
             separators = self.separators
 
@@ -63,7 +85,7 @@ class Statistic_plot_estimator(Graph_Estimator):
 
         plot = APlot()
         plot.uni_plot(0, TIMES_plot, comp_sum, dict_plot_param= {"linewidth" : 2})
-        fig_dict = self.get_computation_plot_fig_dict(convergence_in = "MSE")
+        fig_dict = self.get_dict_fig(convergence_in ="MSE")
         plot.set_dict_fig(0, fig_dict)
         plot.save_plot(name_save_file=''.join([computation_function.__name__,'_comput']) )
 
