@@ -1,34 +1,15 @@
 # normal libraries
 from abc import abstractmethod
 import numpy as np  #maths library and arrays
-import statistics as stat
-import pandas as pd  #dataframes
-import seaborn as sns  #envrionement for plots
-from matplotlib import pyplot as plt  #ploting 
-import scipy.stats  #functions of statistics
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  #allows to time event
-import warnings
-import math  #quick math functions
-import cmath  #complex functions
 
 # my libraries
-import classical_functions
-import decorators_functions
-import financial_functions
-import functions_networkx
 from plot_functions import APlot
-import recurrent_functions
 from classes.class_estimator import Estimator
-from classes.class_graph_estimator import Graph_Estimator
-from classes import class_histogram_estimator
+from classes.graphs.class_graph_estimator import Graph_Estimator
 
 np.random.seed(124)
 
 # errors:
-import errors.Error_convergence
-import errors.Warning_deprecated
-import errors.Error_forbidden
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,14 +30,15 @@ class Statistic_plot_estimator(Graph_Estimator):
 
     @abstractmethod
     def rescale_sum(self, sum, times):
-        '''
-        rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes.
-        Abstract method allows me to use specific scaling factor.
+        """Rescale the data, for instance the MSE. The method is useful bc I can rescale with attributes. Abstract method allows me to use specific scaling factor.
 
-        :param sum:
-        :param times:
-        :return:
-        '''
+        Args:
+            sum:
+            times:
+
+        Returns:
+
+        """
         pass
 
     def convergence_estimators_limit(self, mini_T, times, name_column_evolution, computation_function, class_for_hist, *args, separators=None, **kwargs):
@@ -90,7 +72,7 @@ class Statistic_plot_estimator(Graph_Estimator):
         max_value_evol = self.estimator.DF[name_column_evolution].max()
 
         #BIANCA class for estimator...
-        hist_DF = self.estimator.__class__( self.estimator.DF[ self.estimator.DF[name_column_evolution] == max_value_evol].copy() )#copy() for independance
+        hist_DF = self.estimator.__class__(self.estimator.DF[self.estimator.DF[name_column_evolution] == max_value_evol].copy())#copy() for independance
 
         # BIANCA how to get the class histogram Hawkes here?
         my_hist = class_for_hist(hist_DF, *args, **kwargs)

@@ -1,13 +1,15 @@
 import pandas as pd
+from errors.Error_type_setter import Error_type_setter
+
 
 class Estimator:
     # DF is a dataframe from pandas. Storing information inside is quite easy, easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator
     def __init__(self, DF):
-        self.DF = DF
+        self._DF = DF
 
     def __repr__(self):
-        return repr(self.DF)
+        return repr(self._DF)
 
     @classmethod
     def from_path(cls, path):
@@ -25,7 +27,7 @@ class Estimator:
         Returns:
 
         '''
-        self.DF = (self.DF).append(new_df)
+        self._DF = (self._DF).append(new_df)
 
     def function_upon_separated_data(self, separator, fct, name, **kwargs):
         # separator is a string
@@ -33,28 +35,28 @@ class Estimator:
         # name is the name of a column where the data will lie.
         # one value is one parameter... is it enough parameter ?
         # the function does create a new column in the DF, by looking at the data in the separator and applying the function to it.
-        self.DF[name] = self.DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
+        self._DF[name] = self._DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
         return
 
     def mean(self, name, separators = None):
         ## name is the name of a column where the data lies.
         if separators is not None:
-            return self.DF.groupby(separators)[name].mean()
+            return self._DF.groupby(separators)[name].mean()
         else :
-            return self.DF[name].mean()
+            return self._DF[name].mean()
 
 
     # it corresponds to S^2. This is the empirical estimator of the variance.
     def estimator_variance(self, name, separators = None, ddof=1):
         ## ddof is by how much one normalize the results (usually  / n-1). This gives the unbiased estimator of the variance if the mean is known.
         if separators is not None:
-            return self.DF.groupby(separators)[name].var(ddof=ddof)
+            return self._DF.groupby(separators)[name].var(ddof=ddof)
         else :
-            return self.DF[name].var(ddof=ddof)
+            return self._DF[name].var(ddof=ddof)
 
     # method that level up the method to csv of dataframes.
     def to_csv(self, path, **kwargs):
-        self.DF.to_csv(path, **kwargs)
+        self._DF.to_csv(path, **kwargs)
         return
 
     def groupby_DF(self, separators):
@@ -68,5 +70,16 @@ class Estimator:
             tuple with the groupby as well as the keys in order to iterate over it.
 
         '''
-        dictionary = self.DF.groupby(separators)
+        dictionary = self._DF.groupby(separators)
         return dictionary, dictionary.groups.keys()
+
+    @property
+    def DF(self):
+        return self._DF
+
+    @DF.setter
+    def DF(self, new_DF):
+        if isinstance(new_DF, pd.DataFrame):
+                self._DF = new_DF
+        else:
+            raise Error_type_setter('Argument is not an Dataframe.')

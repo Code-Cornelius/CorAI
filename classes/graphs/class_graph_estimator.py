@@ -1,21 +1,18 @@
 # normal libraries
-from abc import abstractmethod
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
 # my libraries
 from classes.class_estimator import Estimator
-from plot_functions import APlot
+from errors.Error_type_setter import Error_type_setter
 import classical_functions
-from classes.class_root_graph import Root_Graph
+from classes.graphs.class_root_graph import Root_Graph
 
 
 
 class Graph_Estimator(Root_Graph):
     def __init__(self, estimator, separators=None):
-        self.estimator = estimator
-        self.separators = separators
+        self._estimator = estimator
+        self._separators = separators
         super().__init__()
 
     @classmethod
@@ -58,5 +55,26 @@ class Graph_Estimator(Root_Graph):
 
     # method that level up the method to csv of dataframes.
     def to_csv(self, path, **kwargs):
-        self.estimator.DF.to_csv(path, **kwargs)
+        self._estimator.DF.to_csv(path, **kwargs)
         return
+
+    # the getters and setters.
+    @property
+    def estimator(self):
+        return self._estimator
+
+    @estimator.setter
+    def estimator(self, new_estimator ):
+        if isinstance(new_estimator, Estimator):
+            self._estimator = new_estimator
+        else :
+            raise Error_type_setter('Argument is not an estimator.')
+
+
+    @property
+    def separator(self):
+        return self._separators
+
+    @separator.setter
+    def separator(self, new_separator):
+        self._separators = new_separator

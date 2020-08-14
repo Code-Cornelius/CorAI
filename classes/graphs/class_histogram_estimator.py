@@ -1,31 +1,13 @@
 # normal libraries
 from abc import abstractmethod
 import numpy as np  #maths library and arrays
-import statistics as stat
-import pandas as pd  #dataframes
-import seaborn as sns  #envrionement for plots
-from matplotlib import pyplot as plt  #ploting 
-import scipy.stats  #functions of statistics
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  #allows to time event
-import warnings
-import math  #quick math functions
-import cmath  #complex functions
 
 # my libraries
 import classical_functions
-import decorators_functions
-import financial_functions
-import functions_networkx
 from plot_functions import APlot
-import recurrent_functions
-import classes.class_estimator
-from classes.class_graph_estimator import Graph_Estimator
+from classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:
-import errors.Error_convergence
-import errors.Warning_deprecated
-import errors.Error_forbidden
 
 np.random.seed(124)
 # other files

@@ -1,31 +1,15 @@
 # normal libraries
 from abc import abstractmethod
 import numpy as np  #maths library and arrays
-import statistics as stat
-import pandas as pd  #dataframes
-import seaborn as sns  #envrionement for plots
-from matplotlib import pyplot as plt  #ploting 
-import scipy.stats  #functions of statistics
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  #allows to time event
-import warnings
-import math  #quick math functions
-import cmath  #complex functions
+from matplotlib import pyplot as plt  #ploting
 
 # my libraries
 import classical_functions
-import decorators_functions
-import financial_functions
-import functions_networkx
 from plot_functions import APlot
-import recurrent_functions
 from classes.class_estimator import Estimator
-from classes.class_graph_estimator import Graph_Estimator
+from classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:
-import errors.Error_convergence
-import errors.Warning_deprecated
-import errors.Error_forbidden
 
 np.random.seed(124)
 # other files
@@ -37,8 +21,11 @@ class Evolution_plot_estimator(Graph_Estimator):
     def __init__(self, estimator, separators=None):
         super().__init__(estimator = estimator, separators = separators)
 
-    # TODO 14/08/2020 nie_k:  abstract evolution_name parameter
-
+    # abstract evolution_name parameter
+    @property
+    @abstractmethod
+    def evolution_name(self):
+        pass
 
     @classmethod
     @abstractmethod
