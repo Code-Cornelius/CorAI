@@ -21,6 +21,16 @@ class Graph_Estimator(Root_Graph):
         estimator = Estimator(pd.read_csv(path))
         return cls(estimator, None)
 
+    # section ######################################################################
+    #  #############################################################################
+    # plot
+
+    def draw(self,separators, *args, **kwargs):
+        if separators is None:
+            separators = self.separators
+        global_dict, keys = self.estimator.groupby_DF(separators)
+        return separators, global_dict, keys
+
     def generate_title(self, names, values, before_text = "", extra_text=None, extra_arguments=[]):
         # extra_argument is empty list that isn't used. I don't append anything ot it or whatever.
 
@@ -38,6 +48,9 @@ class Graph_Estimator(Root_Graph):
         return title
 
 
+    # section ######################################################################
+    #  #############################################################################
+    # data
 
     def test_true_value(self, data):
         '''
@@ -58,6 +71,8 @@ class Graph_Estimator(Root_Graph):
         self._estimator.DF.to_csv(path, **kwargs)
         return
 
+    # section ######################################################################
+    #  #############################################################################
     # the getters and setters.
     @property
     def estimator(self):

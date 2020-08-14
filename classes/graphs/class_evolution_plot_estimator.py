@@ -83,15 +83,7 @@ class Evolution_plot_estimator(Graph_Estimator):
         Returns:
 
         '''
-
-        if separators is None:
-            separators = self.separators
-
-        global_dict, keys = self.estimator.groupby_DF(separators)
-
-        # we get back the interesting values, the one that evolves through the chosen dimension:
-
-        # todo change that getter bc not using self
+        separators, global_dict, keys = super().draw(separators = separators)
         estimation = self.get_evolution_name_unique_values(self.estimator.DF)
         for key in keys:
             data = global_dict.get_group(key)

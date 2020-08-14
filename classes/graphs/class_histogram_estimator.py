@@ -44,10 +44,7 @@ class Histogram_estimator(Graph_Estimator):
         pass
 
     def draw(self, separators=None):
-        if separators is None:
-            separators = self.separators
-
-        global_dict, keys = self.estimator.groupby_DF(separators)
+        separators, global_dict, keys = super().draw(separators = separators)
 
         for key in keys:
             data = global_dict.get_group(key)['value']

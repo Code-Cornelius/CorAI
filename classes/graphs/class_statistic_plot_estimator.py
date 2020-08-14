@@ -64,10 +64,7 @@ class Statistic_plot_estimator(Graph_Estimator):
 
 
     def draw(self, mini_T, times, name_column_evolution, computation_function, class_for_hist, *args, separators=None, **kwargs):
-        if separators is None:
-            separators = self.separators
-
-        global_dict, keys = self.estimator.groupby_DF(separators)
+        separators, global_dict, keys = super().draw(separators = separators)
 
         comp_sum = np.zeros(self.estimator.DF[name_column_evolution].nunique())
         for key in keys:
