@@ -98,5 +98,5 @@ class Statistic_plot_estimator(Graph_Estimator):
 
         # BIANCA how to get the class histogram Hawkes here?
         my_hist = class_for_hist(hist_DF, *args, **kwargs)
-        my_hist.draw_histogram()
+        my_hist.draw()
         return

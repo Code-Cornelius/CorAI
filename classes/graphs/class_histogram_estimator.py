@@ -43,7 +43,7 @@ class Histogram_estimator(Graph_Estimator):
     def get_dict_fig_hist(self, separators, key):
         pass
 
-    def draw_histogram(self, separators=None):
+    def draw(self, separators=None):
         if separators is None:
             separators = self.separators
 
