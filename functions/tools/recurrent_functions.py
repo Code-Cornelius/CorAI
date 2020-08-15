@@ -14,7 +14,7 @@ import math  # quick math functions
 import cmath  # complex functions
 
 # my libraries
-import errors.Error_convergence as error
+from errors import Warning_deprecated
 
 
 # other files
@@ -40,7 +40,7 @@ def phi(x):
     Returns: returns an array with the gaussian density
 
     """
-    error.deprecated_function(reason="phi chose numpy.")
+    Warning_deprecated.deprecated_function(reason="phi chose numpy.")
     return np.exp(-x * x / 2.) / np.sqrt(2 * np.pi)
 
 

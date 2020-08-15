@@ -4,16 +4,14 @@ import warnings
 
 import numpy as np
 
-
+#todo version array and list
 def my_list_argmin(list):
     return list.index(min(list))
 
-
+#todo version array and list
 def find_smallest_rank_leq_to_K(list, K, sorted=True):
     # when applied to an empty array, returns 0, which is the behaviour one would expect.
     # this functions is for np.arrays
-
-
     if np.isscalar(list):
         raise Exception("Object is not a list.")
     # to generalize the function to multi dimensional arrays, I need to first know its number of dimension :
@@ -51,7 +49,7 @@ def roundrobin(*iterables):
             pending -= 1
             nexts = itertools.cycle(itertools.islice(nexts, pending))
 
-
+#todo version array and list
 def mean_list(my_list):
     # the default behaviour if list is empty, it returns 0.
     return float(sum(my_list)) / max(len(my_list), 1)
@@ -67,11 +65,12 @@ def inverse_mult(x, vect):
     return (x * np.reciprocal(vect.astype(float)))
 
 
+
 def rotate(l, n):
     # do a cycle over a list:
     # rotate(1) : [1,2,3,4] -> [4,1,2,3]
     # does not work with numpy array, and with integers bigger than length.
-
+    # todo can use isinstance
     if type(l).__module__ == np.__name__: #checks if the type of list is numpy.array
         warnings.warn("The object given is not a list, but an array. The numpy function roll is used.")
 
