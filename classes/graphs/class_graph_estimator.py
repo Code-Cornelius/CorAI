@@ -1,10 +1,11 @@
 # normal libraries
+import functions.tools.classical_functions_vectors
 import pandas as pd
 
 # my libraries
 from classes.class_estimator import Estimator
 from errors.Error_type_setter import Error_type_setter
-import classical_functions
+from functions.tools import classical_functions
 from classes.graphs.class_root_graph import Root_Graph
 
 
@@ -38,7 +39,7 @@ class Graph_Estimator(Root_Graph):
         #when a before text is given  I add to it a going to the line. Otherwise no need to jump.
         if title != "":
             title = ''.join([title, '\n'])
-        list_param = [str for str in classical_functions.roundrobin(names, [" : "]*len(values), values, [", "]*(len(values)-1)  ) ]
+        list_param = [str for str in functions.tools.classical_functions_vectors.roundrobin(names, [" : "] * len(values), values, [", "] * (len(values) - 1))]
         str_param = ''.join([str(elem) for elem in list_param]) # list_param is including ints and str so I need to convert them all before joining, since join requires only str.
         if extra_text is not None:
             # title = ''.join([title, ', ', names, ' : ', values, "\n", extra_text.format(*extra_arguments)] )

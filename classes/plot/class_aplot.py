@@ -1,25 +1,19 @@
 # normal libraries
+import functions.tools.classical_functions_dict
 import numpy as np  # maths library and arrays
-import statistics as stat
-import pandas as pd  # dataframes
 import seaborn as sns  # envrionement for plots
 from errors.Error_forbidden import Error_forbidden
 from matplotlib import pyplot as plt  # ploting
-import scipy.stats  # functions of statistics
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  # allows to time event
 import warnings
 import math  # quick math functions
-import cmath  # complex functions
 
 sns.set()
 
 # my libraries
-import classical_functions
-from metaclass_register import *
+from functions.tools import classical_functions
+from metaclasses.metaclass_register import *
 
 #errors:
-from errors.Error_convergence import *
 from errors.Warning_deprecated import deprecated_function
 
 # other files
@@ -260,7 +254,7 @@ class APlot(metaclass=register):
             dict_fig = {}
         default_dict = {'title': default_str, 'xlabel': default_str, 'ylabel': default_str,
                         'xscale': 'linear', 'xint': False, 'yint': False}
-        classical_functions.up(dict_fig, default_dict)
+        functions.tools.classical_functions_dict.up(dict_fig, default_dict)
 
         self.axs[nb_ax].set_title(dict_fig['title'], fontsize=fontsize)
         self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=fontsize)
@@ -335,7 +329,7 @@ class APlot(metaclass=register):
             list of artists added
         """
         if len(xx) == len(yy):
-            classical_functions.up(dict_plot_param, APlot.default_dict_plot_param)
+            functions.tools.classical_functions_dict.up(dict_plot_param, APlot.default_dict_plot_param)
             nb_ax = self.check_axs(nb_ax)
             if not bis:  # bis is plot on second axis.
                 out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
@@ -447,7 +441,7 @@ class APlot(metaclass=register):
         self.axs[nb_of_ax].set_xlabel("Realisation")
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
-        classical_functions.up(dict_param_hist, APlot.default_dict_param_hist)
+        functions.tools.classical_functions_dict.up(dict_param_hist, APlot.default_dict_param_hist)
 
         try:
             # if doesn't pop, it will be catch by except.
@@ -494,16 +488,3 @@ class APlot(metaclass=register):
         """
         plt.savefig(name_save_file + '.png', dpi=800)
         return
-
-
-#test register
-# import numpy as np
-# xx = np.linspace(0,1000,10000)
-# yy = xx*2
-# aplot = APlot(how = (1,1))
-# aplot.uni_plot(nb_ax = 0, xx = xx, yy = yy)
-# my_list = aplot.print_register()
-#
-# for i in my_list:
-#     i.plot_vertical_line(200, np.linspace(0,10000,100000), nb_ax=0 )
-# plt.show()

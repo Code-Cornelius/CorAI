@@ -3,7 +3,7 @@ from abc import abstractmethod
 import numpy as np  #maths library and arrays
 
 # my libraries
-from plot_functions import APlot
+from classes.plot.class_aplot import APlot
 from classes.class_estimator import Estimator
 from classes.graphs.class_graph_estimator import Graph_Estimator
 

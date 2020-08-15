@@ -1,19 +1,12 @@
 # normal libraries
+import functions.tools.classical_functions_optimization
 import numpy as np  #maths library and arrays
-import statistics as stat
-import pandas as pd  #dataframes
-import seaborn as sns  #envrionement for plots
-from matplotlib import pyplot as plt  #ploting 
 import scipy.stats  #functions of statistics
-from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time  #allows to time event
 import warnings
-import math  #quick math functions
-import cmath  #complex functions
 
 # my libraries
-import classical_functions
-import recurrent_functions
+from functions.tools import classical_functions, recurrent_functions
+
 
 # other files
 
@@ -116,7 +109,7 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     K = np.exp(k)
     dfx = lambda varSIGMA : BlackScholesVegaCore(   np.exp(-R * T), np.exp((R - 0) * T) * s0, K, T, varSIGMA   )
     try :
-        return classical_functions.newtons_method(fx, dfx, 0.2)
+        return functions.tools.classical_functions_optimization.newtons_method(fx, dfx, 0.2)
     except :
         warnings.warn("Bisect didn't find the $\sigma_{IMP}$, returned 0.")
         return 0

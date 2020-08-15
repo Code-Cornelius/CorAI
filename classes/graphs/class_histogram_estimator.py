@@ -1,10 +1,12 @@
 # normal libraries
 from abc import abstractmethod
+
+import functions.tools.classical_functions_str
 import numpy as np  #maths library and arrays
 
 # my libraries
-import classical_functions
-from plot_functions import APlot
+from functions.tools import classical_functions
+from classes.plot.class_aplot import APlot
 from classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:
@@ -54,5 +56,5 @@ class Histogram_estimator(Graph_Estimator):
             param_dict = self.get_dict_param(key, mean)
             fig_dict = self.get_dict_fig(separators, key)
             plot.hist(data=data, dict_param_hist=param_dict, dict_fig=fig_dict)
-            name_file =  ''.join([classical_functions.tuple_to_str(key), 'histogram'])
+            name_file =  ''.join([functions.tools.classical_functions_str.tuple_to_str(key), 'histogram'])
             plot.save_plot(name_save_file=name_file)
