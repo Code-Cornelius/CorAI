@@ -1,5 +1,6 @@
 # normal libraries
 import numpy as np  #maths library and arrays
+import unittest
 
 # my libraries
 
@@ -31,3 +32,25 @@ np.random.seed(124)
 # aplot.hist(xx, 1)
 # aplot.hist(xx, 2)
 # plt.show()
+
+
+
+
+class Test_plot(unittest.TestCase):
+    # section ######################################################################
+    #  #############################################################################
+    # setup
+
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        plt.show()
+
+    # section ######################################################################
+    #  #############################################################################
+    # tests
+
+
+    def test_1(self):
+        pass
