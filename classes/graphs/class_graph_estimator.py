@@ -3,9 +3,8 @@ import functions.tools.classical_functions_vectors
 import pandas as pd
 
 # my libraries
-from classes.class_estimator import Estimator
+from classes.estimators.class_estimator import Estimator
 from errors.Error_type_setter import Error_type_setter
-from functions.tools import classical_functions
 from classes.graphs.class_root_graph import Root_Graph
 
 

@@ -6,9 +6,8 @@ import numpy as np  #maths library and arrays
 from matplotlib import pyplot as plt  #ploting
 
 # my libraries
-from functions.tools import classical_functions
 from classes.plot.class_aplot import APlot
-from classes.class_estimator import Estimator
+from classes.estimators.class_estimator import Estimator
 from classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:

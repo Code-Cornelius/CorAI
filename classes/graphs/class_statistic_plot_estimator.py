@@ -4,7 +4,7 @@ import numpy as np  #maths library and arrays
 
 # my libraries
 from classes.plot.class_aplot import APlot
-from classes.class_estimator import Estimator
+from classes.estimators.class_estimator import Estimator
 from classes.graphs.class_graph_estimator import Graph_Estimator
 
 np.random.seed(124)
