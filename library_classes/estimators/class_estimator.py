@@ -1,5 +1,5 @@
 import pandas as pd
-from errors.Error_type_setter import Error_type_setter
+from library_errors.Error_type_setter import Error_type_setter
 
 
 class Estimator:

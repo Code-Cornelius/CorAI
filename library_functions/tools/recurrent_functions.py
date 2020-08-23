@@ -14,7 +14,7 @@ import math  # quick math functions
 import cmath  # complex functions
 
 # my libraries
-from errors import Warning_deprecated
+from library_errors import Warning_deprecated
 
 
 # other files

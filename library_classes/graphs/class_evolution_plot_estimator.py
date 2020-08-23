@@ -1,14 +1,14 @@
 # normal libraries
 from abc import abstractmethod
 
-import functions.tools.classical_functions_str
+import library_functions.tools.classical_functions_str
 import numpy as np  #maths library and arrays
 from matplotlib import pyplot as plt  #ploting
 
 # my libraries
-from classes.plot.class_aplot import APlot
-from classes.estimators.class_estimator import Estimator
-from classes.graphs.class_graph_estimator import Graph_Estimator
+from library_classes.plot.class_aplot import APlot
+from library_classes.estimators.class_estimator import Estimator
+from library_classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:
 
@@ -123,7 +123,7 @@ class Evolution_plot_estimator(Graph_Estimator):
             fig_dict = self.get_dict_fig(separators, key)
             plot.set_dict_fig(0, fig_dict)
             plot.show_legend()
-            name_file = ''.join([functions.tools.classical_functions_str.tuple_to_str(key), 'evol_estimation'])
+            name_file = ''.join([library_functions.tools.classical_functions_str.tuple_to_str(key), 'evol_estimation'])
             plot.save_plot(name_save_file=name_file)
 
         # either coloured keys have been defined or not. I retrieve them in order to know what color to put upon which kernel.

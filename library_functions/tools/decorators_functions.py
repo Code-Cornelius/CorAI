@@ -1,9 +1,9 @@
 import functools
 import time
 
-import functions.tools.classical_functions_time
-import functions.tools.classical_functions_vectors
-from functions.tools import classical_functions
+import library_functions.tools.classical_functions_time
+import library_functions.tools.classical_functions_vectors
+from library_functions.tools import classical_functions
 
 
 def Memoization(key_names):
@@ -94,14 +94,14 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
             end_time = time.perf_counter()
             run_time = end_time - start_time
             list_deco_estimation_times.append(run_time)
-            total_run_time = functions.tools.classical_functions_vectors.mean_list(list_deco_estimation_times) * (total_nb_tries - actual_state[0]) * multiplicator_factor
-            s, m, h, _ = functions.tools.classical_functions_time.time_convertisor(total_run_time, format=2) # the _ is second frac.
-            ts, tm, th = functions.tools.classical_functions_time.time_text(s, m, h, 0)
+            total_run_time = library_functions.tools.classical_functions_vectors.mean_list(list_deco_estimation_times) * (total_nb_tries - actual_state[0]) * multiplicator_factor
+            s, m, h, _ = library_functions.tools.classical_functions_time.time_convertisor(total_run_time, format=2) # the _ is second frac.
+            ts, tm, th = library_functions.tools.classical_functions_time.time_text(s, m, h, 0)
             str1 = ''.join([th,tm,ts])
 
             total_run_time = time.perf_counter() - beginning_time
-            s, m, h, _ = functions.tools.classical_functions_time.time_convertisor(total_run_time, format=2) # the _ is second frac.
-            ts, tm, th = functions.tools.classical_functions_time.time_text(s, m, h, 0)
+            s, m, h, _ = library_functions.tools.classical_functions_time.time_convertisor(total_run_time, format=2) # the _ is second frac.
+            ts, tm, th = library_functions.tools.classical_functions_time.time_text(s, m, h, 0)
             str2 =  ''.join([th,tm,ts])
             
             print(''.join(["/"*15, f"estimated time left before completion: {str1}. Total time: {str2}.", "/"*15 ]))

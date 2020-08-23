@@ -3,9 +3,9 @@ from abc import abstractmethod
 import numpy as np  #maths library and arrays
 
 # my libraries
-from classes.plot.class_aplot import APlot
-from classes.estimators.class_estimator import Estimator
-from classes.graphs.class_graph_estimator import Graph_Estimator
+from library_classes.plot.class_aplot import APlot
+from library_classes.estimators.class_estimator import Estimator
+from library_classes.graphs.class_graph_estimator import Graph_Estimator
 
 np.random.seed(124)
 

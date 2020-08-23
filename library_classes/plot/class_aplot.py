@@ -1,8 +1,8 @@
 # normal libraries
-import functions.tools.classical_functions_dict
+import library_functions.tools.classical_functions_dict
 import numpy as np  # maths library and arrays
 import seaborn as sns  # envrionement for plots
-from errors.Error_forbidden import Error_forbidden
+from library_errors.Error_forbidden import Error_forbidden
 from matplotlib import pyplot as plt  # ploting
 import warnings
 import math  # quick math functions
@@ -10,11 +10,11 @@ import math  # quick math functions
 sns.set()
 
 # my libraries
-from functions.tools import classical_functions
-from metaclasses.metaclass_register import *
+from library_functions.tools import classical_functions
+from library_metaclasses.metaclass_register import *
 
 #errors:
-from errors.Warning_deprecated import deprecated_function
+from library_errors.Warning_deprecated import deprecated_function
 
 # other files
 
@@ -256,7 +256,7 @@ class APlot(metaclass=register):
             dict_fig = {}
         default_dict = {'title': default_str, 'xlabel': default_str, 'ylabel': default_str,
                         'xscale': 'linear', 'xint': False, 'yint': False}
-        functions.tools.classical_functions_dict.up(dict_fig, default_dict)
+        library_functions.tools.classical_functions_dict.up(dict_fig, default_dict)
 
         self.axs[nb_ax].set_title(dict_fig['title'], fontsize=fontsize)
         self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=fontsize)
@@ -331,7 +331,7 @@ class APlot(metaclass=register):
             list of artists added
         """
         if len(xx) == len(yy):
-            functions.tools.classical_functions_dict.up(dict_plot_param, APlot.default_dict_plot_param)
+            library_functions.tools.classical_functions_dict.up(dict_plot_param, APlot.default_dict_plot_param)
             nb_ax = self.check_axs(nb_ax)
             if not bis:  # bis is plot on second axis.
                 out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
@@ -443,7 +443,7 @@ class APlot(metaclass=register):
         self.axs[nb_of_ax].set_xlabel("Realisation")
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
-        functions.tools.classical_functions_dict.up(dict_param_hist, APlot.default_dict_param_hist)
+        library_functions.tools.classical_functions_dict.up(dict_param_hist, APlot.default_dict_param_hist)
 
         try:
             # if doesn't pop, it will be catch by except.
