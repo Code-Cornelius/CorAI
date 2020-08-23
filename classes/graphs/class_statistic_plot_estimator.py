@@ -26,7 +26,7 @@ class Statistic_plot_estimator(Graph_Estimator):
 
     @abstractmethod
     def rescale_time_plot(self, rescale_factor, times):
-        '''
+        """
         In order to plot not wrt time but wrt to a rescale factor.
 
         Args:
@@ -35,7 +35,7 @@ class Statistic_plot_estimator(Graph_Estimator):
 
         Returns:
 
-        '''
+        """
         pass
 
     @abstractmethod

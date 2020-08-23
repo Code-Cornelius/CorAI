@@ -6,7 +6,7 @@ import scipy.integrate
 
 
 def complex_quadrature(func, a, b, *args, **kwargs):
-    '''
+    """
     Complex quadrature over real line, is harder than real, so here is a built function
 
     function from overflow to integrate complex functions.
@@ -21,7 +21,7 @@ def complex_quadrature(func, a, b, *args, **kwargs):
 
     Returns:
         a 3-tuple : (integral, real error, imagi error).
-    '''
+    """
     def real_func(x):
         return func(x).real
 
@@ -56,7 +56,7 @@ def trapeze_int(t, y):
 
     # corresponds to the case where the vector is constant.
     # Then in order to reduce the computation, I return the product of the length time with the constant.
-    if (len(set(y)) <= 1):
+    if len(set(y)) <= 1:
         # this tests if there is only one value in the vector
         # I return the difference between the timr beg end
         # (because If t[0] \neq 0 there would be a problem).

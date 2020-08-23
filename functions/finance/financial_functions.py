@@ -36,10 +36,11 @@ def BlackScholesVegaCore(DF, F, X, T, SIGMA):
 
 #### Black Sholes Function
 def BlackScholesCore(CallPutFlag, DF, F, X, T, SIGMA):
-    '''
+    """
     One shouldn't use that function, prefer BS
 
     Args:
+        T:
         CallPutFlag:
         DF: discount factor
         F:  Forward F c'est S_0
@@ -48,7 +49,7 @@ def BlackScholesCore(CallPutFlag, DF, F, X, T, SIGMA):
 
     Returns:
 
-    '''
+    """
     vsqrt = SIGMA * np.sqrt(T)
     d1 = (np.log(F / X) + (vsqrt * vsqrt / 2.)) / vsqrt
     d2 = d1 - vsqrt
@@ -93,6 +94,8 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     Compute Implied Volatility by newton's method.
 
     Args:
+        CallPutFlag:
+        d:
         k: log strike price
         s0: initial price
         T:  maturity

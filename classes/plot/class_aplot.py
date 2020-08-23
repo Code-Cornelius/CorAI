@@ -267,14 +267,14 @@ class APlot(metaclass=register):
 
         if dict_fig['xint']:
             if xx is None:
-                raise ("xx has not been given.")
+                raise Exception("xx has not been given.")
             x_int = range(math.ceil(min(xx)) - 1, math.ceil(
                 self.axs[nb_ax](
                     xx)) + 1)  # I need to use ceil on both if min and mself.axs[nb_ax] are not integers ( like 0 to 1 )
             self.axs[nb_ax].set_xticks(x_int)
-        if dict_fig[('yint')]:
+        if dict_fig['yint']:
             if yy is None:
-                raise ("yy has not been given.")
+                raise Exception("yy has not been given.")
             y_int = range(min(yy), math.ceil(self.axs[nb_ax](yy)) + 1)
             self.axs[nb_ax].set_yticks(y_int)
 
@@ -282,8 +282,8 @@ class APlot(metaclass=register):
         if 'parameters' in dict_fig and 'name_parameters' in dict_fig:
             #### check if this is correct
             # or fig ?
-            parameters = dict_fig[('parameters')]
-            name_parameters = dict_fig[('name_parameters')]
+            parameters = dict_fig['parameters']
+            name_parameters = dict_fig['name_parameters']
             nb_parameters = len(parameters)
             sous_text = " Parameters : \n"
             for i in range(nb_parameters):
@@ -455,7 +455,7 @@ class APlot(metaclass=register):
                 # I put then 0 in order to have no evolution with cumsum.
 
                 if 'total_number_of_simulations' in dict_param_hist:
-                    ax_bis.plot(base, np.cumsum(values) / dict_param_hist[('total_number_of_simulations')],
+                    ax_bis.plot(base, np.cumsum(values) / dict_param_hist['total_number_of_simulations'],
                                 color='darkorange', marker='o',
                                 linestyle='-',
                                 markersize=1, label="Cumulative Histogram")
@@ -479,7 +479,8 @@ class APlot(metaclass=register):
             self.axs[nb_ax].legend(loc='best', fontsize=12)
         return
 
-    def save_plot(self, name_save_file='image'):
+    @staticmethod
+    def save_plot(name_save_file='image'):
         """
         Method for saving the plot (figure) created.
 

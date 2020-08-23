@@ -54,14 +54,14 @@ def timer(func):
 
 
 def set_new_methods(**kwargs):
-    ''' set a set of new methods to a class, any quantity of methods.
+    """ set a set of new methods to a class, any quantity of methods.
 
     Args:
         **kwargs: name of method given by key, body by value.
 
     Returns:
         It returns the new class
-    '''
+    """
 
     def wrapper(cls):
         for key in kwargs:
@@ -73,7 +73,7 @@ def set_new_methods(**kwargs):
 
 
 def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
-    '''
+    """
 
     Args:
         total_nb_tries: total number of iteration, this is the complexity of the algo.
@@ -83,7 +83,7 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
 
     Returns:
 
-    '''
+    """
     def decorator_prediction_total_time(func):
         list_deco_estimation_times = []
         beginning_time = time.perf_counter()

@@ -1,5 +1,5 @@
 def time_convertisor(seconds, format=0):
-    '''instead of converting the seconds in minuts outside, one can do it here.
+    """instead of converting the seconds in minuts outside, one can do it here.
 
     Args:
         seconds: runtime
@@ -8,7 +8,7 @@ def time_convertisor(seconds, format=0):
     Returns:
         converted time.
 
-    '''
+    """
     seconds_int = round(seconds)
     seconds_frac = seconds - seconds_int
     if format == 0:
@@ -50,7 +50,7 @@ def time_text(s, m,h, seconds_frac = 0):
 
 
 def time_computational(A, B, title="no title"):
-    ''' function that I put at the end of certain functions to know how long they runned.
+    """ function that I put at the end of certain functions to know how long they runned.
 
     Args:
         A: beg simul's time.
@@ -59,7 +59,7 @@ def time_computational(A, B, title="no title"):
 
     Returns:
 
-    '''
+    """
     seconds = B - A
     beg = " Program : " + title + ", took roughly :"
     print(100 * '~')

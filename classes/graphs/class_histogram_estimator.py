@@ -34,7 +34,8 @@ class Histogram_estimator(Graph_Estimator):
     #  #############################################################################
     # plot
 
-    def get_range(self, key, mean):
+    @staticmethod
+    def get_range(key, mean):
         return None
 
     @abstractmethod

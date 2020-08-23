@@ -53,7 +53,7 @@ class Evolution_plot_estimator(Graph_Estimator):
 
     @abstractmethod
     def get_evolution_name_specific_data(self, data, str):
-        '''
+        """
         returns the data grouped by the particular attribute, and we focus on data given by column str, computing the means and returning an array.
 
         Args:
@@ -62,7 +62,7 @@ class Evolution_plot_estimator(Graph_Estimator):
 
         Returns:
 
-        '''
+        """
         pass
 
     # section ######################################################################
@@ -75,7 +75,7 @@ class Evolution_plot_estimator(Graph_Estimator):
         pass
 
     def draw(self, separators=None, separator_colour=None):
-        '''
+        """
         plot the evolution of the estimators over the attribute given by get_plot_data.
 
         Args:
@@ -84,7 +84,7 @@ class Evolution_plot_estimator(Graph_Estimator):
 
         Returns:
 
-        '''
+        """
         separators, global_dict, keys = super().draw(separators = separators)
         estimation = self.get_evolution_name_unique_values(self.estimator.DF)
         for key in keys:

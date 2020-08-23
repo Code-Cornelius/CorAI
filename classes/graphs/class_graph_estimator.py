@@ -32,7 +32,8 @@ class Graph_Estimator(Root_Graph):
         global_dict, keys = self.estimator.groupby_DF(separators)
         return separators, global_dict, keys
 
-    def generate_title(self, names, values, before_text = "", extra_text=None, extra_arguments=[]):
+    @staticmethod
+    def generate_title(names, values, before_text ="", extra_text=None, extra_arguments=[]):
         # extra_argument is empty list that isn't used. I don't append anything ot it or whatever.
 
         title = before_text
@@ -53,8 +54,9 @@ class Graph_Estimator(Root_Graph):
     #  #############################################################################
     # data
 
-    def test_true_value(self, data):
-        '''
+    @staticmethod
+    def test_true_value(data):
+        """
         test if there is only one true value i  the given sliced data.
         It could lead to potential big errors.
 
@@ -63,9 +65,9 @@ class Graph_Estimator(Root_Graph):
 
         Returns:
 
-        '''
+        """
         if data['true value'].nunique() != 1:
-            raise ("Error because you are estimating different parameters, but still compounding the MSE error together.")
+            raise Exception("Error because you are estimating different parameters, but still compounding the MSE error together.")
 
     # method that level up the method to csv of dataframes.
     def to_csv(self, path, **kwargs):

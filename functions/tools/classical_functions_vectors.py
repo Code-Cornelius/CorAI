@@ -36,7 +36,7 @@ def find_smallest_rank_leq_to_K(list, K, sorted=True):
 
 
 def roundrobin(*iterables):
-    "roundrobin('ABC', 'D', 'EF') --> A D E B F C"
+    """roundrobin('ABC', 'D', 'EF') --> A D E B F C"""
     # [k for k in roundrobin(list, list_dash)]
     # Recipe credited to George Sakkis
     pending = len(iterables)
@@ -62,7 +62,7 @@ def is_invertible(a):
 
 
 def inverse_mult(x, vect):
-    return (x * np.reciprocal(vect.astype(float)))
+    return x * np.reciprocal(vect.astype(float))
 
 
 

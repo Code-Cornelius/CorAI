@@ -18,7 +18,7 @@ class Estimator:
 
 
     def append(self, new_df):
-        '''
+        """
         redefine the method append from DF at the estimator level.
 
         Args:
@@ -26,8 +26,8 @@ class Estimator:
 
         Returns:
 
-        '''
-        self._DF = (self._DF).append(new_df)
+        """
+        self._DF = self._DF.append(new_df)
 
     def function_upon_separated_data(self, separator, fct, name, **kwargs):
         # separator is a string
@@ -60,7 +60,7 @@ class Estimator:
         return
 
     def groupby_DF(self, separators):
-        '''
+        """
         groupby a DF.
 
         Args:
@@ -69,7 +69,7 @@ class Estimator:
         Returns:
             tuple with the groupby as well as the keys in order to iterate over it.
 
-        '''
+        """
         dictionary = self._DF.groupby(separators)
         return dictionary, dictionary.groups.keys()
 
