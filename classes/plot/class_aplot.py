@@ -190,6 +190,8 @@ def hist(data, bins, title, labels, range=None, total_number_of_simulations=None
 
 
 class APlot(metaclass=register):
+    # TODO 23/08/2020 nie_k:  point plot for one point.
+    # would be interesting to have objects like hist points lines ...
     # APlot is the class for my plots. APlot is one figure.
 
     default_dict_plot_param = {"color": 'm',
