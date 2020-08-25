@@ -10,10 +10,10 @@ from library_classes.graphs.class_root_graph import Root_Graph
 
 
 class Graph_Estimator(Root_Graph):
-    def __init__(self, estimator, separators=None):
+    def __init__(self, estimator, separators=None, *args, **kwargs):
         self._estimator = estimator
         self._separators = separators
-        super().__init__()
+        super().__init__(estimator = estimator, separators=separators, *args, **kwargs)
 
     @classmethod
     def from_path(cls, path):

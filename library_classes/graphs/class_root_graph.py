@@ -15,6 +15,6 @@ np.random.seed(124)
 
 
 class Root_Graph(ABC):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super().__init__()
     pass

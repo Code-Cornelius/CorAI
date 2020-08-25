@@ -23,8 +23,8 @@ class Histogram_estimator(Graph_Estimator):
         pass
 
 
-    def __init__(self, estimator, separators=None):
-        super().__init__(estimator = estimator, separators = separators)
+    def __init__(self, estimator, separators=None, *args, **kwargs):
+        super().__init__(estimator = estimator, separators = separators, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################

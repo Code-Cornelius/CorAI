@@ -16,8 +16,8 @@ np.random.seed(124)
 
 
 class Statistic_plot_estimator(Graph_Estimator):
-    def __init__(self, estimator, separators=None):
-        super().__init__(estimator = estimator, separators = separators)
+    def __init__(self, estimator, separators=None, *args, **kwargs):
+        super().__init__(estimator = estimator, separators = separators, *args, **kwargs)
 
 
     # section ######################################################################
