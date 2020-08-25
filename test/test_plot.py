@@ -1,135 +1,98 @@
 # normal libraries
-import numpy as np  #maths library and arrays
+import numpy as np  # maths library and arrays
 import unittest
 
-# my libraries
+# other files
+from library_classes.plot.class_aplot import *
 
 np.random.seed(124)
 
-# errors:
 
-# other files
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-# import numpy as np
-# xx = np.linspace(0,1000,10000)
-# yy = xx*2
-# aplot = plot_functions.APlot(how = (1,1))
-# aplot.uni_plot(nb_ax = 0, xx = xx, yy = yy)
-# my_list = aplot.print_register()
-#
-# for i in my_list:
-#     i.plot_vertical_line(200, np.linspace(0,10000,100000), nb_ax=0 )
-# plt.show()
+class Test_register(unittest.TestCase):
+    def test_print_register(self):
+        class Foo(metaclass=register):
+            @deco_register
+            def __init__(self):
+                print("inside : ", self.list_register_instances)
+                pass
+
+            @staticmethod
+            def print_register():
+                print("coucou")
+
+        class Boo(metaclass=register):
+            @deco_register
+            def __init__(self):
+                print("inside : ", self.list_register_instances)
+                pass
+
+            @staticmethod
+            def print_register():
+                print("coucou")
+
+        f = Foo()
+        f = Foo()
+        f_ = Foo()
+        b = Boo()
+        print(f.list_register_instances)
+        print(b.list_register_instances)
+        print(dict_register_classes)
+
+        print("1")
+        f.print_register()
+        print("4")
+        Foo.print_register()
 
 
-# xx = np.random.random(1000)
-# aplot = plot_functions.APlot(how = (1,3))
-# aplot.hist(xx, 0,
-#            dict_param_hist= {"bins" : 60} )
-# aplot.hist(xx, 1)
-# aplot.hist(xx, 2)
-# plt.show()
+xx = np.linspace(0, 1000, 10000)
+yy = np.cos(xx)
 
 
-
-
-class Test_plot(unittest.TestCase):
-    # section ######################################################################
-    #  #############################################################################
-    # setup
-
-    def setUp(self):
-        pass
+class Test_APLOT(unittest.TestCase):
 
     def tearDown(self):
         plt.show()
 
-    # section ######################################################################
-    #  #############################################################################
-    # tests
+    def test_basic_plot(self):
+        APlot(datax=xx, datay=yy)
 
+        aplot_2 = APlot()
+        aplot_2.uni_plot(0, xx, yy)
 
-    def test_1(self):
-        pass
+        aplot_3 = APlot(how=(2, 2), sharex=True)
+        aplot_3.uni_plot(0, xx, yy)
+        aplot_3.uni_plot(1, xx, yy)
+        aplot_3.uni_plot(2, xx, yy)
+        aplot_3.uni_plot(3, xx, yy)
 
+        aplot_4 = APlot(how=(2, 2), sharey=True)
+        aplot_4.bi_plot(0, 1, xx, yy, xx, yy)
+        aplot_4.uni_plot(2, xx, yy)
+        aplot_4.uni_plot(3, xx, yy)
 
+    def test_plot_bis(self):
+        aplot_1 = APlot
+        aplot_1.uni_plot_ax_bis(0, xx, yy + 5)
+        aplot_1.uni_plot_ax_bis(0, xx, yy)
 
+    def test_plot_function(self):
+        def f(x):
+            return 3 * x
 
+        aplot = APlot()
+        aplot.plot_function(f, xx)
 
+    def test_hist(self):
+        aplot = APlot()
+        aplot.hist(yy)
 
+    def test_register(self):
+        aplot = APlot(how=(1, 1))
+        aplot.uni_plot(nb_ax=0, xx=xx, yy=yy)
+        my_list = aplot.print_register()
 
-
-
-
-#test register
-# import numpy as np
-# xx = np.linspace(0,1000,10000)
-# yy = xx*2
-# aplot = APlot(how = (1,1))
-# aplot.uni_plot(nb_ax = 0, xx = xx, yy = yy)
-# my_list = aplot.print_register()
-#
-# for i in my_list:
-#     i.plot_vertical_line(200, np.linspace(0,10000,100000), nb_ax=0 )
-# plt.show()
-
-
-
-
-
-
-# section ######################################################################
-#  #############################################################################
-# test
-
-
-# class Foo(metaclass=register):
-#     @deco_register
-#     def __init__(self):
-#         print("inside : " , self.list_register_instances)
-#         pass
-#
-#     def print_register(self):
-#         print("coucou")
-#
-# class Boo(metaclass=register):
-#     @deco_register
-#     def __init__(self):
-#         print("inside : " , self.list_register_instances)
-#         pass
-#     def print_register(self):
-#         print("coucou")
-#
-# f = Foo()
-# f = Foo()
-# f_ = Foo()
-# b = Boo()
-# print(f.list_register_instances)
-# print(b.list_register_instances)
-# print(dict_register_classes)
-#
-# print("1")
-# f.print_register()
-# print("2")
-# Foo.print_register_class()
-# print("4")
-# Foo.print_register()
-
-
-
-
-
-# example without anything fancy:
-# class Foo:
-#     list_register_instances = []
-#
-#     def __init__(self):
-#         self.__class__.list_register_instances.append(self)
-#
-#     @classmethod
-#     def print_register(cls):
-#         for element in cls.list_register_instances:
-#             print(element)
+        for i in my_list:
+            i.plot_vertical_line(200, np.linspace(0, 10000, 100000), nb_ax=0)

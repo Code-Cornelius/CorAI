@@ -224,6 +224,7 @@ class APlot(metaclass=register):
         self.uni_plot(nb_ax2, xx2, yy2, dict_plot_param=dict_plot_param_2, dict_fig=dict_fig_2)
         return
 
+    #todo the same thing but with a numpy function.
     def plot_function(self, function, xx, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
         # ax is an int, not necessary for uni dim case.
         yy = [function(x) for x in xx]
