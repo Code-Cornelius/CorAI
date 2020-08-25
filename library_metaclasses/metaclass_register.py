@@ -15,16 +15,19 @@ def deco_register(func):
 
     return wrapper_register
 
+
 # dict where I store the classes that appear in the registering.
 dict_register_classes = {}
 
+
 class register(type):
     # instructions :
-        # before any class' init with that meta, put the decorator !
+    # before any class' init with that meta, put the decorator !
 
     # new is affecting the new classes created with that meta.
     def __new__(meta, name, bases, attrs):
-        dict_register_classes[name] = cls = type.__new__(meta, name, bases, attrs)  # assigniation from right to left. cls is the new class created by new.
+        dict_register_classes[name] = cls = type.__new__(meta, name, bases,
+                                                         attrs)  # assigniation from right to left. cls is the new class created by new.
 
         cls.list_register_instances = []
         cls.print_register = classmethod(meta.print_register)  # a method inside metaclass is a class method.

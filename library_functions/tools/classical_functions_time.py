@@ -1,9 +1,9 @@
-def time_convertisor(seconds, format=0):
+def time_convertisor(seconds, time_format=0):
     """instead of converting the seconds in minuts outside, one can do it here.
 
     Args:
         seconds: runtime
-        format:  0 is in seconds (no change), 1 is in min, 2 is in hour.
+        time_format:  0 is in seconds (no change), 1 is in min, 2 is in hour.
 
     Returns:
         converted time.
@@ -11,11 +11,11 @@ def time_convertisor(seconds, format=0):
     """
     seconds_int = round(seconds)
     seconds_frac = seconds - seconds_int
-    if format == 0:
+    if time_format == 0:
         return seconds_int, seconds_frac
     else:
         m, s = divmod(seconds_int, 60)
-        if format == 1:
+        if time_format == 1:
             return s, m, seconds_frac
         else:
             h, m = divmod(m, 60)
@@ -63,7 +63,7 @@ def time_computational(A, B, title="no title"):
     seconds = B - A
     beg = " Program : " + title + ", took roughly :"
     print(100 * '~')
-    s, m, h, seconds_frac = time_convertisor(seconds, format=2)
+    s, m, h, seconds_frac = time_convertisor(seconds, time_format=2)
     ts, tm, th = time_text(s, m, h, seconds_frac)
     print(''.join([beg, th, tm, ts, 'to run.']))
     return

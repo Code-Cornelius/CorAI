@@ -1,5 +1,4 @@
 # normal libraries
-import numpy as np  # maths library and arrays
 import unittest
 
 # other files
@@ -74,7 +73,7 @@ class Test_APLOT(unittest.TestCase):
         aplot_4.uni_plot(3, xx, yy)
 
     def test_plot_bis(self):
-        aplot_1 = APlot
+        aplot_1 = APlot()
         aplot_1.uni_plot_ax_bis(0, xx, yy + 5)
         aplot_1.uni_plot_ax_bis(0, xx, yy)
 

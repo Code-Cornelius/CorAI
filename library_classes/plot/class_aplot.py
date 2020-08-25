@@ -1,20 +1,20 @@
 # normal libraries
+import math  # quick math functions
+import warnings
+
 import library_functions.tools.classical_functions_dict
 import numpy as np  # maths library and arrays
-import seaborn as sns  # envrionement for plots
+import seaborn as sns  # environment for plots
 from library_errors.Error_forbidden import Error_forbidden
-from matplotlib import pyplot as plt  # ploting
-import warnings
-import math  # quick math functions
+from matplotlib import pyplot as plt  # plotting
 
 sns.set()
 
 # my libraries
-from library_functions.tools import classical_functions
 from library_metaclasses.metaclass_register import *
 
+
 # errors:
-from library_errors.Warning_deprecated import deprecated_function
 
 
 # other files
@@ -115,7 +115,7 @@ class APlot(metaclass=register):
                 raise Exception("xx has not been given.")
             x_int = range(math.ceil(min(xx)) - 1, math.ceil(
                 self.axs[nb_ax](
-                    xx)) + 1)  # I need to use ceil on both if min and mself.axs[nb_ax] are not integers ( like 0 to 1 )
+                    xx)) + 1)  # I need to use ceil on both if min and self.axs[nb_ax] are not integers ( like 0 to 1 )
             self.axs[nb_ax].set_xticks(x_int)
         if dict_fig['yint']:
             if yy is None:
@@ -135,7 +135,7 @@ class APlot(metaclass=register):
                 if i == nb_parameters - 1:
                     sous_text += "."
                 # certain chosen number of parameters by line, globally, 3 by line.
-                # There shoudln't be more than 16 parameters
+                # There shouldn't be more than 16 parameters
                 elif i in [4, 7, 10, 13, 16]:
                     sous_text += ", \n "
                 # otherwise, just keep writing on the same line.
@@ -224,7 +224,7 @@ class APlot(metaclass=register):
         self.uni_plot(nb_ax2, xx2, yy2, dict_plot_param=dict_plot_param_2, dict_fig=dict_fig_2)
         return
 
-    #todo the same thing but with a numpy function.
+    # todo the same thing but with a numpy function.
     def plot_function(self, function, xx, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
         # ax is an int, not necessary for uni dim case.
         yy = [function(x) for x in xx]

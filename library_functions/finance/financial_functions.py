@@ -1,11 +1,11 @@
 # normal libraries
+import warnings
+
 import library_functions.tools.classical_functions_optimization
 import numpy as np  # maths library and arrays
 import scipy.stats  # functions of statistics
-import warnings
-
 # my libraries
-from library_functions.tools import classical_functions, recurrent_functions
+from library_functions.tools import recurrent_functions
 
 
 # other files

@@ -3,12 +3,11 @@ from abc import abstractmethod
 
 import library_functions.tools.classical_functions_str
 import numpy as np  # maths library and arrays
-from matplotlib import pyplot as plt  # ploting
-
-# my libraries
-from library_classes.plot.class_aplot import APlot
 from library_classes.estimators.class_estimator import Estimator
 from library_classes.graphs.class_graph_estimator import Graph_Estimator
+# my libraries
+from library_classes.plot.class_aplot import APlot
+from matplotlib import pyplot as plt  # ploting
 
 # errors:
 
@@ -53,13 +52,13 @@ class Evolution_plot_estimator(Graph_Estimator):
         pass
 
     @abstractmethod
-    def get_evolution_name_specific_data(self, data, str):
+    def get_evolution_name_specific_data(self, data, my_str):
         """
         returns the data grouped by the particular attribute, and we focus on data given by column str, computing the means and returning an array.
 
         Args:
             data:
-            str:
+            my_str:
 
         Returns:
 

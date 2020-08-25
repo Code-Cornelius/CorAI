@@ -1,11 +1,11 @@
 # normal libraries
 from abc import abstractmethod
-import numpy as np  # maths library and arrays
 
-# my libraries
-from library_classes.plot.class_aplot import APlot
+import numpy as np  # maths library and arrays
 from library_classes.estimators.class_estimator import Estimator
 from library_classes.graphs.class_graph_estimator import Graph_Estimator
+# my libraries
+from library_classes.plot.class_aplot import APlot
 
 np.random.seed(124)
 
@@ -62,7 +62,7 @@ class Statistic_plot_estimator(Graph_Estimator):
         pass
 
     def draw(self, mini_T, times, name_column_evolution, computation_function,
-             class_for_hist = None, separators=None, *args, **kwargs):
+             class_for_hist=None, separators=None, *args, **kwargs):
         """
 
         Args:

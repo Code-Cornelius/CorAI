@@ -1,5 +1,5 @@
-def test_print(str):
-    print("! test ! ", str)
+def test_print(my_str):
+    print("! test ! ", my_str)
 
 
 def tuple_to_str(my_tuple):

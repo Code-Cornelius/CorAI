@@ -1,11 +1,10 @@
 # normal libraries
 import library_functions.tools.classical_functions_vectors
 import pandas as pd
-
 # my libraries
 from library_classes.estimators.class_estimator import Estimator
-from library_errors.Error_type_setter import Error_type_setter
 from library_classes.graphs.class_root_graph import Root_Graph
+from library_errors.Error_type_setter import Error_type_setter
 
 
 class Graph_Estimator(Root_Graph):

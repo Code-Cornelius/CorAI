@@ -6,34 +6,34 @@ import numpy as np
 
 
 # todo version array and list
-def my_list_argmin(list):
-    return list.index(min(list))
+def my_list_argmin(my_list):
+    return my_list.index(min(my_list))
 
 
 # todo version array and list
-def find_smallest_rank_leq_to_K(list, K, sorted=True):
+def find_smallest_rank_leq_to_K(my_list, K, is_sorted=True):
     # when applied to an empty array, returns 0, which is the behaviour one would expect.
     # this functions is for np.arrays
-    if np.isscalar(list):
+    if np.isscalar(my_list):
         raise Exception("Object is not a list.")
     # to generalize the function to multi dimensional arrays, I need to first know its number of dimension :
-    DIM = list.ndim
+    DIM = my_list.ndim
     if DIM > 2:
         raise Exception("The list has too many dimensions.")
     if DIM == 1:
         # sorted argument for cases where the list is not sorted. Sorting the list is still algorithmitcaly more efficient.
-        if not sorted:
-            list.sort()
-        return bisect.bisect_right(list, K)
+        if not is_sorted:
+            my_list.sort()
+        return bisect.bisect_right(my_list, K)
     if DIM == 2:
         # I sort every line, and i search the minimal column for each row such that it satisfies certain properties.
-        if not sorted:
-            for i in range(np.shape(list)[0]):
-                list[i, :].sort()
+        if not is_sorted:
+            for i in range(np.shape(my_list)[0]):
+                my_list[i, :].sort()
         # Here I had a problem, np.zeros gives back an array with floats in it. So I specify the dtype.
-        ans = np.zeros(np.shape(list)[0], dtype=int)
-        for i in range(np.shape(list)[0]):
-            ans[i] = bisect.bisect_right(list[i, :], K)
+        ans = np.zeros(np.shape(my_list)[0], dtype=int)
+        for i in range(np.shape(my_list)[0]):
+            ans[i] = bisect.bisect_right(my_list[i, :], K)
         return ans
 
 
@@ -45,8 +45,8 @@ def roundrobin(*iterables):
     nexts = itertools.cycle(iter(it).__next__ for it in iterables)
     while pending:
         try:
-            for next in nexts:
-                yield next()
+            for anext in nexts:
+                yield anext()
         except StopIteration:
             pending -= 1
             nexts = itertools.cycle(itertools.islice(nexts, pending))

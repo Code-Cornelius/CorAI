@@ -3,10 +3,9 @@ from abc import abstractmethod
 
 import library_functions.tools.classical_functions_str
 import numpy as np  # maths library and arrays
-
+from library_classes.graphs.class_graph_estimator import Graph_Estimator
 # my libraries
 from library_classes.plot.class_aplot import APlot
-from library_classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:
 
