@@ -2,19 +2,20 @@
 from abc import abstractmethod
 
 import library_functions.tools.classical_functions_str
-import numpy as np  #maths library and arrays
+import numpy as np  # maths library and arrays
 
 # my libraries
-from library_functions.tools import classical_functions
 from library_classes.plot.class_aplot import APlot
 from library_classes.graphs.class_graph_estimator import Graph_Estimator
 
 # errors:
 
 np.random.seed(124)
+
+
 # other files
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Histogram_estimator(Graph_Estimator):
     # abstract nb_of_bins parameter
     @property
@@ -22,9 +23,8 @@ class Histogram_estimator(Graph_Estimator):
     def nb_of_bins(self):
         pass
 
-
     def __init__(self, estimator, separators=None, *args, **kwargs):
-        super().__init__(estimator = estimator, separators = separators, *args, **kwargs)
+        super().__init__(estimator=estimator, separators=separators, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
@@ -47,7 +47,7 @@ class Histogram_estimator(Graph_Estimator):
         pass
 
     def draw(self, separators=None):
-        separators, global_dict, keys = super().draw(separators = separators)
+        separators, global_dict, keys = super().draw(separators=separators)
 
         for key in keys:
             data = global_dict.get_group(key)['value']
@@ -57,5 +57,5 @@ class Histogram_estimator(Graph_Estimator):
             param_dict = self.get_dict_param(key, mean)
             fig_dict = self.get_dict_fig(separators, key)
             plot.hist(data=data, dict_param_hist=param_dict, dict_fig=fig_dict)
-            name_file =  ''.join([library_functions.tools.classical_functions_str.tuple_to_str(key), 'histogram'])
+            name_file = ''.join([library_functions.tools.classical_functions_str.tuple_to_str(key), 'histogram'])
             plot.save_plot(name_save_file=name_file)

@@ -3,10 +3,11 @@ from library_errors.Error_type_setter import Error_type_setter
 
 
 class Estimator:
-    # DF is a dataframe from pandas. Storing information inside is quite easy, easily printable and easy to collect back.
+    # DF is a dataframe from pandas. Storing information inside is quite easy,
+    # easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator
     def __init__(self, DF):
-        self._DF = DF
+        self.DF = DF
 
     def __repr__(self):
         return repr(self._DF)
@@ -15,7 +16,6 @@ class Estimator:
     def from_path(cls, path):
         # path has to be raw. with \\
         return cls(pd.read_csv(path))
-
 
     def append(self, new_df):
         """
@@ -34,24 +34,25 @@ class Estimator:
         # fct is a fct
         # name is the name of a column where the data will lie.
         # one value is one parameter... is it enough parameter ?
-        # the function does create a new column in the DF, by looking at the data in the separator and applying the function to it.
+        # the function does create a new column in the DF,
+        # by looking at the data in the separator and applying the function to it.
         self._DF[name] = self._DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
         return
 
-    def mean(self, name, separators = None):
+    def mean(self, name, separators=None):
         ## name is the name of a column where the data lies.
         if separators is not None:
             return self._DF.groupby(separators)[name].mean()
-        else :
+        else:
             return self._DF[name].mean()
 
-
     # it corresponds to S^2. This is the empirical estimator of the variance.
-    def estimator_variance(self, name, separators = None, ddof=1):
-        ## ddof is by how much one normalize the results (usually  / n-1). This gives the unbiased estimator of the variance if the mean is known.
+    def estimator_variance(self, name, separators=None, ddof=1):
+        ## ddof is by how much one normalize the results (usually  / n-1).
+        # This gives the unbiased estimator of the variance if the mean is known.
         if separators is not None:
             return self._DF.groupby(separators)[name].var(ddof=ddof)
-        else :
+        else:
             return self._DF[name].var(ddof=ddof)
 
     # method that level up the method to csv of dataframes.
@@ -80,6 +81,6 @@ class Estimator:
     @DF.setter
     def DF(self, new_DF):
         if isinstance(new_DF, pd.DataFrame):
-                self._DF = new_DF
+            self._DF = new_DF
         else:
             raise Error_type_setter('Argument is not an Dataframe.')

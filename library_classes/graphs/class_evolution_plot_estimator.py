@@ -2,8 +2,8 @@
 from abc import abstractmethod
 
 import library_functions.tools.classical_functions_str
-import numpy as np  #maths library and arrays
-from matplotlib import pyplot as plt  #ploting
+import numpy as np  # maths library and arrays
+from matplotlib import pyplot as plt  # ploting
 
 # my libraries
 from library_classes.plot.class_aplot import APlot
@@ -13,9 +13,11 @@ from library_classes.graphs.class_graph_estimator import Graph_Estimator
 # errors:
 
 np.random.seed(124)
+
+
 # other files
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 class Evolution_plot_estimator(Graph_Estimator):
@@ -26,7 +28,7 @@ class Evolution_plot_estimator(Graph_Estimator):
         pass
 
     def __init__(self, estimator, separators=None, *args, **kwargs):
-        super().__init__(estimator = estimator, separators = separators, *args, **kwargs)
+        super().__init__(estimator=estimator, separators=separators, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
@@ -68,7 +70,6 @@ class Evolution_plot_estimator(Graph_Estimator):
     #  #############################################################################
     # plot
 
-
     @abstractmethod
     def get_dict_fig(self, separators, key):
         pass
@@ -84,7 +85,7 @@ class Evolution_plot_estimator(Graph_Estimator):
         Returns:
 
         """
-        separators, global_dict, keys = super().draw(separators = separators)
+        separators, global_dict, keys = super().draw(separators=separators)
         estimation = self.get_evolution_name_unique_values(self.estimator.DF)
         for key in keys:
             data = global_dict.get_group(key)
@@ -129,5 +130,5 @@ class Evolution_plot_estimator(Graph_Estimator):
         # either coloured keys have been defined or not. I retrieve them in order to know what color to put upon which kernel.
         if separator_colour is not None:
             return plot, coloured_keys
-        else :
+        else:
             return plot, None

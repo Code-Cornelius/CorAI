@@ -13,7 +13,7 @@ def newtons_method(f, df, x0, e=10 ** (-10), tol=10 ** (-10)):
     number_of_step_crash = 0
     step = 1
     while f(x0) > e or step > tol:
-        if step == np.inf or number_of_step_crash > np.power(10, 9): # function too flat.
+        if step == np.inf or number_of_step_crash > np.power(10, 9):  # function too flat.
             raise Exception("Is the function flat enough ?")
         number_of_step_crash += 1
         old_x0 = x0
@@ -33,7 +33,7 @@ def newtons_method_multi(df, ddf, x0, e=10 ** (-10), tol=10 ** (-10)):
     # while f is bigger than the tolerance.
     number_of_step_crash = 0
     step = 1
-    while np.linalg.norm(df(x0), 2) > e or step > tol: #I use norm 2 as criterea
+    while np.linalg.norm(df(x0), 2) > e or step > tol:  # I use norm 2 as criterea
         if number_of_step_crash > np.power(10, 9):
             raise Exception("Is the function flat enough ?")
         number_of_step_crash += 1

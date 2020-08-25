@@ -4,7 +4,6 @@ import numpy as np
 import scipy.integrate
 
 
-
 def complex_quadrature(func, a, b, *args, **kwargs):
     """
     Complex quadrature over real line, is harder than real, so here is a built function
@@ -22,6 +21,7 @@ def complex_quadrature(func, a, b, *args, **kwargs):
     Returns:
         a 3-tuple : (integral, real error, imagi error).
     """
+
     def real_func(x):
         return func(x).real
 
@@ -52,7 +52,6 @@ def trapeze_int(t, y):
     if len(t) <= 1:
         warnings.warn("Object of length 1.")
         return 0
-
 
     # corresponds to the case where the vector is constant.
     # Then in order to reduce the computation, I return the product of the length time with the constant.

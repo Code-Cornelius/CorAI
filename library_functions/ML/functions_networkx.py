@@ -1,24 +1,25 @@
 # normal libraries
-import numpy as np #maths library and arrays
+import numpy as np  # maths library and arrays
 import statistics as stat
-import pandas as pd #dataframes
-import seaborn as sns #envrionement for plots
-from matplotlib import pyplot as plt #ploting
-import scipy.stats #functions of statistics
+import pandas as pd  # dataframes
+import seaborn as sns  # envrionement for plots
+from matplotlib import pyplot as plt  # ploting
+import scipy.stats  # functions of statistics
 import scipy.integrate  # for the method quad allows integration
 import scipy.optimize  # for knowing when a function crosses 0, for implied volatility computation.
 from operator import itemgetter  # at some point I need to get the list of ranks of a list.
-import time #allows to time event
+import time  # allows to time event
 import warnings
-import math #quick math functions
-import cmath  #complex functions
+import math  # quick math functions
+import cmath  # complex functions
+
 
 # my libraries
 
 
 # other files
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 def draw_graph(graph, coord, node_size, node_color, cmap):
@@ -58,7 +59,7 @@ def draw_spectral(graph, node_size, node_color, title, cmap='coolwarm'):
 
 
 ################### only this one is important!
-def draw(graph, node_size, node_color, title, spectral=True, spring=True, pos = None, cmap='coolwarm'):
+def draw(graph, node_size, node_color, title, spectral=True, spring=True, pos=None, cmap='coolwarm'):
     if spectral:
         draw_spectral(graph, node_size, node_color, title, cmap=cmap)
     if spring:

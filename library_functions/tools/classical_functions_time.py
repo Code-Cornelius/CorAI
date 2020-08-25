@@ -12,17 +12,17 @@ def time_convertisor(seconds, format=0):
     seconds_int = round(seconds)
     seconds_frac = seconds - seconds_int
     if format == 0:
-        return seconds_int,seconds_frac
+        return seconds_int, seconds_frac
     else:
         m, s = divmod(seconds_int, 60)
         if format == 1:
-            return s,m,seconds_frac
-        else :
+            return s, m, seconds_frac
+        else:
             h, m = divmod(m, 60)
-            return s, m, h,seconds_frac
+            return s, m, h, seconds_frac
 
 
-def time_text(s, m,h, seconds_frac = 0):
+def time_text(s, m, h, seconds_frac=0):
     if s == 0:
         ts = ""
     elif s == 1:
@@ -46,7 +46,7 @@ def time_text(s, m,h, seconds_frac = 0):
 
     if h == s and s == m and m == 0:
         ts = " {} second ".format(seconds_frac)
-    return ts,tm,th
+    return ts, tm, th
 
 
 def time_computational(A, B, title="no title"):
@@ -63,7 +63,7 @@ def time_computational(A, B, title="no title"):
     seconds = B - A
     beg = " Program : " + title + ", took roughly :"
     print(100 * '~')
-    s,m, h, seconds_frac = time_convertisor(seconds, format = 2)
-    ts,tm,th = time_text(s,m,h,seconds_frac)
-    print(''.join([beg,th,tm,ts,'to run.']) )
+    s, m, h, seconds_frac = time_convertisor(seconds, format=2)
+    ts, tm, th = time_text(s, m, h, seconds_frac)
+    print(''.join([beg, th, tm, ts, 'to run.']))
     return

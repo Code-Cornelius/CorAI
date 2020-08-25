@@ -13,8 +13,9 @@ sns.set()
 from library_functions.tools import classical_functions
 from library_metaclasses.metaclass_register import *
 
-#errors:
+# errors:
 from library_errors.Warning_deprecated import deprecated_function
+
 
 # other files
 
@@ -191,7 +192,7 @@ def hist(data, bins, title, labels, range=None, total_number_of_simulations=None
 
 class APlot(metaclass=register):
     # TODO 23/08/2020 nie_k:  point plot for one point.
-    # would be interesting to have objects like hist points lines ...
+
     # APlot is the class for my plots. APlot is one figure.
 
     default_dict_plot_param = {"color": 'm',
@@ -229,9 +230,8 @@ class APlot(metaclass=register):
             # now, self.axs is always a list (uni dimensional).
             self.nb_of_axs = how[0] * how[1]  # nb of axes upon which I can plot
 
-
             # for the axs_bis, I store the axs inside this guy:
-            self.axs_bis = [None] * self.nb_of_axs # a list full of zeros.
+            self.axs_bis = [None] * self.nb_of_axs  # a list full of zeros.
 
             # we set the default param of the fig:
             for i in range(self.nb_of_axs):
@@ -245,7 +245,7 @@ class APlot(metaclass=register):
             ax = 0
         return ax
 
-    def set_dict_fig(self, nb_ax = 0, dict_fig = None, xx=None, yy=None):
+    def set_dict_fig(self, nb_ax=0, dict_fig=None, xx=None, yy=None):
         # always plotter first, then dict_updates (using the limits of the axis).
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
@@ -262,8 +262,7 @@ class APlot(metaclass=register):
         self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=fontsize)
         self.axs[nb_ax].set_ylabel(dict_fig['ylabel'], fontsize=fontsize)
         self.axs[nb_ax].set_xscale(dict_fig['xscale'])
-        self.axs[nb_ax].tick_params(labelsize=fontsize-1)
-
+        self.axs[nb_ax].tick_params(labelsize=fontsize - 1)
 
         if dict_fig['xint']:
             if xx is None:
@@ -280,8 +279,6 @@ class APlot(metaclass=register):
 
         # I keep the condition. If not true, then no need to move the plot up.
         if 'parameters' in dict_fig and 'name_parameters' in dict_fig:
-            #### check if this is correct
-            # or fig ?
             parameters = dict_fig['parameters']
             name_parameters = dict_fig['name_parameters']
             nb_parameters = len(parameters)
@@ -307,7 +304,7 @@ class APlot(metaclass=register):
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
 
-    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis = False):
+    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis=False):
         """
         A helper function to make a graph
 
@@ -354,10 +351,9 @@ class APlot(metaclass=register):
         if dict_fig is not None:
             self.set_dict_fig(nb_ax, dict_fig, xx, yy)
 
-
         return
 
-    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight = True):
+    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight=True):
         """ for now I add the ax bis to self.axs at the end. Access through -1.
         """
 
@@ -406,7 +402,7 @@ class APlot(metaclass=register):
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
     def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
-        return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param, tight = False)
+        return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param, tight=False)
 
     def cumulative_plot(self, xx, yy, nb_ax=0):
         """
@@ -434,7 +430,8 @@ class APlot(metaclass=register):
                                'label': "Histogram", "cumulative": True}
 
     def hist(self, data, nb_of_ax=0,
-             dict_param_hist=default_dict_param_hist.copy(), # I need to copy because I am updating it. In particular I pop the cumulative.
+             dict_param_hist=default_dict_param_hist.copy(),
+             # I need to copy because I am updating it. In particular I pop the cumulative.
              dict_fig=None):
 
         # function for plotting histograms

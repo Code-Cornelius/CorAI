@@ -1,7 +1,7 @@
 # normal libraries
 import library_functions.tools.classical_functions_optimization
-import numpy as np  #maths library and arrays
-import scipy.stats  #functions of statistics
+import numpy as np  # maths library and arrays
+import scipy.stats  # functions of statistics
 import warnings
 
 # my libraries
@@ -10,9 +10,7 @@ from library_functions.tools import classical_functions, recurrent_functions
 
 # other files
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 def BlackScholesVegaCore(DF, F, X, T, SIGMA):
@@ -69,7 +67,6 @@ def BlackScholes(CallPutFlag, S, k, T, R, d, SIGMA):
     return BlackScholesCore(CallPutFlag, np.exp(-R * T), np.exp((R - d) * T) * S, K, T, SIGMA)
 
 
-
 def implied_volatility_bisect(CallPutFlag, s0, k, T, R, d, experimented_price):
     ## s0 starting point of the S's,
     ## S realisation of the S_T
@@ -81,10 +78,11 @@ def implied_volatility_bisect(CallPutFlag, s0, k, T, R, d, experimented_price):
 
     vMin, vMax = 0.00001, 20.
     # in order to find the implied volatility, one has to find the value at which smileMin crosses zero.
-    try :
-        return scipy.optimize.bisect(smileMin, vMin, vMax, args=( k, s0, T, R, experimented_price), xtol=1e-20, rtol=1e-15,
-                                 full_output=False, disp=True)
-    except :
+    try:
+        return scipy.optimize.bisect(smileMin, vMin, vMax, args=(k, s0, T, R, experimented_price), xtol=1e-20,
+                                     rtol=1e-15,
+                                     full_output=False, disp=True)
+    except:
         warnings.warn("Bisect didn't find the $\sigma_{IMP}$, returned 0.")
         return 0
 
@@ -107,13 +105,12 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     """
     ## s0 starting point of the S's,
     ## S realisation of the S_T
-    fx = lambda varSIGMA : BlackScholes(CallPutFlag, s0, k, T, R, d, varSIGMA) - experimented_price
+    fx = lambda varSIGMA: BlackScholes(CallPutFlag, s0, k, T, R, d, varSIGMA) - experimented_price
     # invariant of call or put
     K = np.exp(k)
-    dfx = lambda varSIGMA : BlackScholesVegaCore(   np.exp(-R * T), np.exp((R - 0) * T) * s0, K, T, varSIGMA   )
-    try :
+    dfx = lambda varSIGMA: BlackScholesVegaCore(np.exp(-R * T), np.exp((R - 0) * T) * s0, K, T, varSIGMA)
+    try:
         return library_functions.tools.classical_functions_optimization.newtons_method(fx, dfx, 0.2)
-    except :
+    except:
         warnings.warn("Bisect didn't find the $\sigma_{IMP}$, returned 0.")
         return 0
-
