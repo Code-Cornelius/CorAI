@@ -185,7 +185,7 @@ class APlot(metaclass=register):
                 self.axs_bis[nb_ax].grid(False)
             return out
         else:
-            Error_forbidden("Inputs plot not of matching size.")
+            raise Error_forbidden("Inputs for the plot are not of matching size.")
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight=True):
         """

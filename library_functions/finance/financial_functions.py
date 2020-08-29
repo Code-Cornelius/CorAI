@@ -32,9 +32,9 @@ def BlackScholesVegaCore(DF, F, X, T, SIGMA):
     return F * recurrent_functions.phi(d1) * np.sqrt(T) / DF
 
 
-#### Black Sholes Function
 def BlackScholesCore(CallPutFlag, DF, F, X, T, SIGMA):
-    """
+    """ Black Sholes Function
+
     One shouldn't use that function, prefer BS
 
     Args:
@@ -57,19 +57,40 @@ def BlackScholesCore(CallPutFlag, DF, F, X, T, SIGMA):
         return DF * (X * scipy.stats.norm.cdf(-d2) - F * scipy.stats.norm.cdf(-d1))
 
 
-##  Black-Scholes Pricing Function
 def BlackScholes(CallPutFlag, S, k, T, R, d, SIGMA):
+    """Black-Scholes Pricing Function
+
+    Args:
+        CallPutFlag:
+        S:  = S_0
+        k:  the log strik price k, we change it for the normal strike price K = exp(k)
+        T:  maturity
+        R:  continuous interest rate
+        d: dividend
+        SIGMA:
+
+    Returns:
+
+    """
     K = np.exp(k)
-    ## X: strike price,
-    ## the log strik price k, we change it for the normal strike price K = exp(k)
-    ## S c'est S_0
-    ## R, d: continuous interest rate and dividend
     return BlackScholesCore(CallPutFlag, np.exp(-R * T), np.exp((R - d) * T) * S, K, T, SIGMA)
 
 
 def implied_volatility_bisect(CallPutFlag, s0, k, T, R, d, experimented_price):
-    ## s0 starting point of the S's,
-    ## S realisation of the S_T
+    """
+
+    Args:
+        CallPutFlag:
+        s0: starting point of the S's,
+        k:
+        T:
+        R:
+        d:
+        experimented_price:
+
+    Returns:
+
+    """
 
     # Bisection algorithm when the Lee-Li algorithm breaks down
     def smileMin(vol, *args):
@@ -93,7 +114,7 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
 
     Args:
         CallPutFlag:
-        d:
+        d: dividends
         k: log strike price
         s0: initial price
         T:  maturity
@@ -103,8 +124,6 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     Returns: the Implied Volatility
 
     """
-    ## s0 starting point of the S's,
-    ## S realisation of the S_T
     fx = lambda varSIGMA: BlackScholes(CallPutFlag, s0, k, T, R, d, varSIGMA) - experimented_price
     # invariant of call or put
     K = np.exp(k)
@@ -112,5 +131,5 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     try:
         return library_functions.tools.classical_functions_optimization.newtons_method(fx, dfx, 0.2)
     except:
-        warnings.warn("Bisect didn't find the $\sigma_{IMP}$, returned 0.")
+        warnings.warn("Bisect didn't find the $\\sigma_{IMP}$, returned 0.")
         return 0
