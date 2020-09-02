@@ -2,19 +2,19 @@
 import math  # quick math functions
 import warnings
 
-import library_functions.tools.classical_functions_dict
 import numpy as np  # maths library and arrays
-import seaborn as sns  # environment for plots
-from library_errors.Error_forbidden import Error_forbidden
 from matplotlib import pyplot as plt  # plotting
+import seaborn as sns  # environment for plots
 
-sns.set()
+sns.set() #better layout, like blue background
 
 # my libraries
 from library_metaclasses.metaclass_register import *
+from library_functions.tools.classical_functions_dict import up
 
 
 # errors:
+from library_errors.Error_forbidden import Error_forbidden
 
 
 # other files
@@ -41,13 +41,14 @@ class APlot(metaclass=register):
 
     # APlot is the class for my plots. APlot is one figure.
 
-    default_dict_plot_param = {"color": 'm',
+    DEFAULT_DICT_PLOT_PARAMETERS = {"color": 'm',
                                "linestyle": "solid",
                                "linewidth": 0.5,
                                "marker": "o",
                                "markersize": 0.4,
                                "label": "plot"
-                               }
+                                    }
+    FONTSIZE = 14.5
 
     @deco_register
     def __init__(self, how=(1, 1), datax=None, datay=None, figsize=(7, 5), sharex=False,
@@ -56,10 +57,10 @@ class APlot(metaclass=register):
         if datay is not None:
             if datax is not None:
                 plt.figure(figsize=figsize)
-                plt.plot(datax, datay, **APlot.default_dict_plot_param)
+                plt.plot(datax, datay, **APlot.DEFAULT_DICT_PLOT_PARAMETERS)
             else:
                 plt.figure(figsize=figsize)
-                plt.plot(range(len(datay)), datay, **APlot.default_dict_plot_param)
+                plt.plot(range(len(datay)), datay, **APlot.DEFAULT_DICT_PLOT_PARAMETERS)
 
         else:  # corresponds to the case where we want to plot something
             # creation of the figu
@@ -95,20 +96,19 @@ class APlot(metaclass=register):
         # always plotter first, then dict_updates (using the limits of the axis).
         # dict authorised:
         # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
-        fontsize = 14.5
         nb_ax = self.check_axs(nb_ax)
-        default_str = "Non-Defined."
+        DEFAULT_STR = "Non-Defined."
         if dict_fig is None:
             dict_fig = {}
-        default_dict = {'title': default_str, 'xlabel': default_str, 'ylabel': default_str,
+        default_dict = {'title': DEFAULT_STR, 'xlabel': DEFAULT_STR, 'ylabel': DEFAULT_STR,
                         'xscale': 'linear', 'xint': False, 'yint': False}
-        library_functions.tools.classical_functions_dict.up(dict_fig, default_dict)
+        up(dict_fig, default_dict)
 
-        self.axs[nb_ax].set_title(dict_fig['title'], fontsize=fontsize)
-        self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=fontsize)
-        self.axs[nb_ax].set_ylabel(dict_fig['ylabel'], fontsize=fontsize)
+        self.axs[nb_ax].set_title(dict_fig['title'], fontsize=APlot.FONTSIZE)
+        self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=APlot.FONTSIZE)
+        self.axs[nb_ax].set_ylabel(dict_fig['ylabel'], fontsize=APlot.FONTSIZE)
         self.axs[nb_ax].set_xscale(dict_fig['xscale'])
-        self.axs[nb_ax].tick_params(labelsize=fontsize - 1)
+        self.axs[nb_ax].tick_params(labelsize=APlot.FONTSIZE - 1)
 
         if dict_fig['xint']:
             if xx is None:
@@ -145,7 +145,7 @@ class APlot(metaclass=register):
             bottom, top = self.axs[nb_ax].get_ylim()
             left, right = self.axs[nb_ax].get_xlim()
             self.axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text,
-                                 fontsize=fontsize - 1)
+                                 fontsize=APlot.FONTSIZE - 1)
             plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace=0.5)  # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
@@ -174,7 +174,7 @@ class APlot(metaclass=register):
             list of artists added
         """
         if len(xx) == len(yy):
-            library_functions.tools.classical_functions_dict.up(dict_plot_param, APlot.default_dict_plot_param)
+            up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
             nb_ax = self.check_axs(nb_ax)
             if not bis:  # bis is plot on second axis.
                 out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
@@ -187,7 +187,7 @@ class APlot(metaclass=register):
         else:
             raise Error_forbidden("Inputs for the plot are not of matching size.")
 
-    def uni_plot(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight=True):
+    def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
         """
         Method to have 1 plot. Upon nb_ax (int)
         """
@@ -199,7 +199,7 @@ class APlot(metaclass=register):
 
         return
 
-    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=default_dict_plot_param.copy(), dict_fig=None, tight=True):
+    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
         """ for now I add the ax bis to self.axs at the end. Access through -1.
         """
 
@@ -216,22 +216,26 @@ class APlot(metaclass=register):
         return
 
     def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2,
-                dict_plot_param_1=default_dict_plot_param.copy(),
-                dict_plot_param_2=default_dict_plot_param.copy(),
+                dict_plot_param_1=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
+                dict_plot_param_2=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
                 dict_fig_1=None,
                 dict_fig_2=None):
         self.uni_plot(nb_ax1, xx1, yy1, dict_plot_param=dict_plot_param_1, dict_fig=dict_fig_1)
         self.uni_plot(nb_ax2, xx2, yy2, dict_plot_param=dict_plot_param_2, dict_fig=dict_fig_2)
         return
 
-    # todo the same thing but with a numpy function.
-    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
+
+
+    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), not_numpy=True):
         # ax is an int, not necessary for uni dim case.
-        yy = [function(x) for x in xx]
+        if not_numpy:
+            xx = np.array(xx)
+        yy = function(xx)
+
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         return
 
-    def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
+    def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         """
         Plot a line on the chosen ax.
 
@@ -248,7 +252,7 @@ class APlot(metaclass=register):
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
-    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=default_dict_plot_param.copy()):
+    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param, tight=False)
 
     def cumulative_plot(self, xx, yy, nb_ax=0):
