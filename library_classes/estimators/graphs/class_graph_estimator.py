@@ -3,7 +3,7 @@ import library_functions.tools.classical_functions_vectors
 import pandas as pd
 # my libraries
 from library_classes.estimators.class_estimator import Estimator
-from library_classes.graphs.class_root_graph import Root_Graph
+from library_classes.estimators.graphs.class_root_graph import Root_Graph
 from library_errors.Error_type_setter import Error_type_setter
 
 
@@ -41,8 +41,7 @@ class Graph_Estimator(Root_Graph):
                       library_functions.tools.classical_functions_vectors.roundrobin(names, [" : "] * len(values),
                                                                                      values,
                                                                                      [", "] * (len(values) - 1))]
-        str_param = ''.join([str(elem) for elem in
-                             list_param])
+        str_param = ''.join([str(elem) for elem in list_param])
         # list_param is including ints and str so I need to convert them all before joining,
         # since join requires only str.
         if extra_text is not None:
