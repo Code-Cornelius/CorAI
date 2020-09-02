@@ -1,4 +1,6 @@
-class Error_forbidden(Exception):
+#type of error when I don't allow certain behaviours, in particular, when I don't accept some inputs.
+
+class Error_forbidden(ValueError):
     def __init__(self, reason):
-        self.message = " ".join(["Behaviour not allowed. Please recheck. ", reason])
+        self.message = " ".join(["Behaviour not allowed yet. Please recheck. ", reason])
         super().__init__(self.message)
