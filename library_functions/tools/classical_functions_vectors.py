@@ -68,17 +68,36 @@ def inverse_mult(x, vect):
     return x * np.reciprocal(vect.astype(float))
 
 
-def rotate(l, n):
+def rotate(my_list, n):
     # do a cycle over a list:
     # rotate(1) : [1,2,3,4] -> [4,1,2,3]
     # does not work with numpy array, and with integers bigger than length.
-    # todo can use isinstance
-    if type(l).__module__ == np.__name__:  # checks if the type of list is numpy.array
+    if isinstance(my_list, np.ndarray):  # checks if the type of list is numpy.array
         warnings.warn("The object given is not a list, but an array. The numpy function roll is used.")
 
-        return np.roll(l, n)
-    if abs(n) < len(l):
-        return l[-n:] + l[:-n]
+        return np.roll(my_list, n)
+    if abs(n) < len(my_list):
+        return my_list[-n:] + my_list[:-n]
     else:
         warnings.warn("The rolling is too big, the original list is returned.")
-        return l
+        return my_list
+
+
+def is_iterable(obj):
+    '''
+    test whether an object is iterable.
+
+    Args:
+        obj:  anything to test
+
+    Returns: TRUE OR FALSE
+
+    '''
+    try:
+        iter(obj)
+    except Exception:
+        return False
+    else:
+        return True
+
+

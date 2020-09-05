@@ -14,7 +14,7 @@ from library_functions.tools.classical_functions_dict import up
 
 
 # errors:
-from library_errors.Error_forbidden import Error_forbidden
+from library_errors.Error_not_allowed_input import Error_not_allowed_input
 
 
 # other files
@@ -141,7 +141,7 @@ class Modularplot(metaclass=register):
             self.axs[nb_ax].grid(True)
             return out
         else:
-            raise Error_forbidden("Inputs for the plot are not of matching size.")
+            raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
 
 
 

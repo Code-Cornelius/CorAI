@@ -14,7 +14,7 @@ from library_functions.tools.classical_functions_dict import up
 
 
 # errors:
-from library_errors.Error_forbidden import Error_forbidden
+from library_errors.Error_not_allowed_input import Error_not_allowed_input
 
 
 # other files
@@ -185,7 +185,7 @@ class APlot(metaclass=register):
                 self.axs_bis[nb_ax].grid(False)
             return out
         else:
-            raise Error_forbidden("Inputs for the plot are not of matching size.")
+            raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
         """
@@ -291,7 +291,7 @@ class APlot(metaclass=register):
         self.axs[nb_of_ax].set_xlabel("Realisation")
         self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
-        library_functions.tools.classical_functions_dict.up(dict_param_hist, APlot.default_dict_param_hist)
+        up(dict_param_hist, APlot.default_dict_param_hist)
 
         try:
             # if doesn't pop, it will be catch by except.

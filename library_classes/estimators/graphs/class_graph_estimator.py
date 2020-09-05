@@ -9,6 +9,14 @@ from library_errors.Error_type_setter import Error_type_setter
 
 class Graph_Estimator(Root_Graph):
     def __init__(self, estimator, separators=None, *args, **kwargs):
+        '''
+
+        Args:
+            estimator:  any estimator type,
+            separators:  iterable type
+            *args:
+            **kwargs:
+        '''
         self.estimator = estimator
         self.separators = separators
         super().__init__(estimator=estimator, separators=separators, *args, **kwargs)
@@ -96,4 +104,8 @@ class Graph_Estimator(Root_Graph):
 
     @separators.setter
     def separators(self, new_separator):
-        self._separators = new_separator
+        if is_iterable(new_separator):
+            self._separators = new_separator
+        else:
+            raise Error_type_setter('Argument is not an iterable.')
+
