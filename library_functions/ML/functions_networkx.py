@@ -47,7 +47,6 @@ def draw_spectral(graph, node_size, node_color, title, cmap='coolwarm'):
     return
 
 
-################### only this one is important!
 def draw(graph, node_size, node_color, title, spectral=True, spring=True, pos=None, cmap='coolwarm'):
     if spectral:
         draw_spectral(graph, node_size, node_color, title, cmap=cmap)

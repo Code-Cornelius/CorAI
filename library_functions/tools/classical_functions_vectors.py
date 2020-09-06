@@ -4,6 +4,8 @@ import warnings
 
 import numpy as np
 
+from library_errors.Error_not_allowed_input import Error_not_allowed_input
+
 
 # todo version array and list
 def my_list_argmin(my_list):
@@ -55,8 +57,12 @@ def roundrobin(*iterables):
 # todo version array and list
 def mean_list(my_list):
     # the default behaviour if list is empty, it returns 0.
-    return float(sum(my_list)) / max(len(my_list), 1)
-
+    if isinstance(my_list, list):
+        return float(sum(my_list)) / max(len(my_list), 1)
+    elif isinstance(my_list, np.ndarray):
+        return np.mean(my_list)
+    else:
+        raise Error_not_allowed_input("Mean list takes either a list or a numpy array.")
 
 def is_invertible(a):
     # using numpy, test that a np array is invertible, first that the matrix is square, than that the rank is big enough.
@@ -84,7 +90,7 @@ def rotate(my_list, n):
 
 
 def is_iterable(obj):
-    '''
+    """
     test whether an object is iterable.
 
     Args:
@@ -92,12 +98,10 @@ def is_iterable(obj):
 
     Returns: TRUE OR FALSE
 
-    '''
+    """
     try:
         iter(obj)
-    except Exception:
+    except:
         return False
     else:
         return True
-
-

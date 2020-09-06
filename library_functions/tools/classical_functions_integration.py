@@ -19,7 +19,7 @@ def complex_quadrature(func, a, b, *args, **kwargs):
         **kwargs: for the function
 
     Returns:
-        a 3-tuple : (integral, real error, imagi error).
+        a 3-tuple : (integral, real error, imaginary error).
     """
 
     def real_func(x):
@@ -37,7 +37,7 @@ def complex_quadrature(func, a, b, *args, **kwargs):
 
 def evaluate_function(func, tt, *args, **kwargs):
     # return the image of func(tt)
-    ## args if additionnal parameters are required
+    # args if additional parameters are required
     im = np.zeros(len(tt))
     for i in range(len(tt)):
         im[i] = func(tt[i], *args, **kwargs)
@@ -57,9 +57,9 @@ def trapeze_int(t, y):
     # Then in order to reduce the computation, I return the product of the length time with the constant.
     if len(set(y)) <= 1:
         # this tests if there is only one value in the vector
-        # I return the difference between the timr beg end
+        # I return the difference between the time beg end
         # (because If t[0] \neq 0 there would be a problem).
-        # times the first value, which is equal to all of the other by the precedant test.
+        # times the first value, which is equal to all of the other by the previous test.
         return (t[-1] - t[0]) * y[0]
 
     DELTA = t[1] - t[0]

@@ -6,12 +6,11 @@ import numpy as np  # maths library and arrays
 from matplotlib import pyplot as plt  # plotting
 import seaborn as sns  # environment for plots
 
-sns.set() #better layout, like blue background
+sns.set()  # better layout, like blue background
 
 # my libraries
 from library_metaclasses.metaclass_register import *
 from library_functions.tools.classical_functions_dict import up
-
 
 # errors:
 from library_errors.Error_not_allowed_input import Error_not_allowed_input
@@ -36,24 +35,22 @@ from library_errors.Error_not_allowed_input import Error_not_allowed_input
 # new plot functions
 
 
-class Modularplot(metaclass=register):
+class Modularplot(metaclass=register, object):
     DEFAULT_DICT_PLOT_PARAMETERS = {"color": 'm',
-                               "linestyle": "solid",
-                               "linewidth": 0.5,
-                               "marker": "o",
-                               "markersize": 0.4,
-                               "label": "plot"
+                                    "linestyle": "solid",
+                                    "linewidth": 0.5,
+                                    "marker": "o",
+                                    "markersize": 0.4,
+                                    "label": "plot"
                                     }
     FONTSIZE = 14.5
-
 
     @deco_register
     def __init__(self):
         self.upper_ax = plt.subplot2grid((21, 21), (0, 0), rowspan=14,
-                                    colspan=21)
+                                         colspan=21)
         self.lower_ax = plt.subplot2grid((21, 21), (16, 0), rowspan=8, colspan=21)
         self.axs = [self.upper_ax, self.lower_ax]
-
 
     def set_dict_fig(self, nb_ax=0, dict_fig=None, xx=None, yy=None):
         # always plotter first, then dict_updates (using the limits of the axis).
@@ -143,10 +140,6 @@ class Modularplot(metaclass=register):
         else:
             raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
 
-
-
-
-
     def _upper_plot(self, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None):
         """
         Method to have 1 plot. Upon nb_ax (int)
@@ -155,7 +148,6 @@ class Modularplot(metaclass=register):
         if dict_fig is not None:
             self.set_dict_fig(0, dict_fig, xx, yy)
         return
-
 
     def _lower_plot(self, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None):
         """
@@ -171,9 +163,6 @@ class Modularplot(metaclass=register):
         self._upper_plot(xx, yy1, dict_plot_param=dict_plot_param1, dict_fig=dict_fig1)
         self._lower_plot(xx, yy2, dict_plot_param=dict_plot_param2, dict_fig=dict_fig2)
         return
-
-
-
 
     def show_legend(self, nb_ax=None):
         # as usually, nb_ax is an integer.
@@ -197,8 +186,6 @@ class Modularplot(metaclass=register):
         """
         plt.savefig(name_save_file + '.png', dpi=800)
         return
-
-
 
 # one = Modularplot()
 # xx = np.linspace(0,1,1000)

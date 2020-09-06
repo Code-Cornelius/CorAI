@@ -1,5 +1,5 @@
-def time_convertisor(seconds, time_format=0):
-    """instead of converting the seconds in minuts outside, one can do it here.
+def time_convertor(seconds, time_format=0):
+    """instead of converting the seconds in minutes outside, one can do it here.
 
     Args:
         seconds: runtime
@@ -63,7 +63,7 @@ def time_computational(A, B, title="no title"):
     seconds = B - A
     beg = " Program : " + title + ", took roughly :"
     print(100 * '~')
-    s, m, h, seconds_frac = time_convertisor(seconds, time_format=2)
+    s, m, h, seconds_frac = time_convertor(seconds, time_format=2)
     ts, tm, th = time_text(s, m, h, seconds_frac)
     print(''.join([beg, th, tm, ts, 'to run.']))
     return

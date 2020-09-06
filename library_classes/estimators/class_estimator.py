@@ -2,7 +2,7 @@ import pandas as pd
 from library_errors.Error_type_setter import Error_type_setter
 
 
-class Estimator():
+class Estimator(object):
     # DF is a dataframe from pandas. Storing information inside is quite easy,
     # easily printable and easy to collect back.
     # once initialize, one can add values. Each row is one estimator

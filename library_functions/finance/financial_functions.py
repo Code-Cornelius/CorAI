@@ -103,7 +103,7 @@ def implied_volatility_bisect(CallPutFlag, s0, k, T, R, d, experimented_price):
         return scipy.optimize.bisect(smileMin, vMin, vMax, args=(k, s0, T, R, experimented_price), xtol=1e-20,
                                      rtol=1e-15,
                                      full_output=False, disp=True)
-    except:
+    except:  # TODO CATCH THE ERROR I NEED TO KNOW WHICH ERROR
         warnings.warn("Bisect didn't find the $\sigma_{IMP}$, returned 0.")
         return 0
 
@@ -130,6 +130,6 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     dfx = lambda varSIGMA: BlackScholesVegaCore(np.exp(-R * T), np.exp((R - 0) * T) * s0, K, T, varSIGMA)
     try:
         return library_functions.tools.classical_functions_optimization.newtons_method(fx, dfx, 0.2)
-    except:
+    except:  # TODO CATCH THE ERROR I NEED TO KNOW WHICH ERROR
         warnings.warn("Bisect didn't find the $\\sigma_{IMP}$, returned 0.")
         return 0

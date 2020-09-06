@@ -20,7 +20,7 @@ class Test_register(unittest.TestCase):
 
             @staticmethod
             def print_register():
-                print("coucou")
+                print("hi")
 
         class Boo(metaclass=register):
             @deco_register
@@ -30,7 +30,7 @@ class Test_register(unittest.TestCase):
 
             @staticmethod
             def print_register():
-                print("coucou")
+                print("hi")
 
         f = Foo()
         f = Foo()

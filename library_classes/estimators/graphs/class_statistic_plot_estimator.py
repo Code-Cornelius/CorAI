@@ -110,12 +110,10 @@ class Statistic_plot_estimator(Graph_Estimator):
             # first, find the DF with only the last estimation, which should always be the max value of column_evolution.
             max_value_evol = self.estimator.DF[name_column_evolution].max()
 
-            # BIANCA class for estimator...
             hist_DF = self.estimator.__class__(
                 self.estimator.DF[self.estimator.DF[name_column_evolution]
                                   == max_value_evol].copy())  # copy() for independence
 
-            # BIANCA how to get the class histogram Hawkes here?
             my_hist = class_for_hist(hist_DF, *args, **kwargs)
             my_hist.draw()
         return

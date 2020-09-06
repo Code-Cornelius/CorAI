@@ -7,7 +7,7 @@ from library_classes.estimators.class_estimator import Estimator
 from library_classes.estimators.graphs.class_graph_estimator import Graph_Estimator
 # my libraries
 from library_classes.plot.class_aplot import APlot
-from matplotlib import pyplot as plt  # ploting
+from matplotlib import pyplot as plt  # plotting
 
 # errors:
 

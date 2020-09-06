@@ -10,14 +10,14 @@ from library_functions.tools.classical_functions_vectors import is_iterable
 
 class Graph_Estimator(Root_Graph):
     def __init__(self, estimator, separators=None, *args, **kwargs):
-        '''
+        """
 
         Args:
             estimator:  any estimator type,
             separators:  iterable type
             *args:
             **kwargs:
-        '''
+        """
         self.estimator = estimator
         self.separators = separators
         super().__init__(estimator=estimator, separators=separators, *args, **kwargs)
@@ -109,4 +109,3 @@ class Graph_Estimator(Root_Graph):
             self._separators = new_separator
         else:
             raise Error_type_setter('Argument is not an iterable.')
-

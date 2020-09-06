@@ -6,12 +6,11 @@ import numpy as np  # maths library and arrays
 from matplotlib import pyplot as plt  # plotting
 import seaborn as sns  # environment for plots
 
-sns.set() #better layout, like blue background
+sns.set()  # better layout, like blue background
 
 # my libraries
 from library_metaclasses.metaclass_register import *
 from library_functions.tools.classical_functions_dict import up
-
 
 # errors:
 from library_errors.Error_not_allowed_input import Error_not_allowed_input
@@ -25,10 +24,10 @@ from library_errors.Error_not_allowed_input import Error_not_allowed_input
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
 # title and labels has to be list, where one has :
-## [title 1, title 2] ; [x1label y1label, x2label y2label]
+# [title 1, title 2] ; [x1label y1label, x2label y2label]
 # the set of parameters is the same for the two subplots.
 
-### don't forget to write down #plt.show() at the end !
+# don't forget to write down #plt.show() at the end !
 
 
 # section ######################################################################
@@ -36,17 +35,17 @@ from library_errors.Error_not_allowed_input import Error_not_allowed_input
 # new plot functions
 
 
-class APlot(metaclass=register):
+class APlot(metaclass=register, object):
     # TODO 23/08/2020 nie_k:  point plot for one point.
 
     # APlot is the class for my plots. APlot is one figure.
 
     DEFAULT_DICT_PLOT_PARAMETERS = {"color": 'm',
-                               "linestyle": "solid",
-                               "linewidth": 0.5,
-                               "marker": "o",
-                               "markersize": 0.4,
-                               "label": "plot"
+                                    "linestyle": "solid",
+                                    "linewidth": 0.5,
+                                    "marker": "o",
+                                    "markersize": 0.4,
+                                    "label": "plot"
                                     }
     FONTSIZE = 14.5
 
@@ -63,7 +62,7 @@ class APlot(metaclass=register):
                 plt.plot(range(len(datay)), datay, **APlot.DEFAULT_DICT_PLOT_PARAMETERS)
 
         else:  # corresponds to the case where we want to plot something
-            # creation of the figu
+            # creation of the figure
             self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize=figsize)
             # true or false uni plot
             self.uni_dim = (how == (1, 1))
@@ -171,7 +170,7 @@ class APlot(metaclass=register):
         bis : bool
             if bis draw on bis plot.
 
-        Returns
+        Returns the plot
 
         """
         if len(xx) == len(yy):
@@ -188,6 +187,7 @@ class APlot(metaclass=register):
         else:
             raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
 
+
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
         """
         Method to have 1 plot. Upon nb_ax (int)
@@ -200,7 +200,8 @@ class APlot(metaclass=register):
 
         return
 
-    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
+    def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
+                        dict_fig=None, tight=True):
         """ for now I add the ax bis to self.axs at the end. Access through -1.
         """
 
@@ -224,8 +225,6 @@ class APlot(metaclass=register):
         self.uni_plot(nb_ax1, xx1, yy1, dict_plot_param=dict_plot_param_1, dict_fig=dict_fig_1)
         self.uni_plot(nb_ax2, xx2, yy2, dict_plot_param=dict_plot_param_2, dict_fig=dict_fig_2)
         return
-
-
 
     def plot_function(self, function, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), not_numpy=True):
         # ax is an int, not necessary for uni dim case.

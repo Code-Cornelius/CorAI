@@ -1,4 +1,4 @@
-#error specific to setters for classes, when the type is not the requested one.
+# error specific to setters for classes, when the type is not the requested one.
 
 class Error_type_setter(TypeError):
     def __init__(self, reason=''):

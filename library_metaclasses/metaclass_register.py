@@ -4,7 +4,8 @@ import functools
 
 
 def deco_register(func):
-    # the idea is basically that wrapping this on the constructor, everytime I init, the object is added to the class list.
+    # the idea is basically that wrapping this on the constructor,
+    # everytime I init, the object is added to the class list.
     @functools.wraps(func)
     def wrapper_register(*args, **kwargs):
         args[0].__class__.list_register_instances.append(args[0])
@@ -26,12 +27,12 @@ class register(type):
 
     # new is affecting the new classes created with that meta.
     def __new__(meta, name, bases, attrs):
-        dict_register_classes[name] = cls = type.__new__(meta, name, bases,
-                                                         attrs)  # assigniation from right to left. cls is the new class created by new.
+        dict_register_classes[name] = cls = type.__new__(meta, name, bases, attrs)
+        # assignation from right to left. cls is the new class created by new.
 
         cls.list_register_instances = []
         cls.print_register = classmethod(meta.print_register)  # a method inside metaclass is a class method.
-        # On the other hand, classmethod is binding the method to both class method and object method scope.
+        # On the other hand, class method is binding the method to both class method and object method scope.
         return cls
 
     def print_register(self):
