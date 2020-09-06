@@ -23,7 +23,7 @@ class Evolution_plot_estimator(Graph_Estimator):
     # abstract evolution_name parameter
     @property
     @abstractmethod
-    def evolution_name(self):
+    def EVOLUTION_NAME(self):
         pass
 
     def __init__(self, estimator, separators=None, *args, **kwargs):

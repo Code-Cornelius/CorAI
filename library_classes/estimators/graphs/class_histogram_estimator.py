@@ -19,7 +19,7 @@ class Histogram_estimator(Graph_Estimator):
     # abstract nb_of_bins parameter
     @property
     @abstractmethod
-    def nb_of_bins(self):
+    def NB_OF_BINS(self):
         pass
 
     def __init__(self, estimator, separators=None, *args, **kwargs):

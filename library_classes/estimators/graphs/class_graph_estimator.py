@@ -5,6 +5,7 @@ import pandas as pd
 from library_classes.estimators.class_estimator import Estimator
 from library_classes.estimators.graphs.class_root_graph import Root_Graph
 from library_errors.Error_type_setter import Error_type_setter
+from library_functions.tools.classical_functions_vectors import is_iterable
 
 
 class Graph_Estimator(Root_Graph):

@@ -168,10 +168,11 @@ class APlot(metaclass=register):
         dict_plot_param : dict
            Dictionary of kwargs to pass to ax.plot
 
+        bis : bool
+            if bis draw on bis plot.
+
         Returns
-        -------
-        out : list
-            list of artists added
+
         """
         if len(xx) == len(yy):
             up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
