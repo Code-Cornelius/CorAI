@@ -35,7 +35,7 @@ from library_errors.Error_not_allowed_input import Error_not_allowed_input
 # new plot functions
 
 
-class APlot(metaclass=register, object):
+class APlot(object, metaclass=register):
     # TODO 23/08/2020 nie_k:  point plot for one point.
 
     # APlot is the class for my plots. APlot is one figure.
