@@ -9,7 +9,7 @@ def tuple_to_str(my_tuple, delimiter=''):
         my_tuple: a tuple I want to convert into a string
         delimiter: tuple[0] + delimiter + tuple[1] + delimiter + ...
 
-    Returns:
+    Returns: returns the string converted.
 
     """
     my_str = ''
