@@ -260,6 +260,7 @@ class APlot(object, metaclass=register):
         Returns:
 
         """
+        #TODO IT WOULD BE GOOD TO HAVE SOME SECURITY ABOUT A AND B SIZE!!!
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
@@ -333,9 +334,9 @@ class APlot(object, metaclass=register):
         # if ax is none, then every nb_ax is showing the nb_ax.
         if nb_ax is None:
             for nb_ax_0 in range(self.nb_of_axs):
-                self.axs[nb_ax_0].legend(loc='best', fontsize=12)
+                self.axs[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         else:
-            self.axs[nb_ax].legend(loc='best', fontsize=12)
+            self.axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         return
 
     @staticmethod
