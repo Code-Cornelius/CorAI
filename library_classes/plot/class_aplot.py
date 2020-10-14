@@ -100,15 +100,15 @@ class APlot(object, metaclass=register):
         if dict_fig is None:
             dict_fig = {}
         default_dict = {'title': DEFAULT_STR, 'xlabel': DEFAULT_STR, 'ylabel': DEFAULT_STR,
-                        'xscale': 'linear', 'yscale': 'linear',
+                        'xscale': 'linear', 'yscale': 'linear', 'basex' : np.e, 'basey' : np.e,
                         'xint': False, 'yint': False}
         up(dict_fig, default_dict)
 
         self.axs[nb_ax].set_title(dict_fig['title'], fontsize=APlot.FONTSIZE)
         self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=APlot.FONTSIZE)
         self.axs[nb_ax].set_ylabel(dict_fig['ylabel'], fontsize=APlot.FONTSIZE)
-        self.axs[nb_ax].set_xscale(dict_fig['xscale'])
-        self.axs[nb_ax].set_yscale(dict_fig['yscale'])
+        self.axs[nb_ax].set_xscale(dict_fig['xscale'], base = dict_fig['basex'])
+        self.axs[nb_ax].set_yscale(dict_fig['yscale'], base = dict_fig['basey'])
         self.axs[nb_ax].tick_params(labelsize=APlot.FONTSIZE - 1)
 
         if dict_fig['xint']:
