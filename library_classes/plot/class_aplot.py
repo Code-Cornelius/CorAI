@@ -351,3 +351,7 @@ class APlot(object, metaclass=register):
         """
         plt.savefig(name_save_file + '.png', dpi=800)
         return
+
+
+    #TODO
+    # So I want to extend the function .show, perhaps only show certain plots?

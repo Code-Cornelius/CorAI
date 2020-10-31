@@ -9,18 +9,13 @@ def Memoization(key_names):
     class MemoizationClass:
         def __init__(self, func):
             functools.update_wrapper(self, func)
-            self.func = func
-            self.dictionary = {}
-            self.key_names = key_names
-            # No default behaviour
-            # if key_names is not None:
-            #     self.key_names = key_names
-            # else:
-            #     self.key_names = {(signature(self.func).parameters.values())[0]: 0}  # getting the first parameter
+            self.func = func # the function using the keys.
+            self.dictionary = {} # the initial dict with the memoization data
+            self.key_names = key_names # the keys that will be used for memoization
 
         def __call__(self, *args, **kwargs):
             keys = []
-            # get all the elements that build the key
+            # retrieve from the call arguments the keys corresponding to key_names.
             for key in self.key_names:
                 keys.append(kwargs[key])
             key = (*keys,)
