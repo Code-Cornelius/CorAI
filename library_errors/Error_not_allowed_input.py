@@ -1,6 +1,17 @@
-# type of error when I don't allow certain behaviours, in particular, when I don't accept some inputs.
-
 class Error_not_allowed_input(ValueError):
-    def __init__(self, reason):
-        self.message = " ".join(["Values for the inputs not allowed. Please change the values. ", reason])
-        super().__init__(self.message)
+    """
+        type of error when I don't allow certain behaviours, in particular, when I don't accept some inputs.
+    """
+    DEFAULT_MESSAGE = "Values for the inputs not allowed. Please change the values. "
+
+    def __init__(self, *args, **kwargs):
+        if args:
+            self.message = " ".join(
+                [Error_not_allowed_input.DEFAULT_MESSAGE, args[0]])
+        super().__init__(self.message, *args, **kwargs)
+
+    def __str__(self):
+        if self.message:
+            return self.message
+        else:
+            return Error_not_allowed_input.DEFAULT_MESSAGE
