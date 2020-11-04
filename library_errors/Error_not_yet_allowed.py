@@ -1,6 +1,6 @@
 class Error_not_yet_allowed(ValueError):
     """
-        type of error for cases of inputs which hasn't been coded yet.
+       SEMANTICS : type of error for cases of inputs which hasn't been coded yet.
     """
     DEFAULT_MESSAGE = "Behaviour not allowed yet. Please await new version. "
 

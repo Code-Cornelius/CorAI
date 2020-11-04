@@ -11,6 +11,7 @@ sns.set()  # better layout, like blue background
 # my libraries
 from library_metaclasses.metaclass_register import *
 from library_functions.tools.classical_functions_dict import up
+from library_functions.tools.classical_functions_vectors import is_a_container
 
 # errors:
 from library_errors.Error_not_allowed_input import Error_not_allowed_input
@@ -19,7 +20,13 @@ from library_errors.Error_not_allowed_input import Error_not_allowed_input
 # other files
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"""
+Examples:
 
+
+
+
+"""
 
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
@@ -36,9 +43,14 @@ from library_errors.Error_not_allowed_input import Error_not_allowed_input
 
 
 class APlot(object, metaclass=register):
-    # TODO 23/08/2020 nie_k:  point plot for one point.
+    """
+    SEMANTICS : APlot shall be one figure from matplotlib.
 
-    # APlot is the class for my plots. APlot is one figure.
+    REFERENCES : matplolib.pyplot heavily relied upon.
+
+    The class is linked to register metaclass. This allows to keep track of all the APlot created.
+    """
+
 
     DEFAULT_DICT_PLOT_PARAMETERS = {"color": 'm',
                                     "linestyle": "solid",
@@ -84,6 +96,15 @@ class APlot(object, metaclass=register):
                 self.set_dict_fig(i, None)
 
     def check_axs(self, ax):
+        """
+        SEMANTICS : verifies the access to axes "ax". If negative or bigger than the number of axes of the fig, we warn the user.
+
+        Args:
+            ax: unsigned integer
+
+        Returns:
+
+        """
         if ax < 0:
             warnings.warn("Axs given is negative. Lists are cyclic.")
         if ax >= self.nb_of_axs:
@@ -92,9 +113,26 @@ class APlot(object, metaclass=register):
         return ax
 
     def set_dict_fig(self, nb_ax=0, dict_fig=None, xx=None, yy=None):
+        """
+        SEMANTICS :
+        PRECONDITIONS :
         # always plotter first, then dict_updates (using the limits of the axis).
-        # dict authorised:
-        # {'title', 'xlabel', 'ylabel', 'xscale', 'xint', 'yint','parameters','name_parameters'}
+
+        {'title', 'xlabel', 'ylabel',
+        'xscale', 'yscale', 'basex', 'basey', 'xint', 'yint',
+        'parameters','name_parameters'}
+
+        Args:
+            nb_ax:
+            dict_fig:
+            xx:
+            yy:
+
+        Returns:
+
+        """
+
+
         nb_ax = self.check_axs(nb_ax)
         DEFAULT_STR = "Non-Defined."
         if dict_fig is None:
@@ -102,7 +140,7 @@ class APlot(object, metaclass=register):
         default_dict = {'title': DEFAULT_STR, 'xlabel': DEFAULT_STR, 'ylabel': DEFAULT_STR,
                         'xscale': 'linear', 'yscale': 'linear', 'basex' : 10, 'basey' : 10,
                         'xint': False, 'yint': False}
-        up(dict_fig, default_dict)
+        up(dict_fig, default_dict) # update the
 
         self.axs[nb_ax].set_title(dict_fig['title'], fontsize=APlot.FONTSIZE)
         self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=APlot.FONTSIZE)
@@ -162,9 +200,10 @@ class APlot(object, metaclass=register):
 
     def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis=False):
         """
-        A helper function to make a graph
+        SEMANTICS : A helper function to make a graph
+        REFERENCES : I took the function from the matplotlib lib, I kept the same name.
 
-        Parameters
+        Args
         ----------
         nb_ax : Axes
             The axes to draw upon. Has to be an integer.
@@ -201,6 +240,7 @@ class APlot(object, metaclass=register):
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
         """
+        SEMANTICS :
         Method to have 1 plot. Upon nb_ax (int)
         """
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
@@ -248,7 +288,7 @@ class APlot(object, metaclass=register):
 
     def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         """
-        Plot a line on the chosen ax.
+        SEMANTICS : Plot a line on the chosen ax.
 
         Args:
             a: slope of line
@@ -260,28 +300,45 @@ class APlot(object, metaclass=register):
         Returns:
 
         """
-        #TODO IT WOULD BE GOOD TO HAVE SOME SECURITY ABOUT A AND B SIZE!!!
+        if is_a_container(a) or is_a_container(b): # are a and b scalars?
+            raise Error_not_allowed_input("a and b should be scalars, but containers were given.", a, b)
+
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
     def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param, tight=False)
 
-    def cumulative_plot(self, xx, yy, nb_ax=0):
-        """
-        add cumulative plot of an nb_axis, for the chosen data set.
+    def plot_point(self, x, y, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
+        """ plots a single point at (x,y).
+        CONDITIONS : plot_point uses plot_line.
 
         Args:
-            xx: xx where points should appear
-            yy: the output data.
-            nb_ax: which axis.
+            x:
+            y:
+            nb_ax:
+            dict_plot_param:
+
+        Returns:
+
+        """
+        return self.plot_line(self, a = 0, b = y, xx = x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
+
+    def cumulative_plot(self, xx, yy, nb_ax=0):
+        """
+        SEMANTICS : Draw the cumulative distribution of the data yy, with points for the line laying at xx.
+
+        Args:
+            xx: xx where points should appear on the graph.
+            yy: the data for the cumulative distribution. Real numbers.
+            nb_ax: on which axis the plot is drawn.
 
         Returns:
 
         """
 
         ax_bis = self.axs[nb_ax].twinx()
-        ax_bis.plot(xx, np.cumsum(yy) / (np.cumsum(yy)[-1]), color='darkorange',
+        ax_bis.plot(xx, np.cumsum(np.abs(yy)) / (np.cumsum(np.abs(yy))[-1]), color='darkorange', #the abs function is for making sure that it works even for negative values.
                     marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
         ax_bis.set_ylabel('cumulative ratio')
         ax_bis.set_ylim([0, 1.1])
@@ -352,6 +409,7 @@ class APlot(object, metaclass=register):
         plt.savefig(name_save_file + '.png', dpi=800)
         return
 
-
-    #TODO
-    # So I want to extend the function .show, perhaps only show certain plots?
+    @staticmethod
+    def show_plot():
+        plt.show()
+        return
