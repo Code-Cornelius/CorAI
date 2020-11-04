@@ -38,14 +38,15 @@ def complex_quadrature(func, a, b, *args, **kwargs):
 def evaluate_function(func, tt, *args, **kwargs):
     '''return the image of func, func(tt)
 
+    Args:
+        func:
+        tt:
+        *args: additional parameters for the given function
+        **kwargs:  additional parameters for the given function
 
-    :param func:
-    :param tt:
-    :param args:
-    :param kwargs:
-    :return:
+    Returns:
+
     '''
-    # args if additional parameters are required for func
     im = np.zeros(len(tt))
     for i in range(len(tt)):
         im[i] = func(tt[i], *args, **kwargs)

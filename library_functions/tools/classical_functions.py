@@ -1,13 +1,3 @@
-# normal libraries
-
-
-# my libraries
-
-# other files
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 def curry(f):
     # curry is a concept transforming f(x,...,z) into f(x)...(z)
 

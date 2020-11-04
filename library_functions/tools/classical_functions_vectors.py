@@ -1,6 +1,7 @@
-import bisect
-import itertools
+import bisect # for finding position in a list
+import itertools # for roundrobin
 import warnings
+import collections # for the method is_a_container
 
 import numpy as np
 
@@ -105,3 +106,13 @@ def is_iterable(obj):
         return False
     else:
         return True
+
+def is_a_container(a_thing):
+    """ checks if an object is a list, tuple, np.array...
+    Args:
+        a_thing: the object to test
+
+    Returns:
+
+    """
+    return isinstance(a_thing, (collections.Sequence, np.ndarray))
