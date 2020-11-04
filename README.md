@@ -13,7 +13,18 @@ Some functions are simple classical routines. Other files offer more advanced co
 
 Finally, we are trying to incorporate some C++ routines in the code for very efficient code. This part is still in the project phase.
  
+### Naming convention
 
+* All libraries start with the name *"library_{NAME LIBRARY}"*,
+* Classes files start with *class_{NAME OF CLASS}.py*,
+* Metaclasses files start with *metaclass_{NAME OF CLASS}.py*,
+* Custom errors start with *Error_{NAME OF ERROR}.py*,
+* Custom warning start with *Warning_{NAME OF WARNING}.py*,
+
+In library_functions, one can find functions files. Only functions are defined inside. functions file should follow such pattern:  *{NAME SET}_functions.py*. There is one exception. One directory is called "tools" and the functions files inside are called: *classical_functions_{NAME SET}.py*.
+
+
+### Available version
 ## library_classes
 
 We created two original objects. 
