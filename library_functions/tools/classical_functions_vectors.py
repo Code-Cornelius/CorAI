@@ -5,7 +5,7 @@ import collections # for the method is_a_container
 
 import numpy as np
 
-from library_errors.Error_not_allowed_input import Error_not_allowed_input
+from library_errors.error_not_allowed_input import Error_not_allowed_input
 
 
 # todo version array and list

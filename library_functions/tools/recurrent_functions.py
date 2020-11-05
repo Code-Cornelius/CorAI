@@ -4,7 +4,7 @@ import scipy.integrate  # for the method quad allows integration
 import scipy.optimize  # for knowing when a function crosses 0, for implied volatility computation.
 import scipy.stats  # functions of statistics
 # my libraries
-from library_errors import Warning_deprecated
+from library_errors import warning_deprecated
 
 
 # other files
@@ -30,7 +30,7 @@ def phi(x):
     Returns: returns an array with the gaussian density
 
     """
-    Warning_deprecated.deprecated_function(reason="phi chose numpy.")
+    warning_deprecated.deprecated_function(reason="phi chose numpy.")
     return np.exp(-x * x / 2.) / np.sqrt(2 * np.pi)
 
 

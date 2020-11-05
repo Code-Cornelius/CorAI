@@ -14,7 +14,7 @@ from library_functions.tools.classical_functions_dict import up
 from library_functions.tools.classical_functions_vectors import is_a_container
 
 # errors:
-from library_errors.Error_not_allowed_input import Error_not_allowed_input
+from library_errors.error_not_allowed_input import Error_not_allowed_input
 
 
 # other files
@@ -46,6 +46,7 @@ class APlot(object, metaclass=register):
     """
     SEMANTICS : APlot shall be one figure from matplotlib.
 
+    DEPENDENCIES : SEABORN is installed with this class.
     REFERENCES : matplolib.pyplot heavily relied upon.
 
     The class is linked to register metaclass. This allows to keep track of all the APlot created.
