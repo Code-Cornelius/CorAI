@@ -6,7 +6,7 @@ def up(my_dict, new_dict):
         my_dict: old to update
         new_dict: the new information
 
-    Returns: nothing, the dict is updated !
+    Returns: nothing, the dict is updated ! The dict is mutable.
 
     """
     for key in new_dict:

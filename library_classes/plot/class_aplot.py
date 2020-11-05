@@ -16,7 +16,6 @@ from library_functions.tools.classical_functions_vectors import is_a_container
 # errors:
 from library_errors.error_not_allowed_input import Error_not_allowed_input
 
-
 # other files
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,6 +27,7 @@ Examples:
 
 """
 
+
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
 # title and labels has to be list, where one has :
@@ -35,6 +35,23 @@ Examples:
 # the set of parameters is the same for the two subplots.
 
 # don't forget to write down #plt.show() at the end !
+
+
+class APlot_List_of_dicts_of_parameters(object):
+    """
+    Class for the list of dicts of parameters used in APlot.
+    """
+    DEFAULT_STR = "Non-Defined."
+    default_dict = {'title': DEFAULT_STR, 'xlabel': DEFAULT_STR, 'ylabel': DEFAULT_STR,
+                    'xscale': 'linear', 'yscale': 'linear', 'basex': 10, 'basey': 10,
+                    'xint': False, 'yint': False}
+
+    # other accepted parameters:
+    # parameters
+    # name_parameters
+    def __init__(self, nb_of_axs):
+        # creates a list of independant dicts with the default settings.
+        self.list_dicts_parameters = [APlot_List_of_dicts_of_parameters.default_dict.copy() for _ in range(nb_of_axs)];
 
 
 # section ######################################################################
@@ -52,7 +69,7 @@ class APlot(object, metaclass=register):
     The class is linked to register metaclass. This allows to keep track of all the APlot created.
     """
 
-
+    # class parameter about default plot parameters.
     DEFAULT_DICT_PLOT_PARAMETERS = {"color": 'm',
                                     "linestyle": "solid",
                                     "linewidth": 0.5,
@@ -60,12 +77,23 @@ class APlot(object, metaclass=register):
                                     "markersize": 0.4,
                                     "label": "plot"
                                     }
+    # class parameter for fontsize on plots.
     FONTSIZE = 14.5
 
     @deco_register
     def __init__(self, how=(1, 1), datax=None, datay=None, figsize=(7, 5), sharex=False,
-                 sharey=False):  # sharex,y for sharing the same on plots.
-        # how should be a tuple with how I want to have axes.
+                 sharey=False):
+        """
+        If datax/datay is not None plot directly. Otherwise, create a figure.
+
+        Args:
+            how: should be a tuple with how I want to have axes. e.g. (1,1)
+            datax:
+            datay: If only datay given, returns a plot wrt nb data.
+            figsize: size of the figure.
+            sharex: for sharing the same X axis on plots.
+            sharey: for sharing the same Y axis on plots.
+        """
         if datay is not None:
             if datax is not None:
                 plt.figure(figsize=figsize)
@@ -74,29 +102,36 @@ class APlot(object, metaclass=register):
                 plt.figure(figsize=figsize)
                 plt.plot(range(len(datay)), datay, **APlot.DEFAULT_DICT_PLOT_PARAMETERS)
 
-        else:  # corresponds to the case where we want to plot something
+        else:
+            # corresponds to the case where we want to plot something
             # creation of the figure
-            self.fig, self.axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize=figsize)
+            self._fig, self._axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize=figsize)
             # true or false uni plot
-            self.uni_dim = (how == (1, 1))
+            self._uni_dim = (how == (1, 1))
             # two cases, if it is uni_dim, I put self.axs into a list. Otherwise, it is already a list.
             # having a list is easier to deal with.
-            if self.uni_dim:
-                self.axs = [self.axs]
+            if self._uni_dim:
+                self._axs = [self._axs]
             else:
                 # the axs are matrices, I need a list.
-                self.axs = self.axs.flatten()
+                self._axs = self._axs.flatten()
             # now, self.axs is always a list (uni dimensional).
-            self.nb_of_axs = how[0] * how[1]  # nb of axes upon which I can plot
+            self._nb_of_axs = how[0] * how[1]  # nb of axes upon which I can plot
 
             # for the axs_bis, I store the axs inside this guy:
-            self.axs_bis = [None] * self.nb_of_axs  # a list full of zeros.
+            self._axs_bis = [None] * self._nb_of_axs  # a list full of zeros.
 
             # we set the default param of the fig:
-            for i in range(self.nb_of_axs):
-                self.set_dict_fig(i, None)
+            self.list_dicts_fig_param = APlot_List_of_dicts_of_parameters(
+                nb_of_axs=self._nb_of_axs)  # it is a list of dicts.
 
-    def check_axs(self, ax):
+            # Each element gives the config for the corresponding axes
+            # through a dictionary defined by default in the relevant class.
+            # it fixes the default behaviour, and the dicts are updated by the user later on.
+            for i in range(self._nb_of_axs):
+                self.set_dict_fig(i, self.list_dicts_fig_param.list_dicts_parameters[i])
+
+    def __check_axs(self, ax):
         """
         SEMANTICS : verifies the access to axes "ax". If negative or bigger than the number of axes of the fig, we warn the user.
 
@@ -108,74 +143,74 @@ class APlot(object, metaclass=register):
         """
         if ax < 0:
             warnings.warn("Axs given is negative. Lists are cyclic.")
-        if ax >= self.nb_of_axs:
+        if ax >= self._nb_of_axs:
             warnings.warn("Axs given is out of bounds. I plot upon the first axis.")
             ax = 0
         return ax
 
     def set_dict_fig(self, nb_ax=0, dict_fig=None, xx=None, yy=None):
         """
-        SEMANTICS :
-        PRECONDITIONS :
-        # always plotter first, then dict_updates (using the limits of the axis).
+        SEMANTICS : set some of the figure's characteristics.
+        PRECONDITIONS : the parameters allowed are the one written in the class APlot_List_of_dicts_of_parameters.
 
-        {'title', 'xlabel', 'ylabel',
-        'xscale', 'yscale', 'basex', 'basey', 'xint', 'yint',
-        'parameters','name_parameters'}
+        DEPENDENCIES : The class APlot_List_of_dicts_of_parameters is the one that creates the list of dicts used by APlot.
 
         Args:
-            nb_ax:
-            dict_fig:
-            xx:
-            yy:
+            nb_ax: which axs is changed.
+            dict_fig: the parameters for config.
+            xx: data, for example in the case of changing the ticks.
+            yy: data, for example in the case of changing the ticks.
 
-        Returns:
+        Returns: void.
 
         """
+        if dict_fig is None:  # case where no need to update the dicts. It would not do anything. So we return
+            return
 
+        nb_ax = self.__check_axs(nb_ax)
 
-        nb_ax = self.check_axs(nb_ax)
-        DEFAULT_STR = "Non-Defined."
-        if dict_fig is None:
-            dict_fig = {}
-        default_dict = {'title': DEFAULT_STR, 'xlabel': DEFAULT_STR, 'ylabel': DEFAULT_STR,
-                        'xscale': 'linear', 'yscale': 'linear', 'basex' : 10, 'basey' : 10,
-                        'xint': False, 'yint': False}
-        up(dict_fig, default_dict) # update the
+        # update the default dict with the passed parameters. It changes self.list_dicts_fig_param.list_dicts_parameters[nb_ax].
+        up(self.list_dicts_fig_param.list_dicts_parameters[nb_ax], dict_fig)
 
-        self.axs[nb_ax].set_title(dict_fig['title'], fontsize=APlot.FONTSIZE)
-        self.axs[nb_ax].set_xlabel(dict_fig['xlabel'], fontsize=APlot.FONTSIZE)
-        self.axs[nb_ax].set_ylabel(dict_fig['ylabel'], fontsize=APlot.FONTSIZE)
+        self._axs[nb_ax].set_title(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['title'],
+                                   fontsize=APlot.FONTSIZE)
+        self._axs[nb_ax].set_xlabel(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xlabel'],
+                                    fontsize=APlot.FONTSIZE)
+        self._axs[nb_ax].set_ylabel(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['ylabel'],
+                                    fontsize=APlot.FONTSIZE)
 
-        # we plit log case, for the possibility of setting up a base. Other cases don't work if you give a base.
-        if dict_fig['xscale'] == 'log':
-            self.axs[nb_ax].set_xscale(dict_fig['xscale'], base = dict_fig['basex'])
-        else :
-            self.axs[nb_ax].set_xscale(dict_fig['xscale'])
-        if dict_fig['xscale'] == 'log':
-            self.axs[nb_ax].set_yscale(dict_fig['yscale'], base=dict_fig['basey'])
-        else :
-            self.axs[nb_ax].set_yscale(dict_fig['yscale'])
+        # we split the log case, for the possibility of setting up a base. Other cases don't work if you give a base.
+        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'] == 'log':
+            self._axs[nb_ax].set_xscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'], base=
+            self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['basex'])
+        else:
+            self._axs[nb_ax].set_xscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'])
+        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'] == 'log':
+            self._axs[nb_ax].set_yscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['yscale'], base=
+            self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['basey'])
+        else:
+            self._axs[nb_ax].set_yscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['yscale'])
 
-        self.axs[nb_ax].tick_params(labelsize=APlot.FONTSIZE - 1)
+        self._axs[nb_ax].tick_params(labelsize=APlot.FONTSIZE - 1)
 
-        if dict_fig['xint']:
+        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xint']:
             if xx is None:
                 raise Exception("xx has not been given.")
             x_int = range(math.ceil(min(xx)) - 1, math.ceil(
-                self.axs[nb_ax](
+                self._axs[nb_ax](
                     xx)) + 1)  # I need to use ceil on both if min and self.axs[nb_ax] are not integers ( like 0 to 1 )
-            self.axs[nb_ax].set_xticks(x_int)
-        if dict_fig['yint']:
+            self._axs[nb_ax].set_xticks(x_int)
+        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['yint']:
             if yy is None:
                 raise Exception("yy has not been given.")
-            y_int = range(min(yy), math.ceil(self.axs[nb_ax](yy)) + 1)
-            self.axs[nb_ax].set_yticks(y_int)
+            y_int = range(min(yy), math.ceil(self._axs[nb_ax](yy)) + 1)
+            self._axs[nb_ax].set_yticks(y_int)
 
         # I keep the condition. If not true, then no need to move the plot up.
-        if 'parameters' in dict_fig and 'name_parameters' in dict_fig:
-            parameters = dict_fig['parameters']
-            name_parameters = dict_fig['name_parameters']
+        if 'parameters' in self.list_dicts_fig_param.list_dicts_parameters[nb_ax] \
+                and 'name_parameters' in self.list_dicts_fig_param.list_dicts_parameters[nb_ax]:
+            parameters = self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['parameters']
+            name_parameters = self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['name_parameters']
             nb_parameters = len(parameters)
             sous_text = " Parameters : \n"
             for i in range(nb_parameters):
@@ -191,13 +226,14 @@ class APlot(object, metaclass=register):
                 else:
                     sous_text += ", "
 
-            bottom, top = self.axs[nb_ax].get_ylim()
-            left, right = self.axs[nb_ax].get_xlim()
-            self.axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text,
-                                 fontsize=APlot.FONTSIZE - 1)
+            bottom, top = self._axs[nb_ax].get_ylim()
+            left, right = self._axs[nb_ax].get_xlim()
+            self._axs[nb_ax].text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text,
+                                  fontsize=APlot.FONTSIZE - 1)
             plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace=0.5)  # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
+        return
 
     def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis=False):
         """
@@ -226,18 +262,17 @@ class APlot(object, metaclass=register):
         """
         if len(xx) == len(yy):
             up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
-            nb_ax = self.check_axs(nb_ax)
+            nb_ax = self.__check_axs(nb_ax)
             if not bis:  # bis is plot on second axis.
-                out = self.axs[nb_ax].plot(xx, yy, **dict_plot_param)
-                self.axs[nb_ax].grid(True)
+                out = self._axs[nb_ax].plot(xx, yy, **dict_plot_param)
+                self._axs[nb_ax].grid(True)
             else:
-                out = self.axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
-                self.axs[nb_ax].grid(False)
-                self.axs_bis[nb_ax].grid(False)
+                out = self._axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
+                self._axs[nb_ax].grid(False)
+                self._axs_bis[nb_ax].grid(False)
             return out
         else:
             raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
-
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
         """
@@ -246,7 +281,7 @@ class APlot(object, metaclass=register):
         """
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         if tight:
-            self.fig.tight_layout()
+            self._fig.tight_layout()
         if dict_fig is not None:
             self.set_dict_fig(nb_ax, dict_fig, xx, yy)
 
@@ -258,12 +293,12 @@ class APlot(object, metaclass=register):
         """
 
         #
-        if self.axs_bis[nb_ax] is None:  # axis not created yet.
-            self.axs_bis[nb_ax] = self.axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
+        if self._axs_bis[nb_ax] is None:  # axis not created yet.
+            self._axs_bis[nb_ax] = self._axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis=True)
 
         if tight:
-            self.fig.tight_layout()
+            self._fig.tight_layout()
 
         if dict_fig is not None:
             self.set_dict_fig(nb_ax, dict_fig, xx, yy)
@@ -301,7 +336,7 @@ class APlot(object, metaclass=register):
         Returns:
 
         """
-        if is_a_container(a) or is_a_container(b): # are a and b scalars?
+        if is_a_container(a) or is_a_container(b):  # are a and b scalars?
             raise Error_not_allowed_input("a and b should be scalars, but containers were given.", a, b)
 
         function = lambda x: a * x + b
@@ -323,7 +358,7 @@ class APlot(object, metaclass=register):
         Returns:
 
         """
-        return self.plot_line(self, a = 0, b = y, xx = x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
+        return self.plot_line(self, a=0, b=y, xx=x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
     def cumulative_plot(self, xx, yy, nb_ax=0):
         """
@@ -338,12 +373,13 @@ class APlot(object, metaclass=register):
 
         """
 
-        ax_bis = self.axs[nb_ax].twinx()
-        ax_bis.plot(xx, np.cumsum(np.abs(yy)) / (np.cumsum(np.abs(yy))[-1]), color='darkorange', #the abs function is for making sure that it works even for negative values.
+        ax_bis = self._axs[nb_ax].twinx()
+        ax_bis.plot(xx, np.cumsum(np.abs(yy)) / (np.cumsum(np.abs(yy))[-1]), color='darkorange',
+                    # the abs function is for making sure that it works even for negative values.
                     marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
         ax_bis.set_ylabel('cumulative ratio')
         ax_bis.set_ylim([0, 1.1])
-        self.axs[nb_ax].legend(loc='best')
+        self._axs[nb_ax].legend(loc='best')
         return
 
     default_dict_param_hist = {'bins': 20,
@@ -358,16 +394,16 @@ class APlot(object, metaclass=register):
         # function for plotting histograms
         if dict_fig is not None:
             self.set_dict_fig(nb_of_ax, dict_fig)
-        self.axs[nb_of_ax].set_xlabel("Realisation")
-        self.axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
+        self._axs[nb_of_ax].set_xlabel("Realisation")
+        self._axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
         up(dict_param_hist, APlot.default_dict_param_hist)
 
         try:
             # if doesn't pop, it will be catch by except.
             if dict_param_hist.pop("cumulative"):
-                values, base, _ = self.axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
-                ax_bis = self.axs[nb_of_ax].twinx()
+                values, base, _ = self._axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
+                ax_bis = self._axs[nb_of_ax].twinx()
                 values = np.append(values, 0)
                 # I add 0 because I want to create the last line, which does not go up.
                 # I put then 0 in order to have no evolution with cumsum.
@@ -384,23 +420,23 @@ class APlot(object, metaclass=register):
                 ax_bis.set_ylabel("Proportion of the cumulative total.")
 
         except KeyError:  # no cumulative in the hist.
-            values, base, _ = self.axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
+            values, base, _ = self._axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
         return
 
     def show_legend(self, nb_ax=None):
         # as usually, nb_ax is an integer.
         # if ax is none, then every nb_ax is showing the nb_ax.
         if nb_ax is None:
-            for nb_ax_0 in range(self.nb_of_axs):
-                self.axs[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+            for nb_ax_0 in range(self._nb_of_axs):
+                self._axs[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         else:
-            self.axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+            self._axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         return
 
     @staticmethod
     def save_plot(name_save_file='image'):
         """
-        Method for saving the plot (figure) created.
+        SEMANTICS : Method for saving the plot (figure) created.
 
         Args:
             name_save_file: name of the file
@@ -412,5 +448,11 @@ class APlot(object, metaclass=register):
 
     @staticmethod
     def show_plot():
+        """
+        SEMANTICS : adapter for the show pyplot function
+
+        Returns:
+
+        """
         plt.show()
         return

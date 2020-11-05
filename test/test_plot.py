@@ -46,7 +46,7 @@ class Test_register(unittest.TestCase):
         Foo.print_register()
 
 
-xx = np.linspace(0, 1000, 10000)
+xx = np.linspace(0, 10, 10000)
 yy = np.cos(xx)
 
 
