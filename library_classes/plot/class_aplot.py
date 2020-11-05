@@ -77,6 +77,13 @@ class APlot(object, metaclass=register):
                                     "markersize": 0.4,
                                     "label": "plot"
                                     }
+
+    DEFAULT_DICT_PARAM_HIST = {'bins': 20,
+                               "color": 'green',
+                               'range': None,
+                               'label': "Histogram",
+                               "cumulative": True}
+
     # class parameter for fontsize on plots.
     FONTSIZE = 14.5
 
@@ -147,6 +154,45 @@ class APlot(object, metaclass=register):
             warnings.warn("Axs given is out of bounds. I plot upon the first axis.")
             ax = 0
         return ax
+
+    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis=False):
+        """
+        SEMANTICS : A helper function to make a graph
+        REFERENCES : I took the function from the matplotlib lib, I kept the same name.
+
+        Args
+        ----------
+        nb_ax : Axes
+            The axes to draw upon. Has to be an integer.
+
+        xx : array
+           The x data
+
+        yy : array
+           The y data
+
+        dict_plot_param : dict
+           Dictionary of kwargs to pass to ax.plot
+
+        bis : bool
+            if bis draw on bis plot.
+
+        Returns the plot
+
+        """
+        if len(xx) == len(yy):
+            up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
+            nb_ax = self.__check_axs(nb_ax)
+            if not bis:  # bis is plot on second axis.
+                out = self._axs[nb_ax].plot(xx, yy, **dict_plot_param)
+                self._axs[nb_ax].grid(True)
+            else:
+                out = self._axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
+                self._axs[nb_ax].grid(False)
+                self._axs_bis[nb_ax].grid(False)
+            return out
+        else:
+            raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
 
     def set_dict_fig(self, nb_ax=0, dict_fig=None, xx=None, yy=None):
         """
@@ -235,49 +281,58 @@ class APlot(object, metaclass=register):
             # the amount of height reserved for white space between subplots
         return
 
-    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis=False):
-        """
-        SEMANTICS : A helper function to make a graph
-        REFERENCES : I took the function from the matplotlib lib, I kept the same name.
-
-        Args
-        ----------
-        nb_ax : Axes
-            The axes to draw upon. Has to be an integer.
-
-        xx : array
-           The x data
-
-        yy : array
-           The y data
-
-        dict_plot_param : dict
-           Dictionary of kwargs to pass to ax.plot
-
-        bis : bool
-            if bis draw on bis plot.
-
-        Returns the plot
-
-        """
-        if len(xx) == len(yy):
-            up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
-            nb_ax = self.__check_axs(nb_ax)
-            if not bis:  # bis is plot on second axis.
-                out = self._axs[nb_ax].plot(xx, yy, **dict_plot_param)
-                self._axs[nb_ax].grid(True)
-            else:
-                out = self._axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
-                self._axs[nb_ax].grid(False)
-                self._axs_bis[nb_ax].grid(False)
-            return out
+    def show_legend(self, nb_ax=None):
+        # as usually, nb_ax is an integer.
+        # if ax is none, then every nb_ax is showing the nb_ax.
+        if nb_ax is None:
+            for nb_ax_0 in range(self._nb_of_axs):
+                self._axs[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         else:
-            raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
+            self._axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+        return
+
+    @staticmethod
+    def show_plot():
+        """
+        SEMANTICS : adapter for the show pyplot function
+
+        Returns:
+
+        """
+        plt.show()
+        return
+
+    @staticmethod
+    def save_plot(name_save_file='image'):
+        """
+        SEMANTICS : Method for saving the plot (figure) created.
+
+        Args:
+            name_save_file: name of the file
+
+        Returns: nothing.
+        """
+        plt.savefig(name_save_file + '.png', dpi=800)
+        return
+
+    # section ######################################################################
+    #  #############################################################################
+    # PLOT FUNCTIONS
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_fig=None, tight=True):
         """
-        SEMANTICS :
-        Method to have 1 plot. Upon nb_ax (int)
+        SEMANTICS : plot a single plot upon an axis.
+
+        Args:
+            nb_ax:
+            xx:
+            yy:
+            dict_plot_param:
+            dict_fig:
+            tight:
+
+        Returns:
+
         """
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         if tight:
@@ -287,8 +342,50 @@ class APlot(object, metaclass=register):
 
         return
 
+    def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2,
+                dict_plot_param_1=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
+                dict_plot_param_2=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
+                dict_fig_1=None,
+                dict_fig_2=None):
+        """
+        SEMANTICS : Creates two plot at once.
+
+        DEPENDENCIES : uni_plot
+
+        Args:
+            nb_ax1:
+            nb_ax2:
+            xx1:
+            yy1:
+            xx2:
+            yy2:
+            dict_plot_param_1:
+            dict_plot_param_2:
+            dict_fig_1:
+            dict_fig_2:
+
+        Returns:
+
+        """
+        self.uni_plot(nb_ax1, xx1, yy1, dict_plot_param=dict_plot_param_1, dict_fig=dict_fig_1)
+        self.uni_plot(nb_ax2, xx2, yy2, dict_plot_param=dict_plot_param_2, dict_fig=dict_fig_2)
+        return
+
     def uni_plot_ax_bis(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
                         dict_fig=None, tight=True):
+        """
+
+        Args:
+            nb_ax:
+            xx:
+            yy:
+            dict_plot_param:
+            dict_fig:
+            tight:
+
+        Returns:
+
+        """
         """ for now I add the ax bis to self.axs at the end. Access through -1.
         """
 
@@ -304,14 +401,75 @@ class APlot(object, metaclass=register):
             self.set_dict_fig(nb_ax, dict_fig, xx, yy)
         return
 
-    def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2,
-                dict_plot_param_1=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
-                dict_plot_param_2=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
-                dict_fig_1=None,
-                dict_fig_2=None):
-        self.uni_plot(nb_ax1, xx1, yy1, dict_plot_param=dict_plot_param_1, dict_fig=dict_fig_1)
-        self.uni_plot(nb_ax2, xx2, yy2, dict_plot_param=dict_plot_param_2, dict_fig=dict_fig_2)
+    def cumulative_plot(self, xx, yy, nb_ax=0):
+        """
+        SEMANTICS : Draw the cumulative distribution of the data yy, with points for the line laying at xx.
+
+        Args:
+            xx: xx where points should appear on the graph.
+            yy: the data for the cumulative distribution. Real numbers.
+            nb_ax: on which axis the plot is drawn.
+
+        Returns:
+
+        """
+
+        ax_bis = self._axs[nb_ax].twinx()
+        ax_bis.plot(xx, np.cumsum(np.abs(yy)) / (np.cumsum(np.abs(yy))[-1]), color='darkorange',
+                    # the abs function is for making sure that it works even for negative values.
+                    marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
+        ax_bis.set_ylabel('cumulative ratio')
+        ax_bis.set_ylim([0, 1.1])
+        self._axs[nb_ax].legend(loc='best')
         return
+
+    def hist(self, data, nb_of_ax=0,
+             dict_param_hist=DEFAULT_DICT_PARAM_HIST.copy(),
+             dict_fig=None):  # I need to copy because I am updating it.
+        """
+        SEMANTICS : plotting histograms
+        Args:
+            data:
+            nb_of_ax:
+            dict_param_hist:
+            dict_fig:
+
+        Returns:
+
+        """
+        if dict_fig is not None:
+            self.set_dict_fig(nb_of_ax, dict_fig)
+        self._axs[nb_of_ax].set_xlabel("Realisation")
+        self._axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
+
+        up(dict_param_hist, APlot.DEFAULT_DICT_PARAM_HIST)
+
+        try:
+            # if doesn't pop, it will be catch by except.
+            if dict_param_hist.pop("cumulative"):
+                values, base, _ = self._axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
+                ax_bis = self._axs[nb_of_ax].twinx()
+                values = np.append(values, 0)
+                # I add 0 because I want to create the last line, which does not go up.
+                # I put then 0 in order to have no evolution with cumsum.
+
+                if 'total_number_of_simulations' in dict_param_hist:
+                    ax_bis.plot(base, np.cumsum(values) / dict_param_hist['total_number_of_simulations'],
+                                color='darkorange', marker='o',
+                                linestyle='-',
+                                markersize=1, label="Cumulative Histogram")
+                else:
+                    ax_bis.plot(base, np.cumsum(values) / np.cumsum(values)[-1],
+                                color='darkorange', marker='o', linestyle='-',
+                                markersize=1, label="Cumulative Histogram")
+                ax_bis.set_ylabel("Proportion of the cumulative total.")
+
+        except KeyError:  # no cumulative in the hist.
+            values, base, _ = self._axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
+        return
+
+    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
+        return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param, tight=False)
 
     def plot_function(self, function, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), not_numpy=True):
         # ax is an int, not necessary for uni dim case.
@@ -342,9 +500,6 @@ class APlot(object, metaclass=register):
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
-    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
-        return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param, tight=False)
-
     def plot_point(self, x, y, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         """ plots a single point at (x,y).
         CONDITIONS : plot_point uses plot_line.
@@ -359,100 +514,3 @@ class APlot(object, metaclass=register):
 
         """
         return self.plot_line(self, a=0, b=y, xx=x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
-
-    def cumulative_plot(self, xx, yy, nb_ax=0):
-        """
-        SEMANTICS : Draw the cumulative distribution of the data yy, with points for the line laying at xx.
-
-        Args:
-            xx: xx where points should appear on the graph.
-            yy: the data for the cumulative distribution. Real numbers.
-            nb_ax: on which axis the plot is drawn.
-
-        Returns:
-
-        """
-
-        ax_bis = self._axs[nb_ax].twinx()
-        ax_bis.plot(xx, np.cumsum(np.abs(yy)) / (np.cumsum(np.abs(yy))[-1]), color='darkorange',
-                    # the abs function is for making sure that it works even for negative values.
-                    marker='o', linestyle='-', markersize=1, label="Cumulative ratio")
-        ax_bis.set_ylabel('cumulative ratio')
-        ax_bis.set_ylim([0, 1.1])
-        self._axs[nb_ax].legend(loc='best')
-        return
-
-    default_dict_param_hist = {'bins': 20,
-                               "color": 'green', 'range': None,
-                               'label': "Histogram", "cumulative": True}
-
-    def hist(self, data, nb_of_ax=0,
-             dict_param_hist=default_dict_param_hist.copy(),
-             # I need to copy because I am updating it. In particular I pop the cumulative.
-             dict_fig=None):
-
-        # function for plotting histograms
-        if dict_fig is not None:
-            self.set_dict_fig(nb_of_ax, dict_fig)
-        self._axs[nb_of_ax].set_xlabel("Realisation")
-        self._axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
-
-        up(dict_param_hist, APlot.default_dict_param_hist)
-
-        try:
-            # if doesn't pop, it will be catch by except.
-            if dict_param_hist.pop("cumulative"):
-                values, base, _ = self._axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
-                ax_bis = self._axs[nb_of_ax].twinx()
-                values = np.append(values, 0)
-                # I add 0 because I want to create the last line, which does not go up.
-                # I put then 0 in order to have no evolution with cumsum.
-
-                if 'total_number_of_simulations' in dict_param_hist:
-                    ax_bis.plot(base, np.cumsum(values) / dict_param_hist['total_number_of_simulations'],
-                                color='darkorange', marker='o',
-                                linestyle='-',
-                                markersize=1, label="Cumulative Histogram")
-                else:
-                    ax_bis.plot(base, np.cumsum(values) / np.cumsum(values)[-1],
-                                color='darkorange', marker='o', linestyle='-',
-                                markersize=1, label="Cumulative Histogram")
-                ax_bis.set_ylabel("Proportion of the cumulative total.")
-
-        except KeyError:  # no cumulative in the hist.
-            values, base, _ = self._axs[nb_of_ax].hist(data, density=False, alpha=0.5, **dict_param_hist)
-        return
-
-    def show_legend(self, nb_ax=None):
-        # as usually, nb_ax is an integer.
-        # if ax is none, then every nb_ax is showing the nb_ax.
-        if nb_ax is None:
-            for nb_ax_0 in range(self._nb_of_axs):
-                self._axs[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
-        else:
-            self._axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
-        return
-
-    @staticmethod
-    def save_plot(name_save_file='image'):
-        """
-        SEMANTICS : Method for saving the plot (figure) created.
-
-        Args:
-            name_save_file: name of the file
-
-        Returns: nothing.
-        """
-        plt.savefig(name_save_file + '.png', dpi=800)
-        return
-
-    @staticmethod
-    def show_plot():
-        """
-        SEMANTICS : adapter for the show pyplot function
-
-        Returns:
-
-        """
-        plt.show()
-        return

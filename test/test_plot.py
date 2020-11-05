@@ -56,23 +56,31 @@ class Test_APLOT(unittest.TestCase):
         plt.show()
 
     def test_basic_plot(self):
+        #direct plot only yy
+        APlot(datay=yy)
+        #direct plot xx and yy
         APlot(datax=xx, datay=yy)
 
+        # uni plot
         aplot_2 = APlot()
         aplot_2.uni_plot(0, xx, yy)
 
+        # uni plot *4
         aplot_3 = APlot(how=(2, 2), sharex=True)
         aplot_3.uni_plot(0, xx, yy)
         aplot_3.uni_plot(1, xx, yy)
         aplot_3.uni_plot(2, xx, yy)
         aplot_3.uni_plot(3, xx, yy)
 
+        # uni plot good ordering of the plots ( TOP LEFT, TOP RIGHT, BOTTOM LEFT)
         aplot_4 = APlot(how=(2, 2), sharey=True)
         aplot_4.bi_plot(0, 1, xx, yy, xx, yy)
         aplot_4.uni_plot(2, xx, yy)
         aplot_4.uni_plot(3, xx, yy)
 
+
     def test_plot_bis(self):
+        # two plots same figures
         aplot_1 = APlot()
         aplot_1.uni_plot_ax_bis(0, xx, yy + 5)
         aplot_1.uni_plot_ax_bis(0, xx, yy)
