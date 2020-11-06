@@ -9,7 +9,7 @@ import seaborn as sns  # environment for plots
 # my libraries
 from library_metaclasses.metaclass_register import *
 from library_functions.tools.classical_functions_dict import up
-from library_functions.tools.classical_functions_vectors import is_a_container
+from library_functions.tools.classical_functions_iterable import is_a_container
 
 # errors:
 from library_errors.error_not_allowed_input import Error_not_allowed_input

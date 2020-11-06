@@ -1,11 +1,11 @@
 # normal libraries
-import library_functions.tools.classical_functions_vectors
+import library_functions.tools.classical_functions_iterable
 import pandas as pd
 # my libraries
 from library_classes.estimators.class_estimator import Estimator
 from library_classes.estimators.graphs.class_root_graph import Root_Graph
 from library_errors.error_type_setter import Error_type_setter
-from library_functions.tools.classical_functions_vectors import is_iterable
+from library_functions.tools.classical_functions_iterable import is_iterable
 
 
 class Graph_Estimator(Root_Graph):
@@ -47,9 +47,9 @@ class Graph_Estimator(Root_Graph):
         if title != "":
             title = ''.join([title, '\n'])
         list_param = [strng for strng in
-                      library_functions.tools.classical_functions_vectors.roundrobin(names, [" : "] * len(values),
-                                                                                     values,
-                                                                                     [", "] * (len(values) - 1))]
+                      library_functions.tools.classical_functions_iterable.roundrobin(names, [" : "] * len(values),
+                                                                                      values,
+                                                                                      [", "] * (len(values) - 1))]
         str_param = ''.join([str(elem) for elem in list_param])
         # list_param is including ints and str so I need to convert them all before joining,
         # since join requires only str.

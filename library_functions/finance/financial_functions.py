@@ -1,7 +1,7 @@
 # normal libraries
 import warnings
 
-import library_functions.tools.classical_functions_optimization
+import library_functions.calculus.optimization_functions
 import numpy as np  # maths library and arrays
 import scipy.stats  # functions of statistics
 # my libraries
@@ -129,7 +129,7 @@ def implied_volatility_newton(CallPutFlag, s0, k, T, R, d, experimented_price):
     K = np.exp(k)
     dfx = lambda varSIGMA: BlackScholesVegaCore(np.exp(-R * T), np.exp((R - 0) * T) * s0, K, T, varSIGMA)
     try:
-        return library_functions.tools.classical_functions_optimization.newtons_method(fx, dfx, 0.2)
+        return library_functions.calculus.optimization_functions.newtons_method(fx, dfx, 0.2)
     except:  # TODO CATCH THE ERROR I NEED TO KNOW WHICH ERROR
         warnings.warn("Bisect didn't find the $\\sigma_{IMP}$, returned 0.")
         return 0
