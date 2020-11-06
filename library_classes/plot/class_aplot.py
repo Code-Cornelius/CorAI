@@ -6,8 +6,6 @@ import numpy as np  # maths library and arrays
 from matplotlib import pyplot as plt  # plotting
 import seaborn as sns  # environment for plots
 
-sns.set()  # better layout, like blue background
-
 # my libraries
 from library_metaclasses.metaclass_register import *
 from library_functions.tools.classical_functions_dict import up
@@ -17,6 +15,9 @@ from library_functions.tools.classical_functions_vectors import is_a_container
 from library_errors.error_not_allowed_input import Error_not_allowed_input
 
 # other files
+
+
+sns.set()  # better layout, like blue background
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
@@ -50,8 +51,8 @@ class APlot_List_of_dicts_of_parameters(object):
     # parameters
     # name_parameters
     def __init__(self, nb_of_axs):
-        # creates a list of independant dicts with the default settings.
-        self.list_dicts_parameters = [APlot_List_of_dicts_of_parameters.default_dict.copy() for _ in range(nb_of_axs)];
+        # creates a list of independent dicts with the default settings.
+        self.list_dicts_parameters = [APlot_List_of_dicts_of_parameters.default_dict.copy() for _ in range(nb_of_axs)]
 
 
 # section ######################################################################
@@ -140,7 +141,8 @@ class APlot(object, metaclass=register):
 
     def __check_axs(self, ax):
         """
-        SEMANTICS : verifies the access to axes "ax". If negative or bigger than the number of axes of the fig, we warn the user.
+        SEMANTICS : verifies the access to axes "ax".
+        If negative or bigger than the number of axes of the fig, we warn the user.
 
         Args:
             ax: unsigned integer
@@ -197,9 +199,11 @@ class APlot(object, metaclass=register):
     def set_dict_fig(self, nb_ax=0, dict_fig=None, xx=None, yy=None):
         """
         SEMANTICS : set some of the figure's characteristics.
-        PRECONDITIONS : the parameters allowed are the one written in the class APlot_List_of_dicts_of_parameters.
+        PRECONDITIONS : the parameters allowed are the one
+        written in the class APlot_List_of_dicts_of_parameters.
 
-        DEPENDENCIES : The class APlot_List_of_dicts_of_parameters is the one that creates the list of dicts used by APlot.
+        DEPENDENCIES : The class APlot_List_of_dicts_of_parameters is
+        the one that creates the list of dicts used by APlot.
 
         Args:
             nb_ax: which axs is changed.
@@ -214,49 +218,50 @@ class APlot(object, metaclass=register):
             return
 
         nb_ax = self.__check_axs(nb_ax)
+        dict_param = self.list_dicts_fig_param.list_dicts_parameters[nb_ax]
+        # update the default dict with the passed parameters.
+        # It changes self.list_dicts_fig_param.list_dicts_parameters[nb_ax].
+        up(dict_param, dict_fig)
 
-        # update the default dict with the passed parameters. It changes self.list_dicts_fig_param.list_dicts_parameters[nb_ax].
-        up(self.list_dicts_fig_param.list_dicts_parameters[nb_ax], dict_fig)
-
-        self._axs[nb_ax].set_title(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['title'],
+        self._axs[nb_ax].set_title(dict_param['title'],
                                    fontsize=APlot.FONTSIZE)
-        self._axs[nb_ax].set_xlabel(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xlabel'],
+        self._axs[nb_ax].set_xlabel(dict_param['xlabel'],
                                     fontsize=APlot.FONTSIZE)
-        self._axs[nb_ax].set_ylabel(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['ylabel'],
+        self._axs[nb_ax].set_ylabel(dict_param['ylabel'],
                                     fontsize=APlot.FONTSIZE)
 
         # we split the log case, for the possibility of setting up a base. Other cases don't work if you give a base.
-        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'] == 'log':
-            self._axs[nb_ax].set_xscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'], base=
-            self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['basex'])
+        if dict_param['xscale'] == 'log':
+            self._axs[nb_ax].set_xscale(dict_param['xscale'],
+                                        base=dict_param['basex'])
         else:
-            self._axs[nb_ax].set_xscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'])
-        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xscale'] == 'log':
-            self._axs[nb_ax].set_yscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['yscale'], base=
-            self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['basey'])
+            self._axs[nb_ax].set_xscale(dict_param['xscale'])
+        if dict_param['xscale'] == 'log':
+            self._axs[nb_ax].set_yscale(dict_param['yscale'],
+                                        base=dict_param['basey'])
         else:
-            self._axs[nb_ax].set_yscale(self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['yscale'])
+            self._axs[nb_ax].set_yscale(dict_param['yscale'])
 
         self._axs[nb_ax].tick_params(labelsize=APlot.FONTSIZE - 1)
 
-        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['xint']:
+        if dict_param['xint']:
             if xx is None:
                 raise Exception("xx has not been given.")
             x_int = range(math.ceil(min(xx)) - 1, math.ceil(
                 self._axs[nb_ax](
                     xx)) + 1)  # I need to use ceil on both if min and self.axs[nb_ax] are not integers ( like 0 to 1 )
             self._axs[nb_ax].set_xticks(x_int)
-        if self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['yint']:
+        if dict_param['yint']:
             if yy is None:
                 raise Exception("yy has not been given.")
             y_int = range(min(yy), math.ceil(self._axs[nb_ax](yy)) + 1)
             self._axs[nb_ax].set_yticks(y_int)
 
         # I keep the condition. If not true, then no need to move the plot up.
-        if 'parameters' in self.list_dicts_fig_param.list_dicts_parameters[nb_ax] \
-                and 'name_parameters' in self.list_dicts_fig_param.list_dicts_parameters[nb_ax]:
-            parameters = self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['parameters']
-            name_parameters = self.list_dicts_fig_param.list_dicts_parameters[nb_ax]['name_parameters']
+        if 'parameters' in dict_param \
+                and 'name_parameters' in dict_param:
+            parameters = dict_param['parameters']
+            name_parameters = dict_param['name_parameters']
             nb_parameters = len(parameters)
             sous_text = " Parameters : \n"
             for i in range(nb_parameters):
@@ -513,4 +518,4 @@ class APlot(object, metaclass=register):
         Returns:
 
         """
-        return self.plot_line(self, a=0, b=y, xx=x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
+        return self.plot_line(a=0, b=y, xx=x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
