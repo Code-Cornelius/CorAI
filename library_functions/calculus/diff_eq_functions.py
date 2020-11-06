@@ -1,8 +1,11 @@
+import numpy as np
+import math
+
 # defines the coefficients for fractional ADAMS method in order to compute a SDE path.
 # it needs the number of coefficients as well as the alpha of roughness.
 def fractional_ADAMS(k, alpha, DELTA):
     # a needs k+2 elements, because j \in 0,k+1.
-    # b doesn't start at 0, so only k+1 élèments
+    # b doesn't start at 0, so only k+1 elements.
     a = np.zeros(k + 2)
     b = np.zeros(k + 1)
     for i in range(k + 2):

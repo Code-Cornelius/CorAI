@@ -91,3 +91,27 @@ def trapeze_int(tt, yy):
         ans += DELTA * yy[i]
     ans += DELTA / 2 * (yy[0] + yy[-1])
     return ans
+
+
+
+# section ######################################################################
+#  #############################################################################
+# TO REFLECT
+
+
+# import scipy.integrate as integrate
+# import scipy.special as special
+# 
+# result = integrate.quad(lambda x: special.jv(2.5, x), 0, 4.5)
+# can be +/- inf boundaries.
+# 
+# vec_expint = np.vectorize(expint)
+# 
+# x = np.array([1, 3, 4])
+# 
+# y1 = f1(x)
+# 
+# from scipy.integrate import simps
+# 
+# trapz
+# I1 = simps(y1, x)
