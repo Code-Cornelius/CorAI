@@ -61,6 +61,9 @@ def trapeze_int(tt, yy):
     PRECONDITIONS : t is an array with the times at which the integrand has to be computed.
      We need it to be a regular grid
 
+     DEPENDENCIES: YOU COULD USE from scipy.integrate import simps
+
+
     Args:
         tt:
         yy:
