@@ -116,3 +116,11 @@ def is_a_container(a_thing):
 
     """
     return isinstance(a_thing, (collections.Sequence, np.ndarray))
+
+def replace_nans(np_array):
+    """
+    replace all the nans by 0 inside a numpy array.
+    """
+    where_are_NaNs = np.isnan(np_array)
+    np_array[where_are_NaNs] = 0
+    return np_array

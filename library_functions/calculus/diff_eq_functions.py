@@ -41,7 +41,7 @@ def system_ODE_solver(tt, starting_point, function_evolution, left_or_right="lef
     function_evolution and starting_point as lists type for optimization of the code (access constant and small overhead)
 
     Returns:
-        list with the values of the function, over the grid tt.
+        list with the values of the function, over the grid tt. format : [[x1,y1...], [x2,y2...] ... ]
 
     """
     assert (is_iterable(function_evolution))
