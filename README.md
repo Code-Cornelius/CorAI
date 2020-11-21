@@ -1,4 +1,4 @@
-# Python Private Libraries
+# Python Personal Libraries
 
 ### Available version
 
