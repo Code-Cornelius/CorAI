@@ -1,0 +1,147 @@
+"""
+SEMANTICS :
+Class Estimator as an adaptor from the dataframes from pandas.
+We use Pandas since it is fairly rampant and easy to use.
+
+We store the data in the following way: each column is one feature, each row one estimation.
+"""
+
+import pandas as pd
+from priv_lib_error import Error_type_setter
+
+#work-in-progress another idea would be to inherit from dataframes the estimator.
+
+class Estimator(object):
+    def __init__(self, DF, *args, **kwargs):
+        # args and kwargs for the super method.
+        self.DF = DF
+
+    def __repr__(self):
+        # this is for the print function. We want the estimator to inherit the properties from DF!
+        return repr(self._DF)
+
+    @classmethod
+    def from_path(cls, path):
+        """
+        SEMANTICS : Constructor estimator with a path.
+        Args:
+            path: string. The path has to be raw, no "\".
+
+        Returns: new estimator.
+
+        """
+        return cls(pd.read_csv(path)) # calling the constructor of the class.
+
+    def append(self, appending_df):
+        """
+        SEMANTICS : adaptor for the method append from DF at the estimator level.
+
+        Args:
+            appending_df: the df to append to the self object.
+
+        Returns: quoting : "Pandas dataframe.append() function 
+        is used to append rows of other dataframe to the end of the given dataframe, 
+        returning a new dataframe object. 
+        Columns not in the original dataframes are added as new columns 
+        and the new cells are populated with NaN value.
+
+        REFERENCES : # https://www.geeksforgeeks.org/python-pandas-dataframe-append/
+        """
+        self._DF = self._DF.append(appending_df)
+
+    def function_upon_separated_data(self, separator, fct, name, **kwargs):
+        """
+        SEMANTICS :
+        Args:
+            separator: string
+            fct: function of the input data. It can be anything that takes as input a list.
+            name: the feature we want to analyse data upon.
+            **kwargs:
+
+        Returns:
+
+        """
+        # separator is a
+        # fct is a fct
+        # name is the name of a column where the data will lie.
+        # one value is one parameter... is it enough parameter ?
+        # the function does create a new column in the DF,
+        # by looking at the data in the separator and applying the function to it.
+        self._DF[name] = self._DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
+        return
+
+    def estimator_mean(self, name, separators=None):
+        """
+        empirical mean of the data.
+        Args:
+            name:
+            separators:
+
+         Returns: return a serie of the means.
+
+        """
+        if separators is not None:
+            return self._DF.groupby(separators)[name].mean()
+        else:
+            return self._DF[name].mean()
+
+
+    def estimator_variance(self, name, separators=None, ddof=1):
+        """
+        empirical variance of the data of the variance.
+
+        Args:
+            name:  string, the feature to compute the variance of.
+            separators:  string, features to groupby first with.
+            ddof: how much one normalize the results (usually  / n-1).
+            This gives the unbiased estimator of the variance if the mean is unknown.
+
+        Returns: normalized S^2
+
+        """
+        if separators is not None:
+            return self._DF.groupby(separators)[name].var(ddof=ddof)
+        else:
+            return self._DF[name].var(ddof=ddof)
+
+
+    def to_csv(self, path, **kwargs):
+        """
+        adaptor of the method to_csv from dataframes.
+
+        Args:
+            path:  path where csv file is.
+            **kwargs: kwargs for the function to_csv.
+
+        Returns:
+
+        """
+        self._DF.to_csv(path, **kwargs)
+        return
+
+    def groupby_DF(self, separators):
+        """
+        groupby a DF.
+
+        Args:
+            separators:
+
+        Returns:
+            tuple with the groupby as well as the keys in order to iterate over it.
+
+        """
+        dictionary = self._DF.groupby(separators)
+        return dictionary, dictionary.groups.keys()
+
+    # getter for df.
+    @property
+    def DF(self):
+        return self._DF
+
+    # verification that it is given a dataframe.
+    @DF.setter
+    def DF(self, new_DF):
+        if isinstance(new_DF, pd.DataFrame):
+            self._DF = new_DF
+        else:
+            raise Error_type_setter('Argument is not an Dataframe.')

@@ -3,7 +3,7 @@ import unittest
 
 
 # my libraries
-from library_errors import error_type_setter, error_not_allowed_input, error_not_enough_information, error_convergence, error_not_yet_allowed
+from priv_lib_error import error_type_setter, error_not_allowed_input, error_not_enough_information, error_convergence, error_not_yet_allowed
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
