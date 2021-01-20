@@ -2,8 +2,9 @@
 
 ### Available version
 
-* *version 1.000* :  first trial version. It was released in order for me to have a stable version that was compatible with my summer projects. There is still a lot to do on it. Released on September the 21st 2020.
-* *version 1.142* : the newest version, available in December 2020. The library is better documented, and better structured.
+* *version 1.000* :  Released in September 2020. It was released in order for me to have a stable version that was compatible with my summer projects. There is still a lot to do on it. 
+* *version 1.142* : Released in January 2021. The library is better documented, and better structured. It is now separated in the corresponding libraries, and there are tests for most of the functions.
+
 
 ### General information
 
