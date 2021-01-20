@@ -1,10 +1,4 @@
-"""
-SEMANTICS :
-Class Estimator as an adaptor from the dataframes from pandas.
-We use Pandas since it is fairly rampant and easy to use.
 
-We store the data in the following way: each column is one feature, each row one estimation.
-"""
 
 import pandas as pd
 from priv_lib_error import Error_type_setter
@@ -12,6 +6,13 @@ from priv_lib_error import Error_type_setter
 #work-in-progress another idea would be to inherit from dataframes the estimator.
 
 class Estimator(object):
+    """
+    SEMANTICS :
+    Class Estimator as an adaptor from the dataframes from pandas.
+    We use Pandas since it is fairly rampant and easy to use.
+
+    We store the data in the following way: each column is one feature, each row one estimation.
+    """
     def __init__(self, DF, *args, **kwargs):
         # args and kwargs for the super method.
         self.DF = DF
