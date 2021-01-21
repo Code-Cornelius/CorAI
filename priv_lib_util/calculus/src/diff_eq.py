@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-from priv_lib_util import tools
+from priv_lib_util.tools import function_iterable
 
 
 # defines the coefficients for fractional ADAMS method in order to compute a SDE path.
@@ -47,8 +47,8 @@ def system_ODE_solver(tt, starting_point, function_evolution, left_or_right="lef
         list with the values of the function, over the grid tt. format : [[x1,y1...], [x2,y2...] ... ]
 
     """
-    assert (tools.function_iterable.is_iterable(function_evolution))
-    assert (tools.function_iterable.is_iterable(starting_point))
+    assert (function_iterable.is_iterable(function_evolution))
+    assert (function_iterable.is_iterable(starting_point))
 
     L = len(tt)
     J = len(function_evolution)
