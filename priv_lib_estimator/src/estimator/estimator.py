@@ -1,9 +1,8 @@
-
-
 import pandas as pd
 from priv_lib_error import Error_type_setter
 
-#work-in-progress another idea would be to inherit from dataframes the estimator.
+
+# work-in-progress another idea would be to inherit from dataframes the estimator.
 
 class Estimator(object):
     """
@@ -13,6 +12,7 @@ class Estimator(object):
 
     We store the data in the following way: each column is one feature, each row one estimation.
     """
+
     def __init__(self, DF, *args, **kwargs):
         # args and kwargs for the super method.
         self.DF = DF
@@ -31,7 +31,7 @@ class Estimator(object):
         Returns: new estimator.
 
         """
-        return cls(pd.read_csv(path)) # calling the constructor of the class.
+        return cls(pd.read_csv(path))  # calling the constructor of the class.
 
     def append(self, appending_df):
         """
@@ -50,30 +50,49 @@ class Estimator(object):
         """
         self._DF = self._DF.append(appending_df)
 
-    def function_upon_separated_data(self, separator, fct, name, **kwargs):
+    def store_and_apply_function_upon_data(self, separator, fct, name, **kwargs):
         """
-        SEMANTICS :
+        SEMANTICS : Transform the data
+        (given a whole column of data, but could be extended recursively to more than one column computations)
+        with respect to a function and compute a new array of data
+        that will be stored as a new column in the dataframe.
+
         Args:
-            separator: string
+            separator: a string, name of the feature upon which we apply the data.
             fct: function of the input data. It can be anything that takes as input a list.
-            name: the feature we want to analyse data upon.
-            **kwargs:
+            In particular, it should work for numpy array (because Pandas is related to numpy).
+            name: name of the new column of the data (can be the name of an old column).
+            **kwargs: any parameter that could take the function.
 
-        Returns:
-
+        Returns: nothing, data stored inside the given DF.
         """
-        # separator is a
-        # fct is a fct
-        # name is the name of a column where the data will lie.
-        # one value is one parameter... is it enough parameter ?
-        # the function does create a new column in the DF,
-        # by looking at the data in the separator and applying the function to it.
-        self._DF[name] = self._DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
+        self._DF[name] = self.apply_function_upon_data(separator, fct, **kwargs)
         return
+
+    def apply_function_upon_data(self, separator, fct, **kwargs):
+        """
+        SEMANTICS : Transform the data
+        (given a whole column of data, but could be extended recursively to more than one column computations)
+        with respect to a function and compute a new array of data which is returned.
+
+        Args:
+            separator: a string, name of the feature upon which we apply the data.
+            fct: function of the input data. It can be anything that takes as input a list.
+            In particular, it should work for numpy array (because Pandas is related to numpy).
+            **kwargs: any parameter that could take the function.
+
+        Returns: nothing, data stored inside the given DF.
+
+        Examples:
+                    #example of function, the MSE calculator:
+                    # def compute_MSE(param, true_parameter):
+                    #     return (param - true_parameter) ** 2
+        """
+        return self._DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
 
     def estimator_mean(self, name, separators=None):
         """
-        empirical mean of the data.
+        SEMANTICS : empirical mean of the data.
         Args:
             name:
             separators:
@@ -86,10 +105,9 @@ class Estimator(object):
         else:
             return self._DF[name].mean()
 
-
     def estimator_variance(self, name, separators=None, ddof=1):
         """
-        empirical variance of the data of the variance.
+        SEMANTICS : empirical variance of the data of the variance.
 
         Args:
             name:  string, the feature to compute the variance of.
@@ -105,10 +123,9 @@ class Estimator(object):
         else:
             return self._DF[name].var(ddof=ddof)
 
-
     def to_csv(self, path, **kwargs):
         """
-        adaptor of the method to_csv from dataframes.
+        SEMANTICS : adaptor of the method to_csv from dataframes.
 
         Args:
             path:  path where csv file is.
@@ -122,7 +139,7 @@ class Estimator(object):
 
     def groupby_DF(self, separators):
         """
-        groupby a DF.
+        SEMANTICS : groupby a DF.
 
         Args:
             separators:
@@ -134,14 +151,14 @@ class Estimator(object):
         dictionary = self._DF.groupby(separators)
         return dictionary, dictionary.groups.keys()
 
-    # getter for df.
     @property
     def DF(self):
+        # getter for df.
         return self._DF
 
-    # verification that it is given a dataframe.
     @DF.setter
     def DF(self, new_DF):
+        # verification that the constructor is given a dataframe.
         if isinstance(new_DF, pd.DataFrame):
             self._DF = new_DF
         else:

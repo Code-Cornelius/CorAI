@@ -1,8 +1,7 @@
 import numpy as np
 import math
 
-
-from priv_lib_util.tools.function_iterable import is_iterable
+from priv_lib_util import tools
 
 
 # defines the coefficients for fractional ADAMS method in order to compute a SDE path.
@@ -28,7 +27,8 @@ def fractional_ADAMS(k, alpha, DELTA):
 
 def system_ODE_solver(tt, starting_point, function_evolution, left_or_right="left"):
     """
-    SEMANTICS : ODE solve with Euler's method. It solves liner systems of ODE of the first oder.
+    SEMANTICS :
+    ODE solve with Euler's method. It solves liner systems of ODE of the first oder.
     left to right flow.
 
     Args:
@@ -40,14 +40,15 @@ def system_ODE_solver(tt, starting_point, function_evolution, left_or_right="lef
         left_or_right:  starting point on left or right. Changes the equations, either backwards of forwards equations.
 
 
+    Notes :
     function_evolution and starting_point as lists type for optimization of the code (access constant and small overhead)
 
     Returns:
         list with the values of the function, over the grid tt. format : [[x1,y1...], [x2,y2...] ... ]
 
     """
-    assert (is_iterable(function_evolution))
-    assert (is_iterable(starting_point))
+    assert (tools.function_iterable.is_iterable(function_evolution))
+    assert (tools.function_iterable.is_iterable(starting_point))
 
     L = len(tt)
     J = len(function_evolution)

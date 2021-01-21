@@ -5,7 +5,8 @@ import numpy as np  # maths library and arrays
 
 
 # my libraries
-import priv_lib_util.tools.function_str
+import priv_lib_util
+import priv_lib_util.util.function_str
 from priv_lib_estimator import Estimator
 from priv_lib_estimator import Plot_estimator
 from priv_lib_plot import APlot
@@ -124,7 +125,7 @@ class Evolution_plot_estimator(Plot_estimator):
             fig_dict = self.get_dict_fig(separators, key)
             plot.set_dict_fig(0, fig_dict)
             plot.show_legend()
-            name_file = ''.join([priv_lib_util.tools.function_str.tuple_to_str(key, ''), 'evol_estimation'])
+            name_file = ''.join([priv_lib_util.tuple_to_str(key, ''), 'evol_estimation'])
             plot.save_plot(name_save_file=name_file)
 
         # either coloured keys have been defined or not. I retrieve them in order to know what color to put upon which kernel.

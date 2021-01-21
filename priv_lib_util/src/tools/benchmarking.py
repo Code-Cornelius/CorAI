@@ -1,5 +1,6 @@
 def time_convertor(seconds, time_format=0):
-    """instead of converting the seconds in minutes outside, one can do it here.
+    """
+    SEMANTICS : instead of converting the seconds in minutes outside, one can do it here.
 
     Args:
         seconds: runtime
@@ -23,6 +24,18 @@ def time_convertor(seconds, time_format=0):
 
 
 def time_text(s, m, h, seconds_frac=0):
+    """
+    SEMANTICS :
+
+    Args:
+        s:
+        m:
+        h:
+        seconds_frac:
+
+    Returns:
+
+    """
     if s == 0:
         ts = ""
     elif s == 1:

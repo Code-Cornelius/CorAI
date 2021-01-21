@@ -12,7 +12,5 @@ class Error_convergence(Exception):
         super().__init__(self.message, *args, **kwargs)
 
     def __str__(self):
-        if self.message:
-            return self.message
-        else:
-            return Error_convergence.DEFAULT_MESSAGE
+        return self.message
+
