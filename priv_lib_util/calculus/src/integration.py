@@ -5,20 +5,19 @@ import scipy.integrate
 
 def complex_quadrature(func, a, b, *args, **kwargs):
     """
-    Complex quadrature over real line, is harder than real, so here is a built function
+    SEMANTICS : Complex quadrature over real line, is harder than real, so here is a built function
 
-    function from overflow to integrate complex functions.
-    https://stackoverflow.com/questions/5965583/use-scipy-integrate-quad-to-integrate-complex-numbers
+    REFERENCES : https://stackoverflow.com/questions/5965583/use-scipy-integrate-quad-to-integrate-complex-numbers
 
     Args:
-        func: integrands
-        a: lower bound
-        b: higher bounds
-        *args: for the function
-        **kwargs: for the function
+        func: integrand
+        a: lower bound of the integral
+        b: higher bounds of the integral
+        *args: arguments for the function
+        **kwargs: key word arguments for the function
 
     Returns:
-        a 3-tuple : (integral, real error, imaginary error).
+        a 3-tuple : complex valued integral, real error, imaginary error).
     """
 
     def real_func(x):
@@ -35,42 +34,41 @@ def complex_quadrature(func, a, b, *args, **kwargs):
 
 
 def evaluate_function(func, tt, *args, **kwargs):
-    '''return the image of func, func(tt)
+    """
+    SEMANTICS : evaluate a function at given points using a simple for loop.
 
     Args:
-        func:
-        tt:
+        func: function to evaluate.
+        tt: points at which to evaluate the function.
         *args: additional parameters for the given function
         **kwargs:  additional parameters for the given function
 
-    Returns:
+    Returns: evaluation of the function : func(tt)
 
-    '''
+    References : https://stackoverflow.com/questions/35215161/most-efficient-way-to-map-function-over-numpy-array/35216364
+    this post shows that it does not matter what method you prefer, in the end, the best way is to use in-built function.
+    Vectorise from numpy is just a trick for readability.
+
+    """
     im = np.zeros(len(tt))
+
     for i in range(len(tt)):
         im[i] = func(tt[i], *args, **kwargs)
-    # TODO would be good to think about faster version of this, like numpy version and vectroize version.
     return im
 
 
 def trapeze_int(tt, yy):
-    '''
-    Computes integral of a vector using trapezoidal rule
+    """ COULD USE from scipy.integrate import simps. Computes integral of a vector using trapezoidal rule
 
-    PRECONDITIONS : t is an array with the times at which the integrand has to be computed.
-     We need it to be a regular grid
-
-     DEPENDENCIES: YOU COULD USE from scipy.integrate import simps
-
+    PRECONDITIONS : t is an
 
     Args:
-        tt:
-        yy:
+        tt: array with the times at which the integrand has to be computed. We need it to be a regular grid
+        yy: image of the function at the points tt.
 
-    Returns:
+    Returns: integral given by trapezoidal rule.
 
-    '''
-    # compute integral when the values are given.
+    """
 
     ans = 0
     # corresponds to the case where the path is degenerated, only one point.

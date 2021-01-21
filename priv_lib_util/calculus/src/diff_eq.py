@@ -47,8 +47,8 @@ def system_ODE_solver(tt, starting_point, function_evolution, left_or_right="lef
         list with the values of the function, over the grid tt. format : [[x1,y1...], [x2,y2...] ... ]
 
     """
-    assert (function_iterable.is_iterable(function_evolution))
-    assert (function_iterable.is_iterable(starting_point))
+    assert function_iterable.is_iterable(function_evolution), "Function Evolution is not iterable."
+    assert function_iterable.is_iterable(starting_point), "Starting Point is not iterable."
 
     L = len(tt)
     J = len(function_evolution)
