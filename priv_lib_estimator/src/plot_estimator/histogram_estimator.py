@@ -1,7 +1,7 @@
 # normal libraries
 from abc import abstractmethod
 
-import priv_lib_util.tools.function_str
+from priv_lib_util.tools import function_str
 import numpy as np  # maths library and arrays
 from priv_lib_estimator import Plot_estimator
 # my libraries

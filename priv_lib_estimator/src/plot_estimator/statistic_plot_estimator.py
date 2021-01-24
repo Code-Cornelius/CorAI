@@ -90,8 +90,8 @@ class Statistic_plot_estimator(Plot_estimator):
             self.test_true_value(
                 data)  # test if there is only one true value i  the given sliced data.
             # It could lead to potential big errors.
-            estimator.store_and_apply_function_upon_data("value", computation_function, "computation",
-                                                         true_parameter=estimator.DF["true value"].mean())
+            estimator.apply_function_upon_data_store_it("value", computation_function, "computation",
+                                                        true_parameter=estimator.DF["true value"].mean())
 
             comp_sum += estimator.DF.groupby([name_column_evolution])["computation"].sum()  # .values
 

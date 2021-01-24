@@ -8,7 +8,7 @@ class Test_Estimator(TestCase):
     def test_append(self):
         self.fail()
 
-    def test_function_upon_separated_data(self):
+    def test_apply_function_upon_data_store_it(self):
         self.fail()
 
     def test_estimator_mean(self):

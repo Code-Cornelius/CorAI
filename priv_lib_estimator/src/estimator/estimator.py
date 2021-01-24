@@ -7,14 +7,13 @@ from priv_lib_error import Error_type_setter
 class Estimator(object):
     """
     SEMANTICS :
-    Class Estimator as an adaptor from the dataframes from pandas.
-    We use Pandas since it is fairly rampant and easy to use.
-
-    We store the data in the following way: each column is one feature, each row one estimation.
+        Class Estimator as an adaptor from the dataframes from pandas.
+        We use Pandas since it is fairly rampant and easy to use.
+        We store the data in the following way: each column is one feature, each row one estimation.
     """
 
     def __init__(self, DF, *args, **kwargs):
-        # args and kwargs for the super method.
+        # args and kwargs for the super() method.
         self.DF = DF
 
     def __repr__(self):
@@ -24,7 +23,8 @@ class Estimator(object):
     @classmethod
     def from_path(cls, path):
         """
-        SEMANTICS : Constructor estimator with a path.
+        SEMANTICS :
+            Constructor estimator with a path.
         Args:
             path: string. The path has to be raw, no "\".
 
@@ -35,27 +35,30 @@ class Estimator(object):
 
     def append(self, appending_df):
         """
-        SEMANTICS : adaptor for the method append from DF at the estimator level.
+        SEMANTICS :
+            adaptor for the method append from DF at the estimator level.
 
         Args:
             appending_df: the df to append to the self object.
 
-        Returns: quoting : "Pandas dataframe.append() function 
-        is used to append rows of other dataframe to the end of the given dataframe, 
-        returning a new dataframe object. 
-        Columns not in the original dataframes are added as new columns 
-        and the new cells are populated with NaN value.
+        Returns:
+            quoting : "Pandas dataframe.append() function
+            is used to append rows of other dataframe to the end of the given dataframe,
+            returning a new dataframe object.
+            Columns not in the original dataframes are added as new columns
+            and the new cells are populated with NaN value."
 
-        REFERENCES : # https://www.geeksforgeeks.org/python-pandas-dataframe-append/
+        REFERENCES : https://www.geeksforgeeks.org/python-pandas-dataframe-append/
         """
         self._DF = self._DF.append(appending_df)
 
-    def store_and_apply_function_upon_data(self, separator, fct, name, **kwargs):
+    def apply_function_upon_data_store_it(self, separator, fct, name, **kwargs):
         """
-        SEMANTICS : Transform the data
-        (given a whole column of data, but could be extended recursively to more than one column computations)
-        with respect to a function and compute a new array of data
-        that will be stored as a new column in the dataframe.
+        SEMANTICS :
+            Transform the data
+            (given a whole column of data, but could be extended recursively to more than one column computations)
+            with respect to a function and compute a new array of data
+            that will be stored as a new column in the dataframe.
 
         Args:
             separator: a string, name of the feature upon which we apply the data.
@@ -64,7 +67,8 @@ class Estimator(object):
             name: name of the new column of the data (can be the name of an old column).
             **kwargs: any parameter that could take the function.
 
-        Returns: nothing, data stored inside the given DF.
+        Returns:
+            nothing, data stored inside the given DF.
         """
         self._DF[name] = self.apply_function_upon_data(separator, fct, **kwargs)
         return
@@ -84,44 +88,53 @@ class Estimator(object):
         Returns: nothing, data stored inside the given DF.
 
         Examples:
-                    #example of function, the MSE calculator:
-                    # def compute_MSE(param, true_parameter):
-                    #     return (param - true_parameter) ** 2
+            example of function, the MSE calculator:
+            def compute_MSE(param, true_parameter):
+                 return (param - true_parameter) ** 2
         """
         return self._DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
 
-    def estimator_mean(self, name, separators=None):
+    def estimator_mean(self, names, separators = None):
         """
-        SEMANTICS : empirical mean of the data.
+        SEMANTICS :
+            empirical mean of the data separated with the keys separators at column name.
         Args:
-            name:
-            separators:
+            names: list of strings, which columns/feature are the means computed.
+            separators: list of strings, which keys should be considered to groupby data together.
+            If None, then no grouping by and mean computed on whole data.
 
-         Returns: return a serie of the means.
+         Returns: return a DF of the means.
+
+        Dependencies :
+            groupby_DF
 
         """
         if separators is not None:
-            return self._DF.groupby(separators)[name].mean()
+            return self.groupby_DF(separators)[names].mean()
         else:
-            return self._DF[name].mean()
+            return self._DF[names].mean()
 
-    def estimator_variance(self, name, separators=None, ddof=1):
+    def estimator_variance(self, names, separators=None, ddof=1):
         """
         SEMANTICS : empirical variance of the data of the variance.
 
         Args:
-            name:  string, the feature to compute the variance of.
-            separators:  string, features to groupby first with.
-            ddof: how much one normalize the results (usually  / n-1).
-            This gives the unbiased estimator of the variance if the mean is unknown.
+            names:  list of strings, which columns/feature are the variances computed.
+            separators:  list of strings, which keys should be considered to groupby data together.
+            If None, then no grouping by and variance computed on whole data.
+            ddof: how much one normalize the results (usually  / n-1 ;
+            This gives the unbiased estimator of the variance if the mean is unknown).
 
         Returns: normalized S^2
 
+        Dependencies :
+            groupby_DF
+
         """
         if separators is not None:
-            return self._DF.groupby(separators)[name].var(ddof=ddof)
+            return self.groupby_DF(separators)[names].var(ddof=ddof)
         else:
-            return self._DF[name].var(ddof=ddof)
+            return self._DF[names].var(ddof=ddof)
 
     def to_csv(self, path, **kwargs):
         """
@@ -142,14 +155,14 @@ class Estimator(object):
         SEMANTICS : groupby a DF.
 
         Args:
-            separators:
+            separators: list of strings by which we groupby.
 
         Returns:
             tuple with the groupby as well as the keys in order to iterate over it.
 
         """
-        dictionary = self._DF.groupby(separators)
-        return dictionary, dictionary.groups.keys()
+        DataFrameGroupBy = self._DF.groupby(separators)
+        return DataFrameGroupBy, DataFrameGroupBy.groups.keys()
 
     @property
     def DF(self):
