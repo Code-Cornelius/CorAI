@@ -2,13 +2,11 @@ import warnings
 
 def deprecated_function(reason="Not Specified."):
     """
-    SEMANTICS : call that function whenever I am using an old version function.
+    SEMANTICS :
+        call that function whenever the function used is deprecated.
 
     Args:
-        reason:
-
-    Returns:
-
+        reason: additional information for the warning.
     """
     message = " ".join(["Deprecated function name : ", reason])
     warnings.warn(message, DeprecationWarning)

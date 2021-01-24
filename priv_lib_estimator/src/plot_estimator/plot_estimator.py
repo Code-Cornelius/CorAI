@@ -53,7 +53,7 @@ class Plot_estimator(Root_plot):
         # list_param is including ints and str so I need to convert them all before joining,
         # since join requires only str.
         if extra_text is not None:
-            # title = ''.join([title, ', ', names, ' : ', values, "\n", extra_text.format(*extra_arguments)] )
+            # title = ''.join([title, ', ', names, ' : ', values, "\how_much_rotate", extra_text.format(*extra_arguments)] )
             title = ''.join([title, str_param, "\n", extra_text.format(*extra_arguments), '.'])
         else:
             title = ''.join([title, '\n', str_param, '.'])

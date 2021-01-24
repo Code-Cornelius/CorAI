@@ -1,5 +1,8 @@
 from unittest import TestCase
 
+import numpy as np
+from priv_lib_util.tools import  function_iterable
+
 
 class Test_function_iterable(TestCase):
     def test_my_list_argmin(self):
@@ -12,7 +15,10 @@ class Test_function_iterable(TestCase):
         self.fail()
 
     def test_mean_list(self):
-        self.fail()
+        empty_list = []
+        empty_array = np.array([])
+
+        print(function_iterable.mean_list(empty_array))
 
     def test_is_invertible(self):
         self.fail()

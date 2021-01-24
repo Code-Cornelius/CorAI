@@ -1,3 +1,5 @@
+import functools
+import time
 from math import floor
 from time import time
 
@@ -105,3 +107,27 @@ def benchmark(function, title ="no title", *args, **kwargs):
     function(*args, **kwargs)
     end = time()
     time_print_elapsed_time(start, end, title=title)
+
+
+def wrap_benchmark(func):
+    """
+    SEMANTICS :
+        Print the runtime of the decorated function
+
+    Args:
+        func: the function to time
+
+    Returns: the time.
+
+    """
+
+    @functools.wraps(func)
+    def wrapper_timer(*args, **kwargs):
+        start_time = time.perf_counter()  # time.perf_counter() is the most precise available clock.
+        value = func(*args, **kwargs)
+        end_time = time.perf_counter()  # 2
+        run_time = end_time - start_time  # 3
+        print(f"Finished {func.__name__!r} in {run_time:.4f} secs")
+        return value
+
+    return wrapper_timer

@@ -8,9 +8,9 @@ def Memoization(key_names):
     class MemoizationClass:
         def __init__(self, func):
             functools.update_wrapper(self, func)
-            self.func = func # the function using the keys.
-            self.dictionary = {} # the initial dict with the memoization data
-            self.key_names = key_names # the keys that will be used for memoization
+            self.func = func  # the function using the keys.
+            self.dictionary = {}  # the initial dict with the memoization data
+            self.key_names = key_names  # the keys that will be used for memoization
 
         def __call__(self, *args, **kwargs):
             keys = []
@@ -31,21 +31,6 @@ def Memoization(key_names):
     return MemoizationClass
 
 
-def timer(func):
-    """Print the runtime of the decorated function"""
-
-    @functools.wraps(func)
-    def wrapper_timer(*args, **kwargs):
-        start_time = time.perf_counter()  # time.perf_counter() the most precise available clock.
-        value = func(*args, **kwargs)
-        end_time = time.perf_counter()  # 2
-        run_time = end_time - start_time  # 3
-        print(f"Finished {func.__name__!r} in {run_time:.4f} secs")
-        return value
-
-    return wrapper_timer
-
-
 def set_new_methods(**kwargs):
     """ set a set of new methods to a class, any quantity of methods.
 
@@ -64,16 +49,18 @@ def set_new_methods(**kwargs):
     return wrapper
 
 
-def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
+def estimation_remaining_time_computation(total_nb_tries, multiplicator_factor, actual_state):
     """
+    SEMANTICS :
+        decorator for a function that predicts the amount of time left to do a task.
+        In order to do so, it compares the actual state of processing with respect to the total amount.
+
 
     Args:
-        total_nb_tries: total number of iteration, this is the complexity of the algo.
+        total_nb_tries: total number of iteration, this is the total complexity.
         multiplicator_factor: how the complexity of the function evolves throughout the loop.
         actual_state: how much to reduce the time incrementally. I don't know how to do properly. I need an object that changes inside the function but from outside.
         for that reason I use the property of mutable object. ACTUAL_STATE IS A LIST!
-
-    Returns:
 
     """
 
@@ -83,9 +70,12 @@ def prediction_total_time(total_nb_tries, multiplicator_factor, actual_state):
 
         @functools.wraps(func)
         def wrapper_estimation_timer(*args, **kwargs):
+            #estimation:
             start_time = time.perf_counter()  # time.perf_counter() the most precise available clock.
             value = func(*args, **kwargs)
             end_time = time.perf_counter()
+
+            #computations and saving / printing
             run_time = end_time - start_time
             list_deco_estimation_times.append(run_time)
             total_run_time = priv_lib_util.tools.function_iterable.mean_list(

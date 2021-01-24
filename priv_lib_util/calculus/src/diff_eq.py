@@ -95,7 +95,7 @@ tt = np.linspace(tm, tM, NB_GRID_POINT)
 density_mu = lambda tt: norm.pdf(tt, 0, SIGMA[0])  # probably not the fastest choice for single evaluation, but great for vectorization !
 density_nu = lambda tt: norm.pdf(tt, 0, SIGMA[1])  # probably not the fastest choice for single evaluation, but great for vectorization !
 
-# for x \in E !
+# for x \ihow_much_rotate E !
 density_eta = lambda tt: np.maximum(density_mu(tt) - density_nu(tt), 0)
 density_gamma = lambda tt: np.maximum(density_nu(tt) - density_mu(tt), 0)
 

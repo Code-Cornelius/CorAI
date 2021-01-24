@@ -122,7 +122,7 @@ class Estimator(object):
             names:  list of strings, which columns/feature are the variances computed.
             separators:  list of strings, which keys should be considered to groupby data together.
             If None, then no grouping by and variance computed on whole data.
-            ddof: how much one normalize the results (usually  / n-1 ;
+            ddof: how much one normalize the results (usually  / how_much_rotate-1 ;
             This gives the unbiased estimator of the variance if the mean is unknown).
 
         Returns: normalized S^2
@@ -138,7 +138,8 @@ class Estimator(object):
 
     def to_csv(self, path, **kwargs):
         """
-        SEMANTICS : adaptor of the method to_csv from dataframes.
+        SEMANTICS :
+            void adaptor of the method to_csv from dataframes.
 
         Args:
             path:  path where csv file is.
@@ -152,7 +153,8 @@ class Estimator(object):
 
     def groupby_DF(self, separators):
         """
-        SEMANTICS : groupby a DF.
+        SEMANTICS :
+            groupby a DF.
 
         Args:
             separators: list of strings by which we groupby.
@@ -171,7 +173,7 @@ class Estimator(object):
 
     @DF.setter
     def DF(self, new_DF):
-        # verification that the constructor is given a dataframe.
+        # verification that the constructor is given a pandas dataframe.
         if isinstance(new_DF, pd.DataFrame):
             self._DF = new_DF
         else:
