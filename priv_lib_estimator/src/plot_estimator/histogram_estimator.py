@@ -4,20 +4,19 @@ from abc import abstractmethod
 from priv_lib_util.tools import function_str
 import numpy as np  # maths library and arrays
 from priv_lib_estimator.src.estimator.estimator import Estimator
-from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator_estimator
+from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
 # my libraries
 from priv_lib_plot import APlot
 
 # errors:
 
-np.random.seed(124)
 
 
 # other files
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class Histogram_estimator(Plot_estimator_estimator):
+class Histogram_estimator(Plot_estimator):
     # abstract nb_of_bins parameter
     @property
     @abstractmethod
@@ -25,7 +24,7 @@ class Histogram_estimator(Plot_estimator_estimator):
         pass
 
     def __init__(self, estimator, separators=None, *args, **kwargs):
-        super().__init__(estimator=estimator, separators=separators, *args, **kwargs)
+        super().__init__(estimator, separators, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################

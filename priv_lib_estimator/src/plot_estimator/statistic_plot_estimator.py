@@ -4,11 +4,10 @@ from abc import abstractmethod
 import numpy as np  # maths library and arrays
 # my libraries
 from priv_lib_estimator.src.estimator.estimator import Estimator
-from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator_estimator
+from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
 from priv_lib_plot import APlot
 
-np.random.seed(124)
 
 
 # errors:
@@ -17,9 +16,9 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-class Statistic_plot_estimator(Plot_estimator_estimator):
+class Statistic_plot_estimator(Plot_estimator):
     def __init__(self, estimator, separators=None, *args, **kwargs):
-        super().__init__(estimator=estimator, separators=separators, *args, **kwargs)
+        super().__init__(estimator, separators, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################

@@ -3,9 +3,8 @@ import unittest
 from PIL import ImageChops, Image  # image comparison
 
 # other files
-from library_classes.plot.class_aplot import *
+from priv_lib_plot import APlot
 
-np.random.seed(124)
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

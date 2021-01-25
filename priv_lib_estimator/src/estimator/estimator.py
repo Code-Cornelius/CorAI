@@ -6,11 +6,15 @@ from priv_lib_error import Error_type_setter
 
 class Estimator(object):
     """
-    SEMANTICS :
+    SEMANTICS:
         Class Estimator as an adaptor from the dataframes from pandas.
         We use Pandas since it is fairly rampant and easy to use.
         We store the data in the following way: each column is one feature, each row one estimation.
+
+        It is good practice to put the names of the columns / features in the class object, as a security.
     """
+
+    NAMES_COLUMNS = {};
 
     def __init__(self, DF, *args, **kwargs):
         # args and kwargs for the super() method.
@@ -21,12 +25,12 @@ class Estimator(object):
         return repr(self._DF)
 
     @classmethod
-    def from_path(cls, path):
+    def from_path_csv(cls, path):
         """
-        SEMANTICS :
+        SEMANTICS:
             Constructor estimator with a path.
         Args:
-            path: string. The path has to be raw, no "\".
+            path: string. The path has to be raw, no "\". CSV file.
 
         Returns: new estimator.
 
@@ -35,7 +39,7 @@ class Estimator(object):
 
     def append(self, appending_df):
         """
-        SEMANTICS :
+        SEMANTICS:
             adaptor for the method append from DF at the estimator level.
 
         Args:
@@ -161,7 +165,7 @@ class Estimator(object):
             void adaptor of the method to_csv from dataframes.
 
         Args:
-            path:  path where csv file is.
+            path: path where the dataframe of the estimator is saved.
             **kwargs: Additional keyword arguments to pass as keywords arguments to
             the function to_csv of pandas.
 
@@ -171,19 +175,20 @@ class Estimator(object):
         self._DF.to_csv(path, **kwargs)
         return
 
-    def groupby_DF(self, separators):
+    def groupby_DF(self, separators, order = True):
         """
         SEMANTICS :
             groupby a DF.
 
         Args:
             separators: list of strings by which we groupby.
+            order: determines whether an ordering is done or not.
 
         Returns:
             tuple with the groupby as well as the keys in order to iterate over it.
 
         """
-        DataFrameGroupBy = self._DF.groupby(separators)
+        DataFrameGroupBy = self._DF.groupby(separators, order)
         return DataFrameGroupBy, DataFrameGroupBy.groups.keys()
 
     @property

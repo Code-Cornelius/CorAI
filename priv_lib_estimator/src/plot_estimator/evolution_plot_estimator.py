@@ -8,11 +8,10 @@ import numpy as np  # maths library and arrays
 from priv_lib_util.tools import function_str
 from priv_lib_plot import APlot
 from priv_lib_estimator.src.estimator.estimator import Estimator
-from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator_estimator
+from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
 # errors:
 
-np.random.seed(124)
 
 
 # other files
@@ -20,64 +19,138 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-class Evolution_plot_estimator(Plot_estimator_estimator):
+class Evolution_plot_estimator(Plot_estimator):
+    """
+    SEMANTICS:
+        abstract class inheriting from Plot_estimator.
+        The purpose is to automatise the plots showing evolution of a feature
+        with respect to an other as a time-series.
+        The class is showing common behavior for evolution_plot: retriving data for the time serie,
+        plotting according to some standards...
+
+        EVOLUTION_NAME is the parameter with respect to which the feature is evolving. It is usually time or position.
+
+        Abstract members:
+            EVOLUTION_NAME
+            get_default_dict_fig
+
+    """
+
     # abstract evolution_name parameter
     @property
     @abstractmethod
     def EVOLUTION_NAME(self):
+        # EVOLUTION_NAME is a string.
         pass
 
     def __init__(self, estimator, separators=None, *args, **kwargs):
-        super().__init__(estimator=estimator, separators=separators, *args, **kwargs)
+        super().__init__(estimator, separators, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
-    # data
+    # data processing
 
     @classmethod
-    @abstractmethod
-    def get_evolution_name_unique_values(cls, data):
-        pass
-
-    @classmethod
-    @abstractmethod
-    def get_evolution_name_extremes(cls, data):
-        pass
-
-    @abstractmethod
-    def get_evolution_name_true_value(self, data):
-        pass
-
-    @abstractmethod
-    def get_evolution_name_plot_data(self, data):
-        pass
-
-    @abstractmethod
-    def get_evolution_name_specific_data(self, data, my_str):
+    def get_grouped_evolution_name_feature(cls, data, features):
         """
-        returns the data grouped by the particular attribute, and we focus on data given by column str, computing the means and returning an array.
+        Semantics:
+            Retrieve the series of a Dataframe,
+            by grouping according to evolution_name and then looking
+            at the column feature.
+
 
         Args:
-            data:
-            my_str:
+            data: data is a pd.DataFrame.
+            There is the possibility of not using the estimator as the data.
+            features: the features we are interested in. Should be a list of feature keys.
 
         Returns:
+            returns a groupby of the size: (nb groups, nb of features).
+
+        Examples:
+            This function can be used by creating two methods in the child class called:
+                    def get_evolution_name_true_value(self, data):
+                        return self.get_grouped_evolution_name_feature(data, 'true value').mean().to_numpy()
+
+                    def get_evolution_name_plot_data(self, data):
+                        return self.get_grouped_evolution_name_feature(data, 'value').mean().to_numpy()
 
         """
-        pass
+        return data.groupby([cls.EVOLUTION_NAME])[features]
+
+    @classmethod
+    def get_evolution_name_unique_values(cls, data):
+        """
+        Semantics:
+            Retrieve the list of unique values in the column of the EVOLUTION_NAME feature of data.
+            The list is not sorted, organised in order of appearance.
+
+        Args:
+            data: data is a pd.DataFrame.
+            There is the possibility of not using the estimator as the data.
+
+        Returns:
+            numpy array of the unique values taken in the column EVOLUTION_NAME..
+
+        """
+        return data[cls.EVOLUTION_NAME].unique()
+
+
+    @classmethod
+    def get_evolution_name_extremes(cls, data, features):
+        """
+        Semantics:
+            Retrieve the extremes of a Dataframe,
+            when the data is groupby the EVOLUTION_NAME parameter,
+            and we look at the column feature.
+
+
+        Args:
+            data: data is a pd.DataFrame.
+            There is the possibility of not using the estimator as the data.
+            features: the features we are interested in. It should be a list of keys for features.
+
+        Returns:
+            tuple of two numpy array of the min and max, each numpy array is
+            of size: (nb groups, nb of features).
+
+        Dependencies:
+            get_grouped_evolution_name_feature
+        """
+        values = cls.get_grouped_evolution_name_feature(data, features)
+        return values.min().to_numpy(), values.max().to_numpy()
+
+
+
 
     # section ######################################################################
     #  #############################################################################
-    # plot
+    # plot:  the logic is that we might want to do multiple plot.
+    # So we offer the possibility
+    # of having a parameter that split the data (grouped_data_by)
+    # and key to know with which data's slice we are working with.
 
     @abstractmethod
-    def get_dict_fig(self, separators, key):
+    def get_default_dict_fig(self, grouped_data_by, key):
+        """
+        Semantics:
+            default parameters for the drawing of evolution_plot_estimator.
+
+        Args:
+            grouped_data_by: features we groupby the data with.
+            key: the value of the features we groupbyied with and that we are currently plotting.
+
+        Returns:
+            the default dict for evolution_plot_estimator.
+
+        """
         pass
 
     def draw(self, separators=None, separator_colour=None):
         """
-        plot the evolution of the estimators over the attribute given by get_plot_data.
-
+        Semantics:
+            Draw the evolution_plot_estimator common behavior.
+    #TODO
         Args:
             separators:
             separator_colour: the column of the dataframe to consider for color discrimination
@@ -92,7 +165,7 @@ class Evolution_plot_estimator(Plot_estimator_estimator):
             plot = APlot()
 
             # min and max
-            minimum, maximum = self.get_evolution_name_extremes(data)
+            minimum, maximum = self.get_evolution_name_extremes(data, )
 
             plot.uni_plot(0, estimation, minimum,
                           dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "min",
@@ -121,7 +194,7 @@ class Evolution_plot_estimator(Plot_estimator_estimator):
                 data = self.get_evolution_name_plot_data(data)
                 plot.uni_plot(0, estimation, data)
 
-            fig_dict = self.get_dict_fig(separators, key)
+            fig_dict = self.get_default_dict_fig(separators, key)
             plot.set_dict_fig(0, fig_dict)
             plot.show_legend()
             name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])

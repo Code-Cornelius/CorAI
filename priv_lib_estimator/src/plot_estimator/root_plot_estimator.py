@@ -5,7 +5,6 @@ import numpy as np  # maths library and arrays
 
 # my libraries
 
-np.random.seed(124)
 
 
 # errors:
