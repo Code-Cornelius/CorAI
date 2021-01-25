@@ -29,7 +29,7 @@ class Test_benchmarking(TestCase):
         assert abs(minisecond1 - minires1[1]) + abs(minisecond2 - minires2[1]) < 0.001
 
     def test_time_time2text(self):
-        frac_sec = [0, 0, 0.5, 0 ]
+        frac_sec = [0, 0, 0.5, 0]
         s = [10, 1, 0, 0]
         m = [100, 1, 0, 0]
         h = [5, 1, 0, 0]

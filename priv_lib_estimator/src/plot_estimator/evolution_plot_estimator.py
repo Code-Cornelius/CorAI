@@ -3,15 +3,14 @@ from abc import abstractmethod
 from matplotlib import pyplot as plt  # plotting
 import numpy as np  # maths library and arrays
 
-
 # my libraries
 from priv_lib_util.tools import function_str
 from priv_lib_plot import APlot
 from priv_lib_estimator.src.estimator.estimator import Estimator
 from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
-# errors:
 
+# errors:
 
 
 # other files
@@ -95,7 +94,6 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         return data[cls.EVOLUTION_NAME].unique()
 
-
     @classmethod
     def get_evolution_name_extremes(cls, data, features):
         """
@@ -119,9 +117,6 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         values = cls.get_grouped_evolution_name_feature(data, features)
         return values.min().to_numpy(), values.max().to_numpy()
-
-
-
 
     # section ######################################################################
     #  #############################################################################
@@ -195,7 +190,7 @@ class Evolution_plot_estimator(Plot_estimator):
                 plot.uni_plot(0, estimation, data)
 
             fig_dict = self.get_default_dict_fig(separators, key)
-            plot.set_dict_fig(0, fig_dict)
+            plot.set_dict_ax(0, fig_dict)
             plot.show_legend()
             name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
             plot.save_plot(name_save_file=name_file)

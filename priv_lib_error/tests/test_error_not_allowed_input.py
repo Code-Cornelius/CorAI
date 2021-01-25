@@ -19,4 +19,3 @@ class Test_Error_not_allowed_input(unittest.TestCase):
         a_message = broken_function_without_message(Error_not_allowed_input)
         DEFAULT = Error_not_allowed_input.DEFAULT_MESSAGE
         assert (a_message == DEFAULT + "All goodI continue running !")
-

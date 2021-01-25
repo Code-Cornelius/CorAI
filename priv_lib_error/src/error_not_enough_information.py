@@ -13,4 +13,3 @@ class Error_not_enough_information(ValueError):
 
     def __str__(self):
         return self.message
-

@@ -2,7 +2,6 @@
 
 from .deco_register import deco_register
 
-
 # dict where I store the classes that appear in the registering.
 dict_register_classes = {}
 
@@ -17,11 +16,12 @@ class Register(type):
         # assignation from right to left. cls is the new class created by new.
 
         cls.list_register_instances = []
-        cls.print_register = classmethod(meta.print_register)  # a method inside metaclass is a class method.
+        cls.get_register = classmethod(meta.get_register)  # a method inside metaclass is a class method.
         # On the other hand, class method is binding the method to both class method and object method scope.
         return cls
 
-    def print_register(self):
-        for element in self.list_register_instances:
-            print(element)
+    def get_register(self, to_print = False):
+        if to_print:
+            for element in self.list_register_instances:
+                print(element)
         return self.list_register_instances

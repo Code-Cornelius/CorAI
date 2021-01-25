@@ -13,4 +13,3 @@ class Error_not_yet_allowed(ValueError):
 
     def __str__(self):
         return self.message
-

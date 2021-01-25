@@ -13,4 +13,3 @@ class Error_convergence(Exception):
 
     def __str__(self):
         return self.message
-

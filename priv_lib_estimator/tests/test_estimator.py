@@ -54,20 +54,20 @@ class Test_Estimator(TestCase):
     def test_estimator_mean(self):
         keys_grouping = [None, ['People'], ['People', 'number_rooms']]
         solution = [[3500], [1966 + 2 / 3, 1600, 10000], [1700, 2500, 1600, 10000]]
-        for i,key in enumerate(keys_grouping):
+        for i, key in enumerate(keys_grouping):
             with self.subTest(key=key):
                 ans = self.estimator.estimation_group_mean(columns_for_computation=['Size'],
                                                            keys_grouping=key)
                 size_reshape = len(solution[i])
-                assert  (solution[i] == ans.to_numpy().reshape((1, size_reshape))).all() # converting ans to numpy (from DF) then reshaping it so comparable to list and finally compare.
-
+                assert (solution[i] == ans.to_numpy().reshape((1,
+                                                               size_reshape))).all()  # converting ans to numpy (from DF) then reshaping it so comparable to list and finally compare.
 
         keys_grouping = [None, ['People']]
         solution = [
             [3500, 3],
             [[1966 + 2 / 3, 4 / 3],
-                [1600, 1],
-                [10000, 10]]
+             [1600, 1],
+             [10000, 10]]
         ]
 
         for i, key in enumerate(keys_grouping):
@@ -75,7 +75,6 @@ class Test_Estimator(TestCase):
                 ans = self.estimator.estimation_group_mean(columns_for_computation=['Size', 'number_rooms'],
                                                            keys_grouping=key)
                 assert (solution[i] == ans.to_numpy()).all()
-
 
     def test_estimator_variance(self):
         pass

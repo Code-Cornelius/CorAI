@@ -130,7 +130,7 @@ class Plot_estimator(Root_plot_estimator):
 
     @staticmethod
     def test_true_value(data):
-        #TODO is it useful?
+        # TODO is it useful?
         """
 
         test if there is only one true value in the given sliced data.
@@ -145,7 +145,6 @@ class Plot_estimator(Root_plot_estimator):
         if data['true value'].nunique() != 1:
             raise Exception(
                 "Error because you are estimating different parameters, but still compounding the MSE error together.")
-
 
     # section ######################################################################
     #  #############################################################################

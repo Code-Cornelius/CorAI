@@ -9,7 +9,6 @@ from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 from priv_lib_plot import APlot
 
 
-
 # errors:
 
 
@@ -102,7 +101,7 @@ class Statistic_plot_estimator(Plot_estimator):
         plot = APlot()
         plot.uni_plot(0, TIMES_plot, comp_sum, dict_plot_param={"linewidth": 2})
         fig_dict = self.get_dict_fig(convergence_in="MSE")
-        plot.set_dict_fig(0, fig_dict)
+        plot.set_dict_ax(0, fig_dict)
         plot.save_plot(name_save_file=''.join([computation_function.__name__, '_comput']))
 
         if class_for_hist is not None:

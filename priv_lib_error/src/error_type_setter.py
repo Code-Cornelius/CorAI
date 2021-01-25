@@ -13,4 +13,3 @@ class Error_type_setter(TypeError):
 
     def __str__(self):
         return self.message
-

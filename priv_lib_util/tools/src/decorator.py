@@ -70,12 +70,12 @@ def estimation_remaining_time_computation(total_nb_tries, multiplicator_factor, 
 
         @functools.wraps(func)
         def wrapper_estimation_timer(*args, **kwargs):
-            #estimation:
+            # estimation:
             start_time = time.perf_counter()  # time.perf_counter() the most precise available clock.
             value = func(*args, **kwargs)
             end_time = time.perf_counter()
 
-            #computations and saving / printing
+            # computations and saving / printing
             run_time = end_time - start_time
             list_deco_estimation_times.append(run_time)
             total_run_time = priv_lib_util.tools.function_iterable.mean_list(

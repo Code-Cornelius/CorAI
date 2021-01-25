@@ -1,5 +1,6 @@
 import warnings
 
+
 def deprecated_function(reason="Not Specified."):
     """
     SEMANTICS :

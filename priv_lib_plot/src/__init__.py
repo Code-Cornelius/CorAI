@@ -1,1 +1,1 @@
-from .class_aplot import APlot
+from .aplot import APlot

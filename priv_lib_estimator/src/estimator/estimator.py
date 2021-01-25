@@ -136,7 +136,6 @@ class Estimator(object):
             #                                    [0] because groupby hands back a tuple and we need the groups
             #                                        which feature are we interested in.
 
-
     def estimation_group_variance(self, columns_for_computation, keys_grouping=None, ddof=1):
         """
         SEMANTICS: empirical variance of the data of the variance.
@@ -175,7 +174,7 @@ class Estimator(object):
         self._DF.to_csv(path, **kwargs)
         return
 
-    def groupby_DF(self, separators, order = True):
+    def groupby_DF(self, separators, order=True):
         """
         SEMANTICS :
             groupby a DF.

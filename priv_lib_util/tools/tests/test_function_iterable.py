@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 import numpy as np
-from priv_lib_util.tools import  function_iterable
+from priv_lib_util.tools import function_iterable
 
 
 class Test_function_iterable(TestCase):

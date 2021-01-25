@@ -3,7 +3,6 @@ from unittest import TestCase
 import numpy as np
 from scipy.stats import norm, uniform, lognorm
 
-
 from priv_lib_util.calculus import diff_eq
 from priv_lib_util.tools import function_iterable
 
@@ -13,7 +12,7 @@ class Test_diff_eq(TestCase):
         pass
 
     def test_system_ode_solver(self):
-        #example taken from the paper Hobson Klimmek 2015
+        # example taken from the paper Hobson Klimmek 2015
 
         UNIFORM_SUPP = [[-1., 1.],
                         [-2.,
@@ -25,6 +24,7 @@ class Test_diff_eq(TestCase):
         density_2 = lambda tt: uniform.pdf(tt,
                                            loc=UNIFORM_SUPP[1][0],
                                            scale=UNIFORM_SUPP[1][1] - UNIFORM_SUPP[1][0])
+
         def density_mu(tt):
             return density_1(tt)
 
@@ -37,19 +37,18 @@ class Test_diff_eq(TestCase):
         def density_gamma(tt):
             return np.maximum(density_nu(tt) - density_mu(tt), 0)
 
-
         def p_dash_open_formula(tt, xx, yy):
             return (tt - yy) / (yy - xx) * density_eta(tt) / density_gamma(xx)
 
         def q_dash_open_formula(tt, xx, yy):
             return (xx - tt) / (yy - xx) * density_eta(tt) / density_gamma(yy)
 
-        tt = np.linspace(-1*0.999, 0.5, 1000)
-        starting_points = [[1.99,-1.01], [1.01,-1.99]]
+        tt = np.linspace(-1 * 0.999, 0.5, 1000)
+        starting_points = [[1.99, -1.01], [1.01, -1.99]]
         # forward equation
         empirical = diff_eq.system_ODE_solver(tt, starting_points[0],
-                                  [p_dash_open_formula,q_dash_open_formula],
-                                  left_or_right="left")
+                                              [p_dash_open_formula, q_dash_open_formula],
+                                              left_or_right="left")
         q, p = zip(*empirical)
         p = function_iterable.replace_nans_numpy(np.array(p))
         q = function_iterable.replace_nans_numpy(np.array(q))

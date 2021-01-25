@@ -19,4 +19,3 @@ class Test_Error_not_enough_information(unittest.TestCase):
         a_message = broken_function_without_message(Error_not_enough_information)
         DEFAULT = Error_not_enough_information.DEFAULT_MESSAGE
         assert (a_message == DEFAULT + "All goodI continue running !")
-

@@ -9,8 +9,8 @@ from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 # my libraries
 from priv_lib_plot import APlot
 
-# errors:
 
+# errors:
 
 
 # other files
@@ -56,6 +56,6 @@ class Histogram_estimator(Plot_estimator):
             plot = APlot()
             param_dict = self.get_dict_param(key, mean)
             fig_dict = self.get_dict_fig(separators, key)
-            plot.hist(data=data, dict_param_hist=param_dict, dict_fig=fig_dict)
+            plot.hist(data=data, dict_param_hist=param_dict, dict_ax=fig_dict)
             name_file = ''.join([priv_lib_util.tools.function_str.tuple_to_str(key, ''), 'histogram'])
             plot.save_plot(name_save_file=name_file)
