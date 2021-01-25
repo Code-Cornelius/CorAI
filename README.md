@@ -26,6 +26,7 @@ Project
 │  │  ├── error_not_enough_information  
 │  │  ├── error_not_yet_allowed
 │  │  ├── error_type_setter  
+│  │  ├── numpy_function_used  (not really interesting for general purpose)
 │  │  └── warning_deprecated
 │  └── tests
 │
@@ -58,18 +59,20 @@ inside each library,  there is a source folder and a tests folder. In order to i
 
 ```
 from priv_lib import module
+or
+from priv_lib.extension import module
 ```
 
 Then, the functions written in the module are callable with:
 
 ```
-file.function()
+module.function()
 ```
 
 if one wants to simply use the name of the function without refering to the private call table of the library, one can write:
 
 ```
-function = file.function
+function = module.function
 
 function()
 ```
@@ -81,11 +84,11 @@ function()
 
 Custom errors for better handling of errors in the library. They all inherit from the built-in exception and intends to make the code clearer.
 
-* **Error_convergence** inherits from Exception
-* **Error_not_allowed_input** inherits from ValueError
-* **Error_not_enough_information** inherits from ValueError
-* **Error_not_yet_allowed** inherits from ValueError
-* **Error_type_setter** inherits from TypeError
+* **Error_convergence** inherits from Exception,
+* **Error_not_allowed_input** inherits from ValueError,
+* **Error_not_enough_information** inherits from ValueError,
+* **Error_not_yet_allowed** inherits from ValueError,
+* **Error_type_setter** inherits from TypeError,
 * **Warning_deprecated** function that rise a deprecation warning.
 
 ## library_estimator
