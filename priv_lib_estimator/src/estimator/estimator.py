@@ -52,89 +52,108 @@ class Estimator(object):
         """
         self._DF = self._DF.append(appending_df)
 
-    def apply_function_upon_data_store_it(self, separator, fct, name, **kwargs):
+    def apply_function_upon_data(self, separators, fct, **kwargs):
         """
-        SEMANTICS :
+        SEMANTICS : Transform the data
+        with respect to a function and compute a new array of data which is returned.
+        Will do: fct(DF[separators]) component wise.
+
+        Args:
+            separators: a string, name of the feature upon which we apply the data.
+
+            fct: function of the input data. It can be anything that can be applied component wise.
+            In particular, it should work for numpy array (because Pandas is related to numpy).
+
+            **kwargs: Additional keyword arguments to pass as keywords arguments to
+            `func`.
+
+        Returns: returns the transformed slice dataframe.
+
+        Examples:
+            example of function, the MSE calculator:
+            def compute_MSE(param, true_parameter):
+                 return (param - true_parameter) ** 2
+            or any function from numpy, like np.sqrt
+        """
+
+        # trick for applying the function on a slice (column slice) of the data.
+        return self._DF.apply(lambda row: fct(row[separators], **kwargs), axis=1)
+
+    def apply_function_upon_data_store_it(self, separators, fct, new_column_names, **kwargs):
+        """
+        SEMANTICS:
             Transform the data
             (given a whole column of data, but could be extended recursively to more than one column computations)
             with respect to a function and compute a new array of data
             that will be stored as a new column in the dataframe.
 
         Args:
-            separator: a string, name of the feature upon which we apply the data.
-            fct: function of the input data. It can be anything that takes as input a list.
+            separators: list of strings, name of the features upon which we apply the data.
+
+            fct: function of the input data. It can be anything that can be applied component wise.
             In particular, it should work for numpy array (because Pandas is related to numpy).
-            name: name of the new column of the data (can be the name of an old column).
-            **kwargs: any parameter that could take the function.
+
+            new_column_names: list of the names of the new columns of the data (can be the name of an old column).
+            the new_column_names has the same length as separators, (see apply_function_upon_data return)
+
+            **kwargs: Additional keyword arguments to pass as keywords arguments to
+            `func`.
 
         Returns:
             nothing, data stored inside the given DF.
+
+        Dependencies:
+            apply_function_upon_data
         """
-        self._DF[name] = self.apply_function_upon_data(separator, fct, **kwargs)
+        assert len(new_column_names) == len(separators), "New_column_names and separators must have same dimension."
+        self._DF[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
         return
 
-    def apply_function_upon_data(self, separator, fct, **kwargs):
+    def estimation_group_mean(self, columns_for_computation, keys_grouping=None):
         """
-        SEMANTICS : Transform the data
-        (given a whole column of data, but could be extended recursively to more than one column computations)
-        with respect to a function and compute a new array of data which is returned.
-
+        SEMANTICS:
+            empirical mean of the data separated with the keys keys_grouping at column name.
         Args:
-            separator: a string, name of the feature upon which we apply the data.
-            fct: function of the input data. It can be anything that takes as input a list.
-            In particular, it should work for numpy array (because Pandas is related to numpy).
-            **kwargs: any parameter that could take the function.
-
-        Returns: nothing, data stored inside the given DF.
-
-        Examples:
-            example of function, the MSE calculator:
-            def compute_MSE(param, true_parameter):
-                 return (param - true_parameter) ** 2
-        """
-        return self._DF.apply(lambda row: fct(row[separator], **kwargs), axis=1)
-
-    def estimator_mean(self, names, separators = None):
-        """
-        SEMANTICS :
-            empirical mean of the data separated with the keys separators at column name.
-        Args:
-            names: list of strings, which columns/feature are the means computed.
-            separators: list of strings, which keys should be considered to groupby data together.
+            columns_for_computation: list of strings, which columns/feature are the means computed.
+            keys_grouping: list of strings, which keys should be considered to groupby data together.
             If None, then no grouping by and mean computed on whole data.
 
          Returns: return a DF of the means.
 
-        Dependencies :
+        Dependencies:
             groupby_DF
 
         """
-        if separators is not None:
-            return self.groupby_DF(separators)[names].mean()
+        if keys_grouping is None:
+            return self._DF[columns_for_computation].mean()
         else:
-            return self._DF[names].mean()
+            return self.groupby_DF(keys_grouping)[0][columns_for_computation].mean()
+            #                      keys are how we groupby
+            #                                    [0] because groupby hands back a tuple and we need the groups
+            #                                        which feature are we interested in.
 
-    def estimator_variance(self, names, separators=None, ddof=1):
+
+    def estimation_group_variance(self, columns_for_computation, keys_grouping=None, ddof=1):
         """
-        SEMANTICS : empirical variance of the data of the variance.
+        SEMANTICS: empirical variance of the data of the variance.
 
         Args:
-            names:  list of strings, which columns/feature are the variances computed.
-            separators:  list of strings, which keys should be considered to groupby data together.
+            columns_for_computation:  list of strings, which columns/feature are the variances computed.
+            keys_grouping:  list of strings, which keys should be considered to groupby data together.
             If None, then no grouping by and variance computed on whole data.
             ddof: how much one normalize the results (usually  / how_much_rotate-1 ;
             This gives the unbiased estimator of the variance if the mean is unknown).
 
         Returns: normalized S^2
 
-        Dependencies :
+        Dependencies:
             groupby_DF
 
         """
-        if separators is not None:
-            return self.groupby_DF(separators)[names].var(ddof=ddof)
+        if keys_grouping is not None:
+            return self.groupby_DF(keys_grouping)[columns_for_computation].var(ddof=ddof)
         else:
-            return self._DF[names].var(ddof=ddof)
+            return self._DF[columns_for_computation].var(ddof=ddof)
 
     def to_csv(self, path, **kwargs):
         """
@@ -143,7 +162,8 @@ class Estimator(object):
 
         Args:
             path:  path where csv file is.
-            **kwargs: kwargs for the function to_csv.
+            **kwargs: Additional keyword arguments to pass as keywords arguments to
+            the function to_csv of pandas.
 
         Returns:
 

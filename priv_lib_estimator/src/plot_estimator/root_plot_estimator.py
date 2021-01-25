@@ -20,7 +20,7 @@ Class at the root of Graph. It catches the function super.
 Abstract class.
 """
 
-class Root_plot(ABC):
+class Root_plot_estimator(ABC):
     def __init__(self, *args, **kwargs):
         super().__init__()
 

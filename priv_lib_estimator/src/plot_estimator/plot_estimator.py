@@ -1,13 +1,14 @@
 # normal libraries
 import pandas as pd
 # my libraries
-from priv_lib_estimator import Estimator
-from priv_lib_estimator import Root_plot
+
+from priv_lib_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
 from priv_lib_error import Error_type_setter
-from priv_lib_util.tools import function_iterable
+from priv_lib_estimator.src.estimator.estimator import Estimator
 
 
-class Plot_estimator(Root_plot):
+
+class Plot_estimator_estimator(Root_plot_estimator):
     def __init__(self, estimator, separators=None, *args, **kwargs):
         """
 

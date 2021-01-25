@@ -6,9 +6,9 @@ import numpy as np  # maths library and arrays
 
 # my libraries
 from priv_lib_util.tools import function_str
-from priv_lib_estimator import Estimator
-from priv_lib_estimator import Plot_estimator
 from priv_lib_plot import APlot
+from priv_lib_estimator.src.estimator.estimator import Estimator
+from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator_estimator
 
 # errors:
 
@@ -20,7 +20,7 @@ np.random.seed(124)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-class Evolution_plot_estimator(Plot_estimator):
+class Evolution_plot_estimator(Plot_estimator_estimator):
     # abstract evolution_name parameter
     @property
     @abstractmethod

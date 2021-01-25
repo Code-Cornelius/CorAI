@@ -91,20 +91,21 @@ def time_print_elapsed_time(start, end, title="no title"):
     return
 
 
-def benchmark(function, title ="no title", *args, **kwargs):
+def benchmark(func, title="no title", *args, **kwargs):
     """
     SEMANTICS : helper for benchmarking a function and prints the timing with the name given as title. Extra parameters can be given.
     Args:
-        function: function to benchmark
+        func: function to benchmark
         title: title that is printed as :  " Program : " + title + ", took roughly :"
-        *args: extra arguments for the function.
-        **kwargs: extra arguments for the function.
+        *args: Additional arguments to pass as arguments to `func`.
+        **kwargs: Additional keyword arguments to pass as keywords arguments to
+            `func`.
 
     Returns:
 
     """
     start = time()
-    function(*args, **kwargs)
+    func(*args, **kwargs)
     end = time()
     time_print_elapsed_time(start, end, title=title)
 
@@ -115,7 +116,7 @@ def wrap_benchmark(func):
         Print the runtime of the decorated function
 
     Args:
-        func: the function to time
+        func: Function to time.
 
     Returns: the time.
 

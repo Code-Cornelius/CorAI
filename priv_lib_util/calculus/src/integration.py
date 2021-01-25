@@ -14,8 +14,8 @@ def complex_quadrature(func, a, b, *args, **kwargs):
         a: lower bound of the integral
         b: higher bounds of the integral
         *args: arguments for the function
-        **kwargs: key word arguments for the function
-
+        **kwargs: Additional keyword arguments to pass as keywords arguments to
+            `func`.
     Returns:
         a 3-tuple : complex valued integral, real error, imaginary error).
     """
@@ -40,9 +40,10 @@ def evaluate_function(func, tt, *args, **kwargs):
     Args:
         func: function to evaluate.
         tt: points at which to evaluate the function.
-        *args: additional parameters for the given function
-        **kwargs:  additional parameters for the given function
-
+        *args: Additional arguments to pass as arguments to
+            `func`.
+        **kwargs:  Additional keyword arguments to pass as keywords arguments to
+            `func`.
     Returns: evaluation of the function : func(tt)
 
     References : https://stackoverflow.com/questions/35215161/most-efficient-way-to-map-function-over-numpy-array/35216364

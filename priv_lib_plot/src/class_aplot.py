@@ -8,8 +8,8 @@ import seaborn as sns  # environment for plots
 
 # my libraries
 from priv_lib_metaclass import Register, deco_register
-from priv_lib_util.tools.function_dict import up
-from priv_lib_util.tools.function_iterable import is_a_container
+from priv_lib_util.tools import function_dict, function_iterable
+
 
 # errors:
 from priv_lib_error import Error_not_allowed_input
@@ -183,7 +183,7 @@ class APlot(object, metaclass=Register):
 
         """
         if len(xx) == len(yy):
-            up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
+            function_dict.up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
             nb_ax = self.__check_axs(nb_ax)
             if not bis:  # bis is plot on second axis.
                 out = self._axs[nb_ax].plot(xx, yy, **dict_plot_param)
@@ -221,7 +221,7 @@ class APlot(object, metaclass=Register):
         dict_param = self.list_dicts_fig_param.list_dicts_parameters[nb_ax]
         # update the default dict with the passed parameters.
         # It changes self.list_dicts_fig_param.list_dicts_parameters[nb_ax].
-        up(dict_param, dict_fig)
+        function_dict.up(dict_param, dict_fig)
 
         self._axs[nb_ax].set_title(dict_param['title'],
                                    fontsize=APlot.FONTSIZE)
@@ -447,7 +447,7 @@ class APlot(object, metaclass=Register):
         self._axs[nb_of_ax].set_xlabel("Realisation")
         self._axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
 
-        up(dict_param_hist, APlot.DEFAULT_DICT_PARAM_HIST)
+        function_dict.up(dict_param_hist, APlot.DEFAULT_DICT_PARAM_HIST)
 
         try:
             # if doesn't pop, it will be catch by except.
@@ -499,7 +499,7 @@ class APlot(object, metaclass=Register):
         Returns:
 
         """
-        if is_a_container(a) or is_a_container(b):  # are a and b scalars?
+        if function_iterable.is_a_container(a) or function_iterable.is_a_container(b):  # are a and b scalars?
             raise Error_not_allowed_input("a and b should be scalars, but containers were given.", a, b)
 
         function = lambda x: a * x + b
