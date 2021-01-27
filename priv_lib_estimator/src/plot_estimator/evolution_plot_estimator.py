@@ -190,7 +190,7 @@ class Evolution_plot_estimator(Plot_estimator):
                 plot.uni_plot(0, estimation, data)
 
             fig_dict = self.get_default_dict_fig(separators, key)
-            plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis = False)
+            plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis_y_axis=False)
             plot.show_legend()
             name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
             plot.save_plot(name_save_file=name_file)

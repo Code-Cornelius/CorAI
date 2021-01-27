@@ -51,7 +51,7 @@ class APlot(object, metaclass=Register):
         For now are supported the features:
             -multiple subplots
             -same axis for a few curves
-            -duplicating an axis (example: have scales for the same plot)
+            -duplicating a y-axis (example: have two scales for the same plot)
 
 
         Recipe:
@@ -86,7 +86,7 @@ class APlot(object, metaclass=Register):
                                     "cumulative": True}
 
     # class parameter for fontsize on plots.
-    FONTSIZE = 14.5
+    FONTSIZE = 9.5
 
     @deco_register
     def __init__(self, how=(1, 1),
@@ -142,7 +142,13 @@ class APlot(object, metaclass=Register):
             # through a dictionary defined by default in the relevant class.
             # it fixes the default behaviour, and the dicts are updated by the user later on.
             for i in range(self._nb_of_axs):
-                self.set_dict_ax(nb_ax = i, dict_ax = self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[i], bis = False)
+                self.set_dict_ax(nb_ax=i,
+                                 dict_ax=self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[i],
+                                 bis_y_axis=False)
+
+    # section ######################################################################
+    #  #############################################################################
+    # private methods that are used as tools in the purpose of modularity.
 
     def __check_axs(self, nb_ax):
         """
@@ -165,7 +171,7 @@ class APlot(object, metaclass=Register):
             nb_ax = 0
         return nb_ax
 
-    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis=False):
+    def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis_y_axis=False):
         """
         SEMANTICS :
             A helper function to make a graph.
@@ -186,8 +192,8 @@ class APlot(object, metaclass=Register):
         dict_plot_param : dict
            Dictionary of kwargs to pass to ax.plot
 
-        bis : bool
-            if bis draw on bis plot.
+        bis_y_axis : boolean
+            draw on the bis x-axis plot.
 
         Returns:
             plot.
@@ -206,7 +212,7 @@ class APlot(object, metaclass=Register):
         if len(xx) == len(yy):
             function_dict.up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
             nb_ax = self.__check_axs(nb_ax)
-            if not bis:  # bis is plot on second axis.
+            if not bis_y_axis:  # bis is plot on second axis.
                 out = self._axs[nb_ax].plot(xx, yy, **dict_plot_param)
                 self._axs[nb_ax].grid(True)
             else:
@@ -217,7 +223,24 @@ class APlot(object, metaclass=Register):
         else:
             raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
 
-    def set_dict_ax(self, nb_ax=0, dict_ax=None, xx=None, yy=None, bis = False):
+    def __plotter_on_bis_ax(self, nb_ax, xx, yy, dict_plot_param , dict_ax = None):
+        """
+        Semantics:
+            Hidden method for plotting on a bis_axis. It first check if the axis exists, and then plots upon it.
+        """
+        if self._axs_bis[nb_ax] is None:  # case axis not created yet.
+            self._axs_bis[nb_ax] = self._axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
+        self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis_y_axis=True)
+
+        if dict_ax is not None:
+            self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, xx=xx, yy=yy, bis_y_axis=True)
+        return
+
+    # section ######################################################################
+    #  #############################################################################
+    # Methods for customization
+
+    def set_dict_ax(self, nb_ax=0, dict_ax=None, xx=None, yy=None, bis_y_axis=False):
         """
         SEMANTICS:
             set the parameters of an axes.
@@ -232,9 +255,13 @@ class APlot(object, metaclass=Register):
 
         Args:
             nb_ax: integer, which axs is changed.
+
             dict_ax: dictionary with the parameters for configuration.
+            dict_ax should have the parameters allowed in aplot_plot_dicts_for_each_axs.
+
             xx: one can data, for example in the case of changing the ticks.
             yy: data, for example in the case of changing the ticks.
+            bis_y_axis: is the axis we are dealing with a bix axis.
 
         Returns:
             void.
@@ -243,7 +270,7 @@ class APlot(object, metaclass=Register):
             return
 
         nb_ax = self.__check_axs(nb_ax)
-        if bis:
+        if bis_y_axis:
             axis = self._axs_bis[nb_ax]
         else:
             axis = self._axs[nb_ax]
@@ -253,25 +280,24 @@ class APlot(object, metaclass=Register):
         # It changes self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[nb_ax].
         dict_parameters_for_the_ax.update(dict_ax)
 
-
         axis.set_title(dict_parameters_for_the_ax['title'],
-                                   fontsize=APlot.FONTSIZE)
+                       fontsize=APlot.FONTSIZE)
         axis.set_xlabel(dict_parameters_for_the_ax['xlabel'],
-                                    fontsize=APlot.FONTSIZE)
+                        fontsize=APlot.FONTSIZE)
         axis.set_ylabel(dict_parameters_for_the_ax['ylabel'],
-                                    fontsize=APlot.FONTSIZE)
+                        fontsize=APlot.FONTSIZE)
 
         # we split the log case, for the possibility of setting up a base.
         # Giving a base without giving the logscale does nothing.
         if dict_parameters_for_the_ax['xscale'] == 'log':
             axis.set_xscale(dict_parameters_for_the_ax['xscale'],
-                                        base=dict_parameters_for_the_ax['basex'])
+                            base=dict_parameters_for_the_ax['basex'])
         else:
             axis.set_xscale(dict_parameters_for_the_ax['xscale'])
 
         if dict_parameters_for_the_ax['yscale'] == 'log':
             axis.set_yscale(dict_parameters_for_the_ax['yscale'],
-                                        base=dict_parameters_for_the_ax['basey'])
+                            base=dict_parameters_for_the_ax['basey'])
         else:
             axis.set_yscale(dict_parameters_for_the_ax['yscale'])
 
@@ -294,7 +320,6 @@ class APlot(object, metaclass=Register):
             axis.set_xlim(*dict_parameters_for_the_ax['xlim'])
         if dict_parameters_for_the_ax['ylim']:
             axis.set_xlim(*dict_parameters_for_the_ax['ylim'])
-
 
         # I keep the condition. If not true, then no need to move the plot up.
         if dict_parameters_for_the_ax['parameters'] is not None \
@@ -319,7 +344,7 @@ class APlot(object, metaclass=Register):
             bottom, top = axis.get_ylim()
             left, right = axis.get_xlim()
             axis.text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text,
-                                  fontsize=APlot.FONTSIZE - 1)
+                      fontsize=APlot.FONTSIZE - 1)
             plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace=0.5)  # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
@@ -343,6 +368,14 @@ class APlot(object, metaclass=Register):
         else:
             self._axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         return
+
+    def tight_layout(self):
+        self._fig.tight_layout()
+        return
+
+    # section ######################################################################
+    #  #############################################################################
+    # presentation
 
     @staticmethod
     def show_plot():
@@ -381,13 +414,14 @@ class APlot(object, metaclass=Register):
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax=None):
         """
         SEMANTICS:
-            plot a single plot upon an axis.
+            Draw a single plot upon an axis.
 
         Args:
-            nb_ax: axes on which the plot is drawn.
+            nb_ax: int, number of the axis upon which the plot is drawn.
             xx: data xx for plot.
             yy: data yy for plot.
-            dict_plot_param: dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
+            dict_plot_param: dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
             dict_ax: dictionary for the parameters to customise on the axis.
 
         Returns:
@@ -396,30 +430,32 @@ class APlot(object, metaclass=Register):
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
 
         if dict_ax is not None:
-            self.set_dict_ax(nb_ax = nb_ax, dict_ax = dict_ax, xx= xx, yy= yy, bis = False)
+            self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, xx=xx, yy=yy, bis_y_axis=False)
         return
 
     def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2, dict_plot_param_1=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
                 dict_plot_param_2=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax_1=None, dict_ax_2=None):
         """
-        SEMANTICS :
-            Creates two plot at once.
+        SEMANTICS:
+            Draw two plot at once.
 
         Args:
-            nb_ax1:
-            nb_ax2:
-            xx1:
-            yy1:
-            xx2:
-            yy2:
-            dict_plot_param_1: dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
-            dict_plot_param_2: dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
+            nb_ax1: int, number of the axis upon which the first plot is drawn.
+            nb_ax2: int, number of the axis upon which the second plot is drawn.
+            xx1: data.
+            yy1: data.
+            xx2: data.
+            yy2: data.
+            dict_plot_param_1: dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
+            dict_plot_param_2: dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
             dict_ax_1: dictionary for the parameters to customise on the axis.
             dict_ax_2: dictionary for the parameters to customise on the axis.
 
         Returns:
 
-        DEPENDENCIES :
+        DEPENDENCIES:
             uni_plot
 
         """
@@ -430,105 +466,117 @@ class APlot(object, metaclass=Register):
     def uni_plot_ax_bis(self, nb_ax, xx, yy,
                         dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax=None):
         """
+        SEMANTICS:
+            draw a single plot upon a parallel y-axis.
 
         Args:
-            nb_ax:
-            xx:
-            yy:
-            dict_plot_param: dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
+            nb_ax: int, number of the axis upon which the plot is drawn.
+            xx: data.
+            yy: data.
+            dict_plot_param: dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
             dict_ax: dictionary for the parameters to customise on the axis.
 
         Returns:
 
         """
-        self.__plot_on_bis_ax(nb_ax, xx, yy, dict_plot_param)
+        self.__plotter_on_bis_ax(nb_ax, xx, yy, dict_plot_param, dict_ax= dict_ax)
 
         if dict_ax is not None:
-            self.set_dict_ax(nb_ax = nb_ax, dict_ax = dict_ax, xx= xx, yy= yy, bis = True)
+            self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, xx=xx, yy=yy, bis_y_axis=True)
         return
 
-    def tight_layout(self):
-        self._fig.tight_layout()
-        return
-
-    def cumulative_plot(self, xx, yy, nb_ax=0):
+    def cumulative_plot(self, xx, yy, nb_ax=0, total_cumul = None):
         """
         SEMANTICS:
             Draw the cumulative distribution of the data yy, with points for the line laying at xx.
+            At point x, the cumulative plot Cp(x) = cumusum( f(y) for y < x ).
+            In other words, the value f(x) is only added to the cumulative plot for any X > x.
+            Shows the legend.
 
         Args:
             xx: xx where points should appear on the graph.
             yy: the data for the cumulative distribution. Real numbers.
-            nb_ax: on which axis the plot is drawn.
+            nb_ax: int, number of the axis upon which the plot is drawn.
+            total_cumul: parameter that changes the total_cumul. By default, is considered to be the total sum of yy.
 
         Returns:
 
         """
         dict_plot_param = {'color': 'darkorange', 'marker': 'o', 'linestyle': '-', 'markersize': 1,
                            'label': "Cumulative ratio"}
-        dict_ax = {'ylabel' : 'cumulative ratio', 'ylim' : [0,1.1]}
-        cum_yy = np.cumsum(np.abs(yy)) / (        np.cumsum(np.abs(yy))[-1])
+        dict_ax = {'ylabel': 'Cumulative ratio', 'ylim': [0, 1.1]}
+
+        if total_cumul is None:
+            total_cumul = (np.cumsum(np.abs(yy))[-1])
+
+        cum_yy = np.cumsum(np.abs(np.append(0,yy))) / total_cumul  # the append for right cumsum
         # the abs function is for making sure that it works even for negative values.
-        self.__plot_on_bis_ax(nb_ax, xx, cum_yy, dict_plot_param=dict_plot_param, dict_ax=dict_ax)
+        self.__plotter_on_bis_ax(nb_ax, xx, cum_yy, dict_plot_param=dict_plot_param, dict_ax=dict_ax)
         self.show_legend(nb_ax=nb_ax)
         return
 
-    def __plot_on_bis_ax(self, nb_ax, xx, yy, dict_plot_param, dict_ax):
+    def hist(self, data, nb_ax=0, dict_param_hist=DEFAULT_DICT_HIST_PARAMETERS.copy(), dict_ax=None):
         """
-        Semantics:
-            Hidden method for plotting on a bis_axis. It first check if the axis exists, and then plots upon it.
-        """
-        if self._axs_bis[nb_ax] is None:  # case axis not created yet.
-            self._axs_bis[nb_ax] = self._axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
-        self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis=True)
-
-        if dict_ax is not None:
-            self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, xx=xx, yy=yy, bis=True)
-        return
-
-
-    def hist(self, data, nb_of_ax=0, dict_param_hist=DEFAULT_DICT_HIST_PARAMETERS.copy(), dict_ax=None):
-        """
-        SEMANTICS : plotting histograms
+        SEMANTICS:
+            plotting histograms
         Args:
             data:
-            nb_of_ax:
-            dict_param_hist: dictionary with the parameters used for the plot of the histogram. examples of dict_plot_param in __my_plotter.
-            dict_ax: dictionary for the parameters to customise on the axis.
+            nb_ax: int, number of the axis upon which the plot is drawn.
+            dict_param_hist: dictionary with the parameters used for the plot of the histogram.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
+            dict_ax: dictionary for the parameters for axis customization.
 
         Returns:
 
+        Dependencies:
+            cumulative_plot
         """
+        function_dict.up(dict_ax, {'xlabel': 'Realisation', 'ylabel': 'Nb of realisation inside a bin.'})
         if dict_ax is not None:
-            self.set_dict_ax(nb_ax= nb_of_ax, dict_ax = dict_ax, bis = False)
-        self._axs[nb_of_ax].set_xlabel("Realisation")
-        self._axs[nb_of_ax].set_ylabel("Nb of realisation inside a bin.")
+            self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
 
         function_dict.up(dict_param_hist, APlot.DEFAULT_DICT_HIST_PARAMETERS)
 
         try:
             # if doesn't pop, it will be catch by except.
             # that way we delete from dict_param_hist the parameter cumulative so we can give it to the plot.
-            if dict_param_hist.pop("cumulative"):
-                values, base, _ = self._axs[nb_of_ax].hist(data, **dict_param_hist)
-                ax_bis = self._axs[nb_of_ax].twinx()
-                values = np.append(values, 0)
-                # I add 0 because I want to create the last line, which does not go up.
-                # I put then 0 in order to have no evolution with cumsum.
+            if dict_param_hist.pop('cumulative'):
+                try :
+                    total_cumul = dict_param_hist.pop('total_number_of_simulations')
+                    values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
+                    self.cumulative_plot(base, data, nb_ax=nb_ax, total_cumul=total_cumul)
 
-                if 'total_number_of_simulations' in dict_param_hist:
-                    ax_bis.plot(base, np.cumsum(values) / dict_param_hist['total_number_of_simulations'],
-                                color='darkorange', marker='o',
-                                linestyle='-',
-                                markersize=1, label="Cumulative Histogram")
-                else:
-                    ax_bis.plot(base, np.cumsum(values) / np.cumsum(values)[-1],
-                                color='darkorange', marker='o', linestyle='-',
-                                markersize=1, label="Cumulative Histogram")
-                ax_bis.set_ylabel("Proportion of the cumulative total.")
+                except KeyError('total_number_of_simulations'):  # no total number of simulation
+                    values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
+                    self.cumulative_plot(base, data, nb_ax=nb_ax, total_cumul=None)
 
         except KeyError:  # no cumulative in the hist.
-            values, base, _ = self._axs[nb_of_ax].hist(data, **dict_param_hist)
+            values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
+        return
+
+    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
+                      is_function_vectorised=True):
+        """
+        Semantics:
+            plot the function realisation given the input and the function itself.
+
+        Args:
+            function: callable that we want to plot.
+            xx: input for function.
+            nb_ax: int, number of the axis upon which the plot is drawn.
+            dict_plot_param: dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
+            is_function_vectorised: boolean, is the function passed a vectorized function that accepts function(xx)
+
+        Returns:
+
+        """
+        if is_function_vectorised:
+            xx = np.array(xx)
+        yy = function(xx)
+
+        self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         return
 
     def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
@@ -538,49 +586,35 @@ class APlot(object, metaclass=Register):
         Args:
             x:
             yy:
-            nb_ax:
-            dict_plot_param: dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
+            nb_ax: int, number of the axis upon which the plot is drawn.
+            dict_plot_param: dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
 
         Returns:
+
+        Dependencies:
+            uni_plot
 
         """
         return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param)
 
-    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
-                      is_function_vectorised=True):
-        """
-
-        Args:
-            function: callable that we want to plot.
-            xx: input for function.
-            nb_ax:
-            dict_plot_param: dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
-            is_function_vectorised: boolean, is the function passed a vectorized function that accepts function(xx)
-
-        Returns:
-
-        """
-        # ax is an int, not necessary for uni dim case.
-        if is_function_vectorised:
-            xx = np.array(xx)
-        yy = function(xx)
-
-        self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
-        return
-
     def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         """
         SEMANTICS:
-            Plot a line on the chosen ax.
+            Plot a non vertical line on the chosen ax.
 
         Args:
-            a: slope of line
-            b: origin of line
+            a: slope of line, scalar
+            b: origin of line, scalar
             xx: data, where to have the points of the line
-            nb_ax: which ax to use, should be an integer.
-            dict_plot_param:  dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
+            nb_ax: int, number of the axis upon which the plot is drawn.
+            dict_plot_param:  dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
 
         Returns:
+
+        Dependencies:
+            plot_function
 
         """
         if function_iterable.is_a_container(a) or function_iterable.is_a_container(b):  # are a and b scalars?
@@ -597,13 +631,14 @@ class APlot(object, metaclass=Register):
         Args:
             x:
             y:
-            nb_ax:
-            dict_plot_param: dictionary with the parameters used for the plot of the curve. examples of dict_plot_param in __my_plotter.
+            nb_ax: int, number of the axis upon which the plot is drawn.
+            dict_plot_param: dictionary with the parameters used for the plot of the curve.
+            Examples of dict_param_hist given by calling the function help_dict_plot().
 
         Returns:
 
         Dependencies:
-            uses plot_line.
+            plot_line.
 
         """
         return self.plot_line(a=0, b=y, xx=x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
