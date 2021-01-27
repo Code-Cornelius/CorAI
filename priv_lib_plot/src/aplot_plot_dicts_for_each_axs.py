@@ -11,8 +11,8 @@ class APlot_plot_dicts_for_each_axs(object):
         yscale: scale of the y-axis. string.
         basex: base for lognormal scale on x-axis. float.
         basey: base for lognormal scale on y-axis. float.
-        parameters: values of the parameters we want to print under the figure. list of floats.
-        name_parameters: name of the parameters shown next to the value. list of strings.
+        parameters: values of the parameters we want to print under the figure. list of floats. Should not be longer than 16.
+        name_parameters: name of the parameters shown next to the value. list of strings. Should not be longer than 16.
         xlim: range of the x-axis. 2 elements list or tuple of floats.
         ylim: range of the y-axis. 2 elements list or tuple of floats.
 
@@ -36,6 +36,7 @@ class APlot_plot_dicts_for_each_axs(object):
     #TODO it would be a good idea to design the setter with certain conditions:
     # if another parameter than authorised is given, warning!
     # parameters and name_parameters same length.
+    # check that scale and xint not set at the same time?
 
     @classmethod
     def help_dict_ax(cls):

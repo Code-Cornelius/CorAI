@@ -86,7 +86,7 @@ class APlot(object, metaclass=Register):
                                     "cumulative": True}
 
     # class parameter for fontsize on plots.
-    FONTSIZE = 9.5
+    FONTSIZE = 10.
 
     @deco_register
     def __init__(self, how=(1, 1),
@@ -223,7 +223,7 @@ class APlot(object, metaclass=Register):
         else:
             raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
 
-    def __plotter_on_bis_ax(self, nb_ax, xx, yy, dict_plot_param , dict_ax = None):
+    def __plotter_on_bis_ax(self, nb_ax, xx, yy, dict_plot_param, dict_ax=None):
         """
         Semantics:
             Hidden method for plotting on a bis_axis. It first check if the axis exists, and then plots upon it.
@@ -262,6 +262,14 @@ class APlot(object, metaclass=Register):
             xx: one can data, for example in the case of changing the ticks.
             yy: data, for example in the case of changing the ticks.
             bis_y_axis: is the axis we are dealing with a bix axis.
+
+        For two plots on same axis:
+            - having two different x-range will lead to one of the two plot not being adapted to the x-axis (because there is only one x-scale).
+            - if two different scales are used, one curve will not have the good x-axis. for that reason, be sure to put twice the same scale, if changed.
+            - do not set xint = True.
+            - labels are overlapping.
+            - do not put twice parameters, as if they are on the same figure, the parameters should be the same.
+            Also, they are written on the graph independantly so it would difficult to put them at the exact right place.
 
         Returns:
             void.
@@ -306,20 +314,19 @@ class APlot(object, metaclass=Register):
         if dict_parameters_for_the_ax['xint']:
             if xx is None:
                 raise Exception("xx has not been given.")
-            x_int = range(math.ceil(min(xx)) - 1, math.ceil(
-                axis(
-                    xx)) + 1)  # I need to use ceil on both if min and self.axs[nb_ax] are not integers ( like 0 to 1 )
+            x_int = range(math.floor(min(xx)) - 1, math.ceil(max(xx)) + 1)
+            # I need to use ceil on both if min and self.axs[nb_ax] are not integers ( like 0 to 1 )
             axis.set_xticks(x_int)
         if dict_parameters_for_the_ax['yint']:
             if yy is None:
                 raise Exception("yy has not been given.")
-            y_int = range(min(yy), math.ceil(axis(yy)) + 1)
+            y_int = range(math.floor(min(yy)), math.ceil(max(yy)) + 1)
             axis.set_yticks(y_int)
 
-        if dict_parameters_for_the_ax['xlim']:
+        if dict_parameters_for_the_ax['xlim'] is not None:
             axis.set_xlim(*dict_parameters_for_the_ax['xlim'])
-        if dict_parameters_for_the_ax['ylim']:
-            axis.set_xlim(*dict_parameters_for_the_ax['ylim'])
+        if dict_parameters_for_the_ax['ylim'] is not None:
+            axis.set_ylim(*dict_parameters_for_the_ax['ylim'])
 
         # I keep the condition. If not true, then no need to move the plot up.
         if dict_parameters_for_the_ax['parameters'] is not None \
@@ -328,14 +335,16 @@ class APlot(object, metaclass=Register):
             name_parameters = dict_parameters_for_the_ax['name_parameters']
             nb_parameters = len(parameters)
             sous_text = " Parameters : \n"
+
+            MAX_NUMBER_PARAMETER = 24
             for i in range(nb_parameters):
                 sous_text += str(name_parameters[i]) + f" = {parameters[i]}"
                 # end of the list, we finish by a full stop.
                 if i == nb_parameters - 1:
                     sous_text += "."
                 # certain chosen number of parameters by line, globally, 3 by line.
-                # There shouldn't be more than 16 parameters
-                elif i in [4, 7, 10, 13, 16]:
+                # There shouldn't be more than 24 parameters
+                elif i in [3, 7, 11, 15, 19]:
                     sous_text += ", \n "
                 # otherwise, just keep writing on the same line.
                 else:
@@ -343,9 +352,16 @@ class APlot(object, metaclass=Register):
 
             bottom, top = axis.get_ylim()
             left, right = axis.get_xlim()
-            axis.text(left + (right - left) * 0.15, bottom - (top - bottom) * 0.42, sous_text,
+            interpolation_factor = math.ceil(min(MAX_NUMBER_PARAMETER, nb_parameters) / 4) * 4 / MAX_NUMBER_PARAMETER
+            STARTING_VALUE_PUTTING_TEXT_LOWER = 0.20
+            STARTING_VALUE_SUBPLOT_ADJUST = 0.20
+
+            axis.text(left + (right - left) * 0.15,
+                      bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * ((top - bottom) * 0.58 - STARTING_VALUE_PUTTING_TEXT_LOWER)),
+                      sous_text,
                       fontsize=APlot.FONTSIZE - 1)
-            plt.subplots_adjust(bottom=0.35, wspace=0.25, hspace=0.5)  # bottom is how much low;
+            plt.subplots_adjust(bottom=STARTING_VALUE_SUBPLOT_ADJUST + interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST ), wspace=0.25, hspace=0.5)
+            # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
         return
@@ -480,13 +496,13 @@ class APlot(object, metaclass=Register):
         Returns:
 
         """
-        self.__plotter_on_bis_ax(nb_ax, xx, yy, dict_plot_param, dict_ax= dict_ax)
+        self.__plotter_on_bis_ax(nb_ax, xx, yy, dict_plot_param, dict_ax=dict_ax)
 
         if dict_ax is not None:
             self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, xx=xx, yy=yy, bis_y_axis=True)
         return
 
-    def cumulative_plot(self, xx, yy, nb_ax=0, total_cumul = None):
+    def cumulative_plot(self, xx, yy, nb_ax=0, total_cumul=None):
         """
         SEMANTICS:
             Draw the cumulative distribution of the data yy, with points for the line laying at xx.
@@ -510,7 +526,7 @@ class APlot(object, metaclass=Register):
         if total_cumul is None:
             total_cumul = (np.cumsum(np.abs(yy))[-1])
 
-        cum_yy = np.cumsum(np.abs(np.append(0,yy))) / total_cumul  # the append for right cumsum
+        cum_yy = np.cumsum(np.abs(np.append(0, yy))) / total_cumul  # the append for right cumsum
         # the abs function is for making sure that it works even for negative values.
         self.__plotter_on_bis_ax(nb_ax, xx, cum_yy, dict_plot_param=dict_plot_param, dict_ax=dict_ax)
         self.show_legend(nb_ax=nb_ax)
@@ -532,9 +548,14 @@ class APlot(object, metaclass=Register):
         Dependencies:
             cumulative_plot
         """
+        if dict_ax is None: #making sure dict_ax is not None.
+            dict_ax = {'xlabel': 'Realisation', 'ylabel': 'Nb of realisation inside a bin.'}
+
+        # ensuring xlabel and ylabel are set:
         function_dict.up(dict_ax, {'xlabel': 'Realisation', 'ylabel': 'Nb of realisation inside a bin.'})
-        if dict_ax is not None:
-            self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
+
+        #setting the parameters
+        self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
 
         function_dict.up(dict_param_hist, APlot.DEFAULT_DICT_HIST_PARAMETERS)
 
@@ -542,14 +563,14 @@ class APlot(object, metaclass=Register):
             # if doesn't pop, it will be catch by except.
             # that way we delete from dict_param_hist the parameter cumulative so we can give it to the plot.
             if dict_param_hist.pop('cumulative'):
-                try :
+                try:
                     total_cumul = dict_param_hist.pop('total_number_of_simulations')
                     values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
                     self.cumulative_plot(base, data, nb_ax=nb_ax, total_cumul=total_cumul)
 
-                except KeyError('total_number_of_simulations'):  # no total number of simulation
+                except KeyError:  # no total number of simulation
                     values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
-                    self.cumulative_plot(base, data, nb_ax=nb_ax, total_cumul=None)
+                    self.cumulative_plot(base, values, nb_ax=nb_ax, total_cumul=None)
 
         except KeyError:  # no cumulative in the hist.
             values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
