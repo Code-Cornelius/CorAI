@@ -103,6 +103,9 @@ class APlot(object, metaclass=Register):
             figsize: size of the figure.
             sharex: for sharing the same X axis for two axes. This can be used for having two plots on the same column sharing the same X-axis.
             sharey: for sharing the same Y axis for two axes. This can be used for having two plots on the same line sharing the same Y-axis.
+
+        Examples:
+
         """
 
         # quick plot
@@ -357,10 +360,13 @@ class APlot(object, metaclass=Register):
             STARTING_VALUE_SUBPLOT_ADJUST = 0.20
 
             axis.text(left + (right - left) * 0.15,
-                      bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * ((top - bottom) * 0.58 - STARTING_VALUE_PUTTING_TEXT_LOWER)),
+                      bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * (
+                                  (top - bottom) * 0.58 - STARTING_VALUE_PUTTING_TEXT_LOWER)),
                       sous_text,
                       fontsize=APlot.FONTSIZE - 1)
-            plt.subplots_adjust(bottom=STARTING_VALUE_SUBPLOT_ADJUST + interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST ), wspace=0.25, hspace=0.5)
+            plt.subplots_adjust(
+                bottom=STARTING_VALUE_SUBPLOT_ADJUST + interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST),
+                wspace=0.25, hspace=0.5)
             # bottom is how much low;
             # the amount of width reserved for blank space between subplots
             # the amount of height reserved for white space between subplots
@@ -548,13 +554,13 @@ class APlot(object, metaclass=Register):
         Dependencies:
             cumulative_plot
         """
-        if dict_ax is None: #making sure dict_ax is not None.
+        if dict_ax is None:  # making sure dict_ax is not None.
             dict_ax = {'xlabel': 'Realisation', 'ylabel': 'Nb of realisation inside a bin.'}
 
         # ensuring xlabel and ylabel are set:
         function_dict.up(dict_ax, {'xlabel': 'Realisation', 'ylabel': 'Nb of realisation inside a bin.'})
 
-        #setting the parameters
+        # setting the parameters
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
 
         function_dict.up(dict_param_hist, APlot.DEFAULT_DICT_HIST_PARAMETERS)
