@@ -20,7 +20,7 @@ from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
 class Evolution_plot_estimator(Plot_estimator):
     """
-    SEMANTICS:
+    Semantics:
         abstract class inheriting from Plot_estimator.
         The purpose is to automatise the plots showing evolution of a feature
         with respect to an other as a time-series.

@@ -49,7 +49,7 @@ def find_smallest_rank_leq_to_K(my_list, K, is_sorted=True):
     # this functions is for np.arrays
     if np.isscalar(my_list):
         raise Exception("Object is not a list.")
-    # to generalize the function to multi dimensional arrays, I need to first know its number of dimension :
+    # to generalize the function to multi dimensional arrays, I need to first know its number of dimension:
     DIM = my_list.ndim
     if DIM > 2:
         raise Exception("The list has too many dimensions.")
@@ -62,11 +62,11 @@ def find_smallest_rank_leq_to_K(my_list, K, is_sorted=True):
         # I sort every line, and i search the minimal column for each row such that it satisfies certain properties.
         if not is_sorted:
             for i in range(np.shape(my_list)[0]):
-                my_list[i, :].sort()
+                my_list[i,:].sort()
         # Here I had a problem, np.zeros gives back an array with floats in it. So I specify the dtype.
         ans = np.zeros(np.shape(my_list)[0], dtype=int)
         for i in range(np.shape(my_list)[0]):
-            ans[i] = bisect.bisect_right(my_list[i, :], K)
+            ans[i] = bisect.bisect_right(my_list[i,:], K)
         return ans
 
 
@@ -75,10 +75,10 @@ def roundrobin(*iterables):
     Semantics:
         [k for k in roundrobin(list, list_dash)]
 
-    References :
+    References:
         George Sakkis
 
-    Examples :
+    Examples:
         roundrobin('ABC', 'D', 'EF') --> A D E B F C
 
     """
@@ -97,17 +97,17 @@ def roundrobin(*iterables):
 def mean_list(iterable):
     # TODO MULTIPLE LIST, do for list of lists.
     """
-    SEMANTICS:
-        computes the mean of a list. Depending on the type of iterable, it uses different technics.
+    Semantics:
+        Computes the mean of a list. Depending on the type of iterable, it uses different technics.
 
     Precondition:
-        iterable is iterable with only one axis.
+        Iterable is iterable with only one axis.
 
     Returns:
-        the average of the input.
+        The average of the input.
 
     exception guaranties:
-        if the iterable is empty, there is an error.
+        If the iterable is empty, there is an error.
 
     """
     # if iterable is empty, raises a value error.
@@ -128,12 +128,14 @@ def mean_list(iterable):
 def is_numpy_matrix_invertible(a):
     """
     Semantics:
-        for a numpy matrix, test that a np array is invertible:
+        For a numpy matrix, test that a np array is invertible:
 
     condition 1:
-        the matrix is square,
+        The matrix is square,
+
     condition 2:
-        the rank is full."""
+        The rank is full.
+    """
     #
 
     return a.shape[0] == a.shape[1] and np.linalg.matrix_rank(a) == a.shape[0]
@@ -141,8 +143,8 @@ def is_numpy_matrix_invertible(a):
 
 def division_numpy(x, a_vector):
     """
-    SEMANTICS:
-        computes x * 1/ a_vector where the division is taken component wise.
+    Semantics:
+        Computes x * 1/ a_vector where the division is taken component wise.
 
     Preconditions:
         x has to be multiplicable by a np.array.
@@ -156,10 +158,11 @@ def division_numpy(x, a_vector):
 
 def rotate(iterable, how_much_rotate):
     """
-    SEMANTICS:
-        do a cycle over an iterable. If numpy array, optimal method used.
+    Semantics:
+        Do a cycle over an iterable. If numpy array, optimal method used.
 
-    Returns: rotated iterable;
+    Returns:
+        rotated iterable;
 
     Precondition:
         how_much_rotate < len(iterable)
@@ -169,7 +172,7 @@ def rotate(iterable, how_much_rotate):
         if not how_much_rotate < len(iterable).
 
     Examples:
-        rotate(list, 1) : [1,2,3,4] -> [4,1,2,3]
+        rotate(list, 1): [1,2,3,4] -> [4,1,2,3]
 
     """
     if isinstance(iterable, np.ndarray):  # checks if the type of list is numpy.array
@@ -186,7 +189,7 @@ def rotate(iterable, how_much_rotate):
 def is_iterable(obj):
     """
     Semantics:
-        test whether an object is iterable. By definition, it is an iterable if it has an iter method implemented.
+        Test whether an object is iterable. By definition, it is an iterable if it has an iter method implemented.
 
     Returns:
         Boolean
@@ -203,7 +206,7 @@ def is_iterable(obj):
 def is_a_container(a_thing):
     """
     Semantics:
-        checks if an object is a list, tuple, np.array... part of (collections.Sequence, np.ndarray))
+        Checks if an object is a list, tuple, np.array... part of (collections.Sequence, np.ndarray))
 
     Returns:
         Boolean
@@ -215,7 +218,7 @@ def is_a_container(a_thing):
 def replace_nans_numpy(np_array):
     """
     Semantics:
-        replace all the nans by 0 inside a numpy array.
+        Replace all the nans by 0 inside a numpy array.
     """
     if not isinstance(np_array, np.ndarray):  # checks if the type of list is numpy.array
         warnings.warn("Object is not a np.ndarray!")

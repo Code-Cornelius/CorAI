@@ -1,6 +1,7 @@
 class Error_convergence(Exception):
     """
-        SEMANTICS : type of error for when an algorithm didn't converge to a satisfying answer.
+        Semantics:
+            Type of error for when an algorithm didn't converge to a satisfying answer.
     """
     DEFAULT_MESSAGE = 'Error of convergence. '
 

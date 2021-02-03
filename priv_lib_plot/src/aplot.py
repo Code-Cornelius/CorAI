@@ -29,7 +29,7 @@ Examples:
 
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
-# title and labels has to be list, where one has :
+# title and labels has to be list, where one has:
 # [title 1, title 2] ; [x1label y1label, x2label y2label]
 # the set of parameters is the same for the two subplots.
 
@@ -43,7 +43,7 @@ Examples:
 
 class APlot(object, metaclass=Register):
     """
-    SEMANTICS:
+    Semantics:
         APlot is an object representing one figure from matplotlib.pyplot.
         The aim is to reduce code duplication by having a standard presentation of plots for 2D plots.
         A figure is cut into multiple subplots that are customizable.
@@ -63,7 +63,7 @@ class APlot(object, metaclass=Register):
     DEPENDENCIES:
         SEABORN is imported and set with this class.
 
-    REFERENCES:
+    References:
         matplolib.pyplot heavily relied upon.
         APlot_plot_dicts_for_each_axs which stores the parameters for each axs.
 
@@ -152,7 +152,7 @@ class APlot(object, metaclass=Register):
 
     def __check_axs(self, nb_ax):
         """
-        SEMANTICS:
+        Semantics:
             verifies the access to axes "ax".
             If given number negative or bigger than the number of axes of the fig, we warn the user.
 
@@ -173,26 +173,26 @@ class APlot(object, metaclass=Register):
 
     def __my_plotter(self, nb_ax, xx, yy, dict_plot_param, bis_y_axis=False):
         """
-        SEMANTICS :
+        Semantics:
             A helper function to make a graph.
-        REFERENCES :
+        References:
             The function comes from the matplotlib lib, same name.
 
         Args
         ----------
-        nb_ax : Axes
+        nb_ax: Axes
             The axes to draw upon. Has to be an integer.
 
-        xx : array
+        xx: array
            The x data
 
-        yy : array
+        yy: array
            The y data
 
-        dict_plot_param : dict
+        dict_plot_param: dict
            Dictionary of kwargs to pass to ax.plot
 
-        bis_y_axis : boolean
+        bis_y_axis: boolean
             draw on the bis x-axis plot.
 
         Returns:
@@ -200,12 +200,12 @@ class APlot(object, metaclass=Register):
 
         Examples:
             dict_plot_param can be any dict with these keys (non-exhaustive):
-                -label : string
-                -color : 'b','g','r','c','m','y','k','w'
-                -marker : '.',',','o','v','^','<','>','+','x'
-                -markersize : float
-                -linestyle : '-','--','-.',':'
-                -linewidth : float
+                -label: string
+                -color: 'b','g','r','c','m','y','k','w'
+                -marker: '.',',','o','v','^','<','>','+','x'
+                -markersize: float
+                -linestyle: '-','--','-.',':'
+                -linewidth: float
             complete list at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot
 
         """
@@ -242,10 +242,10 @@ class APlot(object, metaclass=Register):
 
     def set_dict_ax(self, nb_ax=0, dict_ax=None, xx=None, yy=None, bis_y_axis=False):
         """
-        SEMANTICS:
+        Semantics:
             set the parameters of an axes.
 
-        PRECONDITIONS:
+        Preconditions:
             the parameters that can be chosen are the one
             written in the class APlot_plot_dicts_for_each_axs.
 
@@ -327,7 +327,7 @@ class APlot(object, metaclass=Register):
             parameters = dict_parameters_for_the_ax['parameters']
             name_parameters = dict_parameters_for_the_ax['name_parameters']
             nb_parameters = len(parameters)
-            sous_text = " Parameters : \n"
+            sous_text = " Parameters: \n"
             for i in range(nb_parameters):
                 sous_text += str(name_parameters[i]) + f" = {parameters[i]}"
                 # end of the list, we finish by a full stop.
@@ -380,7 +380,7 @@ class APlot(object, metaclass=Register):
     @staticmethod
     def show_plot():
         """
-        SEMANTICS :
+        Semantics:
             adapter for the show pyplot function.
 
         Returns:
@@ -393,7 +393,7 @@ class APlot(object, metaclass=Register):
     @staticmethod
     def save_plot(name_save_file='image'):
         """
-        SEMANTICS:
+        Semantics:
             saves the plot drawn.
 
         Args:
@@ -413,7 +413,7 @@ class APlot(object, metaclass=Register):
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax=None):
         """
-        SEMANTICS:
+        Semantics:
             Draw a single plot upon an axis.
 
         Args:
@@ -436,7 +436,7 @@ class APlot(object, metaclass=Register):
     def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2, dict_plot_param_1=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
                 dict_plot_param_2=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax_1=None, dict_ax_2=None):
         """
-        SEMANTICS:
+        Semantics:
             Draw two plot at once.
 
         Args:
@@ -466,7 +466,7 @@ class APlot(object, metaclass=Register):
     def uni_plot_ax_bis(self, nb_ax, xx, yy,
                         dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax=None):
         """
-        SEMANTICS:
+        Semantics:
             draw a single plot upon a parallel y-axis.
 
         Args:
@@ -488,7 +488,7 @@ class APlot(object, metaclass=Register):
 
     def cumulative_plot(self, xx, yy, nb_ax=0, total_cumul = None):
         """
-        SEMANTICS:
+        Semantics:
             Draw the cumulative distribution of the data yy, with points for the line laying at xx.
             At point x, the cumulative plot Cp(x) = cumusum( f(y) for y < x ).
             In other words, the value f(x) is only added to the cumulative plot for any X > x.
@@ -518,7 +518,7 @@ class APlot(object, metaclass=Register):
 
     def hist(self, data, nb_ax=0, dict_param_hist=DEFAULT_DICT_HIST_PARAMETERS.copy(), dict_ax=None):
         """
-        SEMANTICS:
+        Semantics:
             plotting histograms
         Args:
             data:
@@ -542,7 +542,7 @@ class APlot(object, metaclass=Register):
             # if doesn't pop, it will be catch by except.
             # that way we delete from dict_param_hist the parameter cumulative so we can give it to the plot.
             if dict_param_hist.pop('cumulative'):
-                try :
+                try:
                     total_cumul = dict_param_hist.pop('total_number_of_simulations')
                     values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
                     self.cumulative_plot(base, data, nb_ax=nb_ax, total_cumul=total_cumul)
@@ -600,7 +600,7 @@ class APlot(object, metaclass=Register):
 
     def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         """
-        SEMANTICS:
+        Semantics:
             Plot a non vertical line on the chosen ax.
 
         Args:
@@ -654,12 +654,12 @@ class APlot(object, metaclass=Register):
             print possibilities for dict_plot.
         """
         text = "dict_plot_param can be any dict with these keys (non-exhaustive): \n" \
-               "    -label : string \n" \
-               "    -color : 'b','g','r','c','m','y','k','w' \n" \
-               "    -marker : '.',',','o','v','^','<','>','+','x' \n" \
-               "    -markersize : float \n" \
-               "    -linestyle : '-','--','-.',':' \n" \
-               "    -linewidth : float \n" \
+               "    -label: string \n" \
+               "    -color: 'b','g','r','c','m','y','k','w' \n" \
+               "    -marker: '.',',','o','v','^','<','>','+','x' \n" \
+               "    -markersize: float \n" \
+               "    -linestyle: '-','--','-.',':' \n" \
+               "    -linewidth: float \n" \
                "complete list at https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html#matplotlib.pyplot.plot \n"
         print(text)
         return

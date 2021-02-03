@@ -6,7 +6,8 @@ from time import time
 
 def time_convertor_sec2hours_min_sec(seconds, time_format=0):
     """
-    SEMANTICS : instead of converting the seconds in minutes outside, one can do it here.
+    Semantics:
+        Instead of converting the seconds in minutes outside, one can do it here.
 
     Args:
         seconds: runtime
@@ -31,7 +32,8 @@ def time_convertor_sec2hours_min_sec(seconds, time_format=0):
 
 def time_time2text(s, m, h, seconds_frac=0):
     """
-    SEMANTICS : writes time as s,m,h into the format of text for printing for example.
+    Semantics:
+        Writes time as s,m,h into the format of text for printing for example.
 
     Args:
         s: seconds
@@ -39,8 +41,9 @@ def time_time2text(s, m, h, seconds_frac=0):
         h: hours
         seconds_frac: lower than a seconds
 
-    Returns: format is ('s+seconds_frac seconds ', 'm minutes ', 'h hours ').
-    The plural is changed depending on how many units there are, and if a variable is 0, the string is empty.
+    Returns:
+        Format is ('s+seconds_frac seconds ', 'm minutes ', 'h hours ').
+        The plural is changed depending on how many units there are, and if a variable is 0, the string is empty.
 
     """
     if s == 0:
@@ -70,18 +73,19 @@ def time_time2text(s, m, h, seconds_frac=0):
 
 
 def time_print_elapsed_time(start, end, title="no title"):
-    """ function that I put at the end of certain functions to know how long they runned.
+    """
+        Function for printing the elapsed time.
 
     Args:
         start: beginning simulation's time.
         end: end simulation's time.
-        title: function or bookmark to recognize where from the time.
+        title: function or bookmark to recognize where the time comes from.
 
     Returns:
 
     """
     seconds = end - start
-    beg = " Program : " + title + ", took roughly :"
+    beg = " Program: " + title + ", took roughly:"
     print(100 * '~')
     s, m, h, seconds_frac = time_convertor_sec2hours_min_sec(seconds, time_format=2)
     ts, tm, th = time_time2text(s, m, h, seconds_frac)
@@ -93,10 +97,13 @@ def time_print_elapsed_time(start, end, title="no title"):
 
 def benchmark(func, title="no title", *args, **kwargs):
     """
-    SEMANTICS : helper for benchmarking a function and prints the timing with the name given as title. Extra parameters can be given.
+    Semantics:
+        Helper for benchmarking a function and prints the timing with the name given as title.
+        Extra parameters can be given.
+
     Args:
         func: function to benchmark
-        title: title that is printed as :  " Program : " + title + ", took roughly :"
+        title: title that is printed as:  " Program: " + title + ", took roughly:"
         *args: Additional arguments to pass as arguments to `func`.
         **kwargs: Additional keyword arguments to pass as keywords arguments to
             `func`.
@@ -112,7 +119,7 @@ def benchmark(func, title="no title", *args, **kwargs):
 
 def wrap_benchmark(func):
     """
-    SEMANTICS :
+    Semantics:
         Print the runtime of the decorated function
 
     Args:

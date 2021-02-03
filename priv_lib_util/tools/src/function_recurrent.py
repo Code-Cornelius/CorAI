@@ -23,11 +23,14 @@ def compute_MSE(param, true_parameter):
 
 def phi(x):
     """
-    Gaussian density PDF
+    Semantics:
+        Gaussian density PDF.
+
     Args:
         x: optimized for np.arrays
 
-    Returns: returns an array with the gaussian density
+    Returns:
+        returns an array with the gaussian density
 
     """
     warning_deprecated.deprecated_function(reason="instead, in order to compute phi, chose in-built numpy fct.")

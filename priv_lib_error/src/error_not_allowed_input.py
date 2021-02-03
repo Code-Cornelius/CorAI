@@ -1,7 +1,7 @@
 class Error_not_allowed_input(ValueError):
     """
-        SEMANTICS : type of error for when a certain behaviour is not allowed,
-                    in particular, when some inputs is not allowed.
+        Semantics:
+            Type of error for when a certain behaviour is not allowed, in particular, when some inputs is not allowed.
     """
     DEFAULT_MESSAGE = "Values for the inputs not allowed. Please change the values. "
 

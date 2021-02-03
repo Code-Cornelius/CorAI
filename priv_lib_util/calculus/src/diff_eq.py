@@ -3,7 +3,7 @@ import math
 
 from priv_lib_util.tools import function_iterable
 
-
+# todo: Niels will pydoc this
 # defines the coefficients for fractional ADAMS method in order to compute a SDE path.
 # it needs the number of coefficients as well as the alpha of roughness.
 def fractional_ADAMS(k, alpha, DELTA):
@@ -27,24 +27,25 @@ def fractional_ADAMS(k, alpha, DELTA):
 
 def system_ODE_solver(tt, starting_point, function_evolution, left_or_right="left"):
     """
-    SEMANTICS :
-    ODE solve with Euler's method. It solves liner systems of ODE of the first oder.
-    left to right flow.
+    Semantics:
+        ODE solver with Euler's method. It solves liner systems of ODEs of the first oder.
+        left to right flow.
 
     Args:
-        tt: grid of times. We assume regularity for the grid. Same grid obvsly for all functions.
+        tt: grid of times. Assume regularity for the grid. The same grid for all functions.
         starting_point: LIST of lower boundary, starting condition
+                        time and previous points for each function.
+                        Same order as in function_evolution.
         function_evolution: LIST of "1 + len(function_evolution)" dimensional function.
-        time and previous points for each function.
-        Same order as in function_evolution.
-        left_or_right:  starting point on left or right. Changes the equations, either backwards of forwards equations.
+        left_or_right: starting point on left or right. Changes the equations, either backwards of forwards equations.
 
 
-    Notes :
-    function_evolution and starting_point as lists type for optimization of the code (access constant and small overhead)
+    Notes:
+        function_evolution and starting_point as lists type for optimization of the code
+        (access constant and small overhead)
 
     Returns:
-        list with the values of the function, over the grid tt. format : [[x1,y1...], [x2,y2...] ... ]
+        A list with the values of the function, over the grid tt. format: [[x1,y1...], [x2,y2...] ... ]
 
     """
     assert function_iterable.is_iterable(function_evolution), "Function Evolution is not iterable."
@@ -58,16 +59,16 @@ def system_ODE_solver(tt, starting_point, function_evolution, left_or_right="lef
     if left_or_right == "left":
         yy[0] = starting_point
         a = 0  # beg range
-        b = L - 1  # end range ; skipping first step
+        b = L - 1  # end range; skipping first step
         step = 1  # how increment
         DELTA = tt[1] - tt[0]
 
     else:
         yy[-1] = starting_point
         a = L - 1  # beg range
-        b = 0  # end range ; skipping first step
+        b = 0  # end range; skipping first step
         step = -1  # how increment
-        DELTA = tt[0] - tt[1]  # delta changes because we are going the other way around
+        DELTA = tt[0] - tt[1]  # delta changes because of the direction
 
     for i in range(a, b, step):
         for j in range(J):
@@ -82,7 +83,7 @@ def support(sigma1, sigma2):  # gives back when the normal given by sigma 1 is l
     return -xm, xm  # by symmetry
 
 
-################ DATA :
+################ DATA:
 SIGMA = [1., 2.2]
 tm, tM = support(SIGMA[0], SIGMA[1])
 tm *= 0.95
@@ -99,7 +100,7 @@ density_nu = lambda tt: norm.pdf(tt, 0, SIGMA[1])  # probably not the fastest ch
 density_eta = lambda tt: np.maximum(density_mu(tt) - density_nu(tt), 0)
 density_gamma = lambda tt: np.maximum(density_nu(tt) - density_mu(tt), 0)
 
-# FIRST PLOT :
+# FIRST PLOT:
 plt.figure(figsize=(10, 4))
 plt.plot(tt, density_mu(tt), 'b', label=r'$\mu$')
 plt.plot(tt, density_nu(tt), 'k', label=r'$\nu$')
