@@ -33,7 +33,10 @@ Project
 ├── priv_lib_estimator 
 │  ├── src
 │  │  ├── estimator
-│  │  └── plot_estimator
+│  │  ├── plot_estimator
+│  │  ├── histogram_estimator
+│  │  ├── statistic_plot_estimator
+│  │  └── evolution_plot_estimator
 │  └── tests
 │
 ├── priv_lib_metaclass 

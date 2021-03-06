@@ -5,9 +5,11 @@ import scipy.integrate
 
 def complex_quadrature(func, a, b, *args, **kwargs):
     """
-    SEMANTICS : Complex quadrature over real line, is harder than real, so here is a built function
+    Semantics:
+        Complex quadrature over real line, is harder than real, so here is a built function.
 
-    REFERENCES : https://stackoverflow.com/questions/5965583/use-scipy-integrate-quad-to-integrate-complex-numbers
+    References:
+        https://stackoverflow.com/questions/5965583/use-scipy-integrate-quad-to-integrate-complex-numbers
 
     Args:
         func: integrand
@@ -16,8 +18,9 @@ def complex_quadrature(func, a, b, *args, **kwargs):
         *args: arguments for the function
         **kwargs: Additional keyword arguments to pass as keywords arguments to
             `func`.
+
     Returns:
-        a 3-tuple : complex valued integral, real error, imaginary error).
+        a 3-tuple: (complex valued integral, real error, imaginary error).
     """
 
     def real_func(x):
@@ -35,7 +38,8 @@ def complex_quadrature(func, a, b, *args, **kwargs):
 
 def evaluate_function(func, tt, *args, **kwargs):
     """
-    SEMANTICS : evaluate a function at given points using a simple for loop.
+    Semantics:
+        Evaluate a function at given points using a simple for loop.
 
     Args:
         func: function to evaluate.
@@ -44,11 +48,15 @@ def evaluate_function(func, tt, *args, **kwargs):
             `func`.
         **kwargs:  Additional keyword arguments to pass as keywords arguments to
             `func`.
-    Returns: evaluation of the function : func(tt)
 
-    References : https://stackoverflow.com/questions/35215161/most-efficient-way-to-map-function-over-numpy-array/35216364
-    this post shows that it does not matter what method you prefer, in the end, the best way is to use in-built function.
-    Vectorise from numpy is just a trick for readability.
+    Returns:
+        evaluation of the function: func(tt)
+
+    References:
+        https://stackoverflow.com/questions/35215161/most-efficient-way-to-map-function-over-numpy-array/35216364
+        this post shows that it does not matter what method you prefer, in the end, the best way is to use in
+        built function.
+        Vectorise from numpy is just a trick for readability.
 
     """
     im = np.zeros(len(tt))
@@ -59,15 +67,15 @@ def evaluate_function(func, tt, *args, **kwargs):
 
 
 def trapeze_int(tt, yy):
-    """ COULD USE from scipy.integrate import simps. Computes integral of a vector using trapezoidal rule
-
-    PRECONDITIONS : t is an
+    """
+    COULD USE from scipy.integrate import simps. Computes integral of a vector using trapezoidal rule
 
     Args:
         tt: array with the times at which the integrand has to be computed. We need it to be a regular grid
         yy: image of the function at the points tt.
 
-    Returns: integral given by trapezoidal rule.
+    Returns:
+        integral given by trapezoidal rule.
 
     """
 
@@ -87,7 +95,7 @@ def trapeze_int(tt, yy):
         return (tt[-1] - tt[0]) * yy[0]
 
     DELTA = tt[1] - tt[0]
-    # go through all values except first and last
+
     for i in range(1, len(tt) - 1):
         ans += DELTA * yy[i]
     ans += DELTA / 2 * (yy[0] + yy[-1])

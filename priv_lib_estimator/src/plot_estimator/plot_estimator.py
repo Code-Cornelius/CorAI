@@ -40,7 +40,7 @@ class Plot_estimator(Root_plot_estimator):
     @classmethod
     def from_path_csv(cls, path, grouping_by=None):
         """
-        SEMANTICS:
+        Semantics:
             Constructor plot_estimator with a path.
         Args:
             path: string. The path has to be raw, no "\". CSV file.
@@ -80,7 +80,7 @@ class Plot_estimator(Root_plot_estimator):
         Semantics:
             generate a title given the parameters. Essentially, the title looks like:
                 [before_text \n]
-                names[0] : values[0], ... names[n] : values[n]
+                names[0]: values[0], ... names[n]: values[n]
                 [\n extra_text.format(*extra_arguments)]
                 .
 
@@ -110,7 +110,7 @@ class Plot_estimator(Root_plot_estimator):
             beg_title_with_new_line = ''.join([beg_title_with_new_line, '\n'])
         list_param = [strng for strng in function_iterable.
             roundrobin(parameters,
-                       [" : "] * len(parameters_value),
+                       [": "] * len(parameters_value),
                        parameters_value,
                        [", "] * (len(parameters_value) - 1))
                       ]

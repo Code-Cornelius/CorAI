@@ -3,13 +3,16 @@ def test_print(my_str):
 
 
 def tuple_to_str(my_tuple, delimiter=''):
-    """ convert tuples to strings.
+    """
+     Semantics:
+        Convert tuples to strings.
 
     Args:
-        my_tuple: a tuple I want to convert into a string
+        my_tuple: a tuple to be converted into a string
         delimiter: tuple[0] + delimiter + tuple[1] + delimiter + ...
 
-    Returns: returns the string converted.
+    Returns:
+        returns the converted string.
 
     """
     my_str = ''

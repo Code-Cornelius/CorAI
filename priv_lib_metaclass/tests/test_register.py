@@ -17,7 +17,7 @@ class Test_register(unittest.TestCase):
         class Foo(metaclass=Register):
             @deco_register
             def __init__(self):
-                print("inside : ", self.list_register_instances)
+                print("inside: ", self.list_register_instances)
                 pass
 
             @staticmethod
@@ -27,7 +27,7 @@ class Test_register(unittest.TestCase):
         class Boo(metaclass=Register):
             @deco_register
             def __init__(self):
-                print("inside : ", self.list_register_instances)
+                print("inside: ", self.list_register_instances)
                 pass
 
             @staticmethod

@@ -1,6 +1,6 @@
 import numpy as np
 
-
+# todo: Niels write pydoc
 def newtons_method(f, df, x0, e=10 ** (-10), tol=10 ** (-10)):
     # e is the error.
     # tol is the each step tolerance
@@ -21,7 +21,7 @@ def newtons_method(f, df, x0, e=10 ** (-10), tol=10 ** (-10)):
         step = abs(x0 - old_x0)
     return x0
 
-
+# todo: Niels write pydoc
 def newtons_method_multi(df, ddf, x0, e=10 ** (-10), tol=10 ** (-10)):
     # e is the error.
     # tol is the each step tolerance

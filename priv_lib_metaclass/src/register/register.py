@@ -7,7 +7,7 @@ dict_register_classes = {}
 
 
 class Register(type):
-    # instructions :
+    # instructions:
     # before any class' init with that meta, put the decorator !
 
     # new is affecting the new classes created with that meta.

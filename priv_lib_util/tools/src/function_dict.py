@@ -1,6 +1,6 @@
 def up(my_dict, new_dict):
     """
-    SEMANTICS:
+    Semantics:
         If a key from new_dict is not defined in my_dict, add it.
         The behaviour is almost like the in-built function update.
 
@@ -8,7 +8,8 @@ def up(my_dict, new_dict):
         my_dict: old to update.
         new_dict: the new entries
 
-    Returns: void, the dict is updated since the dict is mutable.
+    Returns:
+        void, the dict is updated since the dict is mutable.
 
     """
     for key in new_dict:

@@ -32,7 +32,9 @@ def Memoization(key_names):
 
 
 def set_new_methods(**kwargs):
-    """ set a set of new methods to a class, any quantity of methods.
+    """
+    Semantics:
+        Set a set of new methods to a class, any quantity of methods.
 
     Args:
         **kwargs: name of method given by key, body by value.
@@ -51,16 +53,17 @@ def set_new_methods(**kwargs):
 
 def estimation_remaining_time_computation(total_nb_tries, multiplicator_factor, actual_state):
     """
-    SEMANTICS :
-        decorator for a function that predicts the amount of time left to do a task.
+    Semantics:
+        Decorator for a function that predicts the amount of time left to do a task.
         In order to do so, it compares the actual state of processing with respect to the total amount.
 
 
     Args:
-        total_nb_tries: total number of iteration, this is the total complexity.
+        total_nb_tries: total number of iterations, this is the total complexity.
         multiplicator_factor: how the complexity of the function evolves throughout the loop.
-        actual_state: how much to reduce the time incrementally. I don't know how to do properly. I need an object that changes inside the function but from outside.
-        for that reason I use the property of mutable object. ACTUAL_STATE IS A LIST!
+        actual_state: how much to reduce the time incrementally. I don't know how to do properly.
+            I need an object that changes inside the function but from outside.
+            for that reason I use the property of mutable object. ACTUAL_STATE IS A LIST!
 
     """
 

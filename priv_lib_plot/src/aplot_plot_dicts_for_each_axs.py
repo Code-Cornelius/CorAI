@@ -26,8 +26,8 @@ class APlot_plot_dicts_for_each_axs(object):
                     'xscale': 'linear', 'yscale': 'linear',
                     'basex': 10, 'basey': 10,
                     'xint': False, 'yint': False,
-                    'parameters' : None, 'name_parameters' : None,
-                    'xlim' : None, 'ylim' : None}
+                    'parameters': None, 'name_parameters': None,
+                    'xlim': None, 'ylim': None}
 
     def __init__(self, nb_of_axs):
         # creates a list of independent dicts with the default settings.

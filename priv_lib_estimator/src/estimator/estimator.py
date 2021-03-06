@@ -6,7 +6,7 @@ from priv_lib_error import Error_type_setter
 
 class Estimator(object):
     """
-    SEMANTICS:
+    Semantics:
         Class Estimator as an adaptor from the dataframes from pandas.
         We use Pandas since it is fairly rampant and easy to use.
         We store the data in the following way: each column is one feature, each row one estimation.
@@ -27,7 +27,7 @@ class Estimator(object):
     @classmethod
     def from_path_csv(cls, path):
         """
-        SEMANTICS:
+        Semantics:
             Constructor estimator with a path.
         Args:
             path: string. The path has to be raw, no "\". CSV file.
@@ -39,26 +39,26 @@ class Estimator(object):
 
     def append(self, appending_df):
         """
-        SEMANTICS:
+        Semantics:
             adaptor for the method append from DF at the estimator level.
 
         Args:
             appending_df: the df to append to the self object.
 
         Returns:
-            quoting : "Pandas dataframe.append() function
+            quoting: "Pandas dataframe.append() function
             is used to append rows of other dataframe to the end of the given dataframe,
             returning a new dataframe object.
             Columns not in the original dataframes are added as new columns
             and the new cells are populated with NaN value."
 
-        REFERENCES : https://www.geeksforgeeks.org/python-pandas-dataframe-append/
+        References: https://www.geeksforgeeks.org/python-pandas-dataframe-append/
         """
         self._DF = self._DF.append(appending_df)
 
     def apply_function_upon_data(self, separators, fct, **kwargs):
         """
-        SEMANTICS : Transform the data
+        Semantics: Transform the data
         with respect to a function and compute a new array of data which is returned.
         Will do: fct(DF[separators]) component wise.
 
@@ -85,7 +85,7 @@ class Estimator(object):
 
     def apply_function_upon_data_store_it(self, separators, fct, new_column_names, **kwargs):
         """
-        SEMANTICS:
+        Semantics:
             Transform the data
             (given a whole column of data, but could be extended recursively to more than one column computations)
             with respect to a function and compute a new array of data
@@ -115,7 +115,7 @@ class Estimator(object):
 
     def estimation_group_mean(self, columns_for_computation, keys_grouping=None):
         """
-        SEMANTICS:
+        Semantics:
             empirical mean of the data separated with the keys keys_grouping at column name.
         Args:
             columns_for_computation: list of strings, which columns/feature are the means computed.
@@ -138,7 +138,7 @@ class Estimator(object):
 
     def estimation_group_variance(self, columns_for_computation, keys_grouping=None, ddof=1):
         """
-        SEMANTICS: empirical variance of the data of the variance.
+        Semantics: empirical variance of the data of the variance.
 
         Args:
             columns_for_computation:  list of strings, which columns/feature are the variances computed.
@@ -160,7 +160,7 @@ class Estimator(object):
 
     def to_csv(self, path, **kwargs):
         """
-        SEMANTICS :
+        Semantics:
             void adaptor of the method to_csv from dataframes.
 
         Args:
@@ -176,7 +176,7 @@ class Estimator(object):
 
     def groupby_DF(self, separators, order=True):
         """
-        SEMANTICS :
+        Semantics:
             groupby a DF.
 
         Args:
