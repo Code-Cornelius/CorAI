@@ -249,8 +249,10 @@ class APlot(object, metaclass=Register):
             set the parameters of an axes.
 
         Preconditions:
+            ~~~~~~~~~~~~~~~~~~
             the parameters that can be chosen are the one
             written in the class APlot_plot_dicts_for_each_axs.
+            ~~~~~~~~~~~~~~~~~~
 
         DEPENDENCIES:
             The class APlot_plot_dicts_for_each_axs is
@@ -438,7 +440,7 @@ class APlot(object, metaclass=Register):
             Draw a single plot upon an axis.
 
         Args:
-            nb_ax: int, number of the axis upon which the plot is drawn.
+            nb_ax: int, number of the axis upon which the plot is drawn. Starts at 0.
             xx: data xx for plot.
             yy: data yy for plot.
             dict_plot_param: dictionary with the parameters used for the plot of the curve.
@@ -461,8 +463,8 @@ class APlot(object, metaclass=Register):
             Draw two plot at once.
 
         Args:
-            nb_ax1: int, number of the axis upon which the first plot is drawn.
-            nb_ax2: int, number of the axis upon which the second plot is drawn.
+            nb_ax1: int, number of the axis upon which the first plot is drawn. Starts at 0.
+            nb_ax2: int, number of the axis upon which the second plot is drawn. Starts at 0.
             xx1: data.
             yy1: data.
             xx2: data.
@@ -491,7 +493,7 @@ class APlot(object, metaclass=Register):
             draw a single plot upon a parallel y-axis.
 
         Args:
-            nb_ax: int, number of the axis upon which the plot is drawn.
+            nb_ax: int, number of the axis upon which the plot is drawn. Starts at 0.
             xx: data.
             yy: data.
             dict_plot_param: dictionary with the parameters used for the plot of the curve.
