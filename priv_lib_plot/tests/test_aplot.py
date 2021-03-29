@@ -7,8 +7,11 @@ import matplotlib.pyplot as plt
 
 from PIL import ImageChops, Image  # image comparison
 
+import os
+import pathlib
 # other files
 from priv_lib_plot import APlot
+from config import ROOT_DIR
 from priv_lib_metaclass import Register, deco_register, dict_register_classes
 
 """
@@ -21,7 +24,7 @@ from priv_lib_metaclass import Register, deco_register, dict_register_classes
 """
 
 AUTO = True
-PATH = "image_reference_test_plot"
+PATH = os.path.join(ROOT_DIR, 'priv_lib_plot', 'tests', 'image_reference_test_plot')
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def image_comparison(path1, path2):
@@ -35,7 +38,6 @@ def image_comparison(path1, path2):
         return True
 
 
-
 class Test_APlot(TestCase):
     def setUp(self) -> None:
         self.xx = np.linspace(0, 10, 10000)
@@ -44,13 +46,15 @@ class Test_APlot(TestCase):
         return
 
     def tearDown(self):
-        pass
-        # APlot.show_plot()
+        for file in os.listdir(PATH):
+            if file.startswith("test") and file.endswith(".png"):
+                file_path = os.path.join(PATH, file)
+                os.remove(file_path)
 
     def check_plot(self):
-        image_path = f"{PATH}/{self.image_name}.png"
+        image_path = os.path.join(PATH, f"{self.image_name}.png")
         if AUTO:
-            test_path = f"{PATH}/test_{self.image_name}.png"
+            test_path = os.path.join(PATH, "test_{self.image_name}.png")
             plt.savefig(test_path, dpi=50)
             assert (image_comparison(test_path, image_path))
         else:
@@ -400,6 +404,7 @@ class Test_APlot(TestCase):
         self.image_name = "image_uniplot_2_sharex_not_same_interval_for_x"
         self.check_plot()
 
+    @unittest.skip
     def test_uni_plot_for_plots_same_graph_sharey(self):
         # uni plot *4
         aplot_3 = APlot(how=(2, 2), sharey=True)
@@ -409,11 +414,12 @@ class Test_APlot(TestCase):
         aplot_3.uni_plot(3, self.xx, self.yy)
         aplot_3.tight_layout()
 
-        plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharey.png")
+        # plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharey.png")
 
         # assert (image_comparison("image_reference_test_plot/test_image_uniplot_2_sharey.png",
         #                          "image_reference_test_plot/image_uniplot_2_sharey.png"))
 
+    @unittest.skip
     def test_uni_plot_for_plots_same_graph_sharey_not_same_interval_for_y(self):
         xx = np.linspace(-1, 1, 1000)
         aplot_3 = APlot(how=(2, 2), sharey=True)
@@ -423,7 +429,7 @@ class Test_APlot(TestCase):
         aplot_3.uni_plot(3, xx, np.exp(xx))
         aplot_3.tight_layout()
 
-        plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharey_not_same_interval_for_y.png")
+        # plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharey_not_same_interval_for_y.png")
 
         # assert (image_comparison("image_reference_test_plot/test_image_uniplot_2_sharey_not_same_interval_for_y.png",
         #                          "image_reference_test_plot/image_uniplot_2_sharey_not_same_interval_for_y.png"))
@@ -450,6 +456,7 @@ class Test_APlot(TestCase):
     def test_cumulative_plot(self):
         pass
 
+    @unittest.skip
     def test_hist(self):
         aplot = APlot()
         aplot.hist(self.yy)
