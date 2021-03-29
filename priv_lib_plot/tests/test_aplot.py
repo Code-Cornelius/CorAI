@@ -11,6 +11,17 @@ from PIL import ImageChops, Image  # image comparison
 from priv_lib_plot import APlot
 from priv_lib_metaclass import Register, deco_register, dict_register_classes
 
+"""
+    Auto
+    False - manual testing 
+          - save the file and check manually if the behaviour is as expected
+    True - automatic testing
+         - save the file with test_name and compare against manually approved correct image 
+    ! Only use false locally    
+"""
+
+AUTO = True
+PATH = "image_reference_test_plot"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def image_comparison(path1, path2):
@@ -24,29 +35,38 @@ def image_comparison(path1, path2):
         return True
 
 
+
 class Test_APlot(TestCase):
     def setUp(self) -> None:
         self.xx = np.linspace(0, 10, 10000)
         self.yy = np.cos(self.xx)
+        self.image_name = ""
         return
 
     def tearDown(self):
         pass
         # APlot.show_plot()
 
+    def check_plot(self):
+        image_path = f"{PATH}/{self.image_name}.png"
+        if AUTO:
+            test_path = f"{PATH}/test_{self.image_name}.png"
+            plt.savefig(test_path, dpi=50)
+            assert (image_comparison(test_path, image_path))
+        else:
+            plt.savefig(image_path, dpi=50)
+
     def test_constructor_plot_data_directly_only_yy(self):
         # direct plot only yy
         APlot(datay=self.yy)
-        plt.savefig("image_reference_test_plot/test_image_yy.png")
-        assert (image_comparison("image_reference_test_plot/test_image_yy.png",
-                                 "image_reference_test_plot/image_yy.png"))
+        self.image_name = "image_yy"
+        self.check_plot()
 
     def test_constructor_plot_data_directly_xx_yy(self):
         # direct plot xx and yy
         APlot(datax=self.xx, datay=self.yy)
-        plt.savefig("image_reference_test_plot/test_image_xx_yy.png")
-        assert (image_comparison("image_reference_test_plot/test_image_xx_yy.png",
-                                 "image_reference_test_plot/image_xx_yy.png"))
+        self.image_name = "image_xx_yy"
+        self.check_plot()
 
 
     def test_set_dict_ax_and_bis_each_parameter_only_first_two_axis_same_graph(self):
@@ -59,9 +79,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_title.png")
-            assert (image_comparison("image_reference_test_plot/test_image_set_dict_ax_title.png",
-                                     "image_reference_test_plot/image_set_dict_ax_title.png"))
+            self.image_name = "image_set_dict_ax_title"
+            self.check_plot()
 
         with self.subTest('xlabel'):
             aplot = APlot()
@@ -71,9 +90,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xlabel.png")
-            assert (image_comparison("image_reference_test_plot/test_image_set_dict_ax_xlabel.png",
-                                     "image_reference_test_plot/image_set_dict_ax_xlabel.png"))
+            self.image_name = "image_set_dict_ax_xlabel"
+            self.check_plot()
 
         with self.subTest('ylabel'):
             aplot = APlot()
@@ -83,9 +101,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_ylabel.png")
-            assert (image_comparison("image_reference_test_plot/test_image_set_dict_ax_ylabel.png",
-                                     "image_reference_test_plot/image_set_dict_ax_ylabel.png"))
+            self.image_name = "image_set_dict_ax_ylabel"
+            self.check_plot()
 
         with self.subTest('xscale'):
             aplot = APlot()
@@ -95,9 +112,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xscale.png")
-            assert (image_comparison("image_reference_test_plot/test_image_set_dict_ax_xscale.png",
-                                     "image_reference_test_plot/image_set_dict_ax_xscale.png"))
+            self.image_name = "image_set_dict_ax_xscale"
+            self.check_plot()
 
         with self.subTest('yscale'):
             aplot = APlot()
@@ -107,9 +123,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_yscale.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_yscale.png",
-                                     "image_reference_test_plot/image_set_dict_ax_yscale.png")
+            self.image_name = "image_set_dict_ax_yscale"
+            self.check_plot()
 
         with self.subTest('xint'):
             aplot = APlot()
@@ -119,9 +134,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 1/3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xint.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_xint.png",
-                                     "image_reference_test_plot/image_set_dict_ax_xint.png")
+            self.image_name = "image_set_dict_ax_xint"
+            self.check_plot()
 
         with self.subTest('xint_yint'):
             aplot = APlot()
@@ -131,9 +145,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 1/3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xyint.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_xyint.png",
-                                     "image_reference_test_plot/image_set_dict_ax_xyint.png")
+            self.image_name = "image_set_dict_ax_xyint"
+            self.check_plot()
 
         for i in range(11):
             with self.subTest('parameter', i=i):
@@ -144,9 +157,8 @@ class Test_APlot(TestCase):
                 aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
                 aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-                plt.savefig("image_reference_test_plot/test_image_set_dict_ax_parameter_{}.png".format(i))
-                assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_parameter_{}.png".format(i),
-                                         "image_reference_test_plot/image_set_dict_ax_parameter_{}.png".format(i))
+                self.image_name = f"image_set_dict_ax_parameter_{i}"
+                self.check_plot()
 
 
         # with self.subTest('parameters not good length'):
@@ -166,9 +178,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xlim.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_xlim.png",
-                                    "image_reference_test_plot/image_set_dict_ax_xlim.png")
+            self.image_name = "image_set_dict_ax_xlim"
+            self.check_plot()
 
         with self.subTest('ylim'):
             aplot = APlot()
@@ -178,9 +189,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_ylim.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_ylim.png",
-                                    "image_reference_test_plot/image_set_dict_ax_ylim.png")
+            self.image_name = "image_set_dict_ax_ylim"
+            self.check_plot()
 
     def test_set_dict_ax_and_bis_each_parameter_both_two_axis_same_graph(self):
         yy = np.abs(np.cos(self.xx)) + 1
@@ -193,9 +203,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot1)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_title_2.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_title_2.png",
-                                    "image_reference_test_plot/image_set_dict_ax_title_2.png")
+            self.image_name = "image_set_dict_ax_title_2"
+            self.check_plot()
 
         with self.subTest('xlabel2'):
             aplot = APlot()
@@ -206,9 +215,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot1)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xlabel_2.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_xlabel_2.png",
-                                    "image_reference_test_plot/image_set_dict_ax_xlabel_2.png")
+            self.image_name = "image_set_dict_ax_xlabel_2"
+            self.check_plot()
 
         with self.subTest('ylabel2'):
             aplot = APlot()
@@ -219,9 +227,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot1)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_ylabel_2.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_ylabel_2.png",
-                                    "image_reference_test_plot/image_set_dict_ax_ylabel_2.png")
+            self.image_name = "image_set_dict_ax_ylabel_2"
+            self.check_plot()
 
         with self.subTest('xscale same'):
             aplot = APlot()
@@ -231,9 +238,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xscale_2_same.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_xscale_2_same.png",
-                                    "image_reference_test_plot/image_set_dict_ax_xscale_2_same.png")
+            self.image_name = "image_set_dict_ax_xscale_2"
+            self.check_plot()
 
         with self.subTest('yscale same'):
             aplot = APlot()
@@ -243,9 +249,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_yscale_2_same.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_yscale_2_same.png",
-                                    "image_reference_test_plot/image_set_dict_ax_yscale_2_same.png")
+            self.image_name = "image_set_dict_ax_yscale_2_same"
+            self.check_plot()
 
         # with self.subTest('xscale different'):
         #     aplot = APlot()
@@ -267,9 +272,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_yscale_2_different.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_yscale_2_different.png",
-                                    "image_reference_test_plot/image_set_dict_ax_yscale_2_different.png")
+            self.image_name = "image_set_dict_ax_yscale_2_different"
+            self.check_plot()
 
         # with self.subTest('xint same'):
         #     aplot = APlot()
@@ -334,9 +338,8 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot1)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
 
-            plt.savefig("image_reference_test_plot/test_image_set_dict_ax_ylim_2.png")
-            assert image_comparison("image_reference_test_plot/test_image_set_dict_ax_ylim_2.png",
-                                    "image_reference_test_plot/image_set_dict_ax_ylim_2.png")
+            self.image_name = "image_set_dict_ax_ylim_2"
+            self.check_plot()
 
 
     def test_show_legend(self):
@@ -356,10 +359,9 @@ class Test_APlot(TestCase):
         aplot_2 = APlot()
         aplot_2.uni_plot(0, self.xx, self.yy)
         aplot_2.tight_layout()
-        plt.savefig("image_reference_test_plot/test_image_uniplot_1.png")
 
-        assert (image_comparison("image_reference_test_plot/test_image_uniplot_1.png",
-                                 "image_reference_test_plot/image_uniplot_1.png"))
+        self.image_name = "image_uniplot_1"
+        self.check_plot()
 
     def test_uni_plot_for_plots_same_graph(self):
         # uni plot *4
@@ -370,10 +372,8 @@ class Test_APlot(TestCase):
         aplot_3.uni_plot(3, self.xx, self.yy)
         aplot_3.tight_layout()
 
-        plt.savefig("image_reference_test_plot/test_image_uniplot_2.png")
-
-        assert (image_comparison("image_reference_test_plot/test_image_uniplot_2.png",
-                                 "image_reference_test_plot/image_uniplot_2.png"))
+        self.image_name = "image_uniplot_2"
+        self.check_plot()
 
     def test_uni_plot_for_plots_same_graph_sharex(self):
         # uni plot *4
@@ -384,10 +384,8 @@ class Test_APlot(TestCase):
         aplot_3.uni_plot(3, self.xx, self.yy)
         aplot_3.tight_layout()
 
-        plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharex.png")
-
-        assert (image_comparison("image_reference_test_plot/test_image_uniplot_2_sharex.png",
-                                 "image_reference_test_plot/image_uniplot_2_sharex.png"))
+        self.image_name = "image_uniplot_2_sharex"
+        self.check_plot()
 
     def test_uni_plot_for_plots_same_graph_sharex_not_same_interval_for_x(self):
         # uni plot *4
@@ -399,10 +397,8 @@ class Test_APlot(TestCase):
         aplot_3.uni_plot(3, xx, np.exp(xx))
         aplot_3.tight_layout()
 
-        plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharex_not_same_interval_for_x.png")
-
-        assert (image_comparison("image_reference_test_plot/test_image_uniplot_2_sharex_not_same_interval_for_x.png",
-                                 "image_reference_test_plot/image_uniplot_2_sharex_not_same_interval_for_x.png"))
+        self.image_name = "image_uniplot_2_sharex_not_same_interval_for_x"
+        self.check_plot()
 
     def test_uni_plot_for_plots_same_graph_sharey(self):
         # uni plot *4
@@ -438,18 +434,18 @@ class Test_APlot(TestCase):
         aplot_4.uni_plot(2, self.xx, self.yy)
         aplot_4.uni_plot(3, self.xx, self.yy)
         aplot_4.tight_layout()
-        plt.savefig("image_reference_test_plot/test_image_biplot.png")
-        assert image_comparison("image_reference_test_plot/test_image_biplot.png",
-                                "image_reference_test_plot/image_biplot.png")
+
+        self.image_name = "image_biplot"
+        self.check_plot()
 
     def test_uni_plot_ax_bis(self):
         # two plots same figures
         aplot_1 = APlot()
         aplot_1.uni_plot(0, self.xx, self.yy + 5)
         aplot_1.uni_plot_ax_bis(0, self.xx, np.exp(self.xx))
-        plt.savefig("image_reference_test_plot/test_plot_bis.png")
-        assert image_comparison("image_reference_test_plot/test_plot_bis.png",
-                                "image_reference_test_plot/plot_bis.png")
+
+        self.image_name = "image_plot_bis"
+        self.check_plot()
 
     def test_cumulative_plot(self):
         pass
@@ -467,19 +463,21 @@ class Test_APlot(TestCase):
 
         aplot = APlot()
         aplot.plot_function(f, self.xx)
-        plt.savefig("image_reference_test_plot/test_plot_function.png")
-        assert image_comparison("image_reference_test_plot/test_plot_function.png",
-                                "image_reference_test_plot/plot_function.png")
+        self.image_name = "image_plot_function"
+        self.check_plot()
 
     # todo
+    @unittest.skip
     def test_plot_vertical_line(self):
         self.fail()
 
     # todo
+    @unittest.skip
     def test_plot_line(self):
         self.fail()
 
     # todo
+    @unittest.skip
     def test_plot_point(self):
         self.fail()
 

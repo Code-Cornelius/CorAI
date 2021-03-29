@@ -26,15 +26,14 @@ source name_of_your_environment/bin/activate
       One can install a library with:
       
        ```commandline
-       pip install -r <module_name> [<version>]
+       pip install <library_name> [<version>]
        ```
       
       Or if a requirement file is provided, simply use either, to install all the libraries from the requirement file:
-      
-
-       ```commandline
-       pip install -r requirements.txt
-       ```
+    
+         ```commandline
+            pip install -r requirements.txt
+         ```
        
        or if one simply wants some packages from the requirement file:
        
@@ -64,16 +63,16 @@ deactivate
     From the root of the project the requirements are written in a file requirements.txt. It can be created with:
     1. #### Using freeze
     
-    check the installed packages:
+        check the installed packages:
     
-    ```commandline
-    pip freeze
-    ```
-    And to write them inside the requirements file:
+        ```commandline
+        pip freeze
+        ```
+        And to write them inside the requirements file:
     
-    ```commandline
-    pip freeze > requirements.txt
-    ```
+        ```commandline
+        pip freeze > requirements.txt
+        ```
    
     2. #### Manually
         Just add a new file with the name requirements.txt.
