@@ -4,6 +4,8 @@ from math import floor
 from time import time
 
 
+#todo add to benchmark average and variance of result.
+
 def time_convertor_sec2hours_min_sec(seconds, time_format=0):
     """
     Semantics:
@@ -49,7 +51,7 @@ def time_time2text(s, m, h, seconds_frac=0):
     if s == 0:
         ts = ""
     elif s == 1:
-        ts = f"{s + seconds_frac:d} second "
+        ts = "{:.12f} second ".format(s + seconds_frac)
     else:
         ts = f"{s:d} seconds "
 
