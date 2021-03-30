@@ -51,7 +51,7 @@ def time_time2text(s, m, h, seconds_frac=0):
     if s == 0:
         ts = ""
     elif s == 1:
-        ts = "{:.12f} second ".format(s + seconds_frac)
+        ts = f"{s + seconds_frac} second "
     else:
         ts = f"{s:d} seconds "
 
