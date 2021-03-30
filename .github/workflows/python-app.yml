@@ -78,5 +78,5 @@ jobs:
         pip install -r priv_lib_util/requirements.txt
     - name: Test
       run: |
-        ./scripts/util_tests.sh
+        sh ./scripts/util_tests.sh
 
