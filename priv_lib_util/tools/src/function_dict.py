@@ -17,3 +17,23 @@ def up(my_dict, new_dict):
             my_dict[key] = new_dict[key]
 
     return
+
+
+def parameter_product(parameter_options):
+
+    result = []
+    p_names = list(parameter_options)
+
+    def product(p_names, options_dict, i=0):
+
+        if i == len(p_names):
+            copy = dict(options_dict)
+            result.append(copy)
+            return
+
+        for option in parameter_options[p_names[i]]:
+            options_dict[p_names[i]] = option
+            product(p_names, options_dict, i+1)
+
+    product(p_names, {})
+    return result
