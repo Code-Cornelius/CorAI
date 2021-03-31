@@ -1,3 +1,4 @@
+#todo add a ylabel bis !
 class APlot_plot_dicts_for_each_axs(object):
     """
     APlot_plot_dicts_for_each_axs is an object that stores the properties of each axs of a APlot.

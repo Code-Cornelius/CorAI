@@ -105,8 +105,8 @@ class APlot(object, metaclass=Register):
             datax: if given with datay, plot the figure datax, datay.
             datay: If only datay given, returns a plot with respect to range(len(datay)).
             figsize: size of the figure.
-            sharex: for sharing the same X axis for two axes. This can be used for having two plots on the same column sharing the same X-axis.
-            sharey: for sharing the same Y axis for two axes. This can be used for having two plots on the same line sharing the same Y-axis.
+            sharex: for sharing the same X axis for two axes. This can be used for having two plots, different Y-axis, sharing the same X-axis.
+            sharey: for sharing the same Y axis for two axes. This can be used for having two plots, different X-axis, sharing the same Y-axis.
 
         Examples:
 
@@ -238,7 +238,8 @@ class APlot(object, metaclass=Register):
         Semantics:
             Hidden method for plotting on a bis_axis. It first check if the axis exists, and then plots upon it.
         """
-        if self._axs_bis[nb_ax] is None:  # case axis not created yet.
+        nb_ax = self.__check_axs(nb_ax) #: control that one is not too high in the nb_axis.
+        if self._axs_bis[nb_ax] is None:  #: case axis not created yet.
             self._axs_bis[nb_ax] = self._axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis_y_axis=True)
 
@@ -394,8 +395,12 @@ class APlot(object, metaclass=Register):
         if nb_ax is None:
             for nb_ax_0 in range(self._nb_of_axs):
                 self._axs[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+                if self._axs_bis[nb_ax_0] is not None:
+                    self._axs_bis[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         else:
             self._axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+            if self._axs_bis[nb_ax] is not None:
+                self._axs_bis[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
         return
 
     def tight_layout(self):
