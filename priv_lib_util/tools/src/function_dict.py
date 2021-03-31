@@ -20,11 +20,20 @@ def up(my_dict, new_dict):
 
 
 def parameter_product(parameter_options):
+    """
+
+    Args:
+        parameter_options:
+
+    Returns:
+
+    """
 
     result = []
     p_names = list(parameter_options)
 
     def product(p_names, options_dict, i=0):
+        """backtracking."""
 
         if i == len(p_names):
             copy = dict(options_dict)

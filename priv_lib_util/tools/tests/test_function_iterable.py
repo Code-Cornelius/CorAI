@@ -37,3 +37,9 @@ class Test_function_iterable(TestCase):
 
     def test_replace_nans(self):
         pass
+
+    def test_are_at_least_one_None(self):
+        pass
+
+    def test_raise_if_not_all_None(self):
+        pass

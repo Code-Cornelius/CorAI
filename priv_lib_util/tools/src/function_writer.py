@@ -1,6 +1,14 @@
+def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):
+    """
 
-def write_config_file_for_parameters(parameter_options, column_size=15, file_name="config.txt"):
+    Args:
+        parameter_options:
+        column_size:
+        file_name:
 
+    Returns:
+
+    """
     # get the names of all the parameters
     p_names = list(parameter_options[0])
 
@@ -27,4 +35,3 @@ def write_config_file_for_parameters(parameter_options, column_size=15, file_nam
             file.write(line)
 
         file.close()
-
