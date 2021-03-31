@@ -3,22 +3,22 @@ from unittest import TestCase
 from priv_lib_util.tools.src.function_dict import parameter_product
 
 test_input = {
-    'parameter_1': [1, 2],
-    'parameter_2': ['a', 'b']
+    "parameter_1": [1, 2],
+    "parameter_2": ["a", "b"]
 }
 
 test_output = [{
-        'parameter_1': 1,
-        'parameter_2': 'a'
+        "parameter_1": 1,
+        "parameter_2": "a"
     }, {
-        'parameter_1': 1,
-        'parameter_2': 'b'
+        "parameter_1": 1,
+        "parameter_2": "b"
     }, {
-        'parameter_1': 2,
-        'parameter_2': 'a'
+        "parameter_1": 2,
+        "parameter_2": "a"
     }, {
-        'parameter_1': 2,
-        'parameter_2': 'b'
+        "parameter_1": 2,
+        "parameter_2": "b"
     },
 ]
 
