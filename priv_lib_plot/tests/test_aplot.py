@@ -462,13 +462,12 @@ class Test_APlot(TestCase):
         self.check_plot()
         pass
 
-    @unittest.skip
     def test_hist(self):
         aplot = APlot()
         aplot.hist(self.yy)
         plt.savefig("image_reference_test_plot/test_plot_hist.png")
-        # assert image_comparison("image_reference_test_plot/test_plot_hist.png",
-        #                         "image_reference_test_plot/plot_hist.png")
+        assert image_comparison("image_reference_test_plot/test_plot_hist.png",
+                                "image_reference_test_plot/plot_hist.png")
 
     def test_plot_function(self):
         def f(x):

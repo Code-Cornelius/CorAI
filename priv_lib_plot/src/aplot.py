@@ -530,10 +530,11 @@ class APlot(object, metaclass=Register):
             Shows the legend.
 
         Args:
-            xx: xx where points should appear on the graph.
-            yy: the data for the cumulative distribution. Real numbers.
+            xx: xx where points should appear on the graph. It is the vertices of the bins on a histogram.
+            yy: data cumulative distribution. For an histogram : Value of the bin lying on the left i.e.: y_i = integral over [x_i-1, x_i].
             nb_ax: int, number of the axis upon which the plot is drawn. ROW MAJOR order.
-            total_cumul: parameter that changes the total_cumul. By default, is considered to be the total sum of yy.
+            total_cumul: final value of the sum. Scaling factor,  sum(yy) / total_cumul corresponds to the right final value.
+            By default, is considered to be the total sum of yy.
 
         Returns:
 
