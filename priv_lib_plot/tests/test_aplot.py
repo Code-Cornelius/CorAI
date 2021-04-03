@@ -456,7 +456,8 @@ class Test_APlot(TestCase):
     @unittest.skip
     def test_cumulative_plot(self):
         aplot = APlot()
-        aplot.cumulative_plot(self.xx, self.yy)
+        values, base, _ = plt.hist(self.xx, self.yy)
+        aplot.cumulative_plot(self.xx, values)
 
         self.image_name = "image_cumulative_plot"
         self.check_plot()
