@@ -44,7 +44,7 @@ def BlackScholesCore(CallPutFlag, DF, F, K, T, SIGMA):
         DF: discount factor
         F:  Forward F c'est S_0
         K:  strike
-        SIGMA:
+        SIGMA: volatility (squared)
 
     Returns:
 
@@ -68,7 +68,7 @@ def BlackScholes(CallPutFlag, S, K, T, R, d, SIGMA):
         T:  maturity
         R:  continuous interest rate
         d: dividend
-        SIGMA:
+        SIGMA: (volatility)
 
     Returns:
 
@@ -88,7 +88,7 @@ def implied_volatility_bisect(CallPutFlag, s0, K, T, R, d, experimented_price):
         d:
         experimented_price:
 
-    Returns:
+    Returns: \sigma_IV ^2
 
     """
 
@@ -100,11 +100,11 @@ def implied_volatility_bisect(CallPutFlag, s0, K, T, R, d, experimented_price):
     vMin, vMax = 0.00001, 20.
     # in order to find the implied volatility, one has to find the value at which smileMin crosses zero.
     try:
-        return scipy.optimize.bisect(smileMin, vMin, vMax, args=(K, s0, T, R, experimented_price), xtol=1e-20,
-                                     rtol=1e-15,
+        return scipy.optimize.bisect(smileMin, vMin, vMax, args=(K, s0, T, R, experimented_price),
+                                     xtol=1e-20, rtol=1e-15,
                                      full_output=False, disp=True)
     except ValueError:
-        warnings.warn("Bisect didn't find the $\sigma_{IMP}$, returned 0.")
+        warnings.warn("Bisect didn't find the $\sigma_{IMP}^2$, returned 0.")
         return 0
 
 
@@ -121,7 +121,7 @@ def implied_volatility_newton(CallPutFlag, s0, K, T, R, d, experimented_price):
         R: rate of interest rates
         experimented_price: price of the underlying
 
-    Returns: the Implied Volatility
+    Returns: the Implied Volatility \sigma_IV ^2
 
     """
     fx = lambda varSIGMA: BlackScholes(CallPutFlag, s0, K, T, R, d, varSIGMA) - experimented_price
