@@ -453,7 +453,13 @@ class Test_APlot(TestCase):
         self.image_name = "image_plot_bis"
         self.check_plot()
 
+    @unittest.skip
     def test_cumulative_plot(self):
+        aplot = APlot()
+        aplot.cumulative_plot(self.xx, self.yy)
+
+        self.image_name = "image_cumulative_plot"
+        self.check_plot()
         pass
 
     @unittest.skip
@@ -473,20 +479,29 @@ class Test_APlot(TestCase):
         self.image_name = "image_plot_function"
         self.check_plot()
 
-    # todo
-    @unittest.skip
+
     def test_plot_vertical_line(self):
-        self.fail()
+        aplot = APlot()
+        aplot.plot_vertical_line(x=1, yy=np.array([2, 4]))
 
-    # todo
-    @unittest.skip
+        self.image_name = "image_vertical_line"
+        self.check_plot()
+
+
     def test_plot_line(self):
-        self.fail()
+        aplot = APlot()
+        aplot.plot_line(a=1, b=2, xx=self.xx)
 
-    # todo
-    @unittest.skip
+        self.image_name = "image_line"
+        self.check_plot()
+
+
     def test_plot_point(self):
-        self.fail()
+        aplot = APlot()
+        aplot.plot_point(x=1, y=1)
+
+        self.image_name = "image_point"
+        self.check_plot()
 
     def test_help_dict_plot(self):
         pass

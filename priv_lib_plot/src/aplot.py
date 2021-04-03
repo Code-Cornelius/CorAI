@@ -681,7 +681,7 @@ class APlot(object, metaclass=Register):
             plot_line.
 
         """
-        return self.plot_line(a=0, b=y, xx=x, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
+        return self.plot_line(a=0, b=y, xx=[x], nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
 
     def plot_surf(self, xx, yy, zz, nb_ax = 0,
