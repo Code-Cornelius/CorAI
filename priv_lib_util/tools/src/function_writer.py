@@ -1,13 +1,14 @@
 def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):
     """
-
+        Writes the parameter options in a formatted file, the header of the file contains the parameter names,
+        each following line contains an entry from the parameter options.
     Args:
-        parameter_options:
-        column_size:
-        file_name:
+        parameter_options: The list of dictionaries to be written to the file
+        column_size: The size of the columns in the file
+        file_name: The path to where the config file should be written
 
     Returns:
-
+        None
     """
     # get the names of all the parameters
     p_names = list(parameter_options[0])
