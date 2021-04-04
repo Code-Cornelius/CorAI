@@ -36,7 +36,7 @@ Examples:
 # [title 1, title 2] ; [x1label y1label, x2label y2label]
 # the set of parameters is the same for the two subplots.
 
-# don't forget to write down #show_plot() at the end !
+# don't forget to write down show_plot() at the end !
 
 
 # section ######################################################################
