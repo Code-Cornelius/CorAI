@@ -25,6 +25,8 @@ Examples:
 
 
 """
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # THINGS TODO:
 #         change the nb_ax by index_ax.
@@ -124,7 +126,7 @@ class APlot(object, metaclass=Register):
         else:
             # personalised plotting
             self._fig, self._axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize=figsize)
-            self._how = how # tuple of the form of the plot.
+            self._how = how  # tuple of the form of the plot.
             self._uni_dim = (how == (1, 1))  # type boolean
 
             # two cases, if it is uni_dim, I put self.axs into a list.
@@ -238,7 +240,7 @@ class APlot(object, metaclass=Register):
         Semantics:
             Hidden method for plotting on a bis_axis. It first check if the axis exists, and then plots upon it.
         """
-        nb_ax = self.__check_axs(nb_ax) #: control that one is not too high in the nb_axis.
+        nb_ax = self.__check_axs(nb_ax)  #: control that one is not too high in the nb_axis.
         if self._axs_bis[nb_ax] is None:  #: case axis not created yet.
             self._axs_bis[nb_ax] = self._axs[nb_ax].twinx()  # instantiate a second axes that shares the same x-axis
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param, bis_y_axis=True)
@@ -369,7 +371,7 @@ class APlot(object, metaclass=Register):
 
             axis.text(left + (right - left) * 0.15,
                       bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * (
-                                  (top - bottom) * 0.58 - STARTING_VALUE_PUTTING_TEXT_LOWER)),
+                              (top - bottom) * 0.58 - STARTING_VALUE_PUTTING_TEXT_LOWER)),
                       sous_text,
                       fontsize=APlot.FONTSIZE - 1)
             plt.subplots_adjust(
@@ -380,7 +382,7 @@ class APlot(object, metaclass=Register):
             # the amount of height reserved for white space between subplots
         return
 
-    def show_legend(self, nb_ax=None):
+    def show_legend(self, nb_ax=None, loc="best"):
         """
         Semantics:
             Shows the legend on the chosen axes.
@@ -394,13 +396,13 @@ class APlot(object, metaclass=Register):
         """
         if nb_ax is None:
             for nb_ax_0 in range(self._nb_of_axs):
-                self._axs[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+                self._axs[nb_ax_0].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
                 if self._axs_bis[nb_ax_0] is not None:
-                    self._axs_bis[nb_ax_0].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+                    self._axs_bis[nb_ax_0].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
         else:
-            self._axs[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+            self._axs[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
             if self._axs_bis[nb_ax] is not None:
-                self._axs_bis[nb_ax].legend(loc='best', fontsize=APlot.FONTSIZE - 3)
+                self._axs_bis[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
         return
 
     def tight_layout(self):
@@ -445,7 +447,7 @@ class APlot(object, metaclass=Register):
     #  #############################################################################
     # PLOT FUNCTIONS
 
-    #todo verify that all dict_plot_param are giving information about help_dict_plot().
+    # todo verify that all dict_plot_param are giving information about help_dict_plot().
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax=None):
         """
@@ -626,7 +628,7 @@ class APlot(object, metaclass=Register):
             plots a vertical line at x-axis value x, and one can chose at which points yy. 2 points are enough.
         Args:
             x:
-            yy:
+            yy: should be at least two points, interval of the line.
             nb_ax: int, number of the axis upon which the plot is drawn. ROW MAJOR order.
             dict_plot_param: dictionary with the parameters used for the plot of the curve.
             Examples of dict_param_hist given by calling the function help_dict_plot().
@@ -636,8 +638,19 @@ class APlot(object, metaclass=Register):
         Dependencies:
             uni_plot
 
+        Examples:
+                    In order to get the limit of the current axis : 
+                    yy = np.array([aplot.get_y_lim(nb_ax = 0)])
+            aplot.plot_vertical_line(best_epoch_of_NN, yy = [0,1], nb_ax=0, dict_plot_param ={"color": "black",
+                                                                                        "linewidth": 0.5,
+                                                                                        "label": f"Best model for fold nb {i}"
+                                                                                        })
         """
         return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param)
+
+    def get_y_lim(self, nb_ax):
+        nb_ax = self.__check_axs(nb_ax)
+        return self._axs[nb_ax].get_ylim()
 
     def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
         """
@@ -684,9 +697,8 @@ class APlot(object, metaclass=Register):
         """
         return self.plot_line(a=0, b=y, xx=[x], nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
-
-    def plot_surf(self, xx, yy, zz, nb_ax = 0,
-                  dict_plot_param= None, dict_ax=None):
+    def plot_surf(self, xx, yy, zz, nb_ax=0,
+                  dict_plot_param=None, dict_ax=None):
         """
         you can t put two plots on this same axis. the old one is erased.
 
@@ -701,15 +713,15 @@ class APlot(object, metaclass=Register):
         Returns:
 
         """
-        #todo auto filing of the labels
+        # todo auto filing of the labels
 
         # changing the old axis for something new.
         nb_ax = self.__check_axs(nb_ax)
         self._axs[nb_ax].remove()
-        self._axs[nb_ax] = self._fig.add_subplot(*self._how,  nb_ax + 1, projection="3d")
+        self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1, projection="3d")
 
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
-        surf = self._axs[nb_ax].plot_surface(mesh_xx, mesh_yy, zz, cmap=dict_plot_param["cmap"] , linewidth=0)
+        surf = self._axs[nb_ax].plot_surface(mesh_xx, mesh_yy, zz, cmap=dict_plot_param["cmap"], linewidth=0)
 
         self._axs[nb_ax].set_zlabel(dict_ax.pop("zlabel"))
         self._fig.colorbar(surf, aspect=40)
@@ -737,8 +749,6 @@ class APlot(object, metaclass=Register):
     #
     #     surface.show_legend(nb_ax=1)
     #     self.save_plot(where_to_save)
-
-
 
     # section ######################################################################
     #  #############################################################################
