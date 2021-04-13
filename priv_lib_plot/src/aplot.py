@@ -421,6 +421,10 @@ class APlot(object, metaclass=Register):
     # presentation
 
     @staticmethod
+    def show_and_continue(interval=0.0001):
+        plt.pause(interval)
+
+    @staticmethod
     def show_plot():
         """
         Semantics:
