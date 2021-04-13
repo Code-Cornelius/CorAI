@@ -112,6 +112,12 @@ class APlot(object, metaclass=Register):
 
         Examples:
 
+            apl = APlot(how=(1, 1))
+            apl.uni_plot(nb_ax=0, xx=xx, yy=yy,
+                         dict_plot_param={"label": "legend", "color": "cyan", "linestyle": "--", "linewidth": 2})
+            apl.show_legend()
+            APlot.show_plot()
+
         """
 
         # quick plot
@@ -400,6 +406,7 @@ class APlot(object, metaclass=Register):
                 if self._axs_bis[nb_ax_0] is not None:
                     self._axs_bis[nb_ax_0].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
         else:
+            # todo check axis !
             self._axs[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
             if self._axs_bis[nb_ax] is not None:
                 self._axs_bis[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
@@ -699,6 +706,44 @@ class APlot(object, metaclass=Register):
 
     def plot_surf(self, xx, yy, zz, nb_ax=0,
                   dict_plot_param=None, dict_ax=None):
+        #todo be careful about the dict... explain
+        """
+        you can t put two plots on this same axis. the old one is erased.
+
+        Args:
+            xx:
+            yy:
+            zz: np.array of dimension xx * yy.
+            nb_ax:
+            dict_plot_param:     { "cmap" : "colormap", "xlabel", "ylabel", "zlabel", "title" }
+            dict_ax:
+
+        Returns:
+
+        """
+        # todo auto filing of the labels
+
+        # changing the old axis for something new.
+        zlabel = dict_ax.pop("zlabel")
+        nb_ax = self.__check_axs(nb_ax)
+        self._axs[nb_ax].remove()
+        self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1, projection="3d")
+
+        mesh_xx, mesh_yy = np.meshgrid(xx, yy)
+        surf = self._axs[nb_ax].plot_surface(mesh_xx, mesh_yy, zz, cmap=dict_plot_param['cmap'], linewidth=0)
+
+        self._axs[nb_ax].set_zlabel(zlabel)
+        self._fig.colorbar(surf, aspect=40)
+        plt.tight_layout()
+
+        self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
+        dict_ax['zlabel'] = zlabel
+
+        return
+
+    def plot_contour(self, xx, yy, zz, nb_ax=0,
+                     dict_plot_param=None, dict_ax=None):
+        # todo be careful about the dict... explain
         """
         you can t put two plots on this same axis. the old one is erased.
 
@@ -717,14 +762,11 @@ class APlot(object, metaclass=Register):
 
         # changing the old axis for something new.
         nb_ax = self.__check_axs(nb_ax)
-        self._axs[nb_ax].remove()
-        self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1, projection="3d")
 
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
-        surf = self._axs[nb_ax].plot_surface(mesh_xx, mesh_yy, zz, cmap=dict_plot_param["cmap"], linewidth=0)
+        contour = self._axs[nb_ax].contour(mesh_xx, mesh_yy, zz, levels=40, cmap=dict_plot_param['cmap'])
+        self._fig.colorbar(contour, aspect=40)
 
-        self._axs[nb_ax].set_zlabel(dict_ax.pop("zlabel"))
-        self._fig.colorbar(surf, aspect=40)
         plt.tight_layout()
 
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
