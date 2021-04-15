@@ -1,5 +1,5 @@
 # normal libraries
-from abc import ABC
+from abc import ABC, ABCMeta
 
 import numpy as np  # maths library and arrays
 
@@ -19,7 +19,7 @@ Abstract class.
 """
 
 
-class Root_plot_estimator(ABC):
+class Root_plot_estimator(metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
         super().__init__()
 
