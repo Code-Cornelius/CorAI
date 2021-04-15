@@ -3,8 +3,9 @@
 ### Available version
 
 * *version 1.000* :  Released in September 2020. It was released in order for me to have a stable version that was compatible with my summer projects. There is still a lot to do on it. 
-* *version 1.142* : Released in January 2021. The library is better documented, and better structured. It is now separated in the corresponding libraries, and there are tests for most of the functions.
+* *version 1.142* : Released in June 2021. The library is better documented, and better structured. It is now separated in the corresponding libraries, and there are tests for most of the functions.
 
+One should download the latest version and add the path to it before running code.
 
 ### General information
 
