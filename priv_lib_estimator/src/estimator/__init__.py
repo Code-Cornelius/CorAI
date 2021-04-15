@@ -1,1 +1,1 @@
-from .estimator import *
+from .estimator import Estimator

@@ -97,7 +97,7 @@ def time_print_elapsed_time(start, end, title="no title"):
     return
 
 
-def benchmark(func, title="no title", *args, **kwargs):
+def benchmark(func, title="no title", number_of_rep=10, *args, **kwargs):
     """
     Semantics:
         Helper for benchmarking a function and prints the timing with the name given as title.
@@ -110,14 +110,15 @@ def benchmark(func, title="no title", *args, **kwargs):
         **kwargs: Additional keyword arguments to pass as keywords arguments to
             `func`.
 
-    Returns:
+    Returns: elapsed time
 
     """
     start = time()
-    func(*args, **kwargs)
+    for _ in range(number_of_rep):
+        func(*args, **kwargs)
     end = time()
     time_print_elapsed_time(start, end, title=title)
-
+    return (end - start) / number_of_rep
 
 def wrap_benchmark(func):
     """
@@ -127,7 +128,7 @@ def wrap_benchmark(func):
     Args:
         func: Function to time.
 
-    Returns: the time.
+    Returns: the elapsed time.
 
     """
 
