@@ -3,34 +3,56 @@ import math  # quick math functions
 import warnings
 
 import numpy as np  # maths library and arrays
+from aplot.displayableplot import Displayable_plot
 from matplotlib import pyplot as plt  # plotting
 import seaborn as sns  # environment for plots
 
 # my libraries
 from priv_lib_metaclass import Register, deco_register
 from priv_lib_util.tools import function_dict, function_iterable
-from priv_lib_plot.src.aplot_plot_dicts_for_each_axs import APlot_plot_dicts_for_each_axs
+from priv_lib_plot.src.aplot.dict_ax_for_aplot import dict_ax_for_APlot
+from priv_lib_plot import AColorsetContinuous
 
 # errors:
 from priv_lib_error import Error_not_allowed_input
 
 # other files
 sns.set()  # better layout, like blue background
-
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 Examples:
+# One plot with settings
+    apl = APlot(how=(1, 1))
+    apl.uni_plot(nb_ax=0, xx=xx, yy=yy,
+                 dict_plot_param={'label': 'legend', 'color': 'cyan', 'linestyle': '--', 'linewidth': 2})
+    apl.show_legend()
+    APlot.show_plot()
+    
+# Direct plot without settings
 
+    APlot(datax = xx, datay = yy)
+    APlot.show_plot()
 
-
-
+# settings:
+        setting for plot:
+                DEFAULT_DICT_PLOT_PARAM = {'color': 'm',
+                                           'linestyle': 'solid',
+                                           'linewidth': 0.5,
+                                           'marker': "o",
+                                           'markersize': 0.4,
+                                           'label': "plot"
+                                           }
+            
+        setting for figure:
+            given by the class dict_ax_for_APlot
+            
 """
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # THINGS TODO:
 #         change the nb_ax by index_ax.
-#         homogeneous input, not nb_ax then xx then xx then nb_ax
+#         homogeneous input, not nb_ax then xx then xx then nb_ax. It should always be the same order.
+#          change return to give an ax.
 
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
@@ -38,7 +60,13 @@ Examples:
 # [title 1, title 2] ; [x1label y1label, x2label y2label]
 # the set of parameters is the same for the two subplots.
 
-# don't forget to write down show_plot() at the end !
+"""
+For now are supported the features:
+            -multiple subplots
+            -same axis for a few curves
+            -duplicating a y-axis (example: have two scales for the same plot)
+            -3D Plots
+"""
 
 
 # section ######################################################################
@@ -46,50 +74,55 @@ Examples:
 # new plot functions
 
 
-class APlot(object, metaclass=Register):
+class APlot(Displayable_plot, metaclass=Register):
     """
     Semantics:
         APlot is an object representing one figure from matplotlib.pyplot.
         The aim is to reduce code duplication by having a standard presentation of plots for 2D plots.
         A figure is cut into multiple subplots that are customizable.
 
-        For now are supported the features:
-            -multiple subplots
-            -same axis for a few curves
-            -duplicating a y-axis (example: have two scales for the same plot)
-            -3D Plots
-
-
         Recipe:
-            1) create an object APlot with the desired properties.
-            2) plot the objects on each axs.
-            3) use show_plot or save_plot.
+            1) create an object APlot with the desired properties, by APlot(how = shape e.g. (1,1))
+            2) plot the objects on each axs. aplot.uni_plot(xx,yy)
+            3) display the results (methods from Displayable_plot).
+
+        Settings:
+            The nice thing about using APlot is that one can fix some parameters for the plot or for the figure,
+            but also rely on some default behavior of the class.
+            That way, one can easily change many settings without knowing the exact syntax.
+            In order to have a default syntax and keep track of all the changes, we use the class dict_ax_for_aplot.
+            The default parameters for plot are given in the class field DEFAULT_DICT_PLOT_PARAM
+
+        The class is linked to register metaclass. This allows to keep track of all the APlots created.
+        Inherits from Displayable_plot, where it shows plot.
 
 
     DEPENDENCIES:
         SEABORN is imported and set with this class.
+        dict_ax_for_APlot which stores the parameters for each axs.
+
 
     References:
         matplolib.pyplot heavily relied upon.
-        APlot_plot_dicts_for_each_axs which stores the parameters for each axs.
 
-    The class is linked to register metaclass. This allows to keep track of all the APlots created.
+    Examples:
+        look into the file, at the top of it.
     """
 
     # class parameter about default plot parameters.
-    DEFAULT_DICT_PLOT_PARAMETERS = {"color": 'm',
-                                    "linestyle": "solid",
-                                    "linewidth": 0.5,
-                                    "marker": "o",
-                                    "markersize": 0.4,
-                                    "label": "plot"
-                                    }
+    DEFAULT_DICT_PLOT_PARAM = {'color': 'm',
+                               'linestyle': 'solid',
+                               'linewidth': 0.5,
+                               'marker': "o",
+                               'markersize': 0.4,
+                               'label': "plot"
+                               }
 
-    DEFAULT_DICT_HIST_PARAMETERS = {'bins': 20,
-                                    "color": 'green',
-                                    'range': None,
-                                    'label': "Histogram",
-                                    "cumulative": True}
+    DEFAULT_DICT_HIST_PARAM = {'bins': 20,
+                               "color": 'green',
+                               'range': None,
+                               'label': 'Histogram',
+                               'cumulative': True}
 
     # class parameter for fontsize on plots.
     FONTSIZE = 12.
@@ -109,25 +142,17 @@ class APlot(object, metaclass=Register):
             figsize: size of the figure.
             sharex: for sharing the same X axis for two axes. This can be used for having two plots, different Y-axis, sharing the same X-axis.
             sharey: for sharing the same Y axis for two axes. This can be used for having two plots, different X-axis, sharing the same Y-axis.
-
-        Examples:
-
-            apl = APlot(how=(1, 1))
-            apl.uni_plot(nb_ax=0, xx=xx, yy=yy,
-                         dict_plot_param={"label": "legend", "color": "cyan", "linestyle": "--", "linewidth": 2})
-            apl.show_legend()
-            APlot.show_plot()
-
         """
+        super().__init__()
 
         # quick plot
         if datay is not None:
             if datax is not None:
                 plt.figure(figsize=figsize)
-                plt.plot(datax, datay, **APlot.DEFAULT_DICT_PLOT_PARAMETERS)
+                plt.plot(datax, datay, **APlot.DEFAULT_DICT_PLOT_PARAM)
             else:
                 plt.figure(figsize=figsize)
-                plt.plot(range(len(datay)), datay, **APlot.DEFAULT_DICT_PLOT_PARAMETERS)
+                plt.plot(range(len(datay)), datay, **APlot.DEFAULT_DICT_PLOT_PARAM)
 
         else:
             # personalised plotting
@@ -152,8 +177,8 @@ class APlot(object, metaclass=Register):
             self._axs_bis = [None] * self._nb_of_axs  # a list full of zeros.
 
             # we set the default param of the fig:
-            self.aplot_plot_dicts_for_each_axs = APlot_plot_dicts_for_each_axs(
-                nb_of_axs=self._nb_of_axs)  # it is a list of dicts.
+            self.aplot_plot_dicts_for_each_axs = dict_ax_for_APlot(nb_of_axs=self._nb_of_axs)
+            # : it is a list of dicts.
 
             # Each element gives the config for the corresponding axes
             # through a dictionary defined by default in the relevant class.
@@ -228,7 +253,7 @@ class APlot(object, metaclass=Register):
 
         """
         if len(xx) == len(yy):
-            function_dict.up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAMETERS)
+            function_dict.up(dict_plot_param, APlot.DEFAULT_DICT_PLOT_PARAM)
             nb_ax = self.__check_axs(nb_ax)
             if not bis_y_axis:  # bis is plot on second axis.
                 out = self._axs[nb_ax].plot(xx, yy, **dict_plot_param)
@@ -266,11 +291,11 @@ class APlot(object, metaclass=Register):
         Preconditions:
             ~~~~~~~~~~~~~~~~~~
             the parameters that can be chosen are the one
-            written in the class APlot_plot_dicts_for_each_axs.
+            written in the class dict_ax_for_APlot.
             ~~~~~~~~~~~~~~~~~~
 
         DEPENDENCIES:
-            The class APlot_plot_dicts_for_each_axs is
+            The class dict_ax_for_APlot is
             the one that creates the list of dicts used by APlot.
 
         Args:
@@ -289,7 +314,7 @@ class APlot(object, metaclass=Register):
             - do not set xint = True.
             - labels are overlapping.
             - do not put twice parameters, as if they are on the same figure, the parameters should be the same.
-            Also, they are written on the graph independantly so it would difficult to put them at the exact right place.
+            Also, they are written on the graph independently so it would difficult to put them at the exact right place.
 
         Returns:
             void.
@@ -355,7 +380,7 @@ class APlot(object, metaclass=Register):
             name_parameters = dict_parameters_for_the_ax['name_parameters']
             nb_parameters = len(parameters)
             MAX_NUMBER_PARAMETER = 24
-            sous_text = " Parameters: \n"
+            sous_text = ' Parameters: \n'
             for i in range(nb_parameters):
                 sous_text += str(name_parameters[i]) + f" = {parameters[i]}"
                 # end of the list, we finish by a full stop.
@@ -388,12 +413,13 @@ class APlot(object, metaclass=Register):
             # the amount of height reserved for white space between subplots
         return
 
-    def show_legend(self, nb_ax=None, loc="best"):
+    def show_legend(self, nb_ax=None, loc='best'):
         """
         Semantics:
             Shows the legend on the chosen axes.
 
         Args:
+            loc:
             nb_ax: integer. Number of the axs we are referring to.
             If none, all the axes are looped over.
 
@@ -460,7 +486,7 @@ class APlot(object, metaclass=Register):
 
     # todo verify that all dict_plot_param are giving information about help_dict_plot().
 
-    def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax=None):
+    def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy(), dict_ax=None):
         """
         Semantics:
             Draw a single plot upon an axis.
@@ -472,6 +498,7 @@ class APlot(object, metaclass=Register):
             dict_plot_param: dictionary with the parameters used for the plot of the curve.
             Examples of dict_plot_param given by calling the function help_dict_plot().
             dict_ax: dictionary for the parameters to customise on the axis.
+            Examples of dict_plot_param given by calling the function help_dict_ax().
 
         Returns:
 
@@ -481,8 +508,8 @@ class APlot(object, metaclass=Register):
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, xx=xx, yy=yy, bis_y_axis=False)
         return
 
-    def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2, dict_plot_param_1=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
-                dict_plot_param_2=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax_1=None, dict_ax_2=None):
+    def bi_plot(self, nb_ax1, nb_ax2, xx1, yy1, xx2, yy2, dict_plot_param_1=DEFAULT_DICT_PLOT_PARAM.copy(),
+                dict_plot_param_2=DEFAULT_DICT_PLOT_PARAM.copy(), dict_ax_1=None, dict_ax_2=None):
         """
         Semantics:
             Draw two plot at once.
@@ -499,7 +526,9 @@ class APlot(object, metaclass=Register):
             dict_plot_param_2: dictionary with the parameters used for the plot of the curve.
             Examples of dict_plot_param_2 given by calling the function help_dict_plot().
             dict_ax_1: dictionary for the parameters to customise on the axis.
+            Examples of dict_plot_param_1 given by calling the function help_dict_ax().
             dict_ax_2: dictionary for the parameters to customise on the axis.
+            Examples of dict_plot_param_2 given by calling the function help_dict_ax().
 
         Returns:
 
@@ -512,7 +541,7 @@ class APlot(object, metaclass=Register):
         return
 
     def uni_plot_ax_bis(self, nb_ax, xx, yy,
-                        dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(), dict_ax=None):
+                        dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy(), dict_ax=None):
         """
         Semantics:
             draw a single plot upon a parallel y-axis.
@@ -525,6 +554,7 @@ class APlot(object, metaclass=Register):
             Examples of dict_plot_param given by calling the function help_dict_plot().
             Examples of dict_param_hist given by calling the function help_dict_plot().
             dict_ax: dictionary for the parameters to customise on the axis.
+            Examples of dict_plot_param given by calling the function help_dict_ax().
 
         Returns:
 
@@ -554,7 +584,7 @@ class APlot(object, metaclass=Register):
         """
         dict_plot_param = {'color': 'darkorange', 'marker': 'o', 'linestyle': '-', 'markersize': 1,
                            'label': "Cumulative ratio"}
-        dict_ax = {'ylabel': 'Cumulative ratio', 'ylim': [0, 1.1]}
+        dict_ax = {'ylabel': "Cumulative ratio", 'ylim': [0, 1.1]}
 
         if total_cumul is None:
             total_cumul = (np.cumsum(np.abs(yy))[-1])
@@ -565,7 +595,7 @@ class APlot(object, metaclass=Register):
         self.show_legend(nb_ax=nb_ax)
         return
 
-    def hist(self, data, nb_ax=0, dict_param_hist=DEFAULT_DICT_HIST_PARAMETERS.copy(), dict_ax=None):
+    def hist(self, data, nb_ax=0, dict_param_hist=DEFAULT_DICT_HIST_PARAM.copy(), dict_ax=None):
         """
         Semantics:
             plotting histograms
@@ -575,6 +605,7 @@ class APlot(object, metaclass=Register):
             dict_param_hist: dictionary with the parameters used for the plot of the histogram.
             Examples of dict_param_hist given by calling the function help_dict_plot().
             dict_ax: dictionary for the parameters for axis customization.
+            Examples of dict_plot_param given by calling the function help_dict_ax().
 
         Returns:
 
@@ -590,7 +621,7 @@ class APlot(object, metaclass=Register):
         # setting the parameters
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
 
-        function_dict.up(dict_param_hist, APlot.DEFAULT_DICT_HIST_PARAMETERS)
+        function_dict.up(dict_param_hist, APlot.DEFAULT_DICT_HIST_PARAM)
 
         try:
             # if doesn't pop, it will be catch by except.
@@ -609,7 +640,7 @@ class APlot(object, metaclass=Register):
             values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
         return
 
-    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy(),
+    def plot_function(self, function, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy(),
                       is_function_vectorised=True):
         """
         Semantics:
@@ -633,7 +664,7 @@ class APlot(object, metaclass=Register):
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         return
 
-    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
+    def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy()):
         """
         Semantics:
             plots a vertical line at x-axis value x, and one can chose at which points yy. 2 points are enough.
@@ -659,11 +690,7 @@ class APlot(object, metaclass=Register):
         """
         return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param)
 
-    def get_y_lim(self, nb_ax):
-        nb_ax = self.__check_axs(nb_ax)
-        return self._axs[nb_ax].get_ylim()
-
-    def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
+    def plot_line(self, a, b, xx, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy()):
         """
         Semantics:
             Plot a non vertical line on the chosen ax.
@@ -688,7 +715,7 @@ class APlot(object, metaclass=Register):
         function = lambda x: a * x + b
         return self.plot_function(function, xx, nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
-    def plot_point(self, x, y, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAMETERS.copy()):
+    def plot_point(self, x, y, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy()):
         """
         Semantics:
             plots a single point at coordinates (x,y).
@@ -708,29 +735,18 @@ class APlot(object, metaclass=Register):
         """
         return self.plot_line(a=0, b=y, xx=[x], nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
-    def plot_surf(self, xx, yy, zz, nb_ax=0,
-                  dict_plot_param=None, dict_ax=None):
-        #todo be careful about the dict... explain
+    def plot_surf(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None):
         """
-        you can t put two plots on this same axis. the old one is erased.
+        Semantics:
+            Surf function, that creates a surface in 3D plot.
+            In order to do so, deletes the axis in nb_ax and replace it with a 3D view.
 
-        Args:
-            xx:
-            yy:
-            zz: np.array of dimension xx * yy.
-            nb_ax:
-            dict_plot_param:     { "cmap" : "colormap", "xlabel", "ylabel", "zlabel", "title" }
-            dict_ax:
-
-        Returns:
-
+        dict_plot_param:     { "cmap" : "colormap", "xlabel":"xlabel", "ylabel":"ylabel", "zlabel":"zlabel", "title":"title" }
+        Examples of dict_plot_param given by calling the function help_dict_plot().
         """
-        # todo auto filing of the labels
-
-        # changing the old axis for something new.
-        zlabel = dict_ax.pop("zlabel")
+        zlabel = dict_ax.pop('zlabel')
         nb_ax = self.__check_axs(nb_ax)
-        self._axs[nb_ax].remove()
+        self._axs[nb_ax].remove()  # deletes the existing axis
         self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1, projection="3d")
 
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
@@ -738,63 +754,36 @@ class APlot(object, metaclass=Register):
 
         self._axs[nb_ax].set_zlabel(zlabel)
         self._fig.colorbar(surf, aspect=40)
-        plt.tight_layout()
+        self.tight_layout()
 
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
         dict_ax['zlabel'] = zlabel
-
         return
 
-    def plot_contour(self, xx, yy, zz, nb_ax=0,
-                     dict_plot_param=None, dict_ax=None):
-        # todo be careful about the dict... explain
-        """
-        you can t put two plots on this same axis. the old one is erased.
-
-        Args:
-            xx:
-            yy:
-            zz: np.array of dimension xx * yy.
-            nb_ax:
-            dict_plot_param:     { "cmap" : "colormap", "xlabel", "ylabel", "zlabel", "title" }
-            dict_ax:
-
-        Returns:
-
-        """
-        # todo auto filing of the labels
-
-        # changing the old axis for something new.
+    def plot_contour(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None):
         nb_ax = self.__check_axs(nb_ax)
-
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
         contour = self._axs[nb_ax].contour(mesh_xx, mesh_yy, zz, levels=40, cmap=dict_plot_param['cmap'])
         self._fig.colorbar(contour, aspect=40)
-
-        plt.tight_layout()
-
+        self.tight_layout()
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
-
         return
 
-    # todo THINK ABOUT IT
-    # def plot_surf_with_sliced(self, uu, strike_prices, data, dict_plot_param, dict_ax,
-    #                   where_to_save, dict_ax_sliced):
-    #     surface = APlot(how=(1, 2))
-    #     surface.plot_surf(nb_ax=0, xx=strike_prices, yy=uu, zz=data,
-    #                       dict_plot_param=dict_plot_param, dict_ax=dict_ax)
-    #
-    #     Blues = plt.get_cmap('Blues')
-    #     color_plot_blue = Blues(np.linspace(0.4, 1, len(uu)))  # color map for plot
-    #     for i in range(len(uu)):
-    #         dict_plot_param_sliced = {"label": "time: {:0.2}".format(uu[i]),
-    #                                   "color": color_plot_blue[i]}
-    #         surface.uni_plot(nb_ax=1, xx=strike_prices, yy=data[i, :],
-    #                          dict_plot_param=dict_plot_param_sliced,
-    #                          dict_ax=dict_ax_sliced)
-    #
-    #     surface.show_legend(nb_ax=1)
-    #     self.save_plot(where_to_save)
+    def plot_surf_with_slices(self, xvalues, yvalues, zvalues, dict_plot_param, dict_ax, where_to_save, dict_ax_slices):
+        surface = APlot(how=(1, 2))
+        surface.plot_surf(nb_ax=0, xx=yvalues, yy=xvalues, zz=zvalues,
+                          dict_plot_param=dict_plot_param, dict_ax=dict_ax)
+
+        Blues = AColorsetContinuous('Blues', len(xvalues), (0.4, 1))
+        for i in range(len(xvalues)):
+            dict_plot_param_sliced = {'label': "time: {:0.2}".format(xvalues[i]),
+                                      'color': Blues[i]}
+            surface.uni_plot(nb_ax=1, xx=yvalues, yy=zvalues[i, :],
+                             dict_plot_param=dict_plot_param_sliced,
+                             dict_ax=dict_ax_slices)
+
+        surface.show_legend(nb_ax=1)
+        self.save_plot(where_to_save)
 
     # section ######################################################################
     #  #############################################################################
@@ -824,7 +813,15 @@ class APlot(object, metaclass=Register):
             print possibilities for dict_ax and the default behavior.
 
         Dependencies:
-            uses APlot_plot_dicts_for_each_axs.help_dict_ax()
+            uses dict_ax_for_APlot.help_dict_ax()
         """
-        APlot_plot_dicts_for_each_axs.help_dict_ax()
+        dict_ax_for_APlot.help_dict_ax()
         return
+
+    # section ######################################################################
+    #  #############################################################################
+    # getter and setters
+
+    def get_y_lim(self, nb_ax):
+        nb_ax = self.__check_axs(nb_ax)
+        return self._axs[nb_ax].get_ylim()

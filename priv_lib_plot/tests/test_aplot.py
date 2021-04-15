@@ -352,11 +352,6 @@ class Test_APlot(TestCase):
     def test_tight_layout(self):
         pass
 
-    def test_show_plot(self):
-        pass
-
-    def test_save_plot(self):
-        pass
 
     def test_uni_plot_one_plot(self):
         # uni plot

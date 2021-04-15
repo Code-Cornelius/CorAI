@@ -40,4 +40,10 @@ if __name__ == '__main__':
         yy = np.sin(xx) + 2 * i
         plt.plot(xx, yy, color=c)
 
+    plt.figure()
+    for i in range(5):
+        xx = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        yy = np.sin(xx) + 2 * i
+        plt.plot(xx, yy, color=cont_color[20 * i])
+
     plt.show()

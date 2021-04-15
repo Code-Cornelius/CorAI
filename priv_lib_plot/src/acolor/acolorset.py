@@ -1,14 +1,14 @@
 import warnings
 
 from abc import ABCMeta, abstractmethod
-from collections.abc import Iterator, Collection, Iterable
+from collections.abc import Sequence
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 
-class AColorset(Collection, metaclass=ABCMeta):
-    """ Collection through self.colors. It means it is also an iterable.
+class AColorset(Sequence, metaclass=ABCMeta):
+    """ Sequence through self.colors. It means it behaves like a list.
     Wraps colormap from matplotlib in a convenient and easy way to manipulate.
     """
 
@@ -20,14 +20,21 @@ class AColorset(Collection, metaclass=ABCMeta):
         """
         self.colors = colors
 
+    # ITERABLE
     def __iter__(self):
         return iter(self.colors)
 
+    # SIZED
     def __contains__(self, item):
         return item in self.colors
 
+    # CONTAINER
     def __len__(self):
         return len(self.colors)
+
+    # SEQUENCE
+    def __getitem__(self, item):
+        return self.colors[item]
 
     @property
     @abstractmethod
