@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # my libraries:
-from acolor.acolorset import AColorset
+from priv_lib_plot.src.acolor.acolorset import AColorset
 
 
 class AColorsetContinuous(AColorset):

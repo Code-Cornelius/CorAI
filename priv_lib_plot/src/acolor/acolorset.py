@@ -10,6 +10,16 @@ import numpy as np
 class AColorset(Sequence, metaclass=ABCMeta):
     """ Sequence through self.colors. It means it behaves like a list.
     Wraps colormap from matplotlib in a convenient and easy way to manipulate.
+    One can use AColorset in two ways, either as an iterable, or as a container. In some way, like a list:
+
+    Examples:
+
+            color_plot_blue = AColorsetContinuous('Blues', nb_trials, interval_colors)
+            for c in color_plot_blue:
+                #plot...
+            for i in range(integer):
+                # plot with...
+                color_plot_blue[i]
     """
 
     def __init__(self, colors):

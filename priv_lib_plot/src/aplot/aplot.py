@@ -3,7 +3,6 @@ import math  # quick math functions
 import warnings
 
 import numpy as np  # maths library and arrays
-from aplot.displayableplot import Displayable_plot
 from matplotlib import pyplot as plt  # plotting
 import seaborn as sns  # environment for plots
 
@@ -11,7 +10,9 @@ import seaborn as sns  # environment for plots
 from priv_lib_metaclass import Register, deco_register
 from priv_lib_util.tools import function_dict, function_iterable
 from priv_lib_plot.src.aplot.dict_ax_for_aplot import dict_ax_for_APlot
-from priv_lib_plot import AColorsetContinuous
+from priv_lib_plot.src.acolor.acolorsetcontinuous import \
+    AColorsetContinuous  # forced to write whole path as aplot would also be imported.
+from priv_lib_plot.src.aplot.displayableplot import Displayable_plot
 
 # errors:
 from priv_lib_error import Error_not_allowed_input
