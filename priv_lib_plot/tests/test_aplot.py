@@ -23,7 +23,7 @@ from priv_lib_metaclass import Register, deco_register, dict_register_classes
     ! Only use false locally    
 """
 
-AUTO = False
+AUTO = True
 DELETE_TEST_PLOT = True
 PATH = os.path.join(ROOT_DIR, 'priv_lib_plot', 'tests', 'image_reference_test_plot')
 
