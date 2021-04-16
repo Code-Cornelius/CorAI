@@ -1,4 +1,5 @@
-#todo add a ylabel bis !
+# todo add a ylabel bis !
+# write down that, if label on bis axis, need to pass the label to the other dict. Be careful bc two axison same figure and so can be crowded.
 class dict_ax_for_APlot(object):
     """
     dict_ax_for_APlot is an object that stores the properties of each axs of a APlot.
@@ -12,8 +13,8 @@ class dict_ax_for_APlot(object):
         yscale: scale of the y-axis. string.
         basex: base for log scale on x-axis. float.
         basey: base for log scale on y-axis. float.
-        parameters: values of the parameters we want to print under the figure. list of floats. Should not be longer than 16.
-        name_parameters: name of the parameters shown next to the value. list of strings. Should not be longer than 16.
+        parameters: values of the parameters we want to print under the figure. list of floats. Should not be longer than 20.
+        name_parameters: name of the parameters shown next to the value. list of strings. Should not be longer than 20.
         xlim: range of the x-axis. 2 elements list or tuple of floats.
         ylim: range of the y-axis. 2 elements list or tuple of floats.
 

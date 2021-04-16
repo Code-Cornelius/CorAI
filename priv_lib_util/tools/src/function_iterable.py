@@ -207,12 +207,12 @@ def is_a_container(a_thing):
     """
     Semantics:
         Checks if an object is a list, tuple, np.array... part of (collections.Sequence, np.ndarray))
-
+        At the essence, we need to see if iterable and supports indexing.
     Returns:
         Boolean
 
     """
-    return isinstance(a_thing, (collections.Sequence, np.ndarray))
+    return isinstance(a_thing, (collections.abc.Sequence, np.ndarray))
 
 
 def replace_nans_numpy(np_array):

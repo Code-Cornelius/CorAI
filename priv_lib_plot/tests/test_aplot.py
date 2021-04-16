@@ -23,8 +23,10 @@ from priv_lib_metaclass import Register, deco_register, dict_register_classes
     ! Only use false locally    
 """
 
-AUTO = True
+AUTO = False
+DELETE_TEST_PLOT = True
 PATH = os.path.join(ROOT_DIR, 'priv_lib_plot', 'tests', 'image_reference_test_plot')
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def image_comparison(path1, path2):
@@ -46,15 +48,16 @@ class Test_APlot(TestCase):
         return
 
     def tearDown(self):
-        for file in os.listdir(PATH):
-            if file.startswith("test") and file.endswith(".png"):
-                file_path = os.path.join(PATH, file)
-                os.remove(file_path)
+        if DELETE_TEST_PLOT:
+            for file in os.listdir(PATH):
+                if file.startswith("test") and file.endswith(".png"):
+                    file_path = os.path.join(PATH, file)
+                    os.remove(file_path)
 
     def check_plot(self):
         image_path = os.path.join(PATH, f"{self.image_name}.png")
         if AUTO:
-            test_path = os.path.join(PATH, "test_{self.image_name}.png")
+            test_path = os.path.join(PATH, f"test_{self.image_name}.png")
             plt.savefig(test_path, dpi=50)
             assert (image_comparison(test_path, image_path))
         else:
@@ -115,11 +118,10 @@ class Test_APlot(TestCase):
 
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1)
-
-            self.image_name = "image_set_dict_ax_xscale"
+            self.image_name = "image_set_dict_ax_xscale_only_principal_axis"
             self.check_plot()
 
-        with self.subTest('yscale'):
+        with self.subTest('yscale left'):
             aplot = APlot()
 
             dict_plot = {'yscale': 'log'}
@@ -199,7 +201,7 @@ class Test_APlot(TestCase):
     def test_set_dict_ax_and_bis_each_parameter_both_two_axis_same_graph(self):
         yy = np.abs(np.cos(self.xx)) + 1
         # second, try the same as before where the second axis is also setting another characteristic.
-        with self.subTest('title2'):
+        with self.subTest('two different titles'):
             aplot = APlot()
             dict_plot1 = {'title': 'my title1'}
             dict_plot2 = {'title': 'my title2'}
@@ -210,7 +212,7 @@ class Test_APlot(TestCase):
             self.image_name = "image_set_dict_ax_title_2"
             self.check_plot()
 
-        with self.subTest('xlabel2'):
+        with self.subTest('two xlabels'):
             aplot = APlot()
 
             dict_plot1 = {'xlabel': 'my x label1'}
@@ -222,7 +224,7 @@ class Test_APlot(TestCase):
             self.image_name = "image_set_dict_ax_xlabel_2"
             self.check_plot()
 
-        with self.subTest('ylabel2'):
+        with self.subTest('two ylabels'):
             aplot = APlot()
 
             dict_plot1 = {'ylabel': 'my y label1'}
@@ -234,7 +236,7 @@ class Test_APlot(TestCase):
             self.image_name = "image_set_dict_ax_ylabel_2"
             self.check_plot()
 
-        with self.subTest('xscale same'):
+        with self.subTest('xscale same both axis'):
             aplot = APlot()
 
             dict_plot = {'xscale': 'log'}
@@ -242,10 +244,10 @@ class Test_APlot(TestCase):
             aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
             aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot)
 
-            self.image_name = "image_set_dict_ax_xscale_2"
+            self.image_name = "image_set_dict_ax_xscale_both_same_scale"
             self.check_plot()
 
-        with self.subTest('yscale same'):
+        with self.subTest('yscale same both axis'):
             aplot = APlot()
 
             dict_plot = {'yscale': 'log'}
@@ -256,16 +258,17 @@ class Test_APlot(TestCase):
             self.image_name = "image_set_dict_ax_yscale_2_same"
             self.check_plot()
 
-        # with self.subTest('xscale different'):
-        #     aplot = APlot()
-        #
-        #     dict_plot = {'xscale': 'log'}
-        #     dict_plot2 = {'xscale': 'linear'}
-        #
-        #     aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
-        #     aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
-        #
-        #     plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xscale_2_different.png")
+        with self.subTest('xscale different'):
+            aplot = APlot()
+
+            dict_plot2 = {'xscale': 'log'}
+            dict_plot = {'xscale': 'linear'}
+
+            aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot)
+            aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
+
+            self.image_name = "image_set_dict_ax_xscale_2_different_scales"
+            self.check_plot()
 
         with self.subTest('yscale different'):
             aplot = APlot()
@@ -321,17 +324,17 @@ class Test_APlot(TestCase):
         #
         #     plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xyint_different_2.png")
 
+        with self.subTest('xlim'):
+            aplot = APlot()
 
-        # with self.subTest('xlim'):
-        #     aplot = APlot()
-        #
-        #     dict_plot1 = {'xlim': [0, 0.5]}
-        #     dict_plot2 = {'xlim': [0, 1.5]}
-        #
-        #     aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot1)
-        #     aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
-        #
-        #     plt.savefig("image_reference_test_plot/test_image_set_dict_ax_xlim_2.png")
+            dict_plot1 = {'xlim': [0, 0.5]}
+            dict_plot2 = {'xlim': [0, 1.5]}
+
+            aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot1)
+            aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
+
+            self.image_name = "image_set_dict_ax_xlim_2"
+            self.check_plot()
 
         with self.subTest('ylim'):
             aplot = APlot()
@@ -399,7 +402,6 @@ class Test_APlot(TestCase):
         self.image_name = "image_uniplot_2_sharex_not_same_interval_for_x"
         self.check_plot()
 
-    @unittest.skip
     def test_uni_plot_for_plots_same_graph_sharey(self):
         # uni plot *4
         aplot_3 = APlot(how=(2, 2), sharey=True)
@@ -409,12 +411,9 @@ class Test_APlot(TestCase):
         aplot_3.uni_plot(3, self.xx, self.yy)
         aplot_3.tight_layout()
 
-        # plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharey.png")
+        self.image_name = "image_uniplot_2_sharey"
+        self.check_plot()
 
-        # assert (image_comparison("image_reference_test_plot/test_image_uniplot_2_sharey.png",
-        #                          "image_reference_test_plot/image_uniplot_2_sharey.png"))
-
-    @unittest.skip
     def test_uni_plot_for_plots_same_graph_sharey_not_same_interval_for_y(self):
         xx = np.linspace(-1, 1, 1000)
         aplot_3 = APlot(how=(2, 2), sharey=True)
@@ -424,10 +423,9 @@ class Test_APlot(TestCase):
         aplot_3.uni_plot(3, xx, np.exp(xx))
         aplot_3.tight_layout()
 
-        # plt.savefig("image_reference_test_plot/test_image_uniplot_2_sharey_not_same_interval_for_y.png")
+        self.image_name = "image_uniplot_2_sharey_not_same_interval_for_y"
+        self.check_plot()
 
-        # assert (image_comparison("image_reference_test_plot/test_image_uniplot_2_sharey_not_same_interval_for_y.png",
-        #                          "image_reference_test_plot/image_uniplot_2_sharey_not_same_interval_for_y.png"))
 
     def test_bi_plot(self):
         aplot_4 = APlot(how=(2, 2))
@@ -448,11 +446,10 @@ class Test_APlot(TestCase):
         self.image_name = "image_plot_bis"
         self.check_plot()
 
-    @unittest.skip
     def test_cumulative_plot(self):
         aplot = APlot()
-        values, base, _ = plt.hist(self.xx, self.yy)
-        aplot.cumulative_plot(self.xx, values)
+        values, base, _ = plt.hist(self.yy, bins=len(self.yy))
+        aplot.cumulative_plot(base, values, nb_ax=0)
 
         self.image_name = "image_cumulative_plot"
         self.check_plot()
@@ -461,13 +458,12 @@ class Test_APlot(TestCase):
     def test_hist(self):
         aplot = APlot()
         aplot.hist(self.yy)
-        plt.savefig("image_reference_test_plot/test_plot_hist.png")
-        assert image_comparison("image_reference_test_plot/test_plot_hist.png",
-                                "image_reference_test_plot/plot_hist.png")
+        self.image_name = "plot_hist"
+        self.check_plot()
 
     def test_plot_function(self):
         def f(x):
-            return 3 * x
+            return 3 * x + 2 * x * x
 
         aplot = APlot()
         aplot.plot_function(f, self.xx)
@@ -493,7 +489,7 @@ class Test_APlot(TestCase):
 
     def test_plot_point(self):
         aplot = APlot()
-        aplot.plot_point(x=1, y=1)
+        aplot.plot_point(x=1, y=1, dict_plot_param={'markersize': 5})
 
         self.image_name = "image_point"
         self.check_plot()

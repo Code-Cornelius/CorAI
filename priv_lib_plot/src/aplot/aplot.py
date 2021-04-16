@@ -23,9 +23,18 @@ sns.set()  # better layout, like blue background
 """
 Examples:
 # One plot with settings
-    apl = APlot(how=(1, 1))
+    apl = APlot()
     apl.uni_plot(nb_ax=0, xx=xx, yy=yy,
                  dict_plot_param={'label': 'legend', 'color': 'cyan', 'linestyle': '--', 'linewidth': 2})
+    apl.show_legend()
+    APlot.show_plot()
+    
+# Multiple plots with settings
+    apl = APlot( how = (2,1) )
+    apl.uni_plot(nb_ax=0, xx=xx, yy=yy,
+                 dict_plot_param={'label': 'legend', 'color': 'cyan', 'linestyle': '--', 'linewidth': 2})
+    apl.uni_plot(nb_ax=1, xx=xx, yy=yy+1,
+    dict_plot_param={'label': 'legend', 'color': 'cyan', 'linestyle': '--', 'linewidth': 2})
     apl.show_legend()
     APlot.show_plot()
     
@@ -321,6 +330,15 @@ class APlot(Displayable_plot, metaclass=Register):
             void.
         """
         if dict_ax is None:  # case where no need to update the dicts.
+            if bis_y_axis:  # just making sure the xscale is right for bis axis.
+                axis = self._axs_bis[nb_ax]
+                dict_parameters_for_the_ax = self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[
+                    nb_ax]
+                if dict_parameters_for_the_ax['xscale'] == 'log':
+                    axis.set_xscale(dict_parameters_for_the_ax['xscale'],
+                                    base=dict_parameters_for_the_ax['basex'])
+                else:
+                    axis.set_xscale(dict_parameters_for_the_ax['xscale'])
             return
 
         nb_ax = self.__check_axs(nb_ax)
@@ -388,8 +406,8 @@ class APlot(Displayable_plot, metaclass=Register):
                 if i == nb_parameters - 1:
                     sous_text += "."
                 # certain chosen number of parameters by line, globally, 3 by line.
-                # There shouldn't be more than 24 parameters
-                elif i in [3, 7, 11, 15, 19]:
+                # There shouldn't be more than 20 parameters
+                elif i in [3, 7, 11, 15]:
                     sous_text += ", \n "
                 # otherwise, just keep writing on the same line.
                 else:
@@ -397,21 +415,31 @@ class APlot(Displayable_plot, metaclass=Register):
 
             bottom, top = axis.get_ylim()
             left, right = axis.get_xlim()
-            interpolation_factor = math.ceil(min(MAX_NUMBER_PARAMETER, nb_parameters) / 4) * 4 / MAX_NUMBER_PARAMETER
-            STARTING_VALUE_PUTTING_TEXT_LOWER = 0.20
-            STARTING_VALUE_SUBPLOT_ADJUST = 0.20
 
-            axis.text(left + (right - left) * 0.15,
+            factor_how_many_params = min(MAX_NUMBER_PARAMETER, nb_parameters)
+            interpolation_factor = math.ceil(factor_how_many_params / 4) * 4 / MAX_NUMBER_PARAMETER
+            # : factor that is a step function that depending on number of lines goes up
+            STARTING_VALUE_PUTTING_TEXT_LOWER = 0.18  # initial lowering but goes up as more lines included
+            STARTING_VALUE_SUBPLOT_ADJUST = 0.18
+
+            SPEED_PUTTING_DOWN_WRT_NB_PARAM = 0.69  # : since graph higher, need to adjust lowering accordingly and dynamically
+            # : closer to one then goes up quicker.
+            COEF_PUT_TO_LEFT = 0.1
+            SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM = 1.2
+
+            axis.text(left + (right - left) * COEF_PUT_TO_LEFT,
                       bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * (
-                              (top - bottom) * 0.58 - STARTING_VALUE_PUTTING_TEXT_LOWER)),
+                              (top - bottom) * SPEED_PUTTING_DOWN_WRT_NB_PARAM - STARTING_VALUE_PUTTING_TEXT_LOWER)),
                       sous_text,
-                      fontsize=APlot.FONTSIZE - 1)
+                      fontsize=APlot.FONTSIZE - 2)
             plt.subplots_adjust(
-                bottom=STARTING_VALUE_SUBPLOT_ADJUST + interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST),
+                bottom=STARTING_VALUE_SUBPLOT_ADJUST +
+                       interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST) *
+                       SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM,
                 wspace=0.25, hspace=0.5)
             # bottom is how much low;
-            # the amount of width reserved for blank space between subplots
-            # the amount of height reserved for white space between subplots
+            # wspace : the amount of width reserved for blank space between subplots
+            # hspace : the amount of height reserved for white space between subplots
         return
 
     def show_legend(self, nb_ax=None, loc='best'):
@@ -505,7 +533,6 @@ class APlot(Displayable_plot, metaclass=Register):
 
         """
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
-
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, xx=xx, yy=yy, bis_y_axis=False)
         return
 
@@ -631,6 +658,7 @@ class APlot(Displayable_plot, metaclass=Register):
                 try:
                     total_cumul = dict_param_hist.pop('total_number_of_simulations')
                     values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
+                    # : values and base are the height and bounds of each bins.
                     self.cumulative_plot(base, data, nb_ax=nb_ax, total_cumul=total_cumul)
 
                 except KeyError:  # no total number of simulation
