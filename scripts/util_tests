@@ -3,9 +3,7 @@ python -m unittest priv_lib_util/calculus/tests/test_integration.py
 python -m unittest priv_lib_util/calculus/tests/test_optimization.py
 python -m unittest priv_lib_util/tools/tests/test_benchmarking.py
 python -m unittest priv_lib_util/tools/tests/test_decorator.py
-python -m unittest priv_lib_util/tools/tests/test_function_dict.py
 python -m unittest priv_lib_util/tools/tests/test_function_iterable.py
 python -m unittest priv_lib_util/tools/tests/test_function_recurrent.py
 python -m unittest priv_lib_util/tools/tests/test_function_str.py
 python -m unittest priv_lib_util/tools/tests/test_operator.py
-python -m unittest priv_lib_util/tools/tests/test_function_writer.py

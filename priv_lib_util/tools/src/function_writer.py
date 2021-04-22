@@ -53,3 +53,4 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json"):
     """
     with open(file_name, 'w') as file:
         json.dump(parameter_options, file)
+        file.close()
