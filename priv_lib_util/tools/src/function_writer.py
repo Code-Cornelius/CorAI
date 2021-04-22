@@ -1,3 +1,6 @@
+import json
+
+
 def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):
     """
         Writes the parameter options in a formatted file, the header of the file contains the parameter names,
@@ -36,3 +39,17 @@ def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.tx
             file.write(line)
 
         file.close()
+
+
+def list_of_dicts_to_json(parameter_options, file_name="config.json"):
+    """
+        Writes the parameter options to a json file
+    Args:
+        parameter_options: The list of dictionaries to be written to the file
+        file_name: The path to where the config file should be written
+
+    Returns:
+        None
+    """
+    with open(file_name, 'w') as file:
+        json.dump(parameter_options, file)
