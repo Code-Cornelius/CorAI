@@ -51,7 +51,7 @@ def parameter_product(parameter_options):
     return result
 
 
-def replace_function_names_to_functions(parameters_at_index, mapping):
+def replace_function_names_to_functions(parameters_at_index, mapping, silent=True):
     """
         Translates parameters from string to the corresponding function
 
@@ -59,17 +59,32 @@ def replace_function_names_to_functions(parameters_at_index, mapping):
         parameters_at_index: dictionary with potential parameters to be translated to the corresponding function
         mapping: dictionary with a string key corresponding to the name of the function and the corresponding function
             as a value
+        silent: debug
     Return
         None
     """
 
     for param, value in parameters_at_index.items():
-        # only string values will be replaced
+        # case string values
         if isinstance(value, str):
 
             # if the value has a mapping, change the value to the mapping
             if value in mapping:
                 parameters_at_index[param] = mapping[value]
+
+        # case list of string values
+        if isinstance(value, list):
+
+            if not silent:
+                print(f"In the list: {param} the following values were not mapped to a function:")
+
+            for i, func in enumerate(value):
+
+                # check if the value is in the mapping
+                if isinstance(func, str) and func in mapping:
+                    parameters_at_index[param][i] = mapping[func]
+                elif not silent:
+                    print(f"        -> {func}")
 
 
 def retrieve_parameters_by_index_from_json(index, file_path):

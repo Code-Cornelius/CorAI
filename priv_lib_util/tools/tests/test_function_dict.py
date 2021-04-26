@@ -33,7 +33,8 @@ function_test_dict = {
     'a_func': 'len',
     'a_number': 12,
     'a_list': [1, 2, 3],
-    'a_string': 'aaa'
+    'a_string': 'aaa',
+    'a_list_of_fun': ['len', 'sum','prod']
 }
 
 function_map = {
@@ -65,12 +66,23 @@ class Test_function_dict(TestCase):
         assert isinstance(function_test_dict['a_list'][0], int)
         assert isinstance(function_test_dict['a_string'], str)
 
-    def test_replace_function_names_to_functions_replaces_with_function(self):
+    def test_replace_function_names_to_functions_replaces_from_string(self):
         replace_function_names_to_functions(function_test_dict, function_map)
 
         len_func = function_test_dict['a_func']
 
         assert len_func(function_test_dict['a_list']) == 3
+
+    def test_replace_function_names_to_function_replaces_from_list_of_string(self):
+        replace_function_names_to_functions(function_test_dict, function_map, False)
+
+        len_fun = function_test_dict['a_list_of_fun'][0]
+        sum_fun = function_test_dict['a_list_of_fun'][1]
+        a_list = function_test_dict['a_list']
+
+
+        assert len_fun(a_list) == 3
+        assert sum_fun(a_list) == 6
 
 
     def test_retrieve_parameters_by_index_from_json_return_correct_dictionary(self):
