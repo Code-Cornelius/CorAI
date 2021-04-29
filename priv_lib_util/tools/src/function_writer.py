@@ -38,8 +38,6 @@ def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.tx
             line = line_pattern.format(*values)
             file.write(line)
 
-        file.close()
-
 
 def list_of_dicts_to_json(parameter_options, file_name="config.json"):
     """
@@ -53,4 +51,3 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json"):
     """
     with open(file_name, 'w') as file:
         json.dump(parameter_options, file)
-        file.close()

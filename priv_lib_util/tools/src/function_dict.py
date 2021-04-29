@@ -100,7 +100,6 @@ def retrieve_parameters_by_index_from_json(index, file_path):
     """
     with open(file_path, 'r') as file:
         parameters = json.load(file)
-        file.close()
 
     assert 0 <= index < len(parameters), "Parameter index is outside the bounds (number of settings)."
 
