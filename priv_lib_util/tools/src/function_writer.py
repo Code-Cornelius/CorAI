@@ -1,4 +1,5 @@
 import json
+import os
 
 
 def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):
@@ -41,7 +42,8 @@ def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.tx
 
 def list_of_dicts_to_json(parameter_options, file_name="config.json"):
     """
-        Writes the parameter options to a json file
+        Writes the parameter options to a json file.
+        Create a directory if the path yields a non-existent directory.
     Args:
         parameter_options: The list of dictionaries to be written to the file
         file_name: The path to where the config file should be written
@@ -49,5 +51,8 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json"):
     Returns:
         None
     """
+    directory_where_to_save = os.path.dirname(file_name)
+    if not os.path.exists(directory_where_to_save):
+        os.makedirs(directory_where_to_save)
     with open(file_name, 'w') as file:
         json.dump(parameter_options, file)
