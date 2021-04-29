@@ -33,7 +33,7 @@ def phi(x):
         returns an array with the gaussian density
 
     """
-    warning_deprecated.deprecated_function(reason="instead, in order to compute phi, chose in-built numpy fct.")
+    warning_deprecated.deprecated_function(reason="instead, in order to compute phi, chose in-built numpy fct. norm.pdf")
     return np.exp(-x * x / 2.) / np.sqrt(2 * np.pi)
 
 

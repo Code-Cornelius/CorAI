@@ -1,0 +1,29 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyDefaultArgumentInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPep8Inspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="W605" />
+          <option value="E741" />
+          <option value="E731" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="matplotlib.cm.rainbow" />
+          <option value="torch.utils.data" />
+          <option value="matplotlib.cm.Dark2" />
+          <option value="sklearn.metrics.accuracy_score" />
+          <option value="matplotlib.cm.inferno" />
+          <option value="matplotlib.cm.viridis" />
+          <option value="matplotlib.cm.coolwarm" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
