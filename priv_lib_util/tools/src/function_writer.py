@@ -1,6 +1,9 @@
 import json
 import os
 
+from priv_lib_util.tools.src.function_json import zip_json
+
+import time
 
 def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):
     """
@@ -40,17 +43,22 @@ def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.tx
             file.write(line)
 
 
-def list_of_dicts_to_json(parameter_options, file_name="config.json"):
+def list_of_dicts_to_json(parameter_options, file_name="config.json", compress=False):
     """
         Writes the parameter options to a json file.
         Create a directory if the path yields a non-existent directory.
     Args:
         parameter_options: The list of dictionaries to be written to the file
         file_name: The path to where the config file should be written
+        compress: Boolean to specify if compression should be applied before writing to the file
 
     Returns:
         None
     """
+
+    if compress:
+        parameter_options = zip_json(parameter_options)
+
     directory_where_to_save = os.path.dirname(file_name)
     if not os.path.exists(directory_where_to_save):
         os.makedirs(directory_where_to_save)
