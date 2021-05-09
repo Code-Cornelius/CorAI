@@ -125,8 +125,7 @@ class APlot(Displayable_plot, metaclass=Register):
                                'linewidth': 0.5,
                                'marker': "o",
                                'markersize': 0.4,
-                               'label': "plot"
-                               }
+                               'label': "plot"}
 
     DEFAULT_DICT_HIST_PARAM = {'bins': 20,
                                "color": 'green',
@@ -187,7 +186,7 @@ class APlot(Displayable_plot, metaclass=Register):
             self._axs_bis = [None] * self._nb_of_axs  # a list full of zeros.
 
             # we set the default param of the fig:
-            self.aplot_plot_dicts_for_each_axs = dict_ax_for_APlot(nb_of_axs=self._nb_of_axs)
+            self.saved_dict_ax_params = dict_ax_for_APlot(nb_of_axs=self._nb_of_axs)
             # : it is a list of dicts.
 
             # Each element gives the config for the corresponding axes
@@ -196,7 +195,7 @@ class APlot(Displayable_plot, metaclass=Register):
             # allows to change the parameters at any time and keep track of it!
             for i in range(self._nb_of_axs):
                 self.set_dict_ax(nb_ax=i,
-                                 dict_ax=self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[i],
+                                 dict_ax=self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[i],
                                  bis_y_axis=False)
 
     # section ######################################################################
@@ -312,44 +311,47 @@ class APlot(Displayable_plot, metaclass=Register):
             nb_ax: integer, which axs is changed.
 
             dict_ax: dictionary with the parameters for configuration.
-            dict_ax should have the parameters allowed in aplot_plot_dicts_for_each_axs.
+            dict_ax should have the parameters allowed in saved_dict_ax_params.
 
             xx: one can data, for example in the case of changing the ticks.
             yy: data, for example in the case of changing the ticks.
-            bis_y_axis: is the axis we are dealing with a bix axis.
+            bis_y_axis: flag set_dict_ax for bis or main ax.
 
         For two plots on same axis:
             - having two different x-range will lead to one of the two plot not being adapted to the x-axis (because there is only one x-scale).
-            - if two different scales are used, one curve will not have the good x-axis. for that reason, be sure to put twice the same scale, if changed.
-            - do not set xint = True.
-            - labels are overlapping.
+            - if two different x-scales are used, one curve will not have the good x-axis. for that reason, be sure to put twice the same scale, if changed.
+            - do not set xint = True, for same reason as above
+            - labels are overlapping, since the two axis are sharing the figure.
             - do not put twice parameters, as if they are on the same figure, the parameters should be the same.
-            Also, they are written on the graph independently so it would difficult to put them at the exact right place.
+            Also, they are written on the graph independently so it would difficult to put them at the exact right place. 
+            Prefer putting parameters on the main axis.
 
         Returns:
             void.
         """
+        nb_ax = self.__check_axs(nb_ax)
+
+        if bis_y_axis:  # making sure the xscale is right for bis axis.
+            axis = self._axs_bis[nb_ax]
+            dict_parameters_for_the_ax = self.saved_dict_ax_params.list_dicts_parameters_for_each_axs_bis[nb_ax]
+
+            dict_parameters_for_the_ax['xscale'] = \
+                self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax]['xscale']
+            dict_parameters_for_the_ax['basex'] = \
+                self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax]['basex']
+        else :
+            dict_parameters_for_the_ax = self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax]
+
         if dict_ax is None:  # case where no need to update the dicts.
-            if bis_y_axis:  # just making sure the xscale is right for bis axis.
-                axis = self._axs_bis[nb_ax]
-                dict_parameters_for_the_ax = self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[
-                    nb_ax]
-                if dict_parameters_for_the_ax['xscale'] == 'log':
-                    axis.set_xscale(dict_parameters_for_the_ax['xscale'],
-                                    base=dict_parameters_for_the_ax['basex'])
-                else:
-                    axis.set_xscale(dict_parameters_for_the_ax['xscale'])
             return
 
-        nb_ax = self.__check_axs(nb_ax)
         if bis_y_axis:
             axis = self._axs_bis[nb_ax]
         else:
             axis = self._axs[nb_ax]
 
-        dict_parameters_for_the_ax = self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[nb_ax]
         # update the default dict with the passed parameters.
-        # It changes self.aplot_plot_dicts_for_each_axs.list_dicts_parameters_for_each_axs[nb_ax].
+        # It changes self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax].
         dict_parameters_for_the_ax.update(dict_ax)
 
         axis.set_title(dict_parameters_for_the_ax['title'],
@@ -359,7 +361,7 @@ class APlot(Displayable_plot, metaclass=Register):
         axis.set_ylabel(dict_parameters_for_the_ax['ylabel'],
                         fontsize=APlot.FONTSIZE)
 
-        # we split the log case, for the possibility of setting up a base.
+        # we discriminate the log case, for the possibility of setting up a base.
         # Giving a base without giving the logscale does nothing.
         if dict_parameters_for_the_ax['xscale'] == 'log':
             axis.set_xscale(dict_parameters_for_the_ax['xscale'],

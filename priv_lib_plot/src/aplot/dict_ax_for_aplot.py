@@ -31,9 +31,18 @@ class dict_ax_for_APlot(object):
                     'parameters': None, 'name_parameters': None,
                     'xlim': None, 'ylim': None}
 
+    DEFAULT_DICT_BIS = {'title': '',
+                    'xlabel': '', 'ylabel': 'bis_axis',
+                    'xscale': 'linear', 'yscale': 'linear',
+                    'basex': 10, 'basey': 10,
+                    'xint': False, 'yint': False,
+                    'parameters': None, 'name_parameters': None,
+                    'xlim': None, 'ylim': None}
+
     def __init__(self, nb_of_axs):
         # creates a list of independent dicts with the default settings.
         self.list_dicts_parameters_for_each_axs = [dict_ax_for_APlot.DEFAULT_DICT.copy() for _ in range(nb_of_axs)]
+        self.list_dicts_parameters_for_each_axs_bis = [dict_ax_for_APlot.DEFAULT_DICT_BIS.copy() for _ in range(nb_of_axs)]
 
     #TODO it would be a good idea to design the setter with certain conditions:
     # if another parameter than authorised is given, warning!
