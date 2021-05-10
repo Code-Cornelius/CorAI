@@ -9,10 +9,10 @@ import seaborn as sns  # environment for plots
 # my libraries
 from priv_lib_metaclass import Register, deco_register
 from priv_lib_util.tools import function_dict, function_iterable
-from priv_lib_plot.src.aplot.dict_ax_for_aplot import dict_ax_for_APlot
+from priv_lib_plot.src.aplot.dict_ax_for_aplot import Dict_ax_for_APlot
 from priv_lib_plot.src.acolor.acolorsetcontinuous import \
     AColorsetContinuous  # forced to write whole path as aplot would also be imported.
-from priv_lib_plot.src.aplot.displayableplot import Displayable_plot
+from priv_lib_plot.src.aplot.displayable_plot import Displayable_plot
 
 # errors:
 from priv_lib_error import Error_not_allowed_input
@@ -54,7 +54,7 @@ Examples:
                                            }
             
         setting for figure:
-            given by the class dict_ax_for_APlot
+            given by the class Dict_ax_for_APlot
             
 """
 
@@ -62,7 +62,8 @@ Examples:
 # THINGS TODO:
 #         change the nb_ax by index_ax.
 #         homogeneous input, not nb_ax then xx then xx then nb_ax. It should always be the same order.
-#          change return to give an ax.
+#         change return to give an ax. such that one can continue drawing on an axis!
+#         what is happening with bis axis is a bit obscure. Let s clarify it.
 
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
@@ -109,7 +110,7 @@ class APlot(Displayable_plot, metaclass=Register):
 
     DEPENDENCIES:
         SEABORN is imported and set with this class.
-        dict_ax_for_APlot which stores the parameters for each axs.
+        Dict_ax_for_APlot which stores the parameters for each axs.
 
 
     References:
@@ -186,7 +187,7 @@ class APlot(Displayable_plot, metaclass=Register):
             self._axs_bis = [None] * self._nb_of_axs  # a list full of zeros.
 
             # we set the default param of the fig:
-            self.saved_dict_ax_params = dict_ax_for_APlot(nb_of_axs=self._nb_of_axs)
+            self.saved_dict_ax_params = Dict_ax_for_APlot(nb_of_axs=self._nb_of_axs)
             # : it is a list of dicts.
 
             # Each element gives the config for the corresponding axes
@@ -300,11 +301,13 @@ class APlot(Displayable_plot, metaclass=Register):
         Preconditions:
             ~~~~~~~~~~~~~~~~~~
             the parameters that can be chosen are the one
-            written in the class dict_ax_for_APlot.
+            written in the class Dict_ax_for_APlot.
+
+            Nothing will happen if one gives parameters that are not included in this list.
             ~~~~~~~~~~~~~~~~~~
 
         DEPENDENCIES:
-            The class dict_ax_for_APlot is
+            The class Dict_ax_for_APlot is
             the one that creates the list of dicts used by APlot.
 
         Args:
@@ -339,7 +342,7 @@ class APlot(Displayable_plot, metaclass=Register):
                 self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax]['xscale']
             dict_parameters_for_the_ax['basex'] = \
                 self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax]['basex']
-        else :
+        else:
             dict_parameters_for_the_ax = self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax]
 
         if dict_ax is None:  # case where no need to update the dicts.
@@ -467,51 +470,6 @@ class APlot(Displayable_plot, metaclass=Register):
             self._axs[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
             if self._axs_bis[nb_ax] is not None:
                 self._axs_bis[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
-        return
-
-    def tight_layout(self):
-        self._fig.tight_layout()
-        return
-
-    # section ######################################################################
-    #  #############################################################################
-    # presentation
-
-    @staticmethod
-    def show_and_continue(interval=0.0001):
-        plt.pause(interval)
-
-    @staticmethod
-    def show_plot():
-        """
-        Semantics:
-            adapter for the show pyplot function.
-
-        Returns:
-            void.
-
-        """
-        plt.show()
-        return
-
-    @staticmethod
-    def save_plot(name_save_file='plots/image'):
-        """
-        Semantics:
-            saves the plot drawn.
-            Create a directory if the path yields a non-existent directory.
-
-
-        Args:
-            name_save_file: path and name of the image.
-
-        Returns:
-            nothing.
-        """
-        directory_where_to_save = os.path.dirname(name_save_file)
-        if not os.path.exists(directory_where_to_save):
-            os.makedirs(directory_where_to_save)
-        plt.savefig(name_save_file + '.png', dpi=800)
         return
 
     # section ######################################################################
@@ -771,55 +729,122 @@ class APlot(Displayable_plot, metaclass=Register):
         """
         return self.plot_line(a=0, b=y, xx=[x], nb_ax=nb_ax, dict_plot_param=dict_plot_param)
 
+    @staticmethod
+    def dict_3D(dict_plot_param, dict_ax):
+        """
+        Semantics:
+
+        Dependencies:
+            Dict_ax_for_APlot
+
+        Args:
+            dict_plot_param:
+            dict_ax:
+
+        Returns:
+
+        """
+        dict_ax_copy = dict_ax
+        dict_plot_param_copy = dict_plot_param
+
+        # TODO perhaps something less explosive
+        if dict_ax is None:
+            zlabel = Dict_ax_for_APlot.DEFAULT_STR
+        else:
+            try:
+                # copy to not pop out elements of the dicts.
+                dict_ax_copy = dict_ax.copy()
+                zlabel = dict_ax_copy.pop('zlabel')
+            except:
+                zlabel = Dict_ax_for_APlot.DEFAULT_STR
+
+        if dict_plot_param is None:
+            CM = plt.get_cmap('inferno')
+        else:
+            try:
+                # copy to not pop out elements of the dicts.
+                dict_plot_param_copy = dict_plot_param.copy()
+                CM = plt.get_cmap(dict_plot_param_copy.pop('cmap'))
+            except:
+                CM = plt.get_cmap('inferno')
+
+        return dict_plot_param_copy, dict_ax_copy, zlabel, CM
+
     def plot_surf(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None):
         """
         Semantics:
             Surf function, that creates a surface in 3D plot.
             In order to do so, deletes the axis in nb_ax and replace it with a 3D view.
 
-        dict_plot_param:     { "cmap" : "colormap", "xlabel":"xlabel", "ylabel":"ylabel", "zlabel":"zlabel", "title":"title" }
+        Args:  dict_plot_param only CMAP needed. If not given, inferno is used (from dict_3D).
         Examples of dict_plot_param given by calling the function help_dict_plot().
         """
-        zlabel = dict_ax.pop('zlabel')
         nb_ax = self.__check_axs(nb_ax)
+
+        dict_plot_param, dict_ax, zlabel, CM = self.dict_3D(dict_plot_param, dict_ax)
+
         self._axs[nb_ax].remove()  # deletes the existing axis
-        self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1, projection="3d")
+        self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1,
+                                                 projection="3d")  # add the subplot at the right position
 
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
-        surf = self._axs[nb_ax].plot_surface(mesh_xx, mesh_yy, zz, cmap=dict_plot_param['cmap'], linewidth=0)
 
+        # plots:
+        surf = self._axs[nb_ax].plot_surface(mesh_xx, mesh_yy, zz, cmap=CM, linewidth=0)
         self._axs[nb_ax].set_zlabel(zlabel)
         self._fig.colorbar(surf, aspect=40)
-        self.tight_layout()
 
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
-        dict_ax['zlabel'] = zlabel
         return
 
-    def plot_contour(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None):
+    def plot_contour(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None, nb_of_level=10, show_colorbar=True):
+        """ dict_plot_param with CMAP. If not given, inferno is used (from dict_3D)."""
         nb_ax = self.__check_axs(nb_ax)
+
+        dict_plot_param, dict_ax, zlabel, CM = self.dict_3D(dict_plot_param, dict_ax)
+
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
-        contour = self._axs[nb_ax].contour(mesh_xx, mesh_yy, zz, levels=40, cmap=dict_plot_param['cmap'])
-        self._fig.colorbar(contour, aspect=40)
-        self.tight_layout()
+        contour = self._axs[nb_ax].contour(mesh_xx, mesh_yy, zz, levels=nb_of_level, cmap=CM)
+        if show_colorbar:
+            self._fig.colorbar(contour, aspect=40)
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
         return
 
-    def plot_surf_with_slices(self, xvalues, yvalues, zvalues, dict_plot_param, dict_ax, where_to_save, dict_ax_slices):
-        surface = APlot(how=(1, 2))
-        surface.plot_surf(nb_ax=0, xx=yvalues, yy=xvalues, zz=zvalues,
-                          dict_plot_param=dict_plot_param, dict_ax=dict_ax)
+    @classmethod
+    def plot_three_representation_surf(cls, xx, yy, zz, dict_plot_param=None, dict_ax=None, nb_of_level=10,
+                                       step_subset_slices=1):
+        surface_triple = APlot(how=(1, 3), figsize=(12, 5))
+        surface_triple.plot_surf(xx, yy, zz, nb_ax=0, dict_plot_param=dict_plot_param, dict_ax=dict_ax)
+        surface_triple.plot_contour(xx, yy, zz, nb_ax=2, dict_plot_param=dict_plot_param, dict_ax=dict_ax,
+                                    nb_of_level=nb_of_level, show_colorbar=False)
 
-        Blues = AColorsetContinuous('Blues', len(xvalues), (0.4, 1))
-        for i in range(len(xvalues)):
-            dict_plot_param_sliced = {'label': "time: {:0.2}".format(xvalues[i]),
+        dict_ax_slices = {}
+        try:
+            dict_ax_slices['xlabel'] = dict_ax['ylabel']
+        except KeyError:
+            dict_ax_slices['xlabel'] = Dict_ax_for_APlot.DEFAULT_STR
+        try:
+            dict_ax_slices['ylabel'] = dict_ax['zlabel']
+        except KeyError:
+            dict_ax_slices['ylabel'] = Dict_ax_for_APlot.DEFAULT_STR
+        try:
+            dict_ax_slices['title'] = dict_ax['title']
+        except KeyError:
+            dict_ax_slices['title'] = Dict_ax_for_APlot.DEFAULT_STR
+        try:
+            name_x = dict_ax['xlabel']
+        except KeyError:
+            name_x = Dict_ax_for_APlot.DEFAULT_STR
+
+        Blues = AColorsetContinuous('Blues', len(xx), (0.4, 1))
+        for i in range(0, len(xx), step_subset_slices):
+            dict_plot_param_sliced = {'label': f"{name_x}: {xx[i]:0.2}",
                                       'color': Blues[i]}
-            surface.uni_plot(nb_ax=1, xx=yvalues, yy=zvalues[i, :],
-                             dict_plot_param=dict_plot_param_sliced,
-                             dict_ax=dict_ax_slices)
-
-        surface.show_legend(nb_ax=1)
-        self.save_plot(where_to_save)
+            surface_triple.uni_plot(nb_ax=1, xx=yy, yy=zz[i, :],
+                                    dict_plot_param=dict_plot_param_sliced,
+                                    dict_ax=dict_ax_slices)
+        surface_triple.show_legend(nb_ax=1)
+        surface_triple.tight_layout()
 
     # section ######################################################################
     #  #############################################################################
@@ -849,9 +874,9 @@ class APlot(Displayable_plot, metaclass=Register):
             print possibilities for dict_ax and the default behavior.
 
         Dependencies:
-            uses dict_ax_for_APlot.help_dict_ax()
+            uses Dict_ax_for_APlot.help_dict_ax()
         """
-        dict_ax_for_APlot.help_dict_ax()
+        Dict_ax_for_APlot.help_dict_ax()
         return
 
     # section ######################################################################

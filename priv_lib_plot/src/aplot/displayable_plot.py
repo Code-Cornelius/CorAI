@@ -29,16 +29,25 @@ class Displayable_plot(object, metaclass=Register):
         return
 
     @staticmethod
-    def save_plot(name_save_file='image'):
+    def save_plot(name_save_file='plots/image'):
         """
         Semantics:
             saves the plot drawn.
+            Create a directory if the path yields a non-existent directory.
+
 
         Args:
-            name_save_file: name of the file. Can be used to chose the path.
+            name_save_file: path and name of the image.
 
         Returns:
             nothing.
         """
+        directory_where_to_save = os.path.dirname(name_save_file)
+        if not os.path.exists(directory_where_to_save):
+            os.makedirs(directory_where_to_save)
         plt.savefig(name_save_file + '.png', dpi=800)
+        return
+
+    def tight_layout(self):
+        self._fig.tight_layout()
         return
