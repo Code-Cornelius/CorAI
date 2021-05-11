@@ -795,7 +795,7 @@ class APlot(Displayable_plot, metaclass=Register):
         self._fig.colorbar(surf, aspect=40)
 
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
-        return
+        return self._axs[nb_ax]
 
     def plot_contour(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None, nb_of_level=10, show_colorbar=True):
         """ dict_plot_param with CMAP. If not given, inferno is used (from dict_3D)."""
@@ -808,7 +808,7 @@ class APlot(Displayable_plot, metaclass=Register):
         if show_colorbar:
             self._fig.colorbar(contour, aspect=40)
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
-        return
+        return self._axs[nb_ax]
 
     @classmethod
     def plot_three_representation_surf(cls, xx, yy, zz, dict_plot_param=None, dict_ax=None, nb_of_level=10,
@@ -845,6 +845,7 @@ class APlot(Displayable_plot, metaclass=Register):
                                     dict_ax=dict_ax_slices)
         surface_triple.show_legend(nb_ax=1)
         surface_triple.tight_layout()
+        return self._axs[nb_ax]
 
     # section ######################################################################
     #  #############################################################################
@@ -886,3 +887,26 @@ class APlot(Displayable_plot, metaclass=Register):
     def get_y_lim(self, nb_ax):
         nb_ax = self.__check_axs(nb_ax)
         return self._axs[nb_ax].get_ylim()
+
+# test:
+#
+# nb_points = 100
+# xx, step_x = np.linspace(0, 1, nb_points, retstep=True)
+# yy, step_y = np.linspace(5, 10, nb_points, retstep=True)
+#
+# m_x, m_y = np.meshgrid(xx, yy)
+#
+# zz = np.sin(m_x + m_y)
+#
+# dict_plot = {"cmap": "viridis"}
+# dict_ax = {"xlabel": "xlabel", "ylabel": "ylabel", "zlabel": "zlabel", "title": "title"}
+#
+# ap_surf = APlot()
+# ap_surf.plot_surf(xx, yy, zz, 0, dict_plot, dict_ax)
+#
+# ap_contour = APlot()
+# ap_contour.plot_contour(xx, yy, zz, 0, dict_plot)
+#
+# APlot.plot_three_representation_surf(xx, yy, zz, dict_plot, dict_ax, 20, nb_points // 5)
+#
+# APlot.show_plot()
