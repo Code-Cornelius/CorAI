@@ -349,8 +349,19 @@ class Test_APlot(TestCase):
             self.check_plot()
 
 
-    def test_show_legend(self):
-        pass
+    def test_show_legend_for_two_axis(self):
+        yy = np.abs(np.cos(self.xx)) + 1
+        # second, try the same as before where the second axis is also setting another characteristic.
+
+        aplot = APlot()
+        dict_plot1 = {'title': 'my title1'}
+        dict_plot2 = {'title': 'my title2'}
+
+        aplot.uni_plot(0, self.xx, yy, dict_ax=dict_plot1)
+        aplot.uni_plot_ax_bis(0, self.xx, 3 * np.sin(self.xx) + 1, dict_ax=dict_plot2)
+        aplot.show_legend()
+        self.image_name = "image_legend_two_axis"
+        self.check_plot()
 
     def test_tight_layout(self):
         pass

@@ -462,15 +462,41 @@ class APlot(Displayable_plot, metaclass=Register):
         """
         if nb_ax is None:
             for nb_ax_0 in range(self._nb_of_axs):
-                self._axs[nb_ax_0].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
-                if self._axs_bis[nb_ax_0] is not None:
-                    self._axs_bis[nb_ax_0].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
+                self._show_legend_for(nb_ax_0, loc)
         else:
             # todo check axis !
-            self._axs[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
-            if self._axs_bis[nb_ax] is not None:
-                self._axs_bis[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
+            self._show_legend_for(nb_ax, loc)
+
         return
+
+    def _show_legend_for(self, ax_index, loc):
+        """
+        Show legend for one axis
+        Args:
+            ax_index: the index of the axis
+            loc:
+
+        Returns:
+            Void.
+        """
+        if self._axs_bis[ax_index] is not None:
+            lines, labels = self._get_lines_and_labels_for(ax_index)
+            self._axs_bis[ax_index].legend(lines, labels, loc=loc, fontsize=APlot.FONTSIZE - 3)
+        else:
+            self._axs[ax_index].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
+
+    def _get_lines_and_labels_for(self, ax_index):
+        """
+        Args:
+            ax_index: the index of the ax
+        Returns:
+            The lines and corresponding labels for the two axs
+        """
+        lines = self._axs[ax_index].get_lines() + self._axs_bis[ax_index].get_lines()
+        labels = [line.get_label() for line in lines]
+
+        return  lines, labels
+
 
     # section ######################################################################
     #  #############################################################################
