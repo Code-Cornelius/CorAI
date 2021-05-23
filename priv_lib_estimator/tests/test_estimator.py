@@ -12,9 +12,7 @@ class Test_Estimator(TestCase):
                          [900, 1, 1],
                          [10000, 49, 10],
                          [2500, 1, 1]])
-        self.estimator = Estimator(
-            pd.DataFrame(data=data, columns=['Size', 'People', 'number_rooms'])
-        )
+        self.estimator = Estimator(pd.DataFrame(data=data, columns=['Size', 'People', 'number_rooms']))
 
     def test_from_path(self):
         pass

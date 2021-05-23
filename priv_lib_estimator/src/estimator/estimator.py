@@ -2,27 +2,55 @@ import pandas as pd
 from priv_lib_error import Error_type_setter
 
 
-# work-in-progress another idea would be to inherit from dataframes the estimator.
+# TODO:
+#  write the template the idea of how to use them
+#  and a basic template fill.
+#  .
+#  making sure that it works.
+#  derive the subclasses :
+#         TIMING column of time, and other parameters
+#         HISTORY column no fixed columns but fields like validation , metrics, best epoch, paramereters for training
+#         COMPARATOR FOR TRAINING columns depend on the problem but mostly the loss.
+#
+# TODO: look at the plotting in a second time.
+
 
 class Estimator(object):
     """
     Semantics:
-        Class Estimator as an adaptor from the dataframes from pandas.
+        Class Estimator is an adaptor from the dataframes from pandas.
         We use Pandas since it is fairly rampant and easy to use.
         We store the data in the following way: each column is one feature, each row one estimation.
+
+        The objective of it is to automatise some behavior one could have regarding some containers.
+        For example, always plotting the same objects in the same way, or the same estimates.
+        Addit. to dataframes, estimator also allows to store additional information.
+        Currently, pandas does not offer such functionality.
+
+        For this reason, Estimator is a common ground for all derived class from Estimator.
 
         It is good practice to put the names of the columns / features in the class object, as a security.
     """
 
-    NAMES_COLUMNS = {};
+    NAMES_COLUMNS = {}
 
-    def __init__(self, DF, *args, **kwargs):
-        # args and kwargs for the super() method.
-        self.DF = DF
+    def __init__(self, df, *args, **kwargs):
+        # args and kwargs for the child super() method.
+        if df is not None:
+            # test that the columns of the DF are the right one, corresponding to the class argument.
+            if self.NAMES_COLUMNS.issubset(df.columns):
+                super().__init__(df)
+            else:
+                raise Error_not_allowed_input("Problem, the columns of the dataframe do not match the predefined ones.")
+        # if no df, we create an empty one.
+        else:
+            self.DF = pd.DataFrame(columns=list(self.NAMES_COLUMNS))
+            super().__init__()
 
     def __repr__(self):
-        # this is for the print function. We want the estimator to inherit the properties from DF!
-        return repr(self._DF)
+        # this is for the print function.
+        # We want the estimator to inherit the properties from DF!
+        return repr(self._df)
 
     @classmethod
     def from_path_csv(cls, path):
@@ -30,7 +58,7 @@ class Estimator(object):
         Semantics:
             Constructor estimator with a path.
         Args:
-            path: string. The path has to be raw, no "\". CSV file.
+            path: string, path to a CSV file/txt.
 
         Returns: new estimator.
 
@@ -38,6 +66,7 @@ class Estimator(object):
         return cls(pd.read_csv(path))  # calling the constructor of the class.
 
     def append(self, appending_df):
+        # TODO verify it does what one wants.
         """
         Semantics:
             adaptor for the method append from DF at the estimator level.
@@ -54,9 +83,10 @@ class Estimator(object):
 
         References: https://www.geeksforgeeks.org/python-pandas-dataframe-append/
         """
-        self._DF = self._DF.append(appending_df)
+        self._df = self._df.append(appending_df)
 
     def apply_function_upon_data(self, separators, fct, **kwargs):
+        # TODO verify it does what one wants.
         """
         Semantics: Transform the data
         with respect to a function and compute a new array of data which is returned.
@@ -81,9 +111,10 @@ class Estimator(object):
         """
 
         # trick for applying the function on a slice (column slice) of the data.
-        return self._DF.apply(lambda row: fct(row[separators], **kwargs), axis=1)
+        return self._df.apply(lambda row: fct(row[separators], **kwargs), axis=1)
 
     def apply_function_upon_data_store_it(self, separators, fct, new_column_names, **kwargs):
+        # TODO verify it does what one wants.
         """
         Semantics:
             Transform the data
@@ -110,10 +141,11 @@ class Estimator(object):
             apply_function_upon_data
         """
         assert len(new_column_names) == len(separators), "New_column_names and separators must have same dimension."
-        self._DF[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
+        self._df[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
         return
 
     def estimation_group_mean(self, columns_for_computation, keys_grouping=None):
+        # TODO verify it does what one wants.
         """
         Semantics:
             empirical mean of the data separated with the keys keys_grouping at column name.
@@ -122,14 +154,14 @@ class Estimator(object):
             keys_grouping: list of strings, which keys should be considered to groupby data together.
             If None, then no grouping by and mean computed on whole data.
 
-         Returns: return a DF of the means.
+         Returns: return a df of the means.
 
         Dependencies:
             groupby_DF
 
         """
         if keys_grouping is None:
-            return self._DF[columns_for_computation].mean()
+            return self._df[columns_for_computation].mean()
         else:
             return self.groupby_DF(keys_grouping)[0][columns_for_computation].mean()
             #                      keys are how we groupby
@@ -137,15 +169,17 @@ class Estimator(object):
             #                                        which feature are we interested in.
 
     def estimation_group_variance(self, columns_for_computation, keys_grouping=None, ddof=1):
+        # TODO verify it does what one wants.
         """
         Semantics: empirical variance of the data of the variance.
 
         Args:
             columns_for_computation:  list of strings, which columns/feature are the variances computed.
             keys_grouping:  list of strings, which keys should be considered to groupby data together.
-            If None, then no grouping by and variance computed on whole data.
-            ddof: how much one normalize the results (usually  / how_much_rotate-1 ;
-            This gives the unbiased estimator of the variance if the mean is unknown).
+                If None, then no grouping by and variance computed on whole data.
+            ddof: delta of degree of freedom, how much one normalize the results
+                (usually  you divide by (len data-1), this gives the
+                unbiased estimator of the variance if the mean is unknown).
 
         Returns: normalized S^2
 
@@ -156,9 +190,10 @@ class Estimator(object):
         if keys_grouping is not None:
             return self.groupby_DF(keys_grouping)[columns_for_computation].var(ddof=ddof)
         else:
-            return self._DF[columns_for_computation].var(ddof=ddof)
+            return self._df[columns_for_computation].var(ddof=ddof)
 
     def to_csv(self, path, **kwargs):
+        # TODO verify it does what one wants.
         """
         Semantics:
             void adaptor of the method to_csv from dataframes.
@@ -166,15 +201,16 @@ class Estimator(object):
         Args:
             path: path where the dataframe of the estimator is saved.
             **kwargs: Additional keyword arguments to pass as keywords arguments to
-            the function to_csv of pandas.
+            pandas' function to_csv.
 
         Returns:
 
         """
-        self._DF.to_csv(path, **kwargs)
+        self._df.to_csv(path, **kwargs)
         return
 
     def groupby_DF(self, separators, order=True):
+        # TODO verify it does what one wants.
         """
         Semantics:
             groupby a DF.
@@ -187,18 +223,18 @@ class Estimator(object):
             tuple with the groupby as well as the keys in order to iterate over it.
 
         """
-        DataFrameGroupBy = self._DF.groupby(separators, order)
+        DataFrameGroupBy = self._df.groupby(separators, order)
         return DataFrameGroupBy, DataFrameGroupBy.groups.keys()
 
     @property
-    def DF(self):
+    def df(self):
         # getter for df.
-        return self._DF
+        return self._df
 
-    @DF.setter
-    def DF(self, new_DF):
+    @df.setter
+    def df(self, new_df):
         # verification that the constructor is given a pandas dataframe.
-        if isinstance(new_DF, pd.DataFrame):
-            self._DF = new_DF
+        if isinstance(new_df, pd.DataFrame):
+            self._df = new_df
         else:
             raise Error_type_setter('Argument is not an Dataframe.')
