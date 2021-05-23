@@ -34,7 +34,9 @@ Examples:
     apl.uni_plot(nb_ax=0, xx=xx, yy=yy,
                  dict_plot_param={'label': 'legend', 'color': 'cyan', 'linestyle': '--', 'linewidth': 2})
     apl.uni_plot(nb_ax=1, xx=xx, yy=yy+1,
-    dict_plot_param={'label': 'legend', 'color': 'cyan', 'linestyle': '--', 'linewidth': 2})
+    dict_plot_param={'label': 'legend', 'color': 'cyan', 'linestyle': '--', 'linewidth': 2},
+    dict_ax = {'title': DEFAULT_STR,
+                    'xlabel': DEFAULT_STR, 'ylabel': DEFAULT_STR, 'xscale': 'linear', 'yscale': 'linear'})
     apl.show_legend()
     APlot.show_plot()
     
@@ -60,10 +62,14 @@ Examples:
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # THINGS TODO:
-#         change the nb_ax by index_ax.
-#         homogeneous input, not nb_ax then xx then xx then nb_ax. It should always be the same order.
-#         change return to give an ax. such that one can continue drawing on an axis!
-#         what is happening with bis axis is a bit obscure. Let s clarify it.
+#         - change the nb_ax by index_ax.
+#         - homogeneous input, not nb_ax then xx then xx then nb_ax. It should always be the same order.
+#                           A possibility would be to put first the data, then the axis.
+#         - change return to give an ax. such that one can continue drawing on an axis!
+#         - what is happening with bis axis is a bit obscure. Let s clarify it. Not sure how.
+#         - labels when both axis are on the same graph, see if there is any comments about it and change it to adapt the new behavior.
+#         - verify that if I acces an nb_ax, I also check that the number is correct!
+#         - put the test at the bottom into a right test.
 
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
@@ -84,6 +90,8 @@ For now are supported the features:
 #  #############################################################################
 # new plot functions
 
+
+# TODO SCATTER PLOT
 
 class APlot(Displayable_plot, metaclass=Register):
     """
@@ -453,9 +461,10 @@ class APlot(Displayable_plot, metaclass=Register):
             Shows the legend on the chosen axes.
 
         Args:
-            loc:
             nb_ax: integer. Number of the axs we are referring to.
             If none, all the axes are looped over.
+            loc:
+
 
         Returns:
             Void
@@ -471,7 +480,7 @@ class APlot(Displayable_plot, metaclass=Register):
 
     def _show_legend_for(self, ax_index, loc):
         """
-        Show legend for one axis
+        Retrieves the labels to put the labels of both axis (if bis axis) together.
         Args:
             ax_index: the index of the axis
             loc:
@@ -495,7 +504,7 @@ class APlot(Displayable_plot, metaclass=Register):
         lines = self._axs[ax_index].get_lines() + self._axs_bis[ax_index].get_lines()
         labels = [line.get_label() for line in lines]
 
-        return  lines, labels
+        return lines, labels
 
 
     # section ######################################################################
@@ -622,14 +631,23 @@ class APlot(Displayable_plot, metaclass=Register):
             data:
             nb_ax: int, number of the axis upon which the plot is drawn. ROW MAJOR order.
             dict_param_hist: dictionary with the parameters used for the plot of the histogram.
-            Examples of dict_param_hist given by calling the function help_dict_plot().
+            Examples of dict_param_hist:
+                              {'bins': 20,
+                               "color": 'green',
+                               'range': None,
+                               'label': 'Histogram',
+                               'cumulative': True}
             dict_ax: dictionary for the parameters for axis customization.
-            Examples of dict_plot_param given by calling the function help_dict_ax().
 
         Returns:
 
         Dependencies:
             cumulative_plot
+
+        Examples:
+            minimal:
+                aplot = APlot()
+                aplot.hist(yy)
         """
         if dict_ax is None:  # making sure dict_ax is not None.
             dict_ax = {'xlabel': 'Realisation', 'ylabel': 'Nb of realisation inside a bin.'}

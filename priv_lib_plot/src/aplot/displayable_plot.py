@@ -1,5 +1,6 @@
 # normal libraries
 from matplotlib import pyplot as plt  # plotting
+import os
 
 # my libraries
 from priv_lib_metaclass import Register, deco_register
@@ -14,6 +15,7 @@ class Displayable_plot(object, metaclass=Register):
     @staticmethod
     def show_and_continue(waiting_time=0.0001):
         plt.pause(waiting_time)
+        return
 
     @staticmethod
     def show_plot():
