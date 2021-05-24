@@ -32,19 +32,20 @@ class Estimator(object):
         It is good practice to put the names of the columns / features in the class object, as a security.
     """
 
-    NAMES_COLUMNS = {}
+    NAMES_COLUMNS = set()
 
     def __init__(self, df, *args, **kwargs):
         # args and kwargs for the child super() method.
         if df is not None:
             # test that the columns of the DF are the right one, corresponding to the class argument.
             if self.NAMES_COLUMNS.issubset(df.columns):
-                super().__init__(df)
+                super().__init__()
+                self.df = df
             else:
-                raise Error_not_allowed_input("Problem, the columns of the dataframe do not match the predefined ones.")
+                raise Error_type_setter("Problem, the columns of the dataframe do not match the predefined ones.")
         # if no df, we create an empty one.
         else:
-            self.DF = pd.DataFrame(columns=list(self.NAMES_COLUMNS))
+            self.df = pd.DataFrame(columns=list(self.NAMES_COLUMNS))
             super().__init__()
 
     def __repr__(self):
@@ -65,7 +66,7 @@ class Estimator(object):
         """
         return cls(pd.read_csv(path))  # calling the constructor of the class.
 
-    def append(self, appending_df):
+    def append(self, appending_df, *args, **kwargs):
         # TODO verify it does what one wants.
         """
         Semantics:
@@ -83,7 +84,7 @@ class Estimator(object):
 
         References: https://www.geeksforgeeks.org/python-pandas-dataframe-append/
         """
-        self._df = self._df.append(appending_df)
+        self._df = self._df.append(appending_df, *args, **kwargs)
 
     def apply_function_upon_data(self, separators, fct, **kwargs):
         # TODO verify it does what one wants.
