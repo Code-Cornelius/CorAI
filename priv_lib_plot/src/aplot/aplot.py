@@ -86,13 +86,6 @@ For now are supported the features:
 """
 
 
-# section ######################################################################
-#  #############################################################################
-# new plot functions
-
-
-# TODO SCATTER PLOT
-
 class APlot(Displayable_plot, metaclass=Register):
     """
     Semantics:
@@ -506,7 +499,6 @@ class APlot(Displayable_plot, metaclass=Register):
 
         return lines, labels
 
-
     # section ######################################################################
     #  #############################################################################
     #  #############################################################################
@@ -827,9 +819,7 @@ class APlot(Displayable_plot, metaclass=Register):
 
         dict_plot_param, dict_ax, zlabel, CM = self.dict_3D(dict_plot_param, dict_ax)
 
-        self._axs[nb_ax].remove()  # deletes the existing axis
-        self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1,
-                                                 projection="3d")  # add the subplot at the right position
+        self.create_3D_ax(nb_ax)
 
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
 
@@ -841,7 +831,8 @@ class APlot(Displayable_plot, metaclass=Register):
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
         return self._axs[nb_ax]
 
-    def plot_contour(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None, nb_of_level=10, show_colorbar=True):
+    def plot_contour(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None,
+                     nb_of_level=10, show_colorbar=True):
         """ dict_plot_param with CMAP. If not given, inferno is used (from dict_3D)."""
         nb_ax = self.__check_axs(nb_ax)
 
@@ -855,8 +846,8 @@ class APlot(Displayable_plot, metaclass=Register):
         return self._axs[nb_ax]
 
     @classmethod
-    def plot_three_representation_surf(cls, xx, yy, zz, dict_plot_param=None, dict_ax=None, nb_of_level=10,
-                                       step_subset_slices=1):
+    def plot_three_representation_surf(cls, xx, yy, zz, dict_plot_param=None, dict_ax=None,
+                                       nb_of_level=10, step_subset_slices=1):
         surface_triple = APlot(how=(1, 3), figsize=(12, 5))
         surface_triple.plot_surf(xx, yy, zz, nb_ax=0, dict_plot_param=dict_plot_param, dict_ax=dict_ax)
         surface_triple.plot_contour(xx, yy, zz, nb_ax=2, dict_plot_param=dict_plot_param, dict_ax=dict_ax,
@@ -889,7 +880,28 @@ class APlot(Displayable_plot, metaclass=Register):
                                     dict_ax=dict_ax_slices)
         surface_triple.show_legend(nb_ax=1)
         surface_triple.tight_layout()
+        return surface_triple._axs[nb_ax]
+
+    def scatter_plot(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None,
+                     show_colorbar=True):
+        # todo make test.
+        nb_ax = self.__check_axs(nb_ax)
+        dict_plot_param, dict_ax, zlabel, CM = self.dict_3D(dict_plot_param, dict_ax)
+
+        self.create_3D_ax(nb_ax)
+
+        self._axs[nb_ax].scatter(xx, yy, zz, marker='o', c=zz, cmap=CM, alpha=1)
+        self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
+
+        if show_colorbar:
+            self._fig.colorbar(contour, aspect=40)
+
         return self._axs[nb_ax]
+
+    def create_3D_ax(self, nb_ax):
+        self._axs[nb_ax].remove()  # deletes the existing axis
+        self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1, projection="3d")
+        # : add the subplot at the right position
 
     # section ######################################################################
     #  #############################################################################
