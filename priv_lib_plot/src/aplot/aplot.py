@@ -73,12 +73,6 @@ Examples:
 
 # TODO when error in plotter not matching size print the sizes!
 
-# plot graph can plot up to 2 graphs on the same figure.
-# every argument has to be a list in order to make it work.
-# title and labels has to be list, where one has:
-# [title 1, title 2] ; [x1label y1label, x2label y2label]
-# the set of parameters is the same for the two subplots.
-
 """
 For now are supported the features:
             -multiple subplots
@@ -277,7 +271,8 @@ class APlot(Displayable_plot, metaclass=Register):
                 self._axs_bis[nb_ax].grid(False)
             return out
         else:
-            raise Error_not_allowed_input("Inputs for the plot are not of matching size.")
+            raise Error_not_allowed_input("Inputs for the plot are not of matching size. \n"
+                                          "xx is given of length: {} and yy: {}".format(len(xx), len(yy)))
 
     def __plotter_on_bis_ax(self, nb_ax, xx, yy, dict_plot_param, dict_ax=None):
         """
@@ -468,35 +463,36 @@ class APlot(Displayable_plot, metaclass=Register):
             for nb_ax_0 in range(self._nb_of_axs):
                 self._show_legend_for(nb_ax_0, loc)
         else:
-            # todo check axis !
+            nb_ax = self.__check_axs(nb_ax)
             self._show_legend_for(nb_ax, loc)
 
         return
 
-    def _show_legend_for(self, ax_index, loc):
+    def _show_legend_for(self, nb_ax, loc):
         """
         Retrieves the labels to put the labels of both axis (if bis axis) together.
         Args:
-            ax_index: the index of the axis
+            nb_ax: the index of the axis
             loc:
 
         Returns:
             Void.
         """
-        if self._axs_bis[ax_index] is not None:
-            lines, labels = self._get_lines_and_labels_for(ax_index)
-            self._axs_bis[ax_index].legend(lines, labels, loc=loc, fontsize=APlot.FONTSIZE - 3)
+        if self._axs_bis[nb_ax] is not None:
+            lines, labels = self._get_lines_and_labels_for(nb_ax)
+            self._axs_bis[nb_ax].legend(lines, labels, loc=loc, fontsize=APlot.FONTSIZE - 3)
         else:
-            self._axs[ax_index].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
+            self._axs[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
 
-    def _get_lines_and_labels_for(self, ax_index):
+    def _get_lines_and_labels_for(self, nb_ax):
         """
         Args:
-            ax_index: the index of the ax
+            nb_ax: the index of the ax
         Returns:
             The lines and corresponding labels for the two axs
         """
-        lines = self._axs[ax_index].get_lines() + self._axs_bis[ax_index].get_lines()
+        nb_ax = self.__check_axs(nb_ax)
+        lines = self._axs[nb_ax].get_lines() + self._axs_bis[nb_ax].get_lines()
         labels = [line.get_label() for line in lines]
 
         return lines, labels
@@ -507,7 +503,6 @@ class APlot(Displayable_plot, metaclass=Register):
     #  #############################################################################
     # PLOT FUNCTIONS
 
-    # todo verify that all dict_plot_param are giving information about help_dict_plot().
 
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy(), dict_ax=None):
         """
@@ -643,6 +638,8 @@ class APlot(Displayable_plot, metaclass=Register):
                 aplot = APlot()
                 aplot.hist(yy)
         """
+        nb_ax = self.__check_axs(nb_ax)
+
         if dict_ax is None:  # making sure dict_ax is not None.
             dict_ax = {'xlabel': 'Realisation', 'ylabel': 'Nb of realisation inside a bin.'}
 
@@ -753,8 +750,8 @@ class APlot(Displayable_plot, metaclass=Register):
             plots a single point at coordinates (x,y).
 
         Args:
-            x:
-            y:
+            x (float):
+            y (float):
             nb_ax: int, number of the axis upon which the plot is drawn. ROW MAJOR order.
             dict_plot_param: dictionary with the parameters used for the plot of the curve.
             Examples of dict_param_hist given by calling the function help_dict_plot().
@@ -821,7 +818,7 @@ class APlot(Displayable_plot, metaclass=Register):
 
         dict_plot_param, dict_ax, zlabel, CM = self.dict_3D(dict_plot_param, dict_ax)
 
-        self.create_3D_ax(nb_ax)
+        self._create_3D_ax(nb_ax)
 
         mesh_xx, mesh_yy = np.meshgrid(xx, yy)
 
@@ -890,7 +887,7 @@ class APlot(Displayable_plot, metaclass=Register):
         nb_ax = self.__check_axs(nb_ax)
         dict_plot_param, dict_ax, zlabel, CM = self.dict_3D(dict_plot_param, dict_ax)
 
-        self.create_3D_ax(nb_ax)
+        self._create_3D_ax(nb_ax)
 
         self._axs[nb_ax].scatter(xx, yy, zz, marker='o', c=zz, cmap=CM, alpha=1)
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
@@ -900,7 +897,7 @@ class APlot(Displayable_plot, metaclass=Register):
 
         return self._axs[nb_ax]
 
-    def create_3D_ax(self, nb_ax):
+    def _create_3D_ax(self, nb_ax):
         self._axs[nb_ax].remove()  # deletes the existing axis
         self._axs[nb_ax] = self._fig.add_subplot(*self._how, nb_ax + 1, projection="3d")
         # : add the subplot at the right position
