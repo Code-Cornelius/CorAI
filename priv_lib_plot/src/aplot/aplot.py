@@ -71,6 +71,8 @@ Examples:
 #         - verify that if I acces an nb_ax, I also check that the number is correct!
 #         - put the test at the bottom into a right test.
 
+# TODO when error in plotter not matching size print the sizes!
+
 # plot graph can plot up to 2 graphs on the same figure.
 # every argument has to be a list in order to make it work.
 # title and labels has to be list, where one has:
