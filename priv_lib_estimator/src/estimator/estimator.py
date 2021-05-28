@@ -37,10 +37,11 @@ class Estimator(object):
     def __init__(self, df, *args, **kwargs):
         # args and kwargs for the child super() method.
         if df is not None:
-            # test that the columns of the DF are the right one, corresponding to the class argument.
+            # test that the columns of the df are the right one, corresponding to the class argument.
+            # the fact that we use self. ensures that we use polymorphism.
+            self.df = df # we do that first to check that it is a dataframe.
             if self.NAMES_COLUMNS.issubset(df.columns):
                 super().__init__()
-                self.df = df
             else:
                 raise Error_type_setter("Problem, the columns of the dataframe do not match the predefined ones.")
         # if no df, we create an empty one.
