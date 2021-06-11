@@ -21,7 +21,6 @@ def newtons_method(f, df, x0, e=1E-10, tol=1E-10):
         if abs(x0) == np.inf or number_of_step_crash > 1E3:  # function too flat.
             raise ValueError("Is the function flat enough ?")
         number_of_step_crash += 1
-        old_x0 = x0
         step = f(x0) / df(x0)
         x0 -= step
     return x0
@@ -34,7 +33,7 @@ def newtons_method_multi(f, df, x0, e=1E-10, tol=1E-10):
         f is a multi dim function R^n -> R.
     Args:
         f (callable):  function for finding its roots.
-        df (callable):  derivative of f as a function
+        df (callable):  derivative of f as a function, gradient.
         x0:  initial gues.
         e (error for the root):
         tol (tol for step):
@@ -49,10 +48,9 @@ def newtons_method_multi(f, df, x0, e=1E-10, tol=1E-10):
         if number_of_step_crash > 1E4:
             raise Exception("Is the function flat enough ?")
         number_of_step_crash += 1
-        old_x0 = x0
 
         A = np.linalg.inv(df(x0))
-        B = df(x0)
+        B = f(x0)
         step = np.matmul(A, B)
         x0 -= step
     return x0
@@ -63,14 +61,17 @@ def newtons_method_vectorised(f, df, x0, e=1E-7, tol=1E-7, silent=False):
     Semantics:
         vectorised newton method for finding the root of f given its derivative.
         the vectorisation means that one can give a function that is in R^d.
-        All the inputs are optimised independantly.
+        All the inputs are optimised independently.
         Each needs to reach the desired precision.
     Args:
-        f (callable):  function for finding its roots. Takes two parameters, an array, and a list of indices to slice the array.
-        df (callable):  derivative of f as a function. Takes two parameters, an array, and a list of indices to slice the array.
+        f (callable):  function for finding its roots.
+        Takes two parameters, an array, and a list of indices to slice the array.
+        df (callable):  derivative of f as a function.
+        Takes two parameters, an array, and a list of indices to slice the array.
         x0:  initial guess. Is changed over iterations.
         e (error for the root):
         tol (tol for step):
+        silent (bool): verbose.
 
     Returns:
         void. x0 contains the optimised values.
@@ -100,5 +101,5 @@ def newtons_method_vectorised(f, df, x0, e=1E-7, tol=1E-7, silent=False):
 
         nb_step += 1
     if not silent:
-        print('converged in {it} iterations'.format(it=number_of_step_crash))
+        print('converged in {it} iterations'.format(it=nb_step))
     return
