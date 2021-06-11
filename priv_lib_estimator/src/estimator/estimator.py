@@ -1,6 +1,6 @@
 import pandas as pd
 from priv_lib_error import Error_type_setter
-
+import json
 
 # TODO:
 #  write the template the idea of how to use them
@@ -13,6 +13,7 @@ from priv_lib_error import Error_type_setter
 #         COMPARATOR FOR TRAINING columns depend on the problem but mostly the loss.
 #
 # TODO: look at the plotting in a second time.
+from priv_lib_util.tools.src.function_json import zip_json, unzip_json
 
 
 class Estimator(object):
@@ -210,6 +211,63 @@ class Estimator(object):
         """
         self._df.to_csv(path, **kwargs)
         return
+
+    def to_json(self, path, compress=True, attrs={}.copy()):
+        """
+            Save an estimator to json as a compressed file.
+        Args:
+            attrs: The extra attributes to save
+            compress: Whether or not compression is applied
+            path: The path where to store the estimator
+
+        Returns:
+            Void
+        """
+        json_df = self._df.to_json(orient='split')
+        parsed = json.loads(json_df)
+        parsed['attrs'] = attrs
+
+        if compress:
+            parsed = zip_json(parsed)
+
+        with open(path, 'w') as file:
+            json.dump(parsed, file)
+
+    @classmethod
+    def from_json(cls, path):
+        """
+            Read json dataframe an return the object
+        Args:
+            path: The path where to retrieve the dataframe from
+
+        Returns:
+            Void
+        """
+        dataframe = pd.read_json(path, orient='split')
+        return cls(dataframe)
+
+    @staticmethod
+    def get_estim_attrs_from_json(path, compress):
+        """
+            Retrieve extra attributes from the json and write it back to the file
+        Args:
+            path: The path to the file
+            compress: Whether or not compression is applied
+
+        Returns:
+
+        """
+        with open(path, 'r') as file:
+            df_info = json.load(file)
+            if compress:
+                df_info = unzip_json(df_info)
+            attrs = df_info['attrs']
+            del df_info['attrs']
+
+        with open(path, 'w') as file:
+            json.dump(df_info, file)
+
+        return attrs
 
     def groupby_DF(self, separators, order=True):
         # TODO verify it does what one wants.
