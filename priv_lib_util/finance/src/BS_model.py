@@ -1,3 +1,12 @@
+# normal libraries
+import numpy as np
+import math
+from scipy.stats import norm
+
+# my libraries
+from priv_lib_util.tools.src import function_recurrent
+
+
 def BlackScholesVegaCore(DF, F, X, T, SIGMA):
     """
     Args:
@@ -35,15 +44,15 @@ def BlackScholesCore(CallPutFlag, DF, F, K, T, sigma):
     d1 = (np.log(F / K) + (v_sqrt * v_sqrt / 2.)) / v_sqrt
     d2 = d1 - v_sqrt
     if CallPutFlag:
-        return DF * (F * scipy.stats.norm.cdf(d1) - K * scipy.stats.norm.cdf(d2))
+        return DF * (F * norm.cdf(d1) - K * norm.cdf(d2))
     else:
-        return DF * (K * scipy.stats.norm.cdf(-d2) - F * scipy.stats.norm.cdf(-d1))
+        return DF * (K * norm.cdf(-d2) - F * norm.cdf(-d1))
 
 
-def BlackScholes(CallPutFlag, S, K, T, R, d, *, sigma = None, total_iv = None):
+def BlackScholes(CallPutFlag, S, K, T, R, d, *, sigma=None, total_iv=None):
     """Black-Scholes Pricing Function. It is vectorised.
     Args:
-        CallPutFlag:
+        CallPutFlag (bool):
         S:  = S_0
         K:  the strike price K
         T:  maturity
@@ -60,8 +69,14 @@ def BlackScholes(CallPutFlag, S, K, T, R, d, *, sigma = None, total_iv = None):
         Only sigma or TIV given, not both. Then, if TIV, T is taken as one in BS.
 
     """
-    assert (sigma is None or total_iv is None), "Only sigma or TIV given, not both. Here both given."
-    assert (sigma is not None or total_iv is not None), "Only sigma or TIV given, not both. Here both none."
+    assert S > 0, "Price must be positive."
+    if not np.ndim(K):  # if np.isscalar(K)
+        assert K > 0, "Strike Price must be positive."
+    else:  # ndim > 0
+        assert np.all(K > 0), "Strike Price must be positive."
+
+    assert (sigma is None or total_iv is None), "Only sigma or TIV given, not both. Both given."
+    assert (sigma is not None or total_iv is not None), "Only sigma or TIV given, not both. Both none."
     if sigma is None:
         T = 1
         sigma = math.sqrt(total_iv)

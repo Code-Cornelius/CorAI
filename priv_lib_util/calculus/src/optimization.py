@@ -1,3 +1,5 @@
+import warnings
+
 import numpy as np
 
 
@@ -56,13 +58,14 @@ def newtons_method_multi(f, df, x0, e=1E-10, tol=1E-10):
     return x0
 
 
-def newtons_method_vectorised(f, df, x0, e=1E-7, tol=1E-7, silent=False):
+def newtons_method_vectorised(f, df, x0, e=1E-7, tol=1E-7, silent=True):
     """
     Semantics:
         vectorised newton method for finding the root of f given its derivative.
         the vectorisation means that one can give a function that is in R^d.
         All the inputs are optimised independently.
         Each needs to reach the desired precision.
+        If some inputs did not converged (step reached infinity), replace the value by nans.
     Args:
         f (callable):  function for finding its roots.
         Takes two parameters, an array, and a list of indices to slice the array.
@@ -88,13 +91,14 @@ def newtons_method_vectorised(f, df, x0, e=1E-7, tol=1E-7, silent=False):
 
     step = np.zeros(len(x0))  # initialization
     while np.any(arr_flags_iter):  # test that they all converged, tol for step and error
-        if not nb_step < 10000 or np.any(step == np.inf):
+        if not nb_step < 10000:
             # test if any step is infinity
             raise Exception("Is the function flat enough ?")
 
         # Iterate on the indices that haven't yet converged
         f_eval = f(x0, arr_flags_iter)
         step[arr_flags_iter] = f_eval / df(x0, arr_flags_iter)
+        step[(step == np.inf)] = np.NaN
         x0[arr_flags_iter] = x0[arr_flags_iter] - step[arr_flags_iter]
         arr_flags_iter[arr_flags_iter] = (np.abs(step[arr_flags_iter]) > tol) & \
                                          (np.abs(f_eval) > e)
@@ -102,4 +106,8 @@ def newtons_method_vectorised(f, df, x0, e=1E-7, tol=1E-7, silent=False):
         nb_step += 1
     if not silent:
         print('converged in {it} iterations'.format(it=nb_step))
+    if np.any(x0 == np.NaN):
+        warnings.warn("Nans")
+
     return
+
