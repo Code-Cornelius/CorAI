@@ -6,6 +6,7 @@ from abc import abstractmethod
 from priv_lib_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator.src.estimator.estimator import Estimator
+from priv_lib_plot import AColorsetDiscrete
 from priv_lib_util.tools import function_iterable
 
 
@@ -22,12 +23,15 @@ class Plot_estimator(Root_plot_estimator):
         a plot estimator HAS an estimator that will be plotted.
 
     """
+    # todo allow for other colormap, or not
+    COLORMAP = AColorsetDiscrete('Dark2')
+
 
     def __init__(self, estimator, grouping_by=None, *args, **kwargs):
         """
         Args:
-            estimator:  object from priv_lib_estimator.src.estimator.estimator
-            grouping_by:  list of names of features from estimator.
+            estimator (priv_lib_estimator.src.estimator.estimator):
+            grouping_by (iter of str):  list of names of features from estimator.
             Default is None, and means no grouping is done, so all data is used for plotting.
 
             *args: additional parameters for the construction of the object.
@@ -35,7 +39,7 @@ class Plot_estimator(Root_plot_estimator):
         """
         self.estimator = estimator
         self.grouping_by = grouping_by
-        super().__init__(estimator=estimator, separators=grouping_by, *args, **kwargs)
+        super().__init__(estimator=estimator, grouping_by=grouping_by, *args, **kwargs)
 
     @classmethod
     def from_path_csv(cls, path, grouping_by=None):
@@ -69,7 +73,11 @@ class Plot_estimator(Root_plot_estimator):
         Returns:
 
         """
+        # todo GROUPING BY NO SEPATOR
         if separators is None:
+            if self.grouping_by is None:
+                return None, self.estimator.df, [None]
+
             separators = self.grouping_by
         global_dict, keys = self.estimator.groupby_DF(separators)
         return separators, global_dict, keys
@@ -167,6 +175,7 @@ class Plot_estimator(Root_plot_estimator):
     @grouping_by.setter
     def grouping_by(self, new_grouping_by):
         if new_grouping_by is None:
+            self._grouping_by = None
             return
         if function_iterable.is_iterable(new_grouping_by):
             # TODO test whether the new_grouping_by is

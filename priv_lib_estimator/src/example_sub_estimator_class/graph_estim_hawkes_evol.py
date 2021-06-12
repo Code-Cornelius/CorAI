@@ -48,8 +48,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
                     'ylabel': "Estimation"}
         return fig_dict
 
-    def draw(self, separators=None, separator_colour=None, kernel_plot_param=None,
-             one_kernel_plot_param=None, all_kernels_drawn=False):
+    def draw(self, feature_to_draw, true_values_flag=False, envelope_flag=True, separators=None, separator_colour=None):
         """
         plot the evolution of the estimators over the attribute given by get_plot_data.
         It is almost the same version as the upper class, the difference lies in that I m drawing the kernel on the graph additionally.
@@ -60,9 +59,7 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         Args:
             separators:
             separator_colour: the column of the dataframe to consider for color discrimination
-            kernel_plot_param: list_of_kernels, Times = kernel_plot_param. Used in order to plot all the decided kernels.
-            one_kernel_plot_param:  Plots only the middle kernel. For a centred drawing, pic an even number of times.
-            all_kernels_drawn: conditions used when one wants to draw all the kernels on the plot.
+            envelope_flag: list_of_kernels, Times = kernel_plot_param. Used in order to plot all the decided kernels.
         Returns:
 
         """
@@ -71,8 +68,8 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
         NB_OF_KERNELS_DRAWN = 14
 
         _, coloured_keys = super().draw(separators, separator_colour)
-        if kernel_plot_param is not None:
-            list_of_kernels, Times = kernel_plot_param
+        if envelope_flag is not None:
+            list_of_kernels, Times = envelope_flag
 
             # here is all the plots I draw. I start at 1 bc I always plot the parameters as a first drawing.
             list_of_plots = APlot.print_register()[1:]

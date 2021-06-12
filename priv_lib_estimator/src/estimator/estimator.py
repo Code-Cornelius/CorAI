@@ -53,7 +53,7 @@ class Estimator(object):
     def __repr__(self):
         # this is for the print function.
         # We want the estimator to inherit the properties from DF!
-        return repr(self._df)
+        return repr(self.df)
 
     @classmethod
     def from_path_csv(cls, path):
@@ -80,13 +80,13 @@ class Estimator(object):
         Returns:
             quoting: "Pandas dataframe.append() function
             is used to append rows of other dataframe to the end of the given dataframe,
-            returning a new dataframe object.
+            returning a new dataframe object. I.E. NOT IN PLACE.
             Columns not in the original dataframes are added as new columns
             and the new cells are populated with NaN value."
 
         References: https://www.geeksforgeeks.org/python-pandas-dataframe-append/
         """
-        self._df = self._df.append(appending_df, *args, **kwargs)
+        self.df = self.df.append(appending_df, *args, **kwargs)
 
     def apply_function_upon_data(self, separators, fct, **kwargs):
         # TODO verify it does what one wants.
@@ -114,7 +114,7 @@ class Estimator(object):
         """
 
         # trick for applying the function on a slice (column slice) of the data.
-        return self._df.apply(lambda row: fct(row[separators], **kwargs), axis=1)
+        return self.df.apply(lambda row: fct(row[separators], **kwargs), axis=1)
 
     def apply_function_upon_data_store_it(self, separators, fct, new_column_names, **kwargs):
         # TODO verify it does what one wants.
@@ -144,7 +144,7 @@ class Estimator(object):
             apply_function_upon_data
         """
         assert len(new_column_names) == len(separators), "New_column_names and separators must have same dimension."
-        self._df[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
+        self.df[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
         return
 
     def estimation_group_mean(self, columns_for_computation, keys_grouping=None):
@@ -164,7 +164,7 @@ class Estimator(object):
 
         """
         if keys_grouping is None:
-            return self._df[columns_for_computation].mean()
+            return self.df[columns_for_computation].mean()
         else:
             return self.groupby_DF(keys_grouping)[0][columns_for_computation].mean()
             #                      keys are how we groupby
@@ -193,7 +193,7 @@ class Estimator(object):
         if keys_grouping is not None:
             return self.groupby_DF(keys_grouping)[columns_for_computation].var(ddof=ddof)
         else:
-            return self._df[columns_for_computation].var(ddof=ddof)
+            return self.df[columns_for_computation].var(ddof=ddof)
 
     def to_csv(self, path, **kwargs):
         # TODO verify it does what one wants.
@@ -209,7 +209,7 @@ class Estimator(object):
         Returns:
 
         """
-        self._df.to_csv(path, **kwargs)
+        self.df.to_csv(path, **kwargs)
         return
 
     def to_json(self, path, compress=True, attrs={}.copy()):
@@ -223,7 +223,7 @@ class Estimator(object):
         Returns:
             Void
         """
-        json_df = self._df.to_json(orient='split')
+        json_df = self.df.to_json(orient='split')
         parsed = json.loads(json_df)
         parsed['attrs'] = attrs
 
@@ -283,7 +283,7 @@ class Estimator(object):
             tuple with the groupby as well as the keys in order to iterate over it.
 
         """
-        DataFrameGroupBy = self._df.groupby(separators, order)
+        DataFrameGroupBy = self.df.groupby(separators, order)
         return DataFrameGroupBy, DataFrameGroupBy.groups.keys()
 
     @property

@@ -5,7 +5,7 @@ import numpy as np  # maths library and arrays
 
 # my libraries
 from priv_lib_util.tools import function_str
-from priv_lib_plot import APlot
+from priv_lib_plot import APlot, AColorsetDiscrete
 from priv_lib_estimator.src.estimator.estimator import Estimator
 from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
@@ -24,7 +24,7 @@ class Evolution_plot_estimator(Plot_estimator):
         abstract class inheriting from Plot_estimator.
         The purpose is to automatise the plots showing evolution of a feature
         with respect to an other as a time-series.
-        The class is showing common behavior for evolution_plot: retriving data for the time serie,
+        The class is showing common behavior for evolution_plot: retrieving data for the time series,
         plotting according to some standards...
 
         EVOLUTION_NAME is the parameter with respect to which the feature is evolving. It is usually time or position.
@@ -35,6 +35,7 @@ class Evolution_plot_estimator(Plot_estimator):
 
     """
 
+
     # abstract evolution_name parameter
     @property
     @abstractmethod
@@ -42,12 +43,20 @@ class Evolution_plot_estimator(Plot_estimator):
         # EVOLUTION_NAME is a string.
         pass
 
-    def __init__(self, estimator, separators=None, *args, **kwargs):
-        super().__init__(estimator, separators, *args, **kwargs)
+    def __init__(self, estimator, grouping_by=None, *args, **kwargs):
+        super().__init__(estimator = estimator, grouping_by =grouping_by,
+                         *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
     # data processing
+
+    @abstractmethod
+    def get_evolution_name_plot_data(self, data, feature_to_draw):
+        pass
+
+    def get_evolution_name_true_value(self, data, feature_to_draw):
+        raise ValueError("get_evolution_name_true_value was not implemented by lower class")
 
     @classmethod
     def get_grouped_evolution_name_feature(cls, data, features):
@@ -126,7 +135,7 @@ class Evolution_plot_estimator(Plot_estimator):
     # and key to know with which data's slice we are working with.
 
     @abstractmethod
-    def get_default_dict_fig(self, grouped_data_by, key):
+    def get_default_dict_fig(self, grouped_data_by, key=None):
         """
         Semantics:
             default parameters for the drawing of evolution_plot_estimator.
@@ -141,7 +150,10 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         pass
 
-    def draw(self, separators=None, separator_colour=None):
+
+
+    def draw(self, feature_to_draw, true_values_flag=False, envelope_flag=True,
+             separators=None, separator_colour=None):
         """
         Semantics:
             Draw the evolution_plot_estimator common behavior.
@@ -152,42 +164,54 @@ class Evolution_plot_estimator(Plot_estimator):
 
         Returns:
 
+        Dependency:
+            get_evolution_name_unique_values
+
+            if envelope_flag:
+                get_evolution_name_extremes
+            if true_values_flag:
+                get_evolution_name_true_value
+
+            get_evolution_name_plot_data
+            get_default_dict_fig
         """
         separators, global_dict, keys = super().draw(separators=separators)
-        estimation = self.get_evolution_name_unique_values(self.estimator.DF)
+        estimation = self.get_evolution_name_unique_values(self.estimator.df)
         for key in keys:
             data = global_dict.get_group(key)
             plot = APlot()
 
             # min and max
-            minimum, maximum = self.get_evolution_name_extremes(data, )
-
-            plot.uni_plot(0, estimation, minimum,
-                          dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "min",
-                                           'marker': ''})
-            plot.uni_plot(0, estimation, maximum,
-                          dict_plot_param={"color": 'r', "linestyle": "dashdot", "linewidth": 0.5, "label": "max",
-                                           'marker': ''})
-
+            if envelope_flag:
+                minimum, maximum = self.get_evolution_name_extremes(data, feature_to_draw)
+                plot.uni_plot(0, estimation, minimum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
+                                                                       "linewidth": 0.5, "label": "min",
+                                                                       'marker': ''})
+                plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
+                                                                       "linewidth": 0.5, "label": "max",
+                                                                       'marker': ''})
             # true value line
-            true_values = self.get_evolution_name_true_value(data)
-            plot.uni_plot(0, estimation, true_values,
-                          dict_plot_param={"color": 'r', "linestyle": "solid", "linewidth": 0.4,
-                                           "label": "true value", 'marker': ''})
-            # crazy stuff
-            if separator_colour is not None:
+            if true_values_flag:
+                true_values = self.get_evolution_name_true_value(data)
+                plot.uni_plot(0, estimation, true_values,
+                              dict_plot_param={"color": 'r', "linestyle": "solid", "linewidth": 0.4,
+                                               "label": "true value", 'marker': ''})
+
+            # discriminating wrt another data
+            if separator_colour is None:
+                data = self.get_evolution_name_plot_data(data, feature_to_draw)
+                plot.uni_plot(0, estimation, data)
+            else:
                 estimator = Estimator(data)
                 coloured_dict, coloured_keys = estimator.groupby_DF([separator_colour])
-                color = plt.cm.Dark2.colors  # Dark2 is qualitative cm and pretty dark cool colors.
-                for coloured_key, c in zip(coloured_keys, color):
+
+
+                for coloured_key, c in zip(coloured_keys, self.COLORMAP):
                     coloured_data = coloured_dict.get_group(coloured_key)
-                    coloured_data = self.get_evolution_name_plot_data(coloured_data)
+                    coloured_data = self.get_evolution_name_plot_data(coloured_data, feature_to_draw)
                     plot.uni_plot(0, estimation, coloured_data,
                                   dict_plot_param={"color": c, "linestyle": "solid", "linewidth": 1.1,
                                                    "label": coloured_key})
-            else:
-                data = self.get_evolution_name_plot_data(data)
-                plot.uni_plot(0, estimation, data)
 
             fig_dict = self.get_default_dict_fig(separators, key)
             plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis_y_axis=False)
