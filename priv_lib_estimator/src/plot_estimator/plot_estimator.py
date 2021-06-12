@@ -14,7 +14,7 @@ class Plot_estimator(Root_plot_estimator):
     Semantics:
         Plot_estimator is an abstract class that abstract the idea of plotting
         an estimator (class defined in priv_lib_estimator.src.estimator.estimator).
-        The aim is to define the basement of what is required to plot an estimator:
+        The aim is to define the base of what is required to plot an estimator:
             - an Estimator: the object giving the data,
             - a slicer: which part of the data we plot,
             - a figure: on what we plot.
@@ -166,6 +166,8 @@ class Plot_estimator(Root_plot_estimator):
 
     @grouping_by.setter
     def grouping_by(self, new_grouping_by):
+        if new_grouping_by is None:
+            return
         if function_iterable.is_iterable(new_grouping_by):
             # TODO test whether the new_grouping_by is
             #  a subset of the columns of the Estimator.

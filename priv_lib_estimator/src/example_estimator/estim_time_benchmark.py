@@ -1,6 +1,12 @@
+from priv_lib_estimator import Plot_estimator, Evolution_plot_estimator
 from priv_lib_estimator.src.example_sub_estimator_class.estim_time_size import Estim_time_size
 from priv_lib_util.tools.src.benchmarking import benchmark
 import pandas as pd
+
+
+# section ######################################################################
+#  #############################################################################
+# Classes
 
 class Estim_benchmark_array(Estim_time_size):
     NAMES_COLUMNS = Estim_time_size.NAMES_COLUMNS.copy()
@@ -9,7 +15,22 @@ class Estim_benchmark_array(Estim_time_size):
     def __init__(self):
         super().__init__()
 
+class Estim_plot_benchmark(Plot_estimator):
 
+    def __init__(self, estimator):
+        super().__init__(estimator)
+
+class Estim_evol_benchmark(Estim_plot_benchmark, Evolution_plot_estimator):
+
+    @property
+    def EVOLUTION_NAME(self):
+        return 'N'
+
+    def get_default_dict_fig(self, grouped_data_by, key):
+        fig_dict = {'title': "Comparison of index & access vs enumerate & element",
+                    'xlabel': 'Array size',
+                    'ylabel': "Time"}
+        return fig_dict
 
 
 # section ######################################################################
@@ -49,7 +70,7 @@ def benchmark_and_save(estim, func, method_name, number_of_reps=100, *args, **kw
 
 # prepare data
 import numpy as np
-powers = np.array(range(10,20))
+powers = np.array(range(10, 20))
 
 number_of_reps = 100
 sizes = 2 ** powers
@@ -62,4 +83,7 @@ for size in sizes:
     benchmark_and_save(estim, elem_enum, "elem_enum", arr=test_arr)
     # range_size = increment_factor * range_size
 
-print(estim)
+
+estim_hist = Estim_evol_benchmark(estim)
+
+print(estim_hist.NB_OF_BINS)
