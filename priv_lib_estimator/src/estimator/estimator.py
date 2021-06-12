@@ -35,7 +35,7 @@ class Estimator(object):
 
     NAMES_COLUMNS = set()
 
-    def __init__(self, df, *args, **kwargs):
+    def __init__(self, df=None, *args, **kwargs):
         # args and kwargs for the child super() method.
         if df is not None:
             # test that the columns of the df are the right one, corresponding to the class argument.
