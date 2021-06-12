@@ -3,11 +3,10 @@
 
 # my libraries
 from priv_lib_estimator import Evolution_plot_estimator
+from priv_lib_estimator.src.example_sub_estimator_class.class_graph_estimator_hawkes import Graph_Estimator_Hawkes
 from priv_lib_plot import APlot
 # other files
-from classes.class_kernel import *
-from classes.graphs.class_graph_estimator_hawkes import Graph_Estimator_Hawkes
-from classes.class_estimator_hawkes import Estimator_Hawkes
+
 
 # section ######################################################################
 #  #############################################################################
