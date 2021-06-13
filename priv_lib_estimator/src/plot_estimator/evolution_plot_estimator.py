@@ -35,7 +35,6 @@ class Evolution_plot_estimator(Plot_estimator):
 
     """
 
-
     # abstract evolution_name parameter
     @property
     @abstractmethod
@@ -44,7 +43,7 @@ class Evolution_plot_estimator(Plot_estimator):
         pass
 
     def __init__(self, estimator, grouping_by=None, *args, **kwargs):
-        super().__init__(estimator = estimator, grouping_by =grouping_by,
+        super().__init__(estimator=estimator, grouping_by=grouping_by,
                          *args, **kwargs)
 
     # section ######################################################################
@@ -150,8 +149,6 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         pass
 
-
-
     def draw(self, feature_to_draw, true_values_flag=False, envelope_flag=True,
              separators=None, separator_colour=None):
         """
@@ -207,7 +204,6 @@ class Evolution_plot_estimator(Plot_estimator):
             else:
                 estimator = Estimator(data)
                 coloured_dict, coloured_keys = estimator.groupby_DF([separator_colour])
-
 
                 for coloured_key, c in zip(coloured_keys, self.COLORMAP):
                     coloured_data = coloured_dict.get_group(coloured_key)

@@ -12,7 +12,7 @@ from priv_lib_estimator.src.estimator.estim_time import Estim_time
 
 class Estim_benchmark_array(Estim_time):
     NAMES_COLUMNS = Estim_time.NAMES_COLUMNS.copy()
-    NAMES_COLUMNS.update('Array Size', 'Method')
+    NAMES_COLUMNS.update(('Array Size', 'Method'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
