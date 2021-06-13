@@ -104,3 +104,15 @@ def retrieve_parameters_by_index_from_json(index, file_path):
     assert 0 <= index < len(parameters), "Parameter index is outside the bounds (number of settings)."
 
     return parameters[index]
+
+def filter(names, keys, filter_rules):
+    if filter_rules is None:
+        return keys
+    unwanted = []
+    for key in keys:
+        for i, name in enumerate(names):
+            if name in filter_rules:
+                if key[i] not in filter_rules[name]:
+                    unwanted.append(key)
+
+    return [key for key in keys if key not in unwanted]

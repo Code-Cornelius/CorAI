@@ -22,6 +22,9 @@ class Plot_estimator(Root_plot_estimator):
         The design choice that has been done is
         a plot estimator HAS an estimator that will be plotted.
 
+        One can use generate_title for creating the title of figures.
+        Overwrite draw.
+
     """
     # todo allow for other colormap, or not
     COLORMAP = AColorsetDiscrete('Dark2')
@@ -60,7 +63,7 @@ class Plot_estimator(Root_plot_estimator):
     # plotting methods
 
     @abstractmethod
-    def draw(self, separators=None, *args, **kwargs):
+    def draw(self, separators_plot=None, *args, **kwargs):
         """
         Semantics:
             drawing method for plotting the results.
@@ -74,18 +77,18 @@ class Plot_estimator(Root_plot_estimator):
                     no separators are present
                 - The keys (iterable) representing the unique identifiers for each group
         """
-        if separators is None:  # separators is either a list or None
-            separators = list(self.grouping_by)
+        if separators_plot is None:  # separators is either a list or None
+            separators_plot = list(self.grouping_by)
         else:
-            separators = separators + list(self.grouping_by)
-        if len(separators):  # >=1:
-            global_dict, keys = self.estimator.groupby(separators)
+            separators_plot = separators_plot + list(self.grouping_by)
+        if len(separators_plot):  # >=1:
+            global_dict, keys = self.estimator.groupby(separators_plot)
         else:  # =0
             global_dict, keys = self.estimator.df, [None]  # : keys is a list with None,
             # : it will be understood outside as take the whole estimator and do not use get_group.
             # : we do that because there is no way to use groupby to have a single groupbyDataframe.
 
-        return separators, global_dict, keys
+        return separators_plot, global_dict, keys
 
     @staticmethod
     def generate_title(parameters, parameters_value, before_text="", extra_text=None, extra_arguments=[]):
@@ -109,6 +112,7 @@ class Plot_estimator(Root_plot_estimator):
             the title.
 
         Examples:
+            #TODO TO WRITE
              generate_title(["$sigma$"], [3], before_text="The title", extra_text=None, extra_arguments=[])
              ->
              generate_title(["$sigma$", "\rho"], [3,0.5], before_text="", extra_text=None, extra_arguments=[])

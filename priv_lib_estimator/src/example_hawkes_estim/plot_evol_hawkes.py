@@ -26,10 +26,10 @@ class Evolution_plot_estimator_Hawkes(Graph_Estimator_Hawkes, Evolution_plot_est
     # data
 
 
-    def get_evolution_name_true_value(self, data):
+    def get_data2true_evolution(self, data):
         return self.get_evolution_name_specific_data(data, 'true value')
 
-    def get_evolution_name_plot_data(self, data):
+    def get_data2evolution(self, data):
         return self.get_evolution_name_specific_data(data, 'value')
 
 
