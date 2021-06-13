@@ -178,7 +178,10 @@ class Evolution_plot_estimator(Plot_estimator):
         separators, global_dict, keys = super().draw(separators=separators)
         estimation = self.get_evolution_name_unique_values(self.estimator.df)
         for key in keys:
-            data = global_dict.get_group(key)
+            if key is None:
+                data = global_dict
+            else:
+                data = global_dict.get_group(key)
             plot = APlot()
 
             # min and max
