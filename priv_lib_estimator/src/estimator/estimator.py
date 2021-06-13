@@ -269,22 +269,39 @@ class Estimator(object):
 
         return attrs
 
-    def groupby_DF(self, separators, order=True):
-        # TODO verify it does what one wants.
+
+    @staticmethod
+    def groupby_data(data, separators):
+        """
+        Semantics:
+            groupby the dataframe and retrieve the keys.
+
+        Args:
+            data (DataFrame): dataframe to groupby.
+            separators: list of strings by which we groupby.
+
+        Returns:
+            tuple with the groupby as well as the keys in order to iterate over it.
+
+        """
+        DataFrameGroupBy = data.groupby(separators)
+        return DataFrameGroupBy, DataFrameGroupBy.groups.keys()
+
+    def groupby(self, separators):
         """
         Semantics:
             groupby a DF.
 
         Args:
             separators: list of strings by which we groupby.
-            order: determines whether an ordering is done or not.
 
         Returns:
             tuple with the groupby as well as the keys in order to iterate over it.
 
+        Dependency:
+            groupby_data (static)
         """
-        DataFrameGroupBy = self.df.groupby(separators, order)
-        return DataFrameGroupBy, DataFrameGroupBy.groups.keys()
+        return Estimator.groupby_data(self.df, separators)
 
     @property
     def df(self):

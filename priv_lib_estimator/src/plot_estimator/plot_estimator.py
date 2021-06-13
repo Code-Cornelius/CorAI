@@ -66,20 +66,27 @@ class Plot_estimator(Root_plot_estimator):
         Semantics:
             drawing method for plotting the results.
         Args:
-            separators: if None given, the separators are the one of the object given at creation.
-            *args:
-            **kwargs:
+            separators (list of str): Columns to split the dataframe upon. It will be merged with the grouping_by of
+                the estimator
 
         Returns:
-
+            A triple:
+                - The separators (the separators received as input together with the grouping_by)
+                - The global_dict which is a grouping based on the separators or the complete dataframe if
+                no separators are present
+                - The keys (iterable) representing the unique identifiers for each group
         """
-        # todo GROUPING BY NO SEPATOR
-        if separators is None:
-            if self.grouping_by is None:
-                return None, self.estimator.df, [None]
+        if separators is None: # separators is either a list or None
+            separators = list(self.grouping_by)
+        else:
+            separators = separators + list(self.grouping_by)
+        if len(separators): # >=1:
+            global_dict, keys = self.estimator.groupby(separators)
+        else: # =0
+            global_dict, keys = self.estimator.df, [None] # : keys is a list with None,
+            # : it will be understood outside as take the whole estimator and do not use get_group.
+            # : we do that because there is no way to use groupby to have a single groupbyDataframe.
 
-            separators = self.grouping_by
-        global_dict, keys = self.estimator.groupby_DF(separators)
         return separators, global_dict, keys
 
     @staticmethod
@@ -175,7 +182,7 @@ class Plot_estimator(Root_plot_estimator):
     @grouping_by.setter
     def grouping_by(self, new_grouping_by):
         if new_grouping_by is None:
-            self._grouping_by = None
+            self._grouping_by = ()
             return
         if function_iterable.is_iterable(new_grouping_by):
             # TODO test whether the new_grouping_by is

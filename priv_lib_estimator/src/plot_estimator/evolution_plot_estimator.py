@@ -5,8 +5,7 @@ import numpy as np  # maths library and arrays
 
 # my libraries
 from priv_lib_util.tools import function_str
-from priv_lib_plot import APlot, AColorsetDiscrete
-from priv_lib_estimator.src.estimator.estimator import Estimator
+from priv_lib_plot import APlot
 from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
 
@@ -149,15 +148,24 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         pass
 
-    def draw(self, feature_to_draw, true_values_flag=False, envelope_flag=True,
-             separators=None, separator_colour=None):
+    def draw(self, feature_to_draw,
+             true_values_flag=False, envelope_flag=True,
+             separators=None, separator_colour=None, dict_plot_for_main_line={}, save_plot=True):
+        # TODO THE DOCUMENTATION HERE
         """
         Semantics:
             Draw the evolution_plot_estimator common behavior.
-    #TODO
+
         Args:
-            separators:
-            separator_colour: the column of the dataframe to consider for color discrimination
+            feature_to_draw (str): The column of the dataframe used to retrieve the data to draw
+            true_values_flag (bool): Flag to specify whether or not true values are pesent and should be drawn
+            envelope_flag (bool): Flag to specify whether or not to draw the min and max of the data
+            separators (list of str): List of columns to group by, this will generate a plot for the product of unique
+                elements in each column
+            separator_colour (str): The column used in order to draw multiple lines on the same plot for the data,
+                discriminating by this column
+            dict_plot_for_main_line (dict):
+            save_plot (bool): Flag to specify if the plot should be saved or not
 
         Returns:
 
@@ -175,7 +183,7 @@ class Evolution_plot_estimator(Plot_estimator):
         separators, global_dict, keys = super().draw(separators=separators)
         estimation = self.get_evolution_name_unique_values(self.estimator.df)
         for key in keys:
-            if key is None:
+            if key is None:  # case where we cannot use groupby.
                 data = global_dict
             else:
                 data = global_dict.get_group(key)
@@ -183,43 +191,59 @@ class Evolution_plot_estimator(Plot_estimator):
 
             # min and max
             if envelope_flag:
-                minimum, maximum = self.get_evolution_name_extremes(data, feature_to_draw)
-                plot.uni_plot(0, estimation, minimum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
-                                                                       "linewidth": 0.5, "label": "min",
-                                                                       'marker': ''})
-                plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
-                                                                       "linewidth": 0.5, "label": "max",
-                                                                       'marker': ''})
+                self.plot_min_max(data, estimation, feature_to_draw, plot)
             # true value line
             if true_values_flag:
-                true_values = self.get_evolution_name_true_value(data)
-                plot.uni_plot(0, estimation, true_values,
-                              dict_plot_param={"color": 'r', "linestyle": "solid", "linewidth": 0.4,
-                                               "label": "true value", 'marker': ''})
+                self.plot_true_value(data, estimation, plot)
 
-            # discriminating wrt another data
+            # discriminating wrt another column. The discrimination will look as different lines plotted.
             if separator_colour is None:
                 data = self.get_evolution_name_plot_data(data, feature_to_draw)
-                plot.uni_plot(0, estimation, data)
-            else:
-                estimator = Estimator(data)
-                coloured_dict, coloured_keys = estimator.groupby_DF([separator_colour])
+                plot.uni_plot(0, estimation, data, dict_plot_param=dict_plot_for_main_line)
+            else:  # separator colour given
+                coloured_dict, coloured_keys = self.estimator.groupby_data(data,separator_colour)
+                # : groupby the data and retrieve the keys.
 
                 for coloured_key, c in zip(coloured_keys, self.COLORMAP):
                     coloured_data = coloured_dict.get_group(coloured_key)
                     coloured_data = self.get_evolution_name_plot_data(coloured_data, feature_to_draw)
-                    plot.uni_plot(0, estimation, coloured_data,
-                                  dict_plot_param={"color": c, "linestyle": "solid", "linewidth": 1.1,
-                                                   "label": coloured_key})
 
-            fig_dict = self.get_default_dict_fig(separators, key)
-            plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis_y_axis=False)
-            plot.show_legend()
-            name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
-            plot.save_plot(name_save_file=name_file)
+                    dict_for_plot = {"color": c, "linestyle": "solid", "linewidth": 1.1,
+                                     "label": coloured_key}
+                    dict_for_plot.update(dict_plot_for_main_line)
+
+                    plot.uni_plot(0, estimation, coloured_data, dict_plot_param=dict_for_plot)
+                    # todo do not update in dict_plot_for_main_line color, linestyle and label.
+
+
+            self.plot_finalisation(key, plot, save_plot, separators)
 
         # either coloured keys have been defined or not. I retrieve them in order to know what color to put upon which kernel.
+        #todo
         if separator_colour is not None:
             return plot, coloured_keys
         else:
             return plot, None
+
+    def plot_finalisation(self, key, plot, save_plot, separators):
+        fig_dict = self.get_default_dict_fig(separators, key)
+        plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis_y_axis=False)
+        plot.show_legend()
+        if save_plot:
+            name_file = ''.join([function_str.tuple_to_str(key, '') if key is not None else '', 'evol_estimation'])
+            plot.save_plot(name_save_file=name_file)
+
+    def plot_true_value(self, data, estimation, plot):
+        true_values = self.get_evolution_name_true_value(data)
+        plot.uni_plot(0, estimation, true_values,
+                      dict_plot_param={"color": 'r', "linestyle": "solid", "linewidth": 0.4,
+                                       "label": "true value", 'marker': ''})
+
+    def plot_min_max(self, data, estimation, feature_to_draw, plot):
+        minimum, maximum = self.get_evolution_name_extremes(data, feature_to_draw)
+        plot.uni_plot(0, estimation, minimum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
+                                                               "linewidth": 0.5, "label": "min",
+                                                               'marker': ''})
+        plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
+                                                               "linewidth": 0.5, "label": "max",
+                                                               'marker': ''})

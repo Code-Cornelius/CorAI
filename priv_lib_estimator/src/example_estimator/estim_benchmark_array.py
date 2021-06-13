@@ -12,7 +12,7 @@ from priv_lib_estimator.src.estimator.estim_time import Estim_time
 
 class Estim_benchmark_array(Estim_time):
     NAMES_COLUMNS = Estim_time.NAMES_COLUMNS.copy()
-    NAMES_COLUMNS.update(('Array Size', 'Method'))
+    NAMES_COLUMNS.update(('Array Size', 'Method')) # add to the name_columns the specific columns.
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -36,7 +36,10 @@ class Plot_evol_benchmark_array(Plot_estim_benchmark_array, Evolution_plot_estim
 
     def get_default_dict_fig(self, grouped_data_by, key):
         # TODO it would be even better to change the ylabel for something ... I need to think about it
-        fig_dict = {'title': "Benchmark index & access vs enumerate & element",
+        fig_dict = {'title': "Benchmark, ",
                     'xlabel': self.EVOLUTION_NAME,
-                    'ylabel': 'Comput. Time'}
+                    'ylabel': 'Comput. Time',
+                    'xscale': 'log', 'yscale': 'log',
+                    'basex': 2, 'basey': 2
+                    }
         return fig_dict
