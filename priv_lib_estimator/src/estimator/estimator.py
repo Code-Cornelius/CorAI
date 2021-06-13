@@ -7,10 +7,6 @@ import json
 #  and a basic template fill.
 #  .
 #  making sure that it works.
-#  derive the subclasses :
-#         TIMING column of time, and other parameters
-#         HISTORY column no fixed columns but fields like validation , metrics, best epoch, paramereters for training
-#         COMPARATOR FOR TRAINING columns depend on the problem but mostly the loss.
 #
 # TODO: look at the plotting in a second time.
 from priv_lib_util.tools.src.function_json import zip_json, unzip_json
@@ -40,7 +36,7 @@ class Estimator(object):
         if df is not None:
             # test that the columns of the df are the right one, corresponding to the class argument.
             # the fact that we use self. ensures that we use polymorphism.
-            self.df = df # we do that first to check that it is a dataframe.
+            self.df = df  # we do that first to check that it is a dataframe.
             if self.NAMES_COLUMNS.issubset(df.columns):
                 super().__init__()
             else:
@@ -268,7 +264,6 @@ class Estimator(object):
             json.dump(df_info, file)
 
         return attrs
-
 
     @staticmethod
     def groupby_data(data, separators):

@@ -26,7 +26,6 @@ class Plot_estimator(Root_plot_estimator):
     # todo allow for other colormap, or not
     COLORMAP = AColorsetDiscrete('Dark2')
 
-
     def __init__(self, estimator, grouping_by=None, *args, **kwargs):
         """
         Args:
@@ -70,20 +69,19 @@ class Plot_estimator(Root_plot_estimator):
                 the estimator
 
         Returns:
-            A triple:
                 - The separators (the separators received as input together with the grouping_by)
                 - The global_dict which is a grouping based on the separators or the complete dataframe if
-                no separators are present
+                    no separators are present
                 - The keys (iterable) representing the unique identifiers for each group
         """
-        if separators is None: # separators is either a list or None
+        if separators is None:  # separators is either a list or None
             separators = list(self.grouping_by)
         else:
             separators = separators + list(self.grouping_by)
-        if len(separators): # >=1:
+        if len(separators):  # >=1:
             global_dict, keys = self.estimator.groupby(separators)
-        else: # =0
-            global_dict, keys = self.estimator.df, [None] # : keys is a list with None,
+        else:  # =0
+            global_dict, keys = self.estimator.df, [None]  # : keys is a list with None,
             # : it will be understood outside as take the whole estimator and do not use get_group.
             # : we do that because there is no way to use groupby to have a single groupbyDataframe.
 
@@ -91,6 +89,7 @@ class Plot_estimator(Root_plot_estimator):
 
     @staticmethod
     def generate_title(parameters, parameters_value, before_text="", extra_text=None, extra_arguments=[]):
+        # WIP Look at it, is it correct
         """
         Semantics:
             generate a title given the parameters. Essentially, the title looks like:
@@ -158,8 +157,8 @@ class Plot_estimator(Root_plot_estimator):
 
         """
         if data['true value'].nunique() != 1:
-            raise Exception(
-                "Error because you are estimating different parameters, but still compounding the MSE error together.")
+            raise Exception("Error because you are estimating different parameters, "
+                            "but still compounding the MSE error together.")
 
     # section ######################################################################
     #  #############################################################################
