@@ -1,12 +1,14 @@
+# normal libraries
 import time
-
-from priv_lib_util.tools.src.benchmarking import benchmark
 import pandas as pd
+
+# priv libraries
+from priv_lib_util.tools.src.benchmarking import benchmark
 
 # section ######################################################################
 #  #############################################################################
 # helper functions
-from priv_lib_estimator.src.example_estimator.estim_time_benchmark import Plot_evol_estim_benchmark_array, \
+from priv_lib_estimator.src.example_estimator.estim_benchmark_array import Plot_evol_benchmark_array, \
     Estim_benchmark_array
 
 
@@ -24,12 +26,12 @@ def elem_enum(arr):
 
 def benchmark_and_save(estim, func, method_name, number_of_reps=100, *args, **kwargs):
     time_dict = {"Method": [method_name] * number_of_reps,
-                 "N": [len(test_arr)] * number_of_reps,
-                 "TIME": []}
+                 "Array Size": [len(test_arr)] * number_of_reps,
+                 "Comput. Time": []}
 
     for i in range(number_of_reps):
         time = benchmark(func, number_of_rep=1, *args, **kwargs)
-        time_dict["TIME"].append(time)
+        time_dict["Comput. Time"].append(time)
 
     estim.append(pd.DataFrame(time_dict))
 
@@ -40,9 +42,10 @@ def benchmark_and_save(estim, func, method_name, number_of_reps=100, *args, **kw
 
 # prepare data
 import numpy as np
+
 TEST = True
 if TEST:
-    powers = np.array(range(7,12))
+    powers = np.array(range(7, 12))
 else:
     powers = np.array(range(7, 20))
 
@@ -56,8 +59,7 @@ for size in sizes:
     benchmark_and_save(estim, index_access, "index_access", arr=test_arr)
     benchmark_and_save(estim, elem_enum, "elem_enum", arr=test_arr)
 
-
 time.sleep(1)
-estim_hist = Plot_evol_estim_benchmark_array(estim)
+estim_hist = Plot_evol_benchmark_array(estim)
 
-estim_hist.draw(feature_to_draw='TIME', separator_colour='Method')
+estim_hist.draw(feature_to_draw='Comput. Time', separator_colour='Method')
