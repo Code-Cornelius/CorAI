@@ -3,7 +3,6 @@ import os
 
 from priv_lib_util.tools.src.function_json import zip_json
 
-import time
 
 def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):
     """
@@ -64,3 +63,17 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json", compress=F
         os.makedirs(directory_where_to_save)
     with open(file_name, 'w') as file:
         json.dump(parameter_options, file)
+
+
+
+def factory_fct_linked_path(ROOT_DIR, path_to_folder):
+    # example:
+    #   path_save_history = linked_path(['plots', f"best_score_{nb}"])
+    # and ROOT_DIR should be imported from a script at the root where it is written:
+        # import os
+        # ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    PATH_TO_ROOT = os.path.join(ROOT_DIR, path_to_folder)
+    def linked_path(path):
+        return os.path.join(PATH_TO_ROOT, *path)
+    return linked_path
+
