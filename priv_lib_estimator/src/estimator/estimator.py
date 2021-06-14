@@ -29,7 +29,7 @@ class Estimator(object):
         It is good practice to put the names of the columns / features in the class object, as a security.
     """
 
-    NAMES_COLUMNS = set()
+    CORE_COL = set()
 
     def __init__(self, df=None, *args, **kwargs):
         # args and kwargs for the child super() method.
@@ -37,13 +37,13 @@ class Estimator(object):
             # test that the columns of the df are the right one, corresponding to the class argument.
             # the fact that we use self. ensures that we use polymorphism.
             self.df = df  # we do that first to check that it is a dataframe.
-            if self.NAMES_COLUMNS.issubset(df.columns):
+            if self.CORE_COL.issubset(df.columns):
                 super().__init__()
             else:
                 raise Error_type_setter("Problem, the columns of the dataframe do not match the predefined ones.")
         # if no df, we create an empty one.
         else:
-            self.df = pd.DataFrame(columns=list(self.NAMES_COLUMNS))
+            self.df = pd.DataFrame(columns=list(self.CORE_COL))
             super().__init__()
 
     def __repr__(self):
@@ -310,3 +310,7 @@ class Estimator(object):
             self._df = new_df
         else:
             raise Error_type_setter('Argument is not an Dataframe.')
+
+    @property
+    def columns(self):
+        return self.df.columns

@@ -208,7 +208,10 @@ class Evolution_plot_estimator(Plot_estimator):
             get_default_dict_fig
         """
         separators_plot, global_dict, keys = super().draw(separators=separators_plot)
+        self.raise_if_separator_is_evolution(separators_plot) # test evolution_name is not part of separators.
+
         estimation = self.get_values_evolution_column(self.estimator.df)
+
         plots = []
         for key in keys:
             if key is None:  # case where we cannot use groupby.
@@ -274,3 +277,14 @@ class Evolution_plot_estimator(Plot_estimator):
         plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
                                                                "linewidth": 0.5, "label": "max",
                                                                'marker': ''})
+
+
+    # section ######################################################################
+    #  #############################################################################
+    # testing
+
+    def raise_if_separator_is_evolution(self, grouping_by):
+        # test evolution_name is not part of separators.
+        if self.EVOLUTION_COLUMN in grouping_by:
+            raise ValueError("One cannot put the EVOLUTION_COLUMN inside the separators.")
+        return

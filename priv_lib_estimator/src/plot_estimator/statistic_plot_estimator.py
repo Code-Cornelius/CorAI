@@ -87,8 +87,7 @@ class Statistic_plot_estimator(Plot_estimator):
             data = global_dict.get_group(key)
             estimator = Estimator(data.copy())
 
-            self.test_true_value(
-                data)  # test if there is only one true value i  the given sliced data.
+            self.is_true_value_unique(data)  # test if there is only one true value i  the given sliced data.
             # It could lead to potential big errors.
             estimator.apply_function_upon_data_store_it("value", computation_function, "computation",
                                                         true_parameter=estimator.DF["true value"].mean())

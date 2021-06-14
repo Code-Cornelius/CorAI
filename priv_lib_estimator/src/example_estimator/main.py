@@ -46,11 +46,11 @@ def benchmark_and_save(estim, func, method_name, number_of_reps=100, *args, **kw
 # prepare data
 import numpy as np
 
-TEST = False
+TEST = True
 if TEST:
     powers = np.array(range(6, 11))
 else:
-    powers = np.array(range(6, 17))
+    powers = np.array(range(6, 16))
 
 number_of_reps = 1000
 sizes = 2 ** powers
@@ -59,10 +59,9 @@ estim = Estim_benchmark_array()
 
 for size in tqdm(sizes):
     test_arr = list(range(size))
-    benchmark_and_save(estim, index_access, "index_access", arr=test_arr)
-    benchmark_and_save(estim, elem_enum, "elem_enum", arr=test_arr)
+    benchmark_and_save(estim, index_access, "index_access", arr=test_arr, number_of_reps =number_of_reps)
+    benchmark_and_save(estim, elem_enum, "elem_enum", arr=test_arr, number_of_reps =number_of_reps)
 
-# TODO NO INDEX
 estim.df = estim.df.reset_index(drop = True)
 time.sleep(1)
 plot_evol_estim = Plot_evol_benchmark_array(estim)
@@ -70,10 +69,9 @@ plot_evol_estim = Plot_evol_benchmark_array(estim)
 plot_evol_estim.draw(column_name_draw='Comput. Time', separator_colour='Method',
                      save_plot=False, dict_plot_for_main_line= {})
 
-
 plot_hist_estim = Plot_hist_benchmark_array(estim)
 plot_hist_estim.draw(feature_to_draw='Comput. Time', separators=['Method', "Array Size"],
                      separator_filter={'Method': ['elem_enum'],
                                        'Array Size': sizes[-3:]},
                      save_plot=False)
-APlot.show_plot()
+# APlot.show_plot()

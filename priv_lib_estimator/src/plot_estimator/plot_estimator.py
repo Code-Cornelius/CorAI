@@ -26,8 +26,8 @@ class Plot_estimator(Root_plot_estimator):
         Overwrite draw.
 
     """
-    # todo allow for other colormap, or not
-    COLORMAP = AColorsetDiscrete('Dark2')
+    COLORMAP = AColorsetDiscrete('Dark2') # colormap for all plots.
+    # it can be changed by self.COLORMAP; setting it allows to always use the same colormaps.
 
     def __init__(self, estimator, grouping_by=None, *args, **kwargs):
         """
@@ -91,50 +91,52 @@ class Plot_estimator(Root_plot_estimator):
         return separators_plot, global_dict, keys
 
     @staticmethod
-    def generate_title(parameters, parameters_value, before_text="", extra_text=None, extra_arguments=[]):
-        # WIP Look at it, is it correct
+    def generate_title(parameters, parameters_value, before_text='', extra_text=None, extra_arguments=[]):
         """
         Semantics:
             generate a title given the parameters. Essentially, the title looks like:
-                [before_text \n]
-                names[0]: values[0], ... names[n]: values[n]
-                [\n extra_text.format(*extra_arguments)]
-                .
+                [before_text \n]  (optional)
+                names[0]: values[0], ..., names[n]: values[n]
+                [\n extra_text.format(*extra_arguments)].  (optional)
+
+            Be careful with special characters.
 
         Args:
-            parameters: list of parameter we wish to put in the title
-            parameters_value: list of the values of the previous parameters
-            before_text: string
+            parameters: list of parameter we wish to put in the title.
+            parameters_value: list of the values of the previous parameters.
+            before_text: string.
             extra_text: string with some holes for extra_arguments.
             extra_arguments: the arguments to add to extra_text.
 
         Returns:
-            the title.
+            a string, the title.
 
         Examples:
-            #TODO TO WRITE
              generate_title(["$sigma$"], [3], before_text="The title", extra_text=None, extra_arguments=[])
-             ->
+             -> The title
+                sigma : 3.
              generate_title(["$sigma$", "\rho"], [3,0.5], before_text="", extra_text=None, extra_arguments=[])
-             ->
-             generate_title(["$sigma$", "\rho"], [3,0.5], before_text="", extra_text="first param. is {} and second {}.", extra_arguments=[3.000, 62])
-             ->
+             -> sigma : 3, rho : 0.5.
+             generate_title(["$sigma$", "\rho"], [3,0.5], before_text="", extra_text="first param. is {} and second {}", extra_arguments=[3.000, 62])
+             -> sigma : 3, rho : 0.5
+                first param. is 3.000 and second 62.
 
         """
         assert len(parameters) == len(parameters_value), "Parameters and parameters_value should have the same length."
         beg_title_with_new_line = before_text
-        # when a before text is given  I add to it a going to the line. Otherwise no need to jump.
-        if beg_title_with_new_line != "":
+        # when a before text is given,  carriage return. Otherwise no need for a newline.
+        if beg_title_with_new_line != '':
             beg_title_with_new_line = ''.join([beg_title_with_new_line, '\n'])
-        list_param = [strng for strng in function_iterable.
-            roundrobin(parameters,
+
+        # put parameters and parameters value together.
+        list_param = [strng for strng in function_iterable.roundrobin(parameters,
                        [": "] * len(parameters_value),
                        parameters_value,
                        [", "] * (len(parameters_value) - 1))
                       ]
         names_and_values = ''.join([str(elem) for elem in list_param])
-        # list_param is including ints and str so I need to convert them all before joining,
-        # since join requires only str.
+        # : list_param is including floats and str so I need to convert them all before joining,
+        # since join handles only str.
 
         if extra_text is not None:
             title = ''.join([beg_title_with_new_line, names_and_values, "\n", extra_text.format(*extra_arguments), '.'])
@@ -144,18 +146,19 @@ class Plot_estimator(Root_plot_estimator):
 
     # section ######################################################################
     #  #############################################################################
-    # data
+    # testing conditions
 
     @staticmethod
-    def test_true_value(data):
+    def is_true_value_unique(data):
         # TODO is it useful?
         """
-
-        test if there is only one true value in the given sliced data.
-        It could lead to potential big errors.
+        Semantics:
+            Test if there is only one true value in the given data.
+            The test should be done every time one uses true_value. It is
+            a routine check such that the program fails hard and fast.
 
         Args:
-            data: sliced data from estimator.DF
+            data (dataframe): the data where true value lies.
 
         Returns:
 
@@ -163,6 +166,10 @@ class Plot_estimator(Root_plot_estimator):
         if data['true value'].nunique() != 1:
             raise Exception("Error because you are estimating different parameters, "
                             "but still compounding the MSE error together.")
+
+    def is_grouping_by_subset_columns(self, grouping_by):
+        return set(grouping_by).issubset(self.estimator.columns)
+
 
     # section ######################################################################
     #  #############################################################################
@@ -184,12 +191,22 @@ class Plot_estimator(Root_plot_estimator):
 
     @grouping_by.setter
     def grouping_by(self, new_grouping_by):
+        # checks if the argument is a str, an iterable or is not a subset of the columns.
         if new_grouping_by is None:
-            self._grouping_by = ()
+            self._grouping_by = () # empty tuple, which is an iterable as required
             return
-        if function_iterable.is_iterable(new_grouping_by):
-            # TODO test whether the new_grouping_by is
-            #  a subset of the columns of the Estimator.
+
+        if isinstance(new_grouping_by, str): # strings are iterables.
+            raise Error_type_setter('grouping_by should be a list and not a string.')
+
+        if not function_iterable.is_iterable(new_grouping_by):
+            raise Error_type_setter('grouping_by is not an iterable.')
+
+        if self.is_grouping_by_subset_columns(new_grouping_by):
             self._grouping_by = new_grouping_by
         else:
-            raise Error_type_setter('Argument is not an iterable.')
+            raise Error_type_setter('grouping_by is not a subset of the dataframe given in estimator.')
+
+
+
+
