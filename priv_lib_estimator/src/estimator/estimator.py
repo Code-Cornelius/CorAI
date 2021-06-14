@@ -143,53 +143,53 @@ class Estimator(object):
         self.df[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
         return
 
-    def estimation_group_mean(self, columns_for_computation, keys_grouping=None):
-        # TODO verify it does what one wants.
-        """
-        Semantics:
-            empirical mean of the data separated with the keys keys_grouping at column name.
-        Args:
-            columns_for_computation: list of strings, which columns/feature are the means computed.
-            keys_grouping: list of strings, which keys should be considered to groupby data together.
-            If None, then no grouping by and mean computed on whole data.
-
-         Returns: return a df of the means.
-
-        Dependencies:
-            groupby_DF
-
-        """
-        if keys_grouping is None:
-            return self.df[columns_for_computation].mean()
-        else:
-            return self.groupby_DF(keys_grouping)[0][columns_for_computation].mean()
-            #                      keys are how we groupby
-            #                                    [0] because groupby hands back a tuple and we need the groups
-            #                                        which feature are we interested in.
-
-    def estimation_group_variance(self, columns_for_computation, keys_grouping=None, ddof=1):
-        # TODO verify it does what one wants.
-        """
-        Semantics: empirical variance of the data of the variance.
-
-        Args:
-            columns_for_computation:  list of strings, which columns/feature are the variances computed.
-            keys_grouping:  list of strings, which keys should be considered to groupby data together.
-                If None, then no grouping by and variance computed on whole data.
-            ddof: delta of degree of freedom, how much one normalize the results
-                (usually  you divide by (len data-1), this gives the
-                unbiased estimator of the variance if the mean is unknown).
-
-        Returns: normalized S^2
-
-        Dependencies:
-            groupby_DF
-
-        """
-        if keys_grouping is not None:
-            return self.groupby_DF(keys_grouping)[columns_for_computation].var(ddof=ddof)
-        else:
-            return self.df[columns_for_computation].var(ddof=ddof)
+    # def estimation_group_mean(self, columns_for_computation, keys_grouping=None):
+    #     # TODO verify it does what one wants.
+    #     """
+    #     Semantics:
+    #         empirical mean of the data separated with the keys keys_grouping at column name.
+    #     Args:
+    #         columns_for_computation: list of strings, which columns/feature are the means computed.
+    #         keys_grouping: list of strings, which keys should be considered to groupby data together.
+    #         If None, then no grouping by and mean computed on whole data.
+    #
+    #      Returns: return a df of the means.
+    #
+    #     Dependencies:
+    #         groupby_DF
+    #
+    #     """
+    #     if keys_grouping is None:
+    #         return self.df[columns_for_computation].mean()
+    #     else:
+    #         return self.groupby_DF(keys_grouping)[0][columns_for_computation].mean()
+    #         #                      keys are how we groupby
+    #         #                                    [0] because groupby hands back a tuple and we need the groups
+    #         #                                        for which feature are we interested in.
+    #
+    # def estimation_group_variance(self, columns_for_computation, keys_grouping=None, ddof=1):
+    #     # TODO verify it does what one wants.
+    #     """
+    #     Semantics: empirical variance of the data of the variance.
+    #
+    #     Args:
+    #         columns_for_computation:  list of strings, which columns/feature are the variances computed.
+    #         keys_grouping:  list of strings, which keys should be considered to groupby data together.
+    #             If None, then no grouping by and variance computed on whole data.
+    #         ddof: delta of degree of freedom, how much one normalize the results
+    #             (usually  you divide by (len data-1), this gives the
+    #             unbiased estimator of the variance if the mean is unknown).
+    #
+    #     Returns: normalized S^2
+    #
+    #     Dependencies:
+    #         groupby_DF
+    #
+    #     """
+    #     if keys_grouping is not None:
+    #         return self.groupby_DF(keys_grouping)[columns_for_computation].var(ddof=ddof)
+    #     else:
+    #         return self.df[columns_for_computation].var(ddof=ddof)
 
     def to_csv(self, path, **kwargs):
         # TODO verify it does what one wants.

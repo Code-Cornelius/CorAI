@@ -14,31 +14,13 @@ from priv_lib_error import Error_not_allowed_input
 # class
 
 
-class Estimator_Hawkes(Estimator):
-    SET_COLUMN_HAWKES = {'parameter', 'n', 'm', 'time estimation',
-                         'weight function', 'value', 'T_max', 'time_burn_in',
-                         'true value', 'number of guesses'}
+class Estimator_hawkes(Estimator):
+    CORE_COL = {'parameter', 'n', 'm', 'time estimation',
+                'weight function', 'value', 'T_max', 'time_burn_in',
+                'true value', 'number of guesses'}
 
-    # DF is a dataframe from pandas. Storing information inside is quite easy,
-    # easily printable and easy to collect back.
-    # once initialize, one can add values. Each row is one estimator
     def __init__(self, df=None, *args, **kwargs):
-        if df is not None:
-            # test that the columns of the DF are the right one, corresponding to the class argument.
-            if Estimator_Hawkes.SET_COLUMN_HAWKES.issubset(df.columns):
-                super().__init__(df, *args, **kwargs)
-            else:
-                raise Error_not_allowed_input("Problem, the columns of the dataframe do not match "
-                                              "the ones from the classical estimator hawkes.")
-        # if no df, we create an empty one.
-        else:
-            super().__init__(pd.DataFrame(columns=list(Estimator_Hawkes.SET_COLUMN_HAWKES)))
-
-    @classmethod
-    def from_path(cls, path):
-        # path has to be raw. with \\
-        df = pd.read_csv(path)
-        return cls(df)
+        super().__init__(df=df, *args, **kwargs)
 
     def mean(self, separator=None):
         """

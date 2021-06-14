@@ -39,7 +39,7 @@ class Displayable_plot(object, metaclass=Register):
 
 
         Args:
-            name_save_file: path and name of the image.
+            name_save_file: path and name of the image. No extension.
 
         Returns:
             nothing.
@@ -47,7 +47,7 @@ class Displayable_plot(object, metaclass=Register):
         directory_where_to_save = os.path.dirname(name_save_file)
         if not os.path.exists(directory_where_to_save):
             os.makedirs(directory_where_to_save)
-        plt.savefig(name_save_file + '.png', dpi=800)
+        plt.savefig(name_save_file + '.png', dpi=500)
         return
 
     def tight_layout(self):

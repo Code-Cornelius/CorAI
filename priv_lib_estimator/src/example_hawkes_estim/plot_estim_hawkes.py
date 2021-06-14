@@ -1,42 +1,52 @@
 # normal libraries
+import numpy as np
+import pandas as pd
+
 # my libraries
-from library_functions.tools.classical_functions_vectors import is_iterable
+from priv_lib_estimator import Plot_estimator
+from priv_lib_estimator.src.example_hawkes_estim.estim_hawkes import Estimator_hawkes
+from priv_lib_util.tools import function_iterable
 # errors:
+from priv_lib_error import Error_type_setter
 
 # other files
-from classes.class_estimator_hawkes import *
-from classes.class_kernel import *
 
 
 # batch_estimation is one dataframe with the estimators.
-class Graph_Estimator_Hawkes(Graph_Estimator):
-    SEPARATORS = ['parameter', 'm', 'n']
+class Plot_estim_hawkes(Plot_estimator):
+    CORE_COL = ['parameter', 'm', 'n']
 
-    def __init__(self, estimator_hawkes, fct_parameters, *args, **kwargs):
+    def __init__(self, estimator_hawkes, fct_parameters,
+                 number_of_estimations, range_estimation,
+                 *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
-        
-        if not isinstance(estimator_hawkes, Estimator_Hawkes):
-            raise Error_type_setter(f'Argument is not an {str(Estimator_Hawkes)}.')
-            
+
+        if not isinstance(estimator_hawkes, Estimator_hawkes):
+            raise Error_type_setter(f'Argument is not an {str(Estimator_hawkes)}.')
 
         super().__init__(estimator=estimator_hawkes, fct_parameters=fct_parameters,
-                         separators=Graph_Estimator_Hawkes.SEPARATORS,
+                         grouping_by=Estimator_hawkes.CORE_COL,
                          *args, **kwargs)
 
+        # fct_parameters = (fct_mu, fct_alpha, fct_beta) where
+        # fct_nu = vector(N),
+        # fct_alpha = matrix(N*N),
+        # fct_beta = matrix(N * N).
+        # all callable
+
         # parameters is a list of lists of lists of functions
-        self.M = np.shape(fct_parameters[1])[1]
+        self.M = len(fct_parameters[0])
+        self.NU = fct_parameters[0]
         self.ALPHA = fct_parameters[1]  # I split the ALPHA BETA AND NU instead
         self.BETA = fct_parameters[2]  # of one parameter fct_parameters because such names are more readable.
-        self.NU = fct_parameters[0]
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(self.BETA)) #Here is the parameter in full line, instead of matrix 3dimensions.
-        self.T_max = estimator_hawkes.DF["T_max"].max()
-        self.nb_of_guesses = estimator_hawkes.DF['number of guesses'].max()
+        self.range_estimation = range_estimation
+        self.number_of_estimations = number_of_estimations
 
     @classmethod
     def from_path(cls, path, parameters):
         # path has to be raw. with \\
-        estimator = Estimator_Hawkes()
-        estimator.append(pd.read_csv(path))
+        estimator = Estimator_hawkes(pd.read_csv(path))
         return cls(estimator_hawkes=estimator, fct_parameters=parameters)
 
 
@@ -50,12 +60,12 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
     @ALPHA.setter
     def ALPHA(self, new_ALPHA):
-        if is_iterable(new_ALPHA) and all([callable(new_ALPHA[i][j])
+        if function_iterable.is_iterable(new_ALPHA) and all([callable(new_ALPHA[i][j])
                                            for i in range(self.M) for j in range(self.M)]):
             # check if the new parameters is a list and if all of the inputs are functions
             self._ALPHA = new_ALPHA
         else:
-            raise Error_type_setter(f'Argument is not an function.')
+            raise Error_type_setter(f'alpha is not an function.')
 
     @property
     def BETA(self):
@@ -63,7 +73,7 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
     @BETA.setter
     def BETA(self, new_BETA):
-        if is_iterable(new_BETA) and all([callable(new_BETA[i][j])
+        if function_iterable.is_iterable(new_BETA) and all([callable(new_BETA[i][j])
                                           for i in range(self.M) for j in range(self.M)]):
             # check if the new parameters is a list and if all of the inputs are functions
             self._BETA = new_BETA
@@ -76,22 +86,11 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
 
     @NU.setter
     def NU(self, new_NU):
-        if is_iterable(new_NU) and all([callable(new_NU[i]) for i in range(self.M)]):
+        if function_iterable.is_iterable(new_NU) and all([callable(new_NU[i]) for i in range(self.M)]):
             # check if the new parameters is a list and if all of the inputs are functions
             self._NU = new_NU
         else:
             raise Error_type_setter(f'Argument is not an function.')
-
-    @property
-    def T_max(self):
-        return self._T_max
-
-    @T_max.setter
-    def T_max(self, new_T_max):
-        if isinstance(new_T_max, float):
-                self._T_max = new_T_max
-        else:
-            raise Error_type_setter(f'Argument is not an {str(float)}.')
 
 
     @property
@@ -105,4 +104,23 @@ class Graph_Estimator_Hawkes(Graph_Estimator):
                 self._nb_of_guesses = new_nb_of_guesses
         else:
             raise Error_type_setter(f'Argument is not an {str(int)}.')
+
+
+    @property
+    def range_estimation(self):
+        return self._range_estimation
+
+    @range_estimation.setter
+    def range_estimation(self, new_range_estimation):
+        # checks in order:
+            # being a tuple, length == 2, elements are ints or floats.
+        if isinstance(new_range_estimation, tuple):
+            if len(new_range_estimation) != 2:
+                raise Error_type_setter(f"range_estimation must be length 2.")
+            for elmt in new_range_estimation:
+                if not isinstance(elmt,(int,float)):
+                    raise Error_type_setter(f"range_estimation's elements must be floats or integers.")
+                self._range_estimation = new_range_estimation
+        else:
+            raise Error_type_setter(f"range_estimation is not an {str(tuple)}.")
 
