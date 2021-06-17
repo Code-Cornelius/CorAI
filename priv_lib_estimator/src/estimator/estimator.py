@@ -125,6 +125,9 @@ class Estimator(object):
         """
         self.df = self.df.append(appending_df, *args, **kwargs)
 
+        # Ensure uniqueness of the indices
+        self.df.reset_index(drop=True, inplace=True)
+
     def apply_function_upon_data(self, separators, fct, **kwargs):
         # TODO verify it does what one wants.
         """
