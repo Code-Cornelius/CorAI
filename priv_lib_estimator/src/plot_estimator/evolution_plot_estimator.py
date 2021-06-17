@@ -178,7 +178,7 @@ class Evolution_plot_estimator(Plot_estimator):
         pass
 
     def draw(self, column_name_draw, true_values_flag=False, envelope_flag=True, separators_plot=None,
-             separator_colour=None, dict_plot_for_main_line={}, save_plot=True):
+             separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None):
         """
         Semantics:
             Draw the evolution_plot_estimator common behavior.
@@ -192,7 +192,7 @@ class Evolution_plot_estimator(Plot_estimator):
             separator_colour (str): The column used in order to draw multiple lines on the same plot for the data,
                 discriminating by this column
             dict_plot_for_main_line (dict): additional parameters for the plot (evolution line).
-            save_plot (bool): Flag to specify if the plot should be saved or not
+            path_save_plot (str): Path to specify where the plot should be saved. Not saved if is None.
 
         Returns:
 
@@ -221,7 +221,8 @@ class Evolution_plot_estimator(Plot_estimator):
             plot = APlot()
             plots.append(plot)
 
-            # allow groups to have different ranges for xx
+            # allow groups to have different ranges for xx.
+            # This arr contains all unique values, and so covers all cases from coloured key.
             evolution_xx = self.get_values_evolution_column(data)
 
             # min and max
@@ -241,6 +242,10 @@ class Evolution_plot_estimator(Plot_estimator):
 
                 for coloured_key, c in zip(coloured_keys, self.COLORMAP):
                     coloured_data = coloured_dict.get_group(coloured_key)
+                    evolution_xx = self.get_values_evolution_column(coloured_data)
+                    # : allow groups to have different ranges for xx.
+                    # : If each coloured_data has difference ranges, it is important!
+
                     coloured_data = self.get_data2evolution(coloured_data, column_name_draw)
 
                     dict_for_plot = {"color": c, "linestyle": "solid", "linewidth": 1.1,
@@ -249,7 +254,7 @@ class Evolution_plot_estimator(Plot_estimator):
 
                     plot.uni_plot(0, evolution_xx, coloured_data, dict_plot_param=dict_for_plot)
 
-            self._plot_finalisation(key, plot, save_plot, separators_plot)
+            self._plot_finalisation(key, plot, path_save_plot, separators_plot)
 
         # either coloured keys have been defined or not. I retrieve them in order to know what color to put upon which kernel.
         if separator_colour is not None:
@@ -257,11 +262,13 @@ class Evolution_plot_estimator(Plot_estimator):
         else:
             return plots, None
 
-    def _plot_finalisation(self, key, plot, save_plot, separators):
+    def _plot_finalisation(self, key, plot, path_save_plot, separators):
         fig_dict = self.get_default_dict_fig(separators, key)
         plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis_y_axis=False)
         plot.show_legend()
-        if save_plot:
+        # TODO PROBLEM WHEN KEY IS NONE Le chemin d’accès spécifié est introuvable: ''
+        # PROBLEM IN THE LOGIC
+        if path_save_plot is not None:
             name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
             plot.save_plot(name_save_file=name_file)
 
