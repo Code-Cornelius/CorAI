@@ -70,8 +70,8 @@ Examples:
 #         - labels when both axis are on the same graph, see if there is any comments about it and change it to adapt the new behavior.
 #         - verify that if I acces an nb_ax, I also check that the number is correct!
 #         - put the test at the bottom into a right test.
+#   - when dict of parameters given, mention if some are unused.
 
-# TODO when error in plotter not matching size print the sizes!
 
 """
 For now are supported the features:

@@ -17,7 +17,6 @@ from priv_lib_plot import APlot
 
 class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimator):
     EVOLUTION_NAME = 'time estimation'
-    NB_OF_KERNELS_DRAWN = 14
 
     def __init__(self, estimator_hawkes, fct_parameters, *args, **kwargs):
         # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
@@ -39,11 +38,15 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
     # plot
 
     def get_dict_fig(self, separators, key):
-        title = self.generate_title(names=separators,
-                                    values=key,
+        # TODO LOOK AT THE TITLE
+        title = self.generate_title(parameters=separators,
+                                    parameters_value=key,
                                     before_text="",
-                                    extra_text="Only 5-95% of the interval is shown, batches of {} simulations, time: 0 until {}",
-                                    extra_arguments=[self.nb_of_guesses, self.T_max])
+                                    extra_text="Only 5-95% of the interval is shown, batches of {} simulations, time: {} until {}",
+                                    extra_arguments=[self.nb_of_guesses,
+                                                     self.range_estimation[0],
+                                                     self.range_estimation[1]])
+
         fig_dict = {'title': "Evolution of the estimation, " + title,
                     'xlabel': 'Time',
                     'ylabel': "Estimation"}
@@ -97,7 +100,8 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
                 plot.save_plot(name_save_file=name_file)
 
 
-#
+# TODO the following is the case where we plot multiple kernels but only once in the middle.
+#  It is a very specific case where we compare kernels, not sure if useful anymore.
 # elif one_kernel_plot_param is not None:
 #     list_of_kernels, Time = one_kernel_plot_param
 #

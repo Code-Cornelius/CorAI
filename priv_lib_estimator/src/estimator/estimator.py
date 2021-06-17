@@ -64,6 +64,47 @@ class Estimator(object):
         """
         return cls(pd.read_csv(path))  # calling the constructor of the class.
 
+    @classmethod
+    def from_json(cls, path):
+        """
+            Read json dataframe an return the object
+        Args:
+            path: The path where to retrieve the dataframe from
+
+        Returns:
+            Void
+        """
+        dataframe = pd.read_json(path, orient='split')
+        return cls(dataframe)
+
+    @staticmethod
+    def from_json_attributes(path, compress):
+        """
+            Retrieve extra attributes from the json and write it back to the file
+        Args:
+            path: The path to the file
+            compress: Whether or not compression is applied
+
+        Returns:
+
+        """
+        with open(path, 'r') as file:
+            df_info = json.load(file)
+            if compress:
+                df_info = unzip_json(df_info)
+            attrs = df_info['attrs']
+            del df_info['attrs']
+
+        with open(path, 'w') as file:
+            json.dump(df_info, file)
+
+        return attrs
+    
+    # section ######################################################################
+    #  #############################################################################
+    # Methods
+    
+
     def append(self, appending_df, *args, **kwargs):
         # TODO verify it does what one wants.
         """
@@ -191,11 +232,16 @@ class Estimator(object):
     #     else:
     #         return self.df[columns_for_computation].var(ddof=ddof)
 
+
+    # section ######################################################################
+    #  #############################################################################
+    # Save methods
+    
     def to_csv(self, path, **kwargs):
-        # TODO verify it does what one wants.
         """
         Semantics:
             void adaptor of the method to_csv from dataframes.
+            Does not save the attributes. For this, use to_json.
 
         Args:
             path: path where the dataframe of the estimator is saved.
@@ -229,41 +275,7 @@ class Estimator(object):
         with open(path, 'w') as file:
             json.dump(parsed, file)
 
-    @classmethod
-    def from_json(cls, path):
-        """
-            Read json dataframe an return the object
-        Args:
-            path: The path where to retrieve the dataframe from
 
-        Returns:
-            Void
-        """
-        dataframe = pd.read_json(path, orient='split')
-        return cls(dataframe)
-
-    @staticmethod
-    def get_estim_attrs_from_json(path, compress):
-        """
-            Retrieve extra attributes from the json and write it back to the file
-        Args:
-            path: The path to the file
-            compress: Whether or not compression is applied
-
-        Returns:
-
-        """
-        with open(path, 'r') as file:
-            df_info = json.load(file)
-            if compress:
-                df_info = unzip_json(df_info)
-            attrs = df_info['attrs']
-            del df_info['attrs']
-
-        with open(path, 'w') as file:
-            json.dump(df_info, file)
-
-        return attrs
 
     @staticmethod
     def groupby_data(data, separators):
