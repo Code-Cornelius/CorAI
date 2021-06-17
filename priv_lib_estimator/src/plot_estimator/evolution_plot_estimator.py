@@ -210,8 +210,6 @@ class Evolution_plot_estimator(Plot_estimator):
         separators_plot, global_dict, keys = super().draw(separators=separators_plot)
         self.raise_if_separator_is_evolution(separators_plot) # test evolution_name is not part of separators.
 
-        estimation = self.get_values_evolution_column(self.estimator.df)
-
         plots = []
         for key in keys:
             if key is None:  # case where we cannot use groupby.
@@ -223,17 +221,20 @@ class Evolution_plot_estimator(Plot_estimator):
             plot = APlot()
             plots.append(plot)
 
+            # allow groups to have different ranges for xx
+            evolution_xx = self.get_values_evolution_column(data)
+
             # min and max
             if envelope_flag:
-                self._plot_min_max(data, estimation, column_name_draw, plot)
+                self._plot_min_max(data, evolution_xx, column_name_draw, plot)
             # true value line
             if true_values_flag:
-                self._plot_true_value(data, estimation, plot)
+                self._plot_true_value(data, evolution_xx, plot)
 
             # discriminating wrt another column. The discrimination will look as different lines plotted.
             if separator_colour is None:
                 data = self.get_data2evolution(data, column_name_draw)
-                plot.uni_plot(0, estimation, data, dict_plot_param=dict_plot_for_main_line)
+                plot.uni_plot(0, evolution_xx, data, dict_plot_param=dict_plot_for_main_line)
             else:  # separator colour given
                 coloured_dict, coloured_keys = self.estimator.groupby_data(data, separator_colour)
                 # : groupby the data and retrieve the keys.
@@ -246,7 +247,7 @@ class Evolution_plot_estimator(Plot_estimator):
                                      "label": coloured_key}
                     dict_for_plot.update(dict_plot_for_main_line)
 
-                    plot.uni_plot(0, estimation, coloured_data, dict_plot_param=dict_for_plot)
+                    plot.uni_plot(0, evolution_xx, coloured_data, dict_plot_param=dict_for_plot)
 
             self._plot_finalisation(key, plot, save_plot, separators_plot)
 
