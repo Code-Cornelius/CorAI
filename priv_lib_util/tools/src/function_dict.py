@@ -116,3 +116,30 @@ def filter(names, keys, filter_rules):
                     unwanted.append(key)
 
     return [key for key in keys if key not in unwanted]
+
+
+"""
+example:
+
+parameterstest = {'SEED': [42],
+                  'HIDDEN_SIZES': [[16, 16, 32, 32, 16, 8],
+                                   [8, 16, 8, 4]],
+                  'ACTIVATION_FUNCTIONS': [['Tanh', 'Celu', 'Tanh', 'Celu', 'Celu', 'Celu']],
+                  'BATCH_SIZE': [0],
+                  'DROPOUT': [0.],
+                  'OPTIMISER': ['Adam'],
+                  'DICT_OPTIMISER': [{'lr': 0.001, 'weight_decay': 1E-8}]
+                  }
+
+if __name__ == '__main__':
+    # convert them to the product
+    product_param = function_dict.parameter_product(parametersTASK3_1)
+    # write them down with the given name
+    path = "Task3/data/parameters_grid_search.json"
+    function_writer.list_of_dicts_to_json(product_param, file_name=path)
+    print(f"File {path} has been updated.")
+    print(f"    Number of configurations: {len(product_param)}.")
+
+
+
+"""

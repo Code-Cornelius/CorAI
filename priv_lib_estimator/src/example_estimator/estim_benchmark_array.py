@@ -35,8 +35,7 @@ class Plot_evol_benchmark_array(Plot_estim_benchmark_array, Evolution_plot_estim
         return
 
     def get_data2evolution(self, data, feature_to_draw):
-        return Plot_evol_benchmark_array.get_data2group_sliced(data,
-                                                               feature_to_draw).mean().to_numpy()
+        return self.get_data2group_sliced(data, feature_to_draw).mean().to_numpy()
 
     def get_default_dict_fig(self, grouped_data_by, key=None):
         # TODO it would be even better to change the ylabel for something ... I need to think about it

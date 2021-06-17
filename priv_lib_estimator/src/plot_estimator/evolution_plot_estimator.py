@@ -208,7 +208,7 @@ class Evolution_plot_estimator(Plot_estimator):
             get_default_dict_fig
         """
         separators_plot, global_dict, keys = super().draw(separators=separators_plot)
-        self.raise_if_separator_is_evolution(separators_plot) # test evolution_name is not part of separators.
+        self._raise_if_separator_is_evolution(separators_plot) # test evolution_name is not part of separators.
 
         estimation = self.get_values_evolution_column(self.estimator.df)
 
@@ -283,7 +283,7 @@ class Evolution_plot_estimator(Plot_estimator):
     #  #############################################################################
     # testing
 
-    def raise_if_separator_is_evolution(self, grouping_by):
+    def _raise_if_separator_is_evolution(self, grouping_by):
         # test evolution_name is not part of separators.
         if self.EVOLUTION_COLUMN in grouping_by:
             raise ValueError("One cannot put the EVOLUTION_COLUMN inside the separators.")
