@@ -313,6 +313,9 @@ class Estimator(object):
         """
         return Estimator.groupby_data(self.df, separators)
 
+    def contains(self, column):
+        return column in self.df.columns
+
     @property
     def df(self):
         # getter for df.
