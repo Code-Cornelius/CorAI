@@ -55,7 +55,7 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
     def draw(self, feature_to_draw, kernels_to_plot=None,
              true_values_flag=False, envelope_flag=True,
              separators=None, separator_colour=None,
-             save_plot=True, name_file ='image'):
+             save_plot=True, name_file='image'):
 
         #                   kernel_plot_param=None, one_kernel_plot_param=None, all_kernels_drawn=False)
 
@@ -90,15 +90,14 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
                     yy = kernel.eval(tt,
                                      center_time)  # TODO FALSE WHAT I AM WRITING HERE MISSING AN ARG, regarding kernel
                     plot.uni_plot_ax_bis(nb_ax=0, xx=tt[0], yy=yy[0],
-                                          dict_plot_param={"color": "m", "markersize": 0, "linewidth": 0.4,
-                                                           "linestyle": "--"})
+                                         dict_plot_param={"color": "m", "markersize": 0, "linewidth": 0.4,
+                                                          "linestyle": "--"})
                     # plot line on the x center of the kernel
                     lim_ = plots.axs[0].get_ylim()
                     plot.plot_vertical_line(center_time, np.linspace(0, lim_[-1] * 0.92, 5), nb_ax=0,
-                                             dict_plot_param={"color": "k", "markersize": 0, "linewidth": 0.2,
-                                                              "linestyle": "--"})
+                                            dict_plot_param={"color": "k", "markersize": 0, "linewidth": 0.2,
+                                                             "linestyle": "--"})
                 plot.save_plot(name_save_file=name_file)
-
 
 # TODO the following is the case where we plot multiple kernels but only once in the middle.
 #  It is a very specific case where we compare kernels, not sure if useful anymore.

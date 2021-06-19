@@ -2,13 +2,6 @@ import pandas as pd
 from priv_lib_error import Error_type_setter
 import json
 
-# TODO:
-#  write the template the idea of how to use them
-#  and a basic template fill.
-#  .
-#  making sure that it works.
-#
-# TODO: look at the plotting in a second time.
 from priv_lib_util.tools.src.function_json import zip_json, unzip_json
 
 

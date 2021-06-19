@@ -13,11 +13,9 @@ from priv_lib_plot import APlot
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
 class Statistic_plot_estimator(Plot_estimator):
-    def __init__(self, estimator, separators=None, *args, **kwargs):
-        super().__init__(estimator, separators, *args, **kwargs)
+    def __init__(self, estimator, grouping_by=None, *args, **kwargs):
+        super().__init__(estimator, grouping_by, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
@@ -82,17 +80,16 @@ class Statistic_plot_estimator(Plot_estimator):
         """
         separators, global_dict, keys = super().draw(separators=separators)
 
-        comp_sum = np.zeros(self.estimator.DF[name_column_evolution].nunique())
+        comp_sum = np.zeros(self.estimator.df[name_column_evolution].nunique())
         for key in keys:
             data = global_dict.get_group(key)
             estimator = Estimator(data.copy())
 
             self.is_true_value_unique(data)  # test if there is only one true value i  the given sliced data.
-            # It could lead to potential big errors.
             estimator.apply_function_upon_data_store_it("value", computation_function, "computation",
-                                                        true_parameter=estimator.DF["true value"].mean())
+                                                        true_parameter=estimator.df["true value"].mean())
 
-            comp_sum += estimator.DF.groupby([name_column_evolution])["computation"].sum()  # .values
+            comp_sum += estimator.df.groupby([name_column_evolution])["computation"].sum()  # .values
 
         TIMES_plot = self.rescale_time_plot(mini_T, times)
         comp_sum = self.rescale_sum(comp_sum, times).values

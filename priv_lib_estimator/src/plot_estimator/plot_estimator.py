@@ -1,11 +1,11 @@
 # normal libraries
-import pandas as pd
 from abc import abstractmethod
 
-# my libraries
-from priv_lib_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
+import pandas as pd
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator.src.estimator.estimator import Estimator
+# my libraries
+from priv_lib_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
 from priv_lib_plot import AColorsetDiscrete
 from priv_lib_util.tools import function_iterable
 
@@ -26,7 +26,8 @@ class Plot_estimator(Root_plot_estimator):
         Overwrite draw.
 
     """
-    COLORMAP = AColorsetDiscrete('Dark2') # colormap for all plots.
+    COLORMAP = AColorsetDiscrete('Dark2')  # colormap for all plots.
+
     # it can be changed by self.COLORMAP; setting it allows to always use the same colormaps.
 
     def __init__(self, estimator, grouping_by=None, *args, **kwargs):
@@ -130,9 +131,9 @@ class Plot_estimator(Root_plot_estimator):
 
         # put parameters and parameters value together.
         list_param = [strng for strng in function_iterable.roundrobin(parameters,
-                       [": "] * len(parameters_value),
-                       parameters_value,
-                       [", "] * (len(parameters_value) - 1))
+                                                                      [": "] * len(parameters_value),
+                                                                      parameters_value,
+                                                                      [", "] * (len(parameters_value) - 1))
                       ]
         names_and_values = ''.join([str(elem) for elem in list_param])
         # : list_param is including floats and str so I need to convert them all before joining,
@@ -170,7 +171,6 @@ class Plot_estimator(Root_plot_estimator):
     def is_grouping_by_subset_columns(self, grouping_by):
         return set(grouping_by).issubset(self.estimator.columns)
 
-
     # section ######################################################################
     #  #############################################################################
     # getters and setters.
@@ -193,10 +193,10 @@ class Plot_estimator(Root_plot_estimator):
     def grouping_by(self, new_grouping_by):
         # checks if the argument is a str, an iterable or is not a subset of the columns.
         if new_grouping_by is None:
-            self._grouping_by = () # empty tuple, which is an iterable as required
+            self._grouping_by = ()  # empty tuple, which is an iterable as required
             return
 
-        if isinstance(new_grouping_by, str): # strings are iterables.
+        if isinstance(new_grouping_by, str):  # strings are iterables.
             raise Error_type_setter('grouping_by should be a list and not a string.')
 
         if not function_iterable.is_iterable(new_grouping_by):
@@ -206,7 +206,3 @@ class Plot_estimator(Root_plot_estimator):
             self._grouping_by = new_grouping_by
         else:
             raise Error_type_setter('grouping_by is not a subset of the dataframe given in estimator.')
-
-
-
-

@@ -1,12 +1,12 @@
 # normal libraries
 from abc import abstractmethod
-from matplotlib import pyplot as plt  # plotting
-import numpy as np  # maths library and arrays
 
+import numpy as np  # maths library and arrays
+from matplotlib import pyplot as plt  # plotting
+from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
+from priv_lib_plot import APlot
 # my libraries
 from priv_lib_util.tools import function_str
-from priv_lib_plot import APlot
-from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 
 
 # errors:
@@ -208,7 +208,7 @@ class Evolution_plot_estimator(Plot_estimator):
             get_default_dict_fig
         """
         separators_plot, global_dict, keys = super().draw(separators=separators_plot)
-        self._raise_if_separator_is_evolution(separators_plot) # test evolution_name is not part of separators.
+        self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
 
         plots = []
         for key in keys:
@@ -285,7 +285,6 @@ class Evolution_plot_estimator(Plot_estimator):
         plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
                                                                "linewidth": 0.5, "label": "max",
                                                                'marker': ''})
-
 
     # section ######################################################################
     #  #############################################################################
