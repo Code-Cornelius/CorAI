@@ -1,3 +1,4 @@
+import unittest
 from unittest import TestCase
 from priv_lib_estimator import Estimator
 
@@ -49,6 +50,8 @@ class Test_Estimator(TestCase):
     def test_apply_function_upon_data_store_it(self):
         pass
 
+    # todo loop into estimator group mean
+    @unittest.skip
     def test_estimator_mean(self):
         keys_grouping = [None, ['People'], ['People', 'number_rooms']]
         solution = [[3500], [1966 + 2 / 3, 1600, 10000], [1700, 2500, 1600, 10000]]
