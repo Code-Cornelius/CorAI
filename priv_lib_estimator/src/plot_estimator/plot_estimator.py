@@ -64,7 +64,7 @@ class Plot_estimator(Root_plot_estimator):
     # plotting methods
 
     @abstractmethod
-    def draw(self, separators_plot=None, not_use_grouping_by = False, *args, **kwargs):
+    def draw(self, separators_plot=None, not_use_grouping_by=False, *args, **kwargs):
         """
         Semantics:
             drawing method for plotting the results.

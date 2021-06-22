@@ -61,7 +61,7 @@ class Plot_evol_hawkes_mseerror(Plot_estim_hawkes, Evolution_plot_estimator):
                      separators_plot=separators_plot,
                      separator_colour=separator_colour,
                      path_save_plot=path_save_plot,
-                     dict_plot_for_main_line ={"linewidth": 2},
+                     dict_plot_for_main_line={"linewidth": 2},
                      not_use_grouping_by=True,
                      *args, **kwargs)
         # todo verify that for each time, unique MSE.

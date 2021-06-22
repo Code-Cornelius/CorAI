@@ -34,7 +34,7 @@ class Plot_hist_hawkes(Plot_estim_hawkes, Histogram_estimator):
         """
         variable = key[0]
         if variable == "nu":
-            return 0. , 1.5 * mean
+            return 0., 1.5 * mean
         else:
             return 0.6 * mean, 1.4 * mean
 

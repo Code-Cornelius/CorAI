@@ -1,7 +1,5 @@
 # normal libraries
-from abc import ABC, ABCMeta
-
-import numpy as np  # maths library and arrays
+from abc import ABCMeta
 
 # my libraries
 

@@ -1,13 +1,10 @@
 # normal libraries
 from abc import abstractmethod
 
-import numpy as np  # maths library and arrays
-from matplotlib import pyplot as plt  # plotting
-from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
-from priv_lib_plot import APlot
 # my libraries
 from priv_lib_util.tools import function_str
-
+from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
+from priv_lib_plot import APlot
 
 # errors:
 
