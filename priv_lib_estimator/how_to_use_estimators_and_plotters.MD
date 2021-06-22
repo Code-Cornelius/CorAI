@@ -12,7 +12,7 @@ data.
 # ESTIMATORS
 
 # ESTIM. PLOTTERS
-
+todo : the order of inheritance has some importance. It has an impact at ....
 The convention is:
 
 Class | Naming Convention | 

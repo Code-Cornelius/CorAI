@@ -1,4 +1,3 @@
 from .evolution_plot_estimator import Evolution_plot_estimator
 from .histogram_estimator import Histogram_estimator
 from .plot_estimator import Plot_estimator
-from .statistic_plot_estimator import Statistic_plot_estimator

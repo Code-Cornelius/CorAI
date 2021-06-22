@@ -64,13 +64,14 @@ class Plot_estimator(Root_plot_estimator):
     # plotting methods
 
     @abstractmethod
-    def draw(self, separators_plot=None, *args, **kwargs):
+    def draw(self, separators_plot=None, not_use_grouping_by = False, *args, **kwargs):
         """
         Semantics:
             drawing method for plotting the results.
         Args:
             separators (list of str): Columns to split the dataframe upon. It will be merged with the grouping_by of
                 the estimator
+            not_use_grouping_by (bool): if true, then draw does not separate wrt self.grouping_by.
 
         Returns:
                 - The separators (the separators received as input together with the grouping_by)
@@ -79,9 +80,16 @@ class Plot_estimator(Root_plot_estimator):
                 - The keys (iterable) representing the unique identifiers for each group
         """
         if separators_plot is None:  # separators is either a list or None
-            separators_plot = list(self.grouping_by)
+            if not_use_grouping_by:
+                separators_plot = []
+            else:
+                separators_plot = list(self.grouping_by)
+        # separators not None
         else:
-            separators_plot = separators_plot + list(self.grouping_by)
+            separators_plot = separators_plot
+            if not not_use_grouping_by:
+                separators_plot += list(self.grouping_by)
+
         if len(separators_plot):  # >=1:
             global_dict, keys = self.estimator.groupby(separators_plot)
         else:  # =0

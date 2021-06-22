@@ -2,22 +2,16 @@
 
 
 # my libraries
-from library_classes.estimators.graphs.class_histogram_estimator import *
 
 # other files
-from classes.class_estimator_hawkes import *
+from priv_lib_estimator import Histogram_estimator
+from priv_lib_estimator.src.example_hawkes_estim.plot_estim_hawkes import Plot_estim_hawkes
 
 
-# batch_estimation is one dataframe with the estimators.
-from classes.graphs.class_graph_estimator_hawkes import Graph_Estimator_Hawkes
-
-
-class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
+class Plot_hist_hawkes(Plot_estim_hawkes, Histogram_estimator):
     NB_OF_BINS = 60
 
     def __init__(self, estimator, fct_parameters, *args, **kwargs):
-        # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
-        # Initialise the Graph with the estimator
 
         super().__init__(estimator, fct_parameters, *args, **kwargs)
 
@@ -40,14 +34,13 @@ class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
         """
         variable = key[0]
         if variable == "nu":
-            return 0.1, 1.5 * mean
+            return 0. , 1.5 * mean
         else:
             return 0.6 * mean, 1.4 * mean
 
-    # TODO: make more general -- don't assume that the name will always be the first
     def get_dict_param(self, key, mean):
         my_range = self.get_range(key, mean)
-        dict_param = {'bins': Histogram_estimator_Hawkes.NB_OF_BINS,
+        dict_param = {'bins': Plot_hist_hawkes.NB_OF_BINS,
                       'label': 'Histogram',
                       'color': 'green',
                       'range': my_range,
@@ -56,10 +49,10 @@ class Histogram_estimator_Hawkes(Graph_Estimator_Hawkes, Histogram_estimator):
         return dict_param
 
     def get_dict_fig(self, separators, key):
-        title = self.generate_title(names=separators, values=key,
+        title = self.generate_title(parameters=separators, parameters_value=key,
                                     before_text="Histogram for the estimator of a Hawkes Process;",
                                     extra_text="Time of simulation {}", extra_arguments=[self.T_max])
         fig_dict = {'title': title,
-                    'xlabel': "Estimation",
+                    'xlabel': "Estimation.",
                     'ylabel': "Nb of realisation inside a bin."}
         return fig_dict

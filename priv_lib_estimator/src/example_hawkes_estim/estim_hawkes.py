@@ -13,7 +13,7 @@ from priv_lib_estimator import Estimator
 # class
 
 
-class Estimator_hawkes(Estimator):
+class Estim_hawkes(Estimator):
     CORE_COL = {'parameter', 'n', 'm', 'time estimation',
                 'weight function', 'value', 'T_max', 'time_burn_in',
                 'true value', 'number of guesses'}

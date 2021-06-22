@@ -78,7 +78,7 @@ class Evolution_plot_estimator(Plot_estimator):
 
         Args:
             data:
-            column_slice: the data we are interested in. Should be a list of key.
+            column_slice (list(str)): the data we are interested in. Should be a list of key.
 
         Returns:
 
@@ -177,8 +177,10 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         pass
 
-    def draw(self, column_name_draw, true_values_flag=False, envelope_flag=True, separators_plot=None,
-             separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None):
+    def draw(self, column_name_draw, true_values_flag=False,
+             envelope_flag=True, separators_plot=None,
+             separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None,
+             *args, **kwargs):
         """
         Semantics:
             Draw the evolution_plot_estimator common behavior.
@@ -207,7 +209,7 @@ class Evolution_plot_estimator(Plot_estimator):
             get_evolution_name_plot_data
             get_default_dict_fig
         """
-        separators_plot, global_dict, keys = super().draw(separators=separators_plot)
+        separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
 
         plots = []

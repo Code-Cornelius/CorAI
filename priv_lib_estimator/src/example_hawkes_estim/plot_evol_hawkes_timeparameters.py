@@ -4,7 +4,6 @@ import numpy as np
 # my libraries
 from priv_lib_estimator import Evolution_plot_estimator
 from priv_lib_estimator.src.example_hawkes_estim.plot_estim_hawkes import Plot_estim_hawkes
-from priv_lib_plot import APlot
 
 
 # other files
@@ -15,12 +14,12 @@ from priv_lib_plot import APlot
 # code:
 
 
-class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimator):
+class Plot_evol_hawkes_timeparameters(Plot_estim_hawkes, Evolution_plot_estimator):
     EVOLUTION_NAME = 'time estimation'
+    ESTIMATION_COLUMN_NAME = 'value'
+    TRUE_ESTIMATION_COLUMN_NAME = 'true value'
 
     def __init__(self, estimator_hawkes, fct_parameters, *args, **kwargs):
-        # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
-        #  pcq c'est bizarre le truc où j'ai besoin ou pas des fcts evol...
         super().__init__(estimator_hawkes, fct_parameters, *args, **kwargs)
 
     # section ######################################################################
@@ -28,10 +27,10 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
     # data
 
     def get_data2true_evolution(self, data):
-        return self.get_evolution_name_specific_data(data, 'true value')
+        return self.get_evolution_name_specific_data(data, self.TRUE_ESTIMATION_COLUMN_NAME)
 
     def get_data2evolution(self, data):
-        return self.get_evolution_name_specific_data(data, 'value')
+        return self.get_evolution_name_specific_data(data, self.ESTIMATION_COLUMN_NAME)
 
     # section ######################################################################
     #  #############################################################################
@@ -54,8 +53,9 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
 
     def draw(self, feature_to_draw, kernels_to_plot=None,
              true_values_flag=False, envelope_flag=True,
-             separators=None, separator_colour=None,
-             save_plot=True, name_file='image'):
+             separators_plot=None, separator_colour=None,
+             path_save_plot=None,
+             *args, **kwargs):
 
         #                   kernel_plot_param=None, one_kernel_plot_param=None, all_kernels_drawn=False)
 
@@ -67,7 +67,7 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
         kernel_plot_param for drawing over a list of kernels, one_kernel_plot for drawing the kernels in the middle.
 
         Args:
-            separators:
+            separators_plot:
             separator_colour: the column of the dataframe to consider for color discrimination
             envelope_flag: list_of_kernels, Times = kernel_plot_param. Used in order to plot all the decided kernels.
         Returns:
@@ -79,8 +79,9 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
 
         # plot the estimation
         plots, coloured_keys = super().draw(feature_to_draw, true_values_flag, envelope_flag,
-                                            separators_plot=separators, separator_colour=separator_colour,
-                                            save_plot=False)
+                                            separators_plot=separators_plot, separator_colour=separator_colour,
+                                            save_plot=False, not_use_grouping_by=False,
+                                            *args, **kwargs)
         # on top of the estimation, plot the kernels if given
         if kernels_to_plot is not None:
             list_kernels, list_position_centers = kernels_to_plot
@@ -97,7 +98,8 @@ class Evolution_plot_estimator_Hawkes(Plot_estim_hawkes, Evolution_plot_estimato
                     plot.plot_vertical_line(center_time, np.linspace(0, lim_[-1] * 0.92, 5), nb_ax=0,
                                             dict_plot_param={"color": "k", "markersize": 0, "linewidth": 0.2,
                                                              "linestyle": "--"})
-                plot.save_plot(name_save_file=name_file)
+                if path_save_plot is not None:
+                    plot.save_plot(name_save_file=path_save_plot)
 
 # TODO the following is the case where we plot multiple kernels but only once in the middle.
 #  It is a very specific case where we compare kernels, not sure if useful anymore.
