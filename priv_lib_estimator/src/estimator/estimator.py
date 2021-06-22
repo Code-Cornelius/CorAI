@@ -99,7 +99,6 @@ class Estimator(object):
     
 
     def append(self, appending_df, *args, **kwargs):
-        # TODO verify it does what one wants.
         """
         Semantics:
             adaptor for the method append from DF at the estimator level.
@@ -117,9 +116,7 @@ class Estimator(object):
         References: https://www.geeksforgeeks.org/python-pandas-dataframe-append/
         """
         self.df = self.df.append(appending_df, *args, **kwargs)
-
-        # Ensure uniqueness of the indices
-        self.df.reset_index(drop=True, inplace=True)
+        self.df.reset_index(drop=True, inplace=True)  # Ensure uniqueness of the indices
 
     def apply_function_upon_data(self, separators, fct, **kwargs):
         # TODO verify it does what one wants.

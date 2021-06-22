@@ -131,7 +131,14 @@ class Plot_estimator(Root_plot_estimator):
                 first param. is 3.000 and second 62.
 
         """
-        assert len(parameters) == len(parameters_value), "Parameters and parameters_value should have the same length."
+        if isinstance(parameters_value, str):
+            # this check is made because parameter_value might be not a tuple but a string
+            # (because e.g. when key is given, and it is not a multi-index key, it is a string).
+            parameters_value = [parameters_value]
+        assert len(parameters) == len(parameters_value), \
+            "Parameters and parameters_value should have the same length. " \
+            "But first has {len(parameters)} and second {len(parameters_value)}."
+
         beg_title_with_new_line = before_text
         # when a before text is given,  carriage return. Otherwise no need for a newline.
         if beg_title_with_new_line != '':

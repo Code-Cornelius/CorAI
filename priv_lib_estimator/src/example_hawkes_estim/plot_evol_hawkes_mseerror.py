@@ -64,7 +64,7 @@ class Plot_evol_hawkes_mseerror(Plot_estim_hawkes, Evolution_plot_estimator):
                      dict_plot_for_main_line={"linewidth": 2},
                      not_use_grouping_by=True,
                      *args, **kwargs)
-        # todo verify that for each time, unique MSE.
+        # TODO 23/06/2021 nie_k: verify that for each time, unique MSE.
 
         #### FOR THIS VERY SIMPLE,CREATE A HIST, AND ASK TO DRAW THE MSE COLUMN.
         # filter, and draw.

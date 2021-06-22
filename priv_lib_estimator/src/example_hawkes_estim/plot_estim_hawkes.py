@@ -19,7 +19,7 @@ class Plot_estim_hawkes(Plot_estimator):
     def __init__(self, estimator_hawkes, fct_parameters,
                  number_of_estimations, range_estimation,
                  *args, **kwargs):
-        # TODO IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
+        # TODO 23/06/2021 nie_k: IF FCT_PARAMETERS IS NONE, NOT PLOT TRUE VALUE, PERHAPS IT IS NOT KWOWN.
 
         if not isinstance(estimator_hawkes, Estim_hawkes):
             raise Error_type_setter(f'Argument is not an {str(Estim_hawkes)}.')

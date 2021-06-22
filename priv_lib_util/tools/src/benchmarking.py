@@ -97,7 +97,7 @@ def time_print_elapsed_time(start, end, title="no title"):
     return
 
 
-def benchmark(func, title="no title", number_of_rep=10, silent = False, *args, **kwargs):
+def benchmark(func, title="no title", number_of_rep=10, silent_benchmark = False, *args, **kwargs):
     """
     Semantics:
         Helper for benchmarking a function and prints the timing with the name given as title.
@@ -117,7 +117,7 @@ def benchmark(func, title="no title", number_of_rep=10, silent = False, *args, *
     for _ in range(number_of_rep):
         func(*args, **kwargs)
     end = time()
-    if not silent :
+    if not silent_benchmark :
         time_print_elapsed_time(start, end, title=title)
     return (end - start) / number_of_rep
 

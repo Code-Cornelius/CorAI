@@ -62,7 +62,6 @@ for size in tqdm(sizes):
     benchmark_and_save(estim, index_access, "index_access", arr=test_arr, number_of_reps =number_of_reps)
     benchmark_and_save(estim, elem_enum, "elem_enum", arr=test_arr, number_of_reps =number_of_reps)
 
-estim.df = estim.df.reset_index(drop = True)
 time.sleep(1)
 plot_evol_estim = Plot_evol_benchmark_array(estim)
 

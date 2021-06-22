@@ -3,7 +3,6 @@ import math
 
 from priv_lib_util.tools import function_iterable
 
-# todo: Niels will pydoc this
 # defines the coefficients for fractional ADAMS method in order to compute a SDE path.
 # it needs the number of coefficients as well as the alpha of roughness.
 def fractional_ADAMS(k, alpha, DELTA):

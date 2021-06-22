@@ -206,6 +206,10 @@ class Evolution_plot_estimator(Plot_estimator):
             get_evolution_name_plot_data
             get_default_dict_fig
         """
+        # TODO 23/06/2021 nie_k: I am sure we made some checks somewhere about
+        #  separators are in columns (important condition).
+        # here we could do this again, for both separators and colors.
+
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
 
@@ -265,7 +269,7 @@ class Evolution_plot_estimator(Plot_estimator):
         fig_dict = self.get_default_dict_fig(separators, key)
         plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis_y_axis=False)
         plot.show_legend()
-        # TODO PROBLEM WHEN KEY IS NONE Le chemin d’accès spécifié est introuvable: ''
+        # TODO 23/06/2021 nie_k:  PROBLEM WHEN KEY IS NONE Le chemin d’accès spécifié est introuvable: ''
         # PROBLEM IN THE LOGIC
         if path_save_plot is not None:
             name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])

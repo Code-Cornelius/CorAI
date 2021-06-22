@@ -38,7 +38,6 @@ class Plot_evol_benchmark_array(Plot_estim_benchmark_array, Evolution_plot_estim
         return self.get_data2group_sliced(data, feature_to_draw).mean().to_numpy()
 
     def get_default_dict_fig(self, grouped_data_by, key=None):
-        # TODO it would be even better to change the ylabel for something ... I need to think about it
         title = self.generate_title(parameters=grouped_data_by, parameters_value=key,
                                     before_text="Benchmark")
         fig_dict = {'title': title,
