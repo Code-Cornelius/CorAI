@@ -178,6 +178,10 @@ class Evolution_plot_estimator(Plot_estimator):
              envelope_flag=True, separators_plot=None,
              separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None,
              *args, **kwargs):
+        # TODO 23/06/2021 nie_k: todo the check we did in separator plot, do the same in separator colour.
+        #  I want separator color to be a list, not just a string.
+        #  It is easy to do as grouping by allows for list of str.
+        #  Be ccareful that unpacking a string is the characters.
         """
         Semantics:
             Draw the evolution_plot_estimator common behavior.
