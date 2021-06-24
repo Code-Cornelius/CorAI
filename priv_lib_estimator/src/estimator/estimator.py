@@ -61,6 +61,15 @@ class Estimator(object):
     def from_json(cls, path):
         """
             Read json dataframe an return the object
+            The json must not contain any extra attributes.
+
+            In case the json contains any extra attributes:
+                - The from_json function should be overridden
+                - The function from_json_attributes should be called to collect the attributes (and remove them from json)
+                - The super from_json can be called to initialise the object,
+                and the extra attributes can be set on the object
+
+            Example: template_for_NN -> estimator_history
         Args:
             path: The path where to retrieve the dataframe from
 
@@ -68,15 +77,12 @@ class Estimator(object):
             Void
         """
         dataframe = pd.read_json(path, orient='split')
-        return cls(df = dataframe)
+        return cls(df=dataframe)
 
     @staticmethod
     def from_json_attributes(path, compress):
-        # TODO 24/06/2021 nie_k:  explain how to load and save an estimator.
-        #  Apparently, some functions need to be overriden... explain the process at the right place.
-        #  and say where an example can be found.
         """
-            Retrieve extra attributes from the json and write it back to the file
+            Retrieve extra attributes from a json dataframe and write the json back to the file
         Args:
             path: The path to the file
             compress: Whether or not compression is applied
@@ -251,9 +257,14 @@ class Estimator(object):
         return
 
     def to_json(self, path, compress=True, attrs={}.copy()):
-        # TODO 24/06/2021 nie_k: work on it
         """
-            Save an estimator to json as a compressed file.
+            Save an estimator without extra attributes to json.
+
+            To save an estimator with extra attributes:
+                - The to_json function should be overridden
+                - The extra attributes should be saved in a dictionary
+                - The super to_json should be called, passing in the dictionary from above, to save all the information
+                to file
         Args:
             attrs: The extra attributes to save
             compress: Whether or not compression is applied
