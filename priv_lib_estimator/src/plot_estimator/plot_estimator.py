@@ -79,6 +79,8 @@ class Plot_estimator(Root_plot_estimator):
                     no separators are present
                 - The keys (iterable) representing the unique identifiers for each group
         """
+        # wip is this test working in the case where the estimator is initialised empty?
+        assert len(self.estimator.df.index) > 0, "No Data in Estimator."
         if separators_plot is None:  # separators is either a list or None
             if not_use_grouping_by:
                 separators_plot = []

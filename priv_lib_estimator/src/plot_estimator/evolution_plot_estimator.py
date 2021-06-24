@@ -178,7 +178,10 @@ class Evolution_plot_estimator(Plot_estimator):
              envelope_flag=True, separators_plot=None,
              separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None,
              *args, **kwargs):
-        # TODO separator colour being a list of str?
+        # TODO 23/06/2021 nie_k: todo the check we did in separator plot, do the same in separator colour.
+        #  I want separator color to be a list, not just a string.
+        #  It is easy to do as grouping by allows for list of str.
+        #  Be careful that unpacking a string is the characters.
         """
         Semantics:
             Draw the evolution_plot_estimator common behavior.
@@ -243,6 +246,9 @@ class Evolution_plot_estimator(Plot_estimator):
             else:  # separator colour given
                 coloured_dict, coloured_keys = self.estimator.groupby_data(data, separator_colour)
                 # : groupby the data and retrieve the keys.
+
+                if len(coloured_keys) > len(self.COLORMAP):
+                    warnings.warn("There is more data than colors, there might be an issue while plotting (not all curves plotted).")
 
                 for coloured_key, c in zip(coloured_keys, self.COLORMAP):
                     coloured_data = coloured_dict.get_group(coloured_key)

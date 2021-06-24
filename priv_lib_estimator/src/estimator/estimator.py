@@ -55,12 +55,21 @@ class Estimator(object):
         Returns: new estimator.
 
         """
-        return cls(pd.read_csv(path))  # calling the constructor of the class.
+        return cls(df = pd.read_csv(path))  # calling the constructor of the class.
 
     @classmethod
     def from_json(cls, path):
         """
             Read json dataframe an return the object
+            The json must not contain any extra attributes.
+
+            In case the json contains any extra attributes:
+                - The from_json function should be overridden
+                - The function from_json_attributes should be called to collect the attributes (and remove them from json)
+                - The super from_json can be called to initialise the object,
+                and the extra attributes can be set on the object
+
+            Example: template_for_NN -> estimator_history
         Args:
             path: The path where to retrieve the dataframe from
 
@@ -68,12 +77,12 @@ class Estimator(object):
             Void
         """
         dataframe = pd.read_json(path, orient='split')
-        return cls(dataframe)
+        return cls(df=dataframe)
 
     @staticmethod
     def from_json_attributes(path, compress):
         """
-            Retrieve extra attributes from the json and write it back to the file
+            Retrieve extra attributes from a json dataframe and write the json back to the file
         Args:
             path: The path to the file
             compress: Whether or not compression is applied
@@ -237,7 +246,7 @@ class Estimator(object):
             Does not save the attributes. For this, use to_json.
 
         Args:
-            path: path where the dataframe of the estimator is saved.
+            path: path where the dataframe of the estimator is saved. Extension should be written.
             **kwargs: Additional keyword arguments to pass as keywords arguments to
             pandas' function to_csv.
 
@@ -249,11 +258,17 @@ class Estimator(object):
 
     def to_json(self, path, compress=True, attrs={}.copy()):
         """
-            Save an estimator to json as a compressed file.
+            Save an estimator without extra attributes to json.
+
+            To save an estimator with extra attributes:
+                - The to_json function should be overridden
+                - The extra attributes should be saved in a dictionary
+                - The super to_json should be called, passing in the dictionary from above, to save all the information
+                to file
         Args:
             attrs: The extra attributes to save
             compress: Whether or not compression is applied
-            path: The path where to store the estimator
+            path: The path where to store the estimator, with extension.
 
         Returns:
             Void
