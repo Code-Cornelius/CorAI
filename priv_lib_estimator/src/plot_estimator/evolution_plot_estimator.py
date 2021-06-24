@@ -178,6 +178,7 @@ class Evolution_plot_estimator(Plot_estimator):
              envelope_flag=True, separators_plot=None,
              separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None,
              *args, **kwargs):
+        # TODO separator colour being a list of str?
         """
         Semantics:
             Draw the evolution_plot_estimator common behavior.
