@@ -247,6 +247,9 @@ class Evolution_plot_estimator(Plot_estimator):
                 coloured_dict, coloured_keys = self.estimator.groupby_data(data, separator_colour)
                 # : groupby the data and retrieve the keys.
 
+                if len(coloured_keys) > len(self.COLORMAP):
+                    warnings.warn("There is more data than colors, there might be an issue while plotting (not all curves plotted).")
+
                 for coloured_key, c in zip(coloured_keys, self.COLORMAP):
                     coloured_data = coloured_dict.get_group(coloured_key)
                     evolution_xx = self.get_values_evolution_column(coloured_data)

@@ -55,7 +55,7 @@ class Estimator(object):
         Returns: new estimator.
 
         """
-        return cls(pd.read_csv(path))  # calling the constructor of the class.
+        return cls(df = pd.read_csv(path))  # calling the constructor of the class.
 
     @classmethod
     def from_json(cls, path):
@@ -68,10 +68,13 @@ class Estimator(object):
             Void
         """
         dataframe = pd.read_json(path, orient='split')
-        return cls(dataframe)
+        return cls(df = dataframe)
 
     @staticmethod
     def from_json_attributes(path, compress):
+        # TODO 24/06/2021 nie_k:  explain how to load and save an estimator.
+        #  Apparently, some functions need to be overriden... explain the process at the right place.
+        #  and say where an example can be found.
         """
             Retrieve extra attributes from the json and write it back to the file
         Args:
@@ -237,7 +240,7 @@ class Estimator(object):
             Does not save the attributes. For this, use to_json.
 
         Args:
-            path: path where the dataframe of the estimator is saved.
+            path: path where the dataframe of the estimator is saved. Extension should be written.
             **kwargs: Additional keyword arguments to pass as keywords arguments to
             pandas' function to_csv.
 
@@ -248,12 +251,13 @@ class Estimator(object):
         return
 
     def to_json(self, path, compress=True, attrs={}.copy()):
+        # TODO 24/06/2021 nie_k: work on it
         """
             Save an estimator to json as a compressed file.
         Args:
             attrs: The extra attributes to save
             compress: Whether or not compression is applied
-            path: The path where to store the estimator
+            path: The path where to store the estimator, with extension.
 
         Returns:
             Void
