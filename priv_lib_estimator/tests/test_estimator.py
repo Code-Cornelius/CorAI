@@ -81,7 +81,7 @@ class Test_Estimator(TestCase):
                                                            keys_grouping=key)
                 assert (solution[i] == ans.to_numpy()).all()
 
-    def test_to_csv_and(self):
+    def test_to_csv_and_from_csv(self):
         self.estimator.to_csv("test.csv")
         self.estimator2 = Estimator.from_csv("test.csv", dtype = 'int32') # saving might change types.
         assert self.estimator.df.equals(self.estimator2.df) # equality in terms of values
