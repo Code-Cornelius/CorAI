@@ -45,36 +45,41 @@ class Estimator(object):
         return repr(self.df)
 
     @classmethod
-    def from_path_csv(cls, path):
+    def from_csv(cls, path, **kwargs):
         """
         Semantics:
             Constructor estimator with a path.
         Args:
             path: string, path to a CSV file/txt.
+            kwargs: additional key words argument for pd.read_csv
 
         Returns: new estimator.
 
         """
-        return cls(df = pd.read_csv(path))  # calling the constructor of the class.
+        return cls(df = pd.read_csv(path, **kwargs))  # calling the constructor of the class.
 
     @classmethod
     def from_json(cls, path):
         """
-            Read json dataframe an return the object
+        Semantics:
+            Read json dataframe and construct the object.
             The json must not contain any extra attributes.
 
-            In case the json contains any extra attributes:
-                - The from_json function should be overridden
-                - The function from_json_attributes should be called to collect the attributes (and remove them from json)
-                - The super from_json can be called to initialise the object,
-                and the extra attributes can be set on the object
+            In case one wants the constructor to add extra/meta attributes to the child estimator:
+                - override from_json with a function calling from_json_attributes and retrieve the attributes,
+                - then call super().from_json to create the estimator,
+                - finally add to the estimator the attributes.
 
-            Example: template_for_NN -> estimator_history
         Args:
-            path: The path where to retrieve the dataframe from
+            path: The path where to retrieve the dataframe from. Extension json needed.
 
         Returns:
             Void
+
+        Examples of overriding:
+            attrs = super().from_json_attributes(path, compressed)
+            estimator = super().from_json(path)
+            estimator.name = attrs['name']
         """
         dataframe = pd.read_json(path, orient='split')
         return cls(df=dataframe)
@@ -82,7 +87,7 @@ class Estimator(object):
     @staticmethod
     def from_json_attributes(path, compress):
         """
-            Retrieve extra attributes from a json dataframe and write the json back to the file
+            Retrieve extra attributes from a json dataframe and write the json back to the file.
         Args:
             path: The path to the file
             compress: Whether or not compression is applied
@@ -243,7 +248,7 @@ class Estimator(object):
         """
         Semantics:
             void adaptor of the method to_csv from dataframes.
-            Does not save the attributes. For this, use to_json.
+            Does not save the attributes. For this, use to_json. Index are dropped.
 
         Args:
             path: path where the dataframe of the estimator is saved. Extension should be written.
@@ -253,7 +258,7 @@ class Estimator(object):
         Returns:
 
         """
-        self.df.to_csv(path, **kwargs)
+        self.df.to_csv(path, index = False, **kwargs)
         return
 
     def to_json(self, path, compress=True, attrs={}.copy()):
@@ -262,9 +267,9 @@ class Estimator(object):
 
             To save an estimator with extra attributes:
                 - The to_json function should be overridden
-                - The extra attributes should be saved in a dictionary
+                - The extra attributes should be saved in a dictionary linked to the key 'attrs'.
                 - The super to_json should be called, passing in the dictionary from above, to save all the information
-                to file
+                to the json.
         Args:
             attrs: The extra attributes to save
             compress: Whether or not compression is applied
@@ -272,6 +277,10 @@ class Estimator(object):
 
         Returns:
             Void
+
+        Examples of overriding:
+            attrs = {'name': self.name}
+            super().to_json(path, compress, attrs)
         """
         json_df = self.df.to_json(orient='split')
         parsed = json.loads(json_df)

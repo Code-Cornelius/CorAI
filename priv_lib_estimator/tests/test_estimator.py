@@ -13,7 +13,7 @@ class Test_Estimator(TestCase):
                          [900, 1, 1],
                          [10000, 49, 10],
                          [2500, 1, 1]])
-        self.estimator = Estimator(pd.DataFrame(data=data, columns=['Size', 'People', 'number_rooms']))
+        self.estimator = Estimator(df = pd.DataFrame(data=data, columns=['Size', 'People', 'number_rooms']))
 
     def test_from_path(self):
         pass
@@ -81,11 +81,11 @@ class Test_Estimator(TestCase):
                                                            keys_grouping=key)
                 assert (solution[i] == ans.to_numpy()).all()
 
-    def test_estimator_variance(self):
-        pass
+    def test_to_csv_and(self):
+        self.estimator.to_csv("test.csv")
+        self.estimator2 = Estimator.from_csv("test.csv", dtype = 'int32') # saving might change types.
+        assert self.estimator.df.equals(self.estimator2.df) # equality in terms of values
 
-    def test_to_csv(self):
-        pass
 
     def test_groupby_df(self):
         pass
