@@ -42,3 +42,4 @@ for c, axis in zip(COLOR, ax):
     axis.set_xlabel('')
     axis.set_ylabel('')
 APlot.show_plot()
+# https://medium.com/@morganjonesartist/color-guide-to-seaborn-palettes-da849406d44f

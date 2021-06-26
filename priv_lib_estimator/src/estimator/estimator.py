@@ -346,3 +346,61 @@ class Estimator(object):
     @property
     def columns(self):
         return self.df.columns
+
+
+
+
+    # TODO 26/06/2021 nie_k: to implement with the logic.
+    #  one wants to associate two columns together for plotting with seaborn.
+    # an example :
+    # import numpy as np
+    # import pandas as pd
+    #
+    # import matplotlib.pyplot as plt
+    # import seaborn as sns
+    #
+    # ### DATA
+    # np.random.seed(22320)
+    # random_df = pd.DataFrame({'#': np.arange(1, 51),
+    #                           'Name': np.random.choice(['Bulbasaur', 'Ivysaur', 'Venusaur',
+    #                                                     'Charmander', 'Charmeleon'], 50),
+    #                           'HP': np.random.randint(1, 100, 50),
+    #                           'Attack': np.random.randint(1, 100, 50),
+    #                           'Defense': np.random.randint(1, 100, 50),
+    #                           'Speed': np.random.randint(1, 100, 50),
+    #                           'Stage': np.random.randint(1, 3, 50),
+    #                           'Legend': np.random.choice([True, False], 50)
+    #                           })
+    # print(random_df.head())
+    #
+    # def run_plot(df, flds):
+    #     # CREATE NEW COLUMN OF CONCATENATED VALUES
+    #     df['_'.join(flds)] = pd.Series(df.reindex(flds, axis='columns')
+    #                                    .astype('str')
+    #                                    .values.tolist()
+    #                                    ).str.join('_')
+    #     print(df.head())
+    #     # PLOT WITH hue
+    #     sns.relplot(x='#', y='Attack', hue='_'.join(flds), data=random_df, aspect=1.5)
+    #     plt.show()
+    #
+    #     plt.clf()
+    #     plt.close()
+    #
+    # run_plot(random_df, ['Legend', 'Stage'])
+
+    # the reference : https://stackoverflow.com/questions/60366379/how-can-i-specify-multiple-variables-for-the-hue-parameters-when-plotting-with-s
+
+    # def run_plot(df, flds):
+    #    # CREATE NEW COLUMN OF CONCATENATED VALUES
+    #    df['_'.join(flds)] =  pd.Series(df.reindex(flds, axis='columns')
+    #                                      .astype('str')
+    #                                      .values.tolist()
+    #                                   ).str.join('_')
+    #
+    #    # PLOT WITH hue
+    #    sns.relplot(x='#', y='Attack', hue='_'.join(flds), data=random_df, aspect=1.5)
+    #    plt.show()
+    #
+    #    plt.clf()
+    #    plt.close()

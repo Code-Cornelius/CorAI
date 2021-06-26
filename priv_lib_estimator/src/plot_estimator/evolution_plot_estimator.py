@@ -217,6 +217,9 @@ class Evolution_plot_estimator(Plot_estimator):
 
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
+        import seaborn as sns
+
+
 
         plots = []
         for key in keys:
@@ -232,6 +235,18 @@ class Evolution_plot_estimator(Plot_estimator):
             # allow groups to have different ranges for xx.
             # This arr contains all unique values, and so covers all cases from coloured key.
             evolution_xx = self.get_values_evolution_column(data)
+
+            a = APlot()
+            sns.lineplot(x=self.EVOLUTION_COLUMN, y='Comput. Time',
+                         hue=separator_colour[0],  # style=separator_colour[0],
+                         palette='brg', legend = 'full',
+                         data=data, ax = a._axs[0])
+            a.set_dict_ax(0,{'title': 'title',
+                           'xlabel': self.EVOLUTION_COLUMN,
+                           'ylabel': 'Comput. Time',
+                           'xscale': 'log', 'yscale': 'log',
+                           'basex': 10, 'basey': 10
+                           })
 
             # min and max
             if envelope_flag:
