@@ -162,6 +162,7 @@ class APlot(Displayable_plot, metaclass=Register):
                 plt.plot(range(len(datay)), datay, **APlot.DEFAULT_DICT_PLOT_PARAM)
 
         else:
+            # TODO CREATE A PROPERTY AXS FOR OUTSIDE ACCESS.
             # personalised plotting
             self._fig, self._axs = plt.subplots(*how, sharex=sharex, sharey=sharey, figsize=figsize)
             self._how = how  # tuple of the form of the plot.

@@ -2,6 +2,8 @@
 from abc import abstractmethod
 
 import pandas as pd
+import seaborn as sns
+
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator.src.estimator.estimator import Estimator
 # my libraries

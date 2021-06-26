@@ -1,6 +1,7 @@
 # normal libraries
 import warnings
 from abc import abstractmethod
+import seaborn as sns
 
 # my libraries
 from priv_lib_util.tools import function_str
@@ -175,6 +176,67 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         pass
 
+    def new_draw(self, column_name_draw, true_values_flag=False, envelope_flag=True, separators_plot=None,
+                 hue = None, marker = None,
+                 dict_plot_for_main_line = {}, path_save_plot = None,
+                 *args, **kwargs):
+        separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
+        self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
+        plots = []
+        for key in keys:
+            if key is None:  # case where we cannot use groupby.
+                data = global_dict
+                # todo is it required?
+                separators_plot = ["data used"]
+                key = ["whole dataset"]
+            else:
+                data = global_dict.get_group(key)
+
+            # creation of the plot
+            plot = APlot()
+            plots.append(plot)
+
+            # seaborn.scatterplot(x=None, y=None, hue=None, style=None, size=None, data=None, palette=None,
+            #                     hue_order=None, hue_norm=None, sizes=None, size_order=None, size_norm=None,
+            #                     markers=True, style_order=None, x_bins=None, y_bins=None, units=None, estimator=None,
+            #                     ci=95, n_boot=1000, alpha=None, x_jitter=None, y_jitter=None, legend='auto', ax=None,
+            #                     **kwargs)
+            # seaborn.lineplot(x=None, y=None, hue=None, size=None, style=None, data=None, palette=None,
+            #                  hue_order=None, hue_norm=None, sizes=None, size_order=None, size_norm=None, dashes=True,
+            #                  markers=None, style_order=None, units=None, estimator='mean', ci=95, n_boot=1000,
+            #                  seed=None, sort=True, err_style='band', err_kws=None, legend='auto', ax=None, **kwargs)
+            kind = 'line'
+            if kind == 'line':
+                sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+                         hue=hue, style=style, size = None, markers = None,
+                         legend = 'full', ci=95, err_style=  "band",#, "bars"
+                         palette='brg',
+                         data=data, ax=plot._axs[0], **dict_plot_for_main_line)
+
+
+                if envelope_flag:
+                    for fct in ['min','max']:
+                        sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+                                     hue=hue, style=None, estimator = fct,
+                                     size=None, markers=None, legend='full',
+                                     palette='brg',
+                                    data=data, ax=plot._axs[0], **dict_plot_for_main_line)
+
+                if true_values_flag:
+                    sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+                                 hue=hue, style=None,
+                                 size=None, markers=None, legend='full',
+                                 palette='brg',
+                                 data=data, ax=plot._axs[0], **dict_plot_for_main_line)
+
+            fig_dict = self.get_default_dict_fig(separators_plot, key)
+            plot.set_dict_ax(0, fig_dict)
+
+            if path_save_plot is not None:
+                name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
+                plot.save_plot(name_save_file=name_file)
+
+
     def draw(self, column_name_draw, true_values_flag=False,
              envelope_flag=True, separators_plot=None,
              separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None,
@@ -215,11 +277,9 @@ class Evolution_plot_estimator(Plot_estimator):
         #  separators are in columns (important condition).
         # here we could do this again, for both separators and colors.
 
+        # TODO 26/06/2021 nie_k:  explain why super call
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
-        import seaborn as sns
-
-
 
         plots = []
         for key in keys:
@@ -236,21 +296,11 @@ class Evolution_plot_estimator(Plot_estimator):
             # This arr contains all unique values, and so covers all cases from coloured key.
             evolution_xx = self.get_values_evolution_column(data)
 
-            a = APlot()
-            sns.lineplot(x=self.EVOLUTION_COLUMN, y='Comput. Time',
-                         hue=separator_colour[0],  # style=separator_colour[0],
-                         palette='brg', legend = 'full',
-                         data=data, ax = a._axs[0])
-            a.set_dict_ax(0,{'title': 'title',
-                           'xlabel': self.EVOLUTION_COLUMN,
-                           'ylabel': 'Comput. Time',
-                           'xscale': 'log', 'yscale': 'log',
-                           'basex': 10, 'basey': 10
-                           })
-
+            ########### replace with max operator
             # min and max
             if envelope_flag:
                 self._plot_min_max(data, evolution_xx, column_name_draw, plot)
+            ########## different column to plot!
             # true value line
             if true_values_flag:
                 self._plot_true_value(data, evolution_xx, plot)
