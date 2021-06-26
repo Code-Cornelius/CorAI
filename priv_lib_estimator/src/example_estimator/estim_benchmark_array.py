@@ -50,18 +50,8 @@ class Plot_evol_benchmark_array(Plot_estim_benchmark_array, Evolution_plot_estim
 
 
 class Plot_hist_benchmark_array(Plot_estim_benchmark_array, Histogram_estimator):
-    NB_OF_BINS = 30
-
     def ___init__(self, estimator, *args, **kwargs):
         super().__init__(estimator=estimator, *args, **kwargs)
-
-    def get_dict_plot_param(self, key, mean, std):
-        dict_param = {'bins': self.NB_OF_BINS,
-                      'label': 'Histogram',
-                      'color': 'green',
-                      'range': self.get_range(key, mean, std),
-                      'cumulative': True}
-        return dict_param
 
     def get_dict_fig(self, separators, key):
         title = self.generate_title(parameters=separators, parameters_value=key,
@@ -70,7 +60,3 @@ class Plot_hist_benchmark_array(Plot_estim_benchmark_array, Histogram_estimator)
                     'xlabel': "Time",
                     'ylabel': "Nb of runs inside a bin."}
         return fig_dict
-
-    @staticmethod
-    def get_range(key, mean, std):
-        return (mean - 1 * std, mean + 1 * std)

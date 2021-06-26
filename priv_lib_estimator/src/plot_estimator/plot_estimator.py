@@ -128,15 +128,18 @@ class Plot_estimator(Root_plot_estimator):
              generate_title(["$sigma$"], [3], before_text="The title", extra_text=None, extra_arguments=[])
              -> The title
                 sigma : 3.
+
              generate_title(["$sigma$", "\rho"], [3,0.5], before_text="", extra_text=None, extra_arguments=[])
              -> sigma : 3, rho : 0.5.
+
              generate_title(["$sigma$", "\rho"], [3,0.5], before_text="", extra_text="first param. is {} and second {}", extra_arguments=[3.000, 62])
              -> sigma : 3, rho : 0.5
                 first param. is 3.000 and second 62.
 
         """
-        if isinstance(parameters_value, str):
-            # this check is made because parameter_value might be not a tuple but a string
+        if isinstance(parameters_value, str) or isinstance(parameters_value, float) or isinstance(parameters_value,
+                                                                                                  int):
+            # this check is made because parameter_value might be not a tuple but a string (int or float...)
             # (because e.g. when key is given, and it is not a multi-index key, it is a string).
             parameters_value = [parameters_value]
         assert len(parameters) == len(parameters_value), \

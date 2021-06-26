@@ -1,5 +1,6 @@
 # normal libraries
 from abc import abstractmethod
+import seaborn as sns
 
 # my libraries
 from priv_lib_plot import APlot
@@ -24,63 +25,15 @@ class Histogram_estimator(Plot_estimator):
         get_dict_plot_param
     """
 
-    @property
-    @abstractmethod
-    def NB_OF_BINS(self):
-        # abstract nb_of_bins parameter
-        pass
 
     def __init__(self, estimator, separators=None, *args, **kwargs):
         super().__init__(estimator, separators, *args, **kwargs)
 
-    # section ######################################################################
-    #  #############################################################################
-    # data
 
     # section ######################################################################
     #  #############################################################################
     # plot
 
-    @staticmethod
-    def get_range(key, mean, std):
-        # method to overload if one wants to fix a certain range for the histogram.
-        """
-
-        Args:
-            key:
-            mean:
-            std:
-
-        Returns:
-
-        Examples:
-            return (mean - 2 * std, mean + 2 * std)
-
-
-        """
-        return None
-
-    @abstractmethod
-    def get_dict_plot_param(self, key, mean, std):
-        """
-        Dictionary with the parameters for the plot
-        Args:
-            key:
-            mean:
-            std:
-
-
-        Returns:
-
-        Examples:
-                dict_param = {'bins': self.NB_OF_BINS,
-                  'label': 'Histogram',
-                  'color': 'green',
-                  'range': self.get_range(key, mean, std),
-                  'cumulative': True}
-                return dict_param
-        """
-        pass
 
     @abstractmethod
     def get_dict_fig(self, separators, key):
@@ -103,30 +56,50 @@ class Histogram_estimator(Plot_estimator):
         """
         pass
 
-    def draw(self, feature_to_draw, separators=None, separator_filter=None, save_plot=True):
+    def hist(self, column_name_draw, separators_plot=None, separators_filter=None,
+             palette='PuOr', hue=None, bins=20,
+             binrange=None, stat='count', multiple="stack", kde=True, path_save_plot=None):
         """
+        Semantics:
+            histogram plot.
 
         Args:
-            feature_to_draw:
-            separators:
-            separator_filter:
-            save_plot:
+            column_name_draw:
+            separators_plot:
+            separators_filter:
+            palette:
+            hue:
+            bins:
+            binrange (pair): borns of the ax.
+            stat: Aggregate statistic to compute in each bin.
+                'count' shows the number of observations.
+                'frequency' shows the number of observations divided by the bin width.
+                'density' normalizes counts so that the area of the histogram is 1.
+                'probability' normalizes counts so that the sum of the bar heights is 1.
+            multiple: Approach to resolving multiple elements when semantic mapping creates subsets.
+                {“layer”, “dodge”, “stack”, “fill”}
+            kde (bool): If True, compute a kernel density estimate to smooth the distribution and show on the plot as (one or more) line(s). Only relevant with univariate data.
+            path_save_plot:
 
         Returns:
 
         """
-        separators, global_dict, keys = super().draw(separators_plot=separators)
-        keys = filter(separators, keys, separator_filter)
+        # super call for gathering all separators together and having the group by done.
+        separators, global_dict, keys = super().draw(separators_plot=separators_plot)
+        keys = filter(separators, keys, separators_filter)
+        plots = []
         for key in keys:
-            data = global_dict.get_group(key)[feature_to_draw]
-            mean = data.mean()
-            std = data.std()
-            data = data.values
+            data = global_dict.get_group(key)
             plot = APlot()
-            param_dict = self.get_dict_plot_param(key, mean, std)
+            plots.append(plot)
+            sns.histplot(x=column_name_draw, bins=bins,
+                         hue=hue, multiple=multiple, binrange=binrange,
+                         legend='full', kde=kde,
+                         palette=palette, data=data, ax=plot._axs[0], stat=stat)
             fig_dict = self.get_dict_fig(separators, key)
-            plot.hist(data=data, dict_param_hist=param_dict, dict_ax=fig_dict)
-            name_file = ''.join([priv_lib_util.tools.function_str.tuple_to_str(key, ''), 'histogram'])
+            plot.set_dict_ax(0, fig_dict)
 
-            if save_plot:
+            if path_save_plot is not None:
+                name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
                 plot.save_plot(name_save_file=name_file)
+        return plots

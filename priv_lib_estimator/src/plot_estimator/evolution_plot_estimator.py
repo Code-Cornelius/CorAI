@@ -8,6 +8,7 @@ from priv_lib_util.tools import function_str
 from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 from priv_lib_plot import APlot
 
+
 # errors:
 
 
@@ -176,58 +177,72 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         pass
 
-    def new_draw(self, column_name_draw, true_values_flag=False, envelope_flag=True, separators_plot=None,
-                 hue = None, marker = None,
-                 dict_plot_for_main_line = {}, path_save_plot = None,
+    def lineplot(self, column_name_draw, column_name_true_values=None, envelope_flag=True, separators_plot=None,
+                 palette='PuOr',
+                 hue=None, style=None, markers=None, sizes=None,
+                 dict_plot_for_main_line={}, path_save_plot=None,
                  *args, **kwargs):
+        """
+        Semantics:
+            Draw the lineplot.
+
+        Args:
+            column_name_draw (str): The column of the dataframe used to retrieve the data to draw
+            column_name_true_values (str): The column where true values are present
+            envelope_flag (bool): Flag to specify whether or not to draw the min and max of the data
+            separators_plot (list of str): List of columns to group by, this will generate a plot for the product of unique
+                elements in each column
+            palette (colors of seaborn): colors for hue. Some example in priv_lib_plot/acolor/colors_seaborn.py
+            hue (str): The column used in order to draw multiple lines on the same plot for the data,
+                discriminating by this column
+            style (str): separator for line and marker style.
+            markers (bool):
+            sizes:
+            dict_plot_for_main_line (dict): additional parameters for the plot (evolution line).
+            path_save_plot (str): Path to specify where the plot should be saved. Not saved if is None.
+
+        Returns:
+
+        Dependency:
+            todo write the dependency
+        """
+        # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
         plots = []
         for key in keys:
             if key is None:  # case where we cannot use groupby.
                 data = global_dict
-                # todo is it required?
-                separators_plot = ["data used"]
-                key = ["whole dataset"]
+                separators_plot = ["data used"] # for the title
+                key = ["whole dataset"]  # for the title
             else:
                 data = global_dict.get_group(key)
-
             # creation of the plot
             plot = APlot()
             plots.append(plot)
 
-            # seaborn.scatterplot(x=None, y=None, hue=None, style=None, size=None, data=None, palette=None,
-            #                     hue_order=None, hue_norm=None, sizes=None, size_order=None, size_norm=None,
-            #                     markers=True, style_order=None, x_bins=None, y_bins=None, units=None, estimator=None,
-            #                     ci=95, n_boot=1000, alpha=None, x_jitter=None, y_jitter=None, legend='auto', ax=None,
-            #                     **kwargs)
-            # seaborn.lineplot(x=None, y=None, hue=None, size=None, style=None, data=None, palette=None,
-            #                  hue_order=None, hue_norm=None, sizes=None, size_order=None, size_norm=None, dashes=True,
-            #                  markers=None, style_order=None, units=None, estimator='mean', ci=95, n_boot=1000,
-            #                  seed=None, sort=True, err_style='band', err_kws=None, legend='auto', ax=None, **kwargs)
-            kind = 'line'
-            if kind == 'line':
-                sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
-                         hue=hue, style=style, size = None, markers = None,
-                         legend = 'full', ci=95, err_style=  "band",#, "bars"
-                         palette='brg',
+            sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+                         hue=hue, style=style, sizes=sizes, markers=markers,
+                         legend='full', ci=95, err_style="band",
+                         palette=palette,
                          data=data, ax=plot._axs[0], **dict_plot_for_main_line)
 
-
-                if envelope_flag:
-                    for fct in ['min','max']:
-                        sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
-                                     hue=hue, style=None, estimator = fct,
-                                     size=None, markers=None, legend='full',
-                                     palette='brg',
-                                    data=data, ax=plot._axs[0], **dict_plot_for_main_line)
-
-                if true_values_flag:
+            if envelope_flag:
+                for fct in ['min', 'max']:
                     sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
-                                 hue=hue, style=None,
-                                 size=None, markers=None, legend='full',
-                                 palette='brg',
-                                 data=data, ax=plot._axs[0], **dict_plot_for_main_line)
+                                 estimator=fct, hue=hue,
+                                 legend=False, err_style="band", ci=None,
+                                 # no Conf. Inter. for max value (does not make actually sense with bootstrapping)
+                                 palette=palette, data=data, ax=plot._axs[0],
+                                 color='r', linestyle='--', linewidth=0.5, label=fct,
+                                 **dict_plot_for_main_line)
+            if column_name_true_values is not None:
+                sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_true_values,
+                             hue=hue, legend=False, err_style="band", ci=None,
+                             palette=palette, data=data, ax=plot._axs[0],
+                             color='r', linestyle='--', linewidth=0.5, label='true value',
+                             **dict_plot_for_main_line)
+            plot.show_legend()  # for showing the other envelope/true value since legend = False.
 
             fig_dict = self.get_default_dict_fig(separators_plot, key)
             plot.set_dict_ax(0, fig_dict)
@@ -235,132 +250,72 @@ class Evolution_plot_estimator(Plot_estimator):
             if path_save_plot is not None:
                 name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
                 plot.save_plot(name_save_file=name_file)
+        return plots
 
-
-    def draw(self, column_name_draw, true_values_flag=False,
-             envelope_flag=True, separators_plot=None,
-             separator_colour=None, dict_plot_for_main_line={}, path_save_plot=None,
-             *args, **kwargs):
-        # TODO 23/06/2021 nie_k: todo the check we did in separator plot, do the same in separator colour.
-        #  I want separator color to be a list, not just a string.
-        #  It is easy to do as grouping by allows for list of str.
-        #  Be careful that unpacking a string is the characters.
+    def scatter(self, column_name_draw, column_name_true_values=None, separators_plot=None,
+                palette='PuOr',
+                hue=None, style=None, markers=None, sizes=None,
+                dict_plot_for_main_line={}, path_save_plot=None,
+                *args, **kwargs):
         """
         Semantics:
-            Draw the evolution_plot_estimator common behavior.
+            Draw the scatterplot.
 
         Args:
             column_name_draw (str): The column of the dataframe used to retrieve the data to draw
-            true_values_flag (bool): Flag to specify whether or not true values are present and should be drawn
-            envelope_flag (bool): Flag to specify whether or not to draw the min and max of the data
+            column_name_true_values (str): The column where true values are present
             separators_plot (list of str): List of columns to group by, this will generate a plot for the product of unique
                 elements in each column
-            separator_colour (str): The column used in order to draw multiple lines on the same plot for the data,
+            palette (colors of seaborn): colors for hue. Some example in priv_lib_plot/acolor/colors_seaborn.py
+            hue (str): The column used in order to draw multiple lines on the same plot for the data,
                 discriminating by this column
+            style (str): separator for marker style
+            markers (bool):
+            sizes:
             dict_plot_for_main_line (dict): additional parameters for the plot (evolution line).
             path_save_plot (str): Path to specify where the plot should be saved. Not saved if is None.
 
         Returns:
 
         Dependency:
-            get_evolution_name_unique_values
-
-            if envelope_flag:
-                get_evolution_name_extremes
-            if true_values_flag:
-                get_evolution_name_true_value
-
-            get_evolution_name_plot_data
-            get_default_dict_fig
+            todo write the dependency
         """
-        # TODO 23/06/2021 nie_k: I am sure we made some checks somewhere about
-        #  separators are in columns (important condition).
-        # here we could do this again, for both separators and colors.
-
-        # TODO 26/06/2021 nie_k:  explain why super call
+        # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
-
         plots = []
         for key in keys:
             if key is None:  # case where we cannot use groupby.
                 data = global_dict
-                separators_plot = ["data used"]
-                key = ["whole dataset"]
+                separators_plot = ["data used"] # for title
+                key = ["whole dataset"]  # for title
             else:
                 data = global_dict.get_group(key)
+            # creation of the plot
             plot = APlot()
             plots.append(plot)
 
-            # allow groups to have different ranges for xx.
-            # This arr contains all unique values, and so covers all cases from coloured key.
-            evolution_xx = self.get_values_evolution_column(data)
+            sns.scatterplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+                            hue=hue, style=style, sizes=sizes, markers=markers,
+                            legend='full', palette=palette,
+                            data=data, ax=plot._axs[0], **dict_plot_for_main_line)
 
-            ########### replace with max operator
-            # min and max
-            if envelope_flag:
-                self._plot_min_max(data, evolution_xx, column_name_draw, plot)
-            ########## different column to plot!
-            # true value line
-            if true_values_flag:
-                self._plot_true_value(data, evolution_xx, plot)
+            if column_name_true_values is not None:
+                sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_true_values,
+                             hue=hue,
+                             legend=False, palette=palette, data=data, ax=plot._axs[0],
+                             color='r', linestyle='--', linewidth=0.5, label='true value',
+                             **dict_plot_for_main_line)
 
-            # discriminating wrt another column. The discrimination will look as different lines plotted.
-            if separator_colour is None:
-                data = self.get_data2evolution(data, column_name_draw)
-                plot.uni_plot(0, evolution_xx, data, dict_plot_param=dict_plot_for_main_line)
-            else:  # separator colour given
-                coloured_dict, coloured_keys = self.estimator.groupby_data(data, separator_colour)
-                # : groupby the data and retrieve the keys.
+            fig_dict = self.get_default_dict_fig(separators_plot, key)
+            plot.set_dict_ax(0, fig_dict)
 
-                if len(coloured_keys) > len(self.COLORMAP):
-                    warnings.warn("There is more data than colors, there might be an issue while plotting (not all curves plotted).")
-
-                for coloured_key, c in zip(coloured_keys, self.COLORMAP):
-                    coloured_data = coloured_dict.get_group(coloured_key)
-                    evolution_xx = self.get_values_evolution_column(coloured_data)
-                    # : allow groups to have different ranges for xx.
-                    # : If each coloured_data has difference ranges, it is important!
-
-                    coloured_data = self.get_data2evolution(coloured_data, column_name_draw)
-
-                    dict_for_plot = {"color": c, "linestyle": "solid", "linewidth": 1.1,
-                                     "label": coloured_key}
-                    dict_for_plot.update(dict_plot_for_main_line)
-
-                    plot.uni_plot(0, evolution_xx, coloured_data, dict_plot_param=dict_for_plot)
-
-            self._plot_finalisation(key, plot, path_save_plot, separators_plot)
-
-        # either coloured keys have been defined or not. I retrieve them in order to know what color to put upon which kernel.
-        if separator_colour is not None:
-            return plots, coloured_keys
-        else:
-            return plots, None
-
-    def _plot_finalisation(self, key, plot, path_save_plot, separators):
-        fig_dict = self.get_default_dict_fig(separators, key)
-        plot.set_dict_ax(nb_ax=0, dict_ax=fig_dict, bis_y_axis=False)
-        plot.show_legend()
-        # TODO 23/06/2021 nie_k:  PROBLEM WHEN KEY IS NONE Le chemin d’accès spécifié est introuvable: ''
-        # PROBLEM IN THE LOGIC
-        if path_save_plot is not None:
-            name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
-            plot.save_plot(name_save_file=name_file)
-
-    def _plot_true_value(self, data, estimation, plot):
-        true_values = self.get_data2true_evolution(data)
-        plot.uni_plot(0, estimation, true_values, dict_plot_param={"color": 'r', "linestyle": "solid", "linewidth": 0.4,
-                                                                   "label": "true value", 'marker': ''})
-
-    def _plot_min_max(self, data, estimation, feature_to_draw, plot):
-        minimum, maximum = self.get_evolution_name_extremes(data, feature_to_draw)
-        plot.uni_plot(0, estimation, minimum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
-                                                               "linewidth": 0.5, "label": "min",
-                                                               'marker': ''})
-        plot.uni_plot(0, estimation, maximum, dict_plot_param={"color": 'r', "linestyle": "dashdot",
-                                                               "linewidth": 0.5, "label": "max",
-                                                               'marker': ''})
+            if path_save_plot is not None:
+                # TODO 23/06/2021 nie_k:  PROBLEM WHEN KEY IS NONE Le chemin d’accès spécifié est introuvable: ''
+                # TODO 26/06/2021 nie_k: refactor function using path_save_plot + fct. LIKE PARAMETER + KEYS + NAME FCT (hist, scatter, lineplot...)
+                name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
+                plot.save_plot(name_save_file=name_file)
+        return plots
 
     # section ######################################################################
     #  #############################################################################

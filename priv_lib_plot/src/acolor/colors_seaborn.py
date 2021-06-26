@@ -28,9 +28,9 @@ block_colors = ['Blues', 'Purples', 'Reds', 'Greens']
 mixed_colors = ['PuOr', 'RdBu', 'RdYlBu', 'YlOrRd']
 bright_mix_colors = ['inferno', 'magma', 'CMRmap', 'afmhot', 'plasma', 'gnuplot']
 discrete_colors = ['Dark2', 'Paired', 'Set1', 'Set2', 'Set3']
-other_colors = ['coolwarm', 'icefire', 'seismic', 'viridis', 'ocean']
+other_colors = ['coolwarm', 'icefire', 'seismic', 'viridis', 'ocean', 'brg']
 
-COLOR = bright_mix_colors
+COLOR = mixed_colors
 
 nb_elmts = 60
 x = y = np.linspace(0, 1, nb_elmts)
