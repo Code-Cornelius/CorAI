@@ -2,7 +2,7 @@
 import numpy as np
 
 # my libraries
-from priv_lib_estimator import Evolution_plot_estimator
+from priv_lib_estimator import Relplot_estimator
 from priv_lib_estimator.src.example_hawkes_estim.plot_estim_hawkes import Plot_estim_hawkes
 
 
@@ -14,7 +14,7 @@ from priv_lib_estimator.src.example_hawkes_estim.plot_estim_hawkes import Plot_e
 # code:
 
 
-class Plot_evol_hawkes_timeparameters(Plot_estim_hawkes, Evolution_plot_estimator):
+class Plot_evol_hawkes_timeparameters(Plot_estim_hawkes, Relplot_estimator):
     EVOLUTION_NAME = 'time estimation'
     ESTIMATION_COLUMN_NAME = 'value'
     TRUE_ESTIMATION_COLUMN_NAME = 'true value'

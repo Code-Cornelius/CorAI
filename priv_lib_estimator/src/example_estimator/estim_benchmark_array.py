@@ -3,7 +3,7 @@
 
 # priv libraries
 from priv_lib_error import Error_type_setter
-from priv_lib_estimator import Plot_estimator, Evolution_plot_estimator, Histogram_estimator
+from priv_lib_estimator import Plot_estimator, Relplot_estimator, Distplot_estimator
 from priv_lib_estimator.src.estimator.estim_time import Estim_time
 
 
@@ -20,14 +20,13 @@ class Estim_benchmark_array(Estim_time):
 
 
 class Plot_estim_benchmark_array(Plot_estimator):
-
     def __init__(self, estimator_bench, *args, **kwargs):
         if not isinstance(estimator_bench, Estim_benchmark_array):
             raise Error_type_setter(f'Argument is not an {str(Estim_benchmark_array)}.')
         super().__init__(estimator_bench, *args, **kwargs)
 
 
-class Plot_evol_benchmark_array(Plot_estim_benchmark_array, Evolution_plot_estimator):
+class Relplot_benchmark_array(Plot_estim_benchmark_array, Relplot_estimator):
     EVOLUTION_COLUMN = 'Array Size'
 
     def __init__(self, estimator, *args, **kwargs):
@@ -49,7 +48,7 @@ class Plot_evol_benchmark_array(Plot_estim_benchmark_array, Evolution_plot_estim
         return fig_dict
 
 
-class Plot_hist_benchmark_array(Plot_estim_benchmark_array, Histogram_estimator):
+class Distplot_benchmark_array(Plot_estim_benchmark_array, Distplot_estimator):
     def ___init__(self, estimator, *args, **kwargs):
         super().__init__(estimator=estimator, *args, **kwargs)
 

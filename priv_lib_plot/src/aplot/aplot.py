@@ -1,21 +1,19 @@
 # normal libraries
 import math  # quick math functions
 import warnings
-import os
+
 import numpy as np  # maths library and arrays
-from matplotlib import pyplot as plt  # plotting
 import seaborn as sns  # environment for plots
-
-# my libraries
-from priv_lib_metaclass import Register, deco_register
-from priv_lib_util.tools import function_dict, function_iterable
-from priv_lib_plot.src.aplot.dict_ax_for_aplot import Dict_ax_for_APlot
-from priv_lib_plot.src.acolor.acolorsetcontinuous import \
-    AColorsetContinuous  # forced to write whole path as aplot would also be imported.
-from priv_lib_plot.src.aplot.displayable_plot import Displayable_plot
-
+from matplotlib import pyplot as plt  # plotting
 # errors:
 from priv_lib_error import Error_not_allowed_input
+# my libraries
+from priv_lib_metaclass import Register, deco_register
+from priv_lib_plot.src.acolor.acolorsetcontinuous import \
+    AColorsetContinuous  # forced to write whole path as aplot would also be imported.
+from priv_lib_plot.src.aplot.dict_ax_for_aplot import Dict_ax_for_APlot
+from priv_lib_plot.src.aplot.displayable_plot import Displayable_plot
+from priv_lib_util.tools import function_dict, function_iterable
 
 # other files
 sns.set()  # better layout, like blue background
@@ -504,7 +502,6 @@ class APlot(Displayable_plot, metaclass=Register):
     #  #############################################################################
     # PLOT FUNCTIONS
 
-
     def uni_plot(self, nb_ax, xx, yy, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy(), dict_ax=None):
         """
         Semantics:
@@ -880,7 +877,7 @@ class APlot(Displayable_plot, metaclass=Register):
                                     dict_ax=dict_ax_slices)
         surface_triple.show_legend(nb_ax=1)
         surface_triple.tight_layout()
-        return surface_triple._axs[nb_ax]
+        return surface_triple._axs
 
     def scatter_plot(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None,
                      show_colorbar=True):
@@ -894,7 +891,7 @@ class APlot(Displayable_plot, metaclass=Register):
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
 
         if show_colorbar:
-            self._fig.colorbar(contour, aspect=40)
+            self._fig.colorbar(self._axs[nb_ax], aspect=40)
 
         return self._axs[nb_ax]
 

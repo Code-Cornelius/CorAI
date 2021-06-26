@@ -4,11 +4,11 @@
 # my libraries
 
 # other files
-from priv_lib_estimator import Histogram_estimator
+from priv_lib_estimator import Distplot_estimator
 from priv_lib_estimator.src.example_hawkes_estim.plot_estim_hawkes import Plot_estim_hawkes
 
 
-class Plot_hist_hawkes(Plot_estim_hawkes, Histogram_estimator):
+class Plot_hist_hawkes(Plot_estim_hawkes, Distplot_estimator):
     NB_OF_BINS = 60
 
     def __init__(self, estimator, fct_parameters, *args, **kwargs):

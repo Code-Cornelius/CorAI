@@ -1,13 +1,13 @@
 # normal libraries
 import time
-import pandas as pd
-from tqdm import tqdm
 
+import pandas as pd
+from priv_lib_estimator.src.example_estimator.estim_benchmark_array import Relplot_benchmark_array, \
+    Estim_benchmark_array, Distplot_benchmark_array
 # priv libraries
 from priv_lib_plot import APlot
 from priv_lib_util.tools.src.benchmarking import benchmark
-from priv_lib_estimator.src.example_estimator.estim_benchmark_array import Plot_evol_benchmark_array, \
-    Estim_benchmark_array, Plot_hist_benchmark_array
+from tqdm import tqdm
 
 
 # section ######################################################################
@@ -65,16 +65,16 @@ for size in tqdm(sizes):
 print(estim)
 
 time.sleep(1)
-plot_evol_estim = Plot_evol_benchmark_array(estim)
+plot_evol_estim = Relplot_benchmark_array(estim)
 
 plot_evol_estim.lineplot(column_name_draw='Comput. Time', envelope_flag=True,
                          kind='line', palette='Dark2',
                          hue="Method", markers=True, style="Method",
                          dict_plot_for_main_line={})
 
-plot_hist_estim = Plot_hist_benchmark_array(estim)
-plot_hist_estim.hist(column_name_draw='Comput. Time', separators_plot=["Array Size"], hue = 'Method',
-                     palette='PuOr', bins=50, # separators_filter={'Method': ['elem_enum'], 'Array Size': sizes[-1:]},
-                     binrange=None, stat='count', multiple="stack", kde=True, path_save_plot=None)
+plot_hist_estim = Distplot_benchmark_array(estim)
+plot_hist_estim.hist(column_name_draw='Comput. Time', separators_plot=["Array Size"], hue='Method',
+                     palette='PuOr', bins=50,  # separators_filter={'Method': ['elem_enum'], 'Array Size': sizes[-1:]},
+                     binrange=None, stat='count', multiple="layer", kde=True, path_save_plot=None)
 
 APlot.show_plot()

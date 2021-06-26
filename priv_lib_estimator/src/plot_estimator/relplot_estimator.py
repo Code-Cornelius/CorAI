@@ -1,12 +1,11 @@
 # normal libraries
-import warnings
 from abc import abstractmethod
-import seaborn as sns
 
-# my libraries
-from priv_lib_util.tools import function_str
+import seaborn as sns
 from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 from priv_lib_plot import APlot
+# my libraries
+from priv_lib_util.tools import function_str
 
 
 # errors:
@@ -17,10 +16,10 @@ from priv_lib_plot import APlot
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-class Evolution_plot_estimator(Plot_estimator):
+class Relplot_estimator(Plot_estimator):
     """
     Semantics:
-        Abstract class inheriting from Plot_estimator.
+        Abstract class inheriting from Plot_estimator. Relation Plot.
         The purpose is to automatise the plots showing evolution of a feature
             with respect to an other as a time-series.
         The class is showing common behavior for evolution_plot: retrieving data for the time series,
@@ -177,6 +176,9 @@ class Evolution_plot_estimator(Plot_estimator):
         """
         pass
 
+    def draw(self, separators_plot=None, not_use_grouping_by=False, *args, **kwargs):
+        pass
+
     def lineplot(self, column_name_draw, column_name_true_values=None, envelope_flag=True, separators_plot=None,
                  palette='PuOr',
                  hue=None, style=None, markers=None, sizes=None,
@@ -213,7 +215,7 @@ class Evolution_plot_estimator(Plot_estimator):
         for key in keys:
             if key is None:  # case where we cannot use groupby.
                 data = global_dict
-                separators_plot = ["data used"] # for the title
+                separators_plot = ["data used"]  # for the title
                 key = ["whole dataset"]  # for the title
             else:
                 data = global_dict.get_group(key)
@@ -287,7 +289,7 @@ class Evolution_plot_estimator(Plot_estimator):
         for key in keys:
             if key is None:  # case where we cannot use groupby.
                 data = global_dict
-                separators_plot = ["data used"] # for title
+                separators_plot = ["data used"]  # for title
                 key = ["whole dataset"]  # for title
             else:
                 data = global_dict.get_group(key)

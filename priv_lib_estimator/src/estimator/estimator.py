@@ -1,7 +1,7 @@
-import pandas as pd
-from priv_lib_error import Error_type_setter
 import json
 
+import pandas as pd
+from priv_lib_error import Error_type_setter
 from priv_lib_util.tools.src.function_json import zip_json, unzip_json
 
 
@@ -56,7 +56,7 @@ class Estimator(object):
         Returns: new estimator.
 
         """
-        return cls(df = pd.read_csv(path, **kwargs))  # calling the constructor of the class.
+        return cls(df=pd.read_csv(path, **kwargs))  # calling the constructor of the class.
 
     @classmethod
     def from_json(cls, path):
@@ -106,11 +106,10 @@ class Estimator(object):
             json.dump(df_info, file)
 
         return attrs
-    
+
     # section ######################################################################
     #  #############################################################################
     # Methods
-    
 
     def append(self, appending_df, *args, **kwargs):
         """
@@ -239,11 +238,10 @@ class Estimator(object):
     #     else:
     #         return self.df[columns_for_computation].var(ddof=ddof)
 
-
     # section ######################################################################
     #  #############################################################################
     # Save methods
-    
+
     def to_csv(self, path, **kwargs):
         """
         Semantics:
@@ -258,7 +256,7 @@ class Estimator(object):
         Returns:
 
         """
-        self.df.to_csv(path, index = False, **kwargs)
+        self.df.to_csv(path, index=False, **kwargs)
         return
 
     def to_json(self, path, compress=True, attrs={}.copy()):
@@ -291,8 +289,6 @@ class Estimator(object):
 
         with open(path, 'w') as file:
             json.dump(parsed, file)
-
-
 
     @staticmethod
     def groupby_data(data, separators):
@@ -346,9 +342,6 @@ class Estimator(object):
     @property
     def columns(self):
         return self.df.columns
-
-
-
 
     # TODO 26/06/2021 nie_k: to implement with the logic.
     #  one wants to associate two columns together for plotting with seaborn.
