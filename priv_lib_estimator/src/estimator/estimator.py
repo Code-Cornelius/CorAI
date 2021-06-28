@@ -25,7 +25,7 @@ class Estimator(object):
     CORE_COL = set()
 
     def __init__(self, df=None, *args, **kwargs):
-        # args and kwargs for the child super() method.
+        # args and kwargs for the child super() method. Do not forget them in child classes.
         if df is not None:
             # test that the columns of the df are the right one, corresponding to the class argument.
             # the fact that we use self. ensures that we use polymorphism.

@@ -46,13 +46,13 @@ class Relplot_estimator(Plot_estimator):
         pass
 
     def __init__(self, estimator, grouping_by=None, *args, **kwargs):
+        # args and kwargs for the child super() method. Do not forget them in child classes.
         super().__init__(estimator=estimator, grouping_by=grouping_by, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
     # data processing
 
-    @abstractmethod
     def get_data2evolution(self, data, column_slice):
         """
         Semantics:
@@ -161,7 +161,7 @@ class Relplot_estimator(Plot_estimator):
     # plot:
 
     @abstractmethod
-    def get_default_dict_fig(self, grouped_data_by, key=None):
+    def get_default_dict_fig(self, grouped_data_by, key=None, **kwargs):
         """
         Semantics:
             default parameters for the drawing of evolution_plot_estimator, depending on grouped_data_by.
@@ -177,12 +177,14 @@ class Relplot_estimator(Plot_estimator):
         pass
 
     def draw(self, separators_plot=None, not_use_grouping_by=False, *args, **kwargs):
+        # args and kwargs for the child super() method. Do not forget them in child classes.
         pass
 
     def lineplot(self, column_name_draw, column_name_true_values=None, envelope_flag=True, separators_plot=None,
                  palette='PuOr',
                  hue=None, style=None, markers=None, sizes=None,
                  dict_plot_for_main_line={}, path_save_plot=None,
+                 list_aplots = None,
                  *args, **kwargs):
         """
         Semantics:
@@ -202,6 +204,10 @@ class Relplot_estimator(Plot_estimator):
             sizes:
             dict_plot_for_main_line (dict): additional parameters for the plot (evolution line).
             path_save_plot (str): Path to specify where the plot should be saved. Not saved if is None.
+            list_aplots (list of Aplot): Plot for plotting.
+                There should be as many axs as in the number of groups given by separators_plotters
+                 (with the grouping_by parameter of the plot_estimator).
+            kwargs: passed to super and to get_default_dict_fig.
 
         Returns:
 
@@ -211,8 +217,10 @@ class Relplot_estimator(Plot_estimator):
         # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
-        plots = []
-        for key in keys:
+
+        current_plots = list_aplots if list_aplots is not None else [] # fetch the aplots of create an empty list
+
+        for i, key in enumerate(keys):
             if key is None:  # case where we cannot use groupby.
                 data = global_dict
                 separators_plot = ["data used"]  # for the title
@@ -220,45 +228,50 @@ class Relplot_estimator(Plot_estimator):
             else:
                 data = global_dict.get_group(key)
             # creation of the plot
-            plot = APlot()
-            plots.append(plot)
-
+            # choice of ax
+            if list_aplots is not None:
+                # TODO 27/06/2021 nie_k:  verify plots is same length as keys.
+                aplot = list_aplots[i]
+                ax = aplot._axs[i]
+            else:
+                aplot = APlot()
+                current_plots.append(aplot)
+                ax = aplot._axs[0]
             sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
                          hue=hue, style=style, sizes=sizes, markers=markers,
                          legend='full', ci=95, err_style="band",
                          palette=palette,
-                         data=data, ax=plot._axs[0], **dict_plot_for_main_line)
-
+                         data=data, ax=ax, **dict_plot_for_main_line)
             if envelope_flag:
                 for fct in ['min', 'max']:
                     sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
                                  estimator=fct, hue=hue,
                                  legend=False, err_style="band", ci=None,
                                  # no Conf. Inter. for max value (does not make actually sense with bootstrapping)
-                                 palette=palette, data=data, ax=plot._axs[0],
-                                 color='r', linestyle='--', linewidth=0.5, label=fct,
-                                 **dict_plot_for_main_line)
+                                 palette=palette, data=data, ax=ax,
+                                 color='r', linestyle='--', linewidth=0.5, label=fct)
             if column_name_true_values is not None:
                 sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_true_values,
                              hue=hue, legend=False, err_style="band", ci=None,
-                             palette=palette, data=data, ax=plot._axs[0],
-                             color='r', linestyle='--', linewidth=0.5, label='true value',
-                             **dict_plot_for_main_line)
-            plot.show_legend()  # for showing the other envelope/true value since legend = False.
+                             palette=palette, data=data, ax=ax,
+                             color='r', linestyle='--', linewidth=0.5, label='true value')
 
-            fig_dict = self.get_default_dict_fig(separators_plot, key)
-            plot.set_dict_ax(0, fig_dict)
+            # todo i want the thing to still appear.
+
+            fig_dict = self.get_default_dict_fig(separators_plot, key, **kwargs)
+            aplot.set_dict_ax(0, fig_dict)
 
             if path_save_plot is not None:
                 name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
-                plot.save_plot(name_save_file=name_file)
-        return plots
+                aplot.save_plot(name_save_file=name_file)
+        return current_plots
 
     def scatter(self, column_name_draw, column_name_true_values=None, separators_plot=None,
                 palette='PuOr',
                 hue=None, style=None, markers=None, sizes=None,
                 dict_plot_for_main_line={}, path_save_plot=None,
                 *args, **kwargs):
+        # TODO 27/06/2021 nie_k:  add the ax parameter as line plot.
         """
         Semantics:
             Draw the scatterplot.
@@ -309,7 +322,7 @@ class Relplot_estimator(Plot_estimator):
                              color='r', linestyle='--', linewidth=0.5, label='true value',
                              **dict_plot_for_main_line)
 
-            fig_dict = self.get_default_dict_fig(separators_plot, key)
+            fig_dict = self.get_default_dict_fig(separators_plot, key, **kwargs)
             plot.set_dict_ax(0, fig_dict)
 
             if path_save_plot is not None:

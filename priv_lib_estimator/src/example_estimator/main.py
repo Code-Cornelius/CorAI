@@ -48,9 +48,9 @@ import numpy as np
 
 TEST = True
 if TEST:
-    powers = np.array(range(14, 18))
+    powers = np.array(range(13, 18))
 else:
-    powers = np.array(range(14, 22))
+    powers = np.array(range(13, 20))
 
 number_of_reps = 100
 sizes = 2 ** powers
@@ -74,7 +74,7 @@ plot_evol_estim.lineplot(column_name_draw='Comput. Time', envelope_flag=True,
 
 plot_hist_estim = Distplot_benchmark_array(estim)
 plot_hist_estim.hist(column_name_draw='Comput. Time', separators_plot=["Array Size"], hue='Method',
-                     palette='PuOr', bins=50,  # separators_filter={'Method': ['elem_enum'], 'Array Size': sizes[-1:]},
+                     palette='PuOr', bins=50,  separators_filter={'Method': ['elem_enum'], 'Array Size': sizes[-2:]},
                      binrange=None, stat='count', multiple="layer", kde=True, path_save_plot=None)
 
 APlot.show_plot()

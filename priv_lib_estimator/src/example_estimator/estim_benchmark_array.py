@@ -33,10 +33,7 @@ class Relplot_benchmark_array(Plot_estim_benchmark_array, Relplot_estimator):
         super().__init__(estimator, *args, **kwargs)
         return
 
-    def get_data2evolution(self, data, feature_to_draw):
-        return self.get_data2group_sliced(data, feature_to_draw).mean().to_numpy()
-
-    def get_default_dict_fig(self, grouped_data_by, key=None):
+    def get_default_dict_fig(self, grouped_data_by, key=None, **kwargs):
         title = self.generate_title(parameters=grouped_data_by, parameters_value=key,
                                     before_text="Benchmark")
         fig_dict = {'title': title,

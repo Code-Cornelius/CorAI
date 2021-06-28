@@ -72,6 +72,7 @@ class Plot_estimator(Root_plot_estimator):
             separators (list of str): Columns to split the dataframe upon. It will be merged with the grouping_by of
                 the estimator
             not_use_grouping_by (bool): if true, then draw does not separate wrt self.grouping_by.
+            args and kwargs for the child super() method. Do not forget them in child classes.
 
         Returns:
                 - The separators (the separators received as input together with the grouping_by)

@@ -25,12 +25,14 @@ class Distplot_estimator(Plot_estimator):
     """
 
     def __init__(self, estimator, separators=None, *args, **kwargs):
+        # args and kwargs for the child super() method. Do not forget them in child classes.
         super().__init__(estimator, separators, *args, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
     # plot
     def draw(self, separators_plot=None, not_use_grouping_by=False, *args, **kwargs):
+        # args and kwargs for the child super() method. Do not forget them in child classes.
         pass
 
     @abstractmethod

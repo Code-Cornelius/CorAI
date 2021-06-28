@@ -289,7 +289,126 @@ class APlot(Displayable_plot, metaclass=Register):
     # section ######################################################################
     #  #############################################################################
     # Methods for customization
+    
+    @staticmethod
+    def update_dict_ax(axis, dict_ax, xx, yy):
+        """
+        Semantics:
+            benefit from the automatic ax configuration without having to write it all oneself.
+        Args:
+            axis: plt.axis, unique.
+            dict_ax: needs to contain, with value with no impact in parenthesis:
+                xscale ('linear')
+                basex (10)
+                yscale ('linear')
+                basey (10)
+                xint (False)
+                yint (False)
+                xlim (None)
+                ylim (None)
+                parameters (None)
+                name_parameters (None)
 
+
+
+        Returns:
+
+        """
+        if 'title' in dict_ax:
+            axis.set_title(dict_ax['title'],
+                           fontsize=APlot.FONTSIZE)
+
+        if 'xlabel' in dict_ax:
+            axis.set_xlabel(dict_ax['xlabel'],
+                            fontsize=APlot.FONTSIZE)
+
+        if 'ylabel' in dict_ax:
+            axis.set_ylabel(dict_ax['ylabel'],
+                            fontsize=APlot.FONTSIZE)
+
+        # we discriminate the log case, for the possibility of setting up a base.
+        # Giving a base without giving the logscale does nothing.
+        if dict_ax['xscale'] == 'log':
+            axis.set_xscale(dict_ax['xscale'],
+                            base=dict_ax['basex'])
+        else:
+            axis.set_xscale(dict_ax['xscale'])
+
+        if dict_ax['yscale'] == 'log':
+            axis.set_yscale(dict_ax['yscale'],
+                            base=dict_ax['basey'])
+        else:
+            axis.set_yscale(dict_ax['yscale'])
+
+        axis.tick_params(labelsize=APlot.FONTSIZE - 1)
+
+        if 'xint' in dict_ax and dict_ax['xint']:
+            if xx is None:
+                raise Exception("xx has not been given.")
+            x_int = range(math.floor(min(xx)) - 1, math.ceil(max(xx)) + 1)
+            # I need to use ceil on both if min and self.axs[nb_ax] are not integers ( like 0 to 1 )
+            axis.set_xticks(x_int)
+        if 'yint' in dict_ax and dict_ax['yint']:
+            if yy is None:
+                raise Exception("yy has not been given.")
+            y_int = range(math.floor(min(yy)), math.ceil(max(yy)) + 1)
+            axis.set_yticks(y_int)
+
+        if 'xlim' in dict_ax and dict_ax['xlim'] is not None:
+            axis.set_xlim(*dict_ax['xlim'])
+        if 'ylim' in dict_ax and dict_ax['ylim'] is not None:
+            axis.set_ylim(*dict_ax['ylim'])
+
+        # I keep the condition. If not true, then no need to move the plot up.
+        if 'parameters' in dict_ax and 'name_parameters' in dict_ax and \
+                dict_ax['parameters'] is not None \
+                and dict_ax['name_parameters'] is not None:
+            parameters = dict_ax['parameters']
+            name_parameters = dict_ax['name_parameters']
+            nb_parameters = len(parameters)
+            MAX_NUMBER_PARAMETER = 24
+            sous_text = ' Parameters: \n'
+            for i in range(nb_parameters):
+                sous_text += str(name_parameters[i]) + f" = {parameters[i]}"
+                # end of the list, we finish by a full stop.
+                if i == nb_parameters - 1:
+                    sous_text += "."
+                # certain chosen number of parameters by line, globally, 3 by line.
+                # There shouldn't be more than 20 parameters
+                elif i in [3, 7, 11, 15]:
+                    sous_text += ", \n "
+                # otherwise, just keep writing on the same line.
+                else:
+                    sous_text += ", "
+
+            bottom, top = axis.get_ylim()
+            left, right = axis.get_xlim()
+
+            factor_how_many_params = min(MAX_NUMBER_PARAMETER, nb_parameters)
+            interpolation_factor = math.ceil(factor_how_many_params / 4) * 4 / MAX_NUMBER_PARAMETER
+            # : factor that is a step function that depending on number of lines goes up
+            STARTING_VALUE_PUTTING_TEXT_LOWER = 0.18  # initial lowering but goes up as more lines included
+            STARTING_VALUE_SUBPLOT_ADJUST = 0.18
+
+            SPEED_PUTTING_DOWN_WRT_NB_PARAM = 0.69  # : since graph higher, need to adjust lowering accordingly and dynamically
+            # : closer to one then goes up quicker.
+            COEF_PUT_TO_LEFT = 0.1
+            SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM = 1.2
+
+            axis.text(left + (right - left) * COEF_PUT_TO_LEFT,
+                      bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * (
+                              (top - bottom) * SPEED_PUTTING_DOWN_WRT_NB_PARAM - STARTING_VALUE_PUTTING_TEXT_LOWER)),
+                      sous_text,
+                      fontsize=APlot.FONTSIZE - 2)
+            plt.subplots_adjust(
+                bottom=STARTING_VALUE_SUBPLOT_ADJUST +
+                       interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST) *
+                       SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM,
+                wspace=0.25, hspace=0.5)
+            # bottom is how much low;
+            # wspace : the amount of width reserved for blank space between subplots
+            # hspace : the amount of height reserved for white space between subplots
+    
     def set_dict_ax(self, nb_ax=0, dict_ax=None, xx=None, yy=None, bis_y_axis=False):
         """
         Semantics:
@@ -353,95 +472,7 @@ class APlot(Displayable_plot, metaclass=Register):
         # update the default dict with the passed parameters.
         # It changes self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax].
         dict_parameters_for_the_ax.update(dict_ax)
-
-        axis.set_title(dict_parameters_for_the_ax['title'],
-                       fontsize=APlot.FONTSIZE)
-        axis.set_xlabel(dict_parameters_for_the_ax['xlabel'],
-                        fontsize=APlot.FONTSIZE)
-        axis.set_ylabel(dict_parameters_for_the_ax['ylabel'],
-                        fontsize=APlot.FONTSIZE)
-
-        # we discriminate the log case, for the possibility of setting up a base.
-        # Giving a base without giving the logscale does nothing.
-        if dict_parameters_for_the_ax['xscale'] == 'log':
-            axis.set_xscale(dict_parameters_for_the_ax['xscale'],
-                            base=dict_parameters_for_the_ax['basex'])
-        else:
-            axis.set_xscale(dict_parameters_for_the_ax['xscale'])
-
-        if dict_parameters_for_the_ax['yscale'] == 'log':
-            axis.set_yscale(dict_parameters_for_the_ax['yscale'],
-                            base=dict_parameters_for_the_ax['basey'])
-        else:
-            axis.set_yscale(dict_parameters_for_the_ax['yscale'])
-
-        axis.tick_params(labelsize=APlot.FONTSIZE - 1)
-
-        if dict_parameters_for_the_ax['xint']:
-            if xx is None:
-                raise Exception("xx has not been given.")
-            x_int = range(math.floor(min(xx)) - 1, math.ceil(max(xx)) + 1)
-            # I need to use ceil on both if min and self.axs[nb_ax] are not integers ( like 0 to 1 )
-            axis.set_xticks(x_int)
-        if dict_parameters_for_the_ax['yint']:
-            if yy is None:
-                raise Exception("yy has not been given.")
-            y_int = range(math.floor(min(yy)), math.ceil(max(yy)) + 1)
-            axis.set_yticks(y_int)
-
-        if dict_parameters_for_the_ax['xlim'] is not None:
-            axis.set_xlim(*dict_parameters_for_the_ax['xlim'])
-        if dict_parameters_for_the_ax['ylim'] is not None:
-            axis.set_ylim(*dict_parameters_for_the_ax['ylim'])
-
-        # I keep the condition. If not true, then no need to move the plot up.
-        if dict_parameters_for_the_ax['parameters'] is not None \
-                and dict_parameters_for_the_ax['name_parameters'] is not None:
-            parameters = dict_parameters_for_the_ax['parameters']
-            name_parameters = dict_parameters_for_the_ax['name_parameters']
-            nb_parameters = len(parameters)
-            MAX_NUMBER_PARAMETER = 24
-            sous_text = ' Parameters: \n'
-            for i in range(nb_parameters):
-                sous_text += str(name_parameters[i]) + f" = {parameters[i]}"
-                # end of the list, we finish by a full stop.
-                if i == nb_parameters - 1:
-                    sous_text += "."
-                # certain chosen number of parameters by line, globally, 3 by line.
-                # There shouldn't be more than 20 parameters
-                elif i in [3, 7, 11, 15]:
-                    sous_text += ", \n "
-                # otherwise, just keep writing on the same line.
-                else:
-                    sous_text += ", "
-
-            bottom, top = axis.get_ylim()
-            left, right = axis.get_xlim()
-
-            factor_how_many_params = min(MAX_NUMBER_PARAMETER, nb_parameters)
-            interpolation_factor = math.ceil(factor_how_many_params / 4) * 4 / MAX_NUMBER_PARAMETER
-            # : factor that is a step function that depending on number of lines goes up
-            STARTING_VALUE_PUTTING_TEXT_LOWER = 0.18  # initial lowering but goes up as more lines included
-            STARTING_VALUE_SUBPLOT_ADJUST = 0.18
-
-            SPEED_PUTTING_DOWN_WRT_NB_PARAM = 0.69  # : since graph higher, need to adjust lowering accordingly and dynamically
-            # : closer to one then goes up quicker.
-            COEF_PUT_TO_LEFT = 0.1
-            SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM = 1.2
-
-            axis.text(left + (right - left) * COEF_PUT_TO_LEFT,
-                      bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * (
-                              (top - bottom) * SPEED_PUTTING_DOWN_WRT_NB_PARAM - STARTING_VALUE_PUTTING_TEXT_LOWER)),
-                      sous_text,
-                      fontsize=APlot.FONTSIZE - 2)
-            plt.subplots_adjust(
-                bottom=STARTING_VALUE_SUBPLOT_ADJUST +
-                       interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST) *
-                       SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM,
-                wspace=0.25, hspace=0.5)
-            # bottom is how much low;
-            # wspace : the amount of width reserved for blank space between subplots
-            # hspace : the amount of height reserved for white space between subplots
+        self.update_dict_ax(axis, dict_parameters_for_the_ax, xx, yy)
         return
 
     def show_legend(self, nb_ax=None, loc='best'):
@@ -479,6 +510,7 @@ class APlot(Displayable_plot, metaclass=Register):
         """
         if self._axs_bis[nb_ax] is not None:
             lines, labels = self._get_lines_and_labels_for(nb_ax)
+            # : retrieve all lines and plot in the same place, avoids having two label boxes.
             self._axs_bis[nb_ax].legend(lines, labels, loc=loc, fontsize=APlot.FONTSIZE - 3)
         else:
             self._axs[nb_ax].legend(loc=loc, fontsize=APlot.FONTSIZE - 3)
@@ -708,12 +740,12 @@ class APlot(Displayable_plot, metaclass=Register):
             uni_plot
 
         Examples:
-                    In order to get the limit of the current axis : 
-                    yy = np.array([aplot.get_y_lim(nb_ax = 0)])
+            In order to get the limit of the current axis :
+            yy = np.array([aplot.get_y_lim(nb_ax = 0)])
             aplot.plot_vertical_line(best_epoch_of_NN, yy = [0,1], nb_ax=0, dict_plot_param ={"color": "black",
-                                                                                        "linewidth": 0.5,
-                                                                                        "label": f"Best model for fold nb {i}"
-                                                                                        })
+                                                                                              "linewidth": 0.5,
+                                                                                              "label": f"Best model for fold nb {i}"
+                                                                                              })
         """
         return self.uni_plot(nb_ax=nb_ax, xx=np.full(len(yy), x), yy=yy, dict_plot_param=dict_plot_param)
 

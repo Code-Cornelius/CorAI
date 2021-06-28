@@ -1,5 +1,8 @@
 import json
 
+from priv_lib_util.tools.src.function_iterable import is_iterable
+
+
 def up(my_dict, new_dict):
     """
     Semantics:
@@ -112,10 +115,15 @@ def filter(names, keys, filter_rules):
     for key in keys:
         for i, name in enumerate(names):
             if name in filter_rules:
-                if key[i] not in filter_rules[name]:
-                    unwanted.append(key)
+                # here we distinguish the case simple or multi keys. If multi keys, key is a tuple.
+                if is_iterable(key):
+                    if key[i] in filter_rules[name]:
+                        unwanted.append(key)
+                else:
+                    if key in filter_rules[name]:
+                        unwanted.append(key)
 
-    return [key for key in keys if key not in unwanted]
+    return [key for key in keys if key in unwanted]
 
 
 """

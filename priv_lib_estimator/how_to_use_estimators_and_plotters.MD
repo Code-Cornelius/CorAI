@@ -12,16 +12,16 @@ data.
 # ESTIMATORS
 
 # ESTIM. PLOTTERS
+
 todo : the order of inheritance has some importance. It has an impact at ....
-The convention is:
+The naming convention is:
 
 Class | Naming Convention | 
 ------------ | ------------ |
 Estimator Child Class                   | Estim_function_name | 
 Plot_estimator Child Class              | Plot_estim_function_name | 
-Evolution_plot_estimator Child Class    | Plot_evol_function_name | 
-Histogram_estimator Child Class         | Plot_hist_function_name | 
-Statistic_estimator Child Class         | Plot_stat_function_name | 
+Relplot_estimator Child Class    | Relplot_function_name | 
+Distplot_estimator Child Class         | Distplot_function_name | 
 
 Mermaid diagrams: https://mermaid-js.github.io/mermaid/#/
 Easily instalable in Pycharm.
@@ -40,14 +40,14 @@ a certain function, and the right wing (Type_plot_estimator) indicates the way t
 classDiagram
         
         
-        Plot_estimator       <|-- Type_plot_estimator
+        Plot_estimator       <|-- Typeplot_estimator
         Plot_estimator       <|-- Plot_estim_function_name
-        Plot_estim_function_name       <|-- Plot_type_function_name
-        Type_plot_estimator       <|-- Plot_type_function_name
+        Plot_estim_function_name       <|-- Typeplot_function_name
+        Typeplot_estimator       <|-- Typeplot_function_name
 
         
         <<abstract>> Plot_estimator
-        <<abstract>> Type_plot_estimator
+        <<abstract>> Typeplot_estimator
 ```
 
 
@@ -58,25 +58,21 @@ classDiagram
         
         Root_plot_estimator  <|-- Plot_estimator
         
-        Plot_estimator       <|-- Evolution_plot_estimator
-        Plot_estimator       <|-- Histogram_estimator
+        Plot_estimator       <|-- Relplot_estimator
+        Plot_estimator       <|-- Distplot_estimator
 
-        Plot_estimator       <|-- Statistic_estimator
         Plot_estimator       <|-- Plot_estim_function_name
 
-        Plot_estim_function_name       <|-- Plot_hist_function_name
-        Plot_estim_function_name       <|-- Plot_evol_function_name
-        Plot_estim_function_name       <|-- Plot_stat_function_name
+        Plot_estim_function_name       <|-- Relplot_function_name
+        Plot_estim_function_name       <|-- Distplot_function_name
 
-        Evolution_plot_estimator       <|-- Plot_evol_function_name
-        Histogram_estimator            <|-- Plot_hist_function_name
-        Statistic_estimator            <|-- Plot_stat_function_name
+        Relplot_estimator       <|-- Relplot_function_name
+        Distplot_estimator            <|-- Distplot_function_name
         
         
         <<abstract>> Plot_estimator
-        <<abstract>> Evolution_plot_estimator
-        <<abstract>> Histogram_estimator
-        <<abstract>> Statistic_estimator
+        <<abstract>> Relplot_estimator
+        <<abstract>> Distplot_estimator
 
         
      
@@ -91,28 +87,26 @@ classDiagram
 
 
         
-        Evolution_plot_estimator:       +String EVOLUTION_COLUMN
+        Relplot_estimator:       +String EVOLUTION_COLUMN
         
-        Evolution_plot_estimator:       +get_data2true_evolution()
-        Evolution_plot_estimator:       +get_data2group_sliced()$   
-        Evolution_plot_estimator:       +get_values_evolution_column()$     
-        Evolution_plot_estimator:       +get_evolution_name_extremes()$  
-        Evolution_plot_estimator:       +get_data2evolution()* 
-        Evolution_plot_estimator:       +get_default_dict_fig()* 
+        Relplot_estimator:       +get_data2true_evolution()
+        Relplot_estimator:       +get_data2group_sliced()$   
+        Relplot_estimator:       +get_values_evolution_column()$     
+        Relplot_estimator:       +get_evolution_name_extremes()$  
+        Relplot_estimator:       +get_data2evolution()* 
+        Relplot_estimator:       +get_default_dict_fig()* 
         
-        Evolution_plot_estimator:       #_raise_if_separator_is_evolution()    
-        Evolution_plot_estimator:       #_plot_min_max()
-        Evolution_plot_estimator:       #_plot_true_value()    
-        Evolution_plot_estimator:       #_plot_finalisation()
-        Evolution_plot_estimator:       +draw()     
+        Relplot_estimator:       #_raise_if_separator_is_evolution()    
+        Relplot_estimator:       #_plot_min_max()
+        Relplot_estimator:       #_plot_true_value()    
+        Relplot_estimator:       #_plot_finalisation()
+        Relplot_estimator:       +draw()     
 
         
         
-        Histogram_estimator:       +int NB_OF_BINS* 
-        Histogram_estimator:       +get_range()$ 
-        Histogram_estimator:       +get_dict_plot_param()*
-        Histogram_estimator:       +get_dict_fig()*
-        Histogram_estimator:       +draw()
+        Distplot_estimator:       +hist()
+        Distplot_estimator:       +get_dict_fig()*
+        Distplot_estimator:       +draw()
         
 
 
@@ -129,21 +123,21 @@ classDiagram
 
 
         
-        Plot_evol_function_name:       +String EVOLUTION_COLUMN
+        Relplot_function_name:       +String EVOLUTION_COLUMN
         
-        Plot_evol_function_name:       +get_data2true_evolution()
-        Plot_evol_function_name:       +get_data2evolution()* 
-        Plot_evol_function_name:       +get_default_dict_fig()* 
+        Relplot_function_name:       +get_data2true_evolution()
+        Relplot_function_name:       +get_data2evolution()* 
+        Relplot_function_name:       +get_default_dict_fig()* 
         
-        Plot_evol_function_name:       +draw()     
+        Relplot_function_name:       +draw()     
 
         
         
-        Plot_hist_function_name:       +int NB_OF_BINS* 
-        Plot_hist_function_name:       +get_range()$ 
-        Plot_hist_function_name:       +get_dict_plot_param()*
-        Plot_hist_function_name:       +get_dict_fig()*
-        Plot_hist_function_name:       +draw()
+        Distplot_function_name:       +int NB_OF_BINS* 
+        Distplot_function_name:       +get_range()$ 
+        Distplot_function_name:       +get_dict_plot_param()*
+        Distplot_function_name:       +get_dict_fig()*
+        Distplot_function_name:       +draw()
         
 ```
 
