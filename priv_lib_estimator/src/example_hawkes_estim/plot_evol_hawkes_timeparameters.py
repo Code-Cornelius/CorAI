@@ -79,7 +79,7 @@ class Plot_evol_hawkes_timeparameters(Plot_estim_hawkes, Relplot_estimator):
 
         # plot the estimation
         plots, coloured_keys = super().draw(feature_to_draw, true_values_flag, envelope_flag,
-                                            separators_plot=separators_plot, separator_colour=separator_colour,
+                                            separators_plot=separators_plot, separator_colours=separator_colour,
                                             save_plot=False, not_use_grouping_by=False,
                                             *args, **kwargs)
         # on top of the estimation, plot the kernels if given

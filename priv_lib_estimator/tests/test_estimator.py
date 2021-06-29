@@ -13,7 +13,7 @@ class Test_Estimator(TestCase):
                          [900, 1, 1],
                          [10000, 49, 10],
                          [2500, 1, 1]])
-        self.estimator = Estimator(df = pd.DataFrame(data=data, columns=['Size', 'People', 'number_rooms']))
+        self.estimator = Estimator(df = pd.DataFrame(data=data, columns=['Size', 'People', 'number_rooms'], dtype='int32'))
 
     def test_from_path(self):
         pass
@@ -83,7 +83,7 @@ class Test_Estimator(TestCase):
 
     def test_to_csv_and_from_csv(self):
         self.estimator.to_csv("test.csv")
-        self.estimator2 = Estimator.from_csv("test.csv", dtype = 'int32') # saving might change types.
+        self.estimator2 = Estimator.from_csv("test.csv", dtype='int32') # saving might change types.
         assert self.estimator.df.equals(self.estimator2.df) # equality in terms of values
 
 

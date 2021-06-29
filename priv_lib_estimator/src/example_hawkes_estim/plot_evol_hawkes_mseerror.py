@@ -53,13 +53,13 @@ class Plot_evol_hawkes_mseerror(Plot_estim_hawkes, Relplot_estimator):
 
     def draw(self, feature_to_draw, kernels_to_plot=None,
              true_values_flag=False, envelope_flag=True,
-             separators_plot=None, separator_colour=None, path_save_plot=None,
+             separators_plot=None, separator_colours=None, path_save_plot=None,
              *args, **kwargs):
         super().draw(column_name_draw=self.ESTIMATION_COLUMN_NAME,
                      true_values_flag=False,
                      envelope_flag=False,
                      separators_plot=separators_plot,
-                     separator_colour=separator_colour,
+                     separator_colours=separator_colours,
                      path_save_plot=path_save_plot,
                      dict_plot_for_main_line={"linewidth": 2},
                      not_use_grouping_by=True,
