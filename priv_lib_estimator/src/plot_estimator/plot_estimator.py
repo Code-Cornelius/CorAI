@@ -45,7 +45,7 @@ class Plot_estimator(Root_plot_estimator):
         super().__init__(estimator=estimator, grouping_by=grouping_by, *args, **kwargs)
 
     @classmethod
-    def from_path_csv(cls, path, grouping_by=None):
+    def from_csv(cls, path, grouping_by=None):
         """
         Semantics:
             Constructor plot_estimator with a path.

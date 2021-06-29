@@ -33,6 +33,7 @@ class Distplot_estimator(Plot_estimator):
     # plot
     def draw(self, separators_plot=None, not_use_grouping_by=False, *args, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
+        super().draw(*args,**kwargs)
         pass
 
     @abstractmethod

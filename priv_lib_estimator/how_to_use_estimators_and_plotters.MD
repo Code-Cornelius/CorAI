@@ -13,7 +13,6 @@ data.
 
 # ESTIM. PLOTTERS
 
-todo : the order of inheritance has some importance. It has an impact at ....
 The naming convention is:
 
 Class | Naming Convention | 
@@ -23,19 +22,23 @@ Plot_estimator Child Class              | Plot_estim_function_name |
 Relplot_estimator Child Class    | Relplot_function_name | 
 Distplot_estimator Child Class         | Distplot_function_name | 
 
+And the order for inheritance should be first the specific plot_estim, then the type of plot. 
+That way, if one wants to rely on specific behavior from plot_estim, it is set before reaching the level of relplot.
+The usage of `super().` is recommended.
+
 Mermaid diagrams: https://mermaid-js.github.io/mermaid/#/
 Easily instalable in Pycharm.
 
 We follow UML class diagrams: https://mermaid-js.github.io/mermaid/#/classDiagram
 https://en.wikipedia.org/wiki/Class_diagram
 
-'*' means abstract, '$' means static or class method.
+`*` means abstract, `$` means static or class method.
 
 
 ### Basic Structure diagram of the plotter. 
 
-Typical diamond form where the left wing (Plot_estim_function_name) indicates the common behavior of plotting 
-a certain function, and the right wing (Type_plot_estimator) indicates the way to plot such type of plot.
+Typical diamond form where the left wing (`Plot_estim_function_name`) indicates the common behavior of plotting 
+a certain function, and the right wing (`Typeplot_estimator`) indicates the way to plot such type of plot.
 ```mermaid
 classDiagram
         
@@ -84,6 +87,7 @@ classDiagram
         Plot_estimator:                +Estimator estimator 
         Plot_estimator:                + List~str~ grouping_by
         Plot_estimator:                +AColorset COLORMAP
+        Plot_estimator:                +is_grouping_by_subset_columns()
 
 
         
@@ -97,17 +101,15 @@ classDiagram
         Relplot_estimator:       +get_default_dict_fig()* 
         
         Relplot_estimator:       #_raise_if_separator_is_evolution()    
-        Relplot_estimator:       #_plot_min_max()
-        Relplot_estimator:       #_plot_true_value()    
-        Relplot_estimator:       #_plot_finalisation()
         Relplot_estimator:       +draw()     
+        Relplot_estimator:       +lineplot()     
+        Relplot_estimator:       +scatter()     
 
         
-        
-        Distplot_estimator:       +hist()
         Distplot_estimator:       +get_dict_fig()*
         Distplot_estimator:       +draw()
-        
+        Distplot_estimator:       +hist()
+
 
 
         
@@ -125,19 +127,13 @@ classDiagram
         
         Relplot_function_name:       +String EVOLUTION_COLUMN
         
-        Relplot_function_name:       +get_data2true_evolution()
-        Relplot_function_name:       +get_data2evolution()* 
-        Relplot_function_name:       +get_default_dict_fig()* 
-        
+        Relplot_function_name:       +get_dict_fig()* 
         Relplot_function_name:       +draw()     
 
         
         
-        Distplot_function_name:       +int NB_OF_BINS* 
-        Distplot_function_name:       +get_range()$ 
-        Distplot_function_name:       +get_dict_plot_param()*
         Distplot_function_name:       +get_dict_fig()*
-        Distplot_function_name:       +draw()
+        Distplot_function_name:       +hist()
         
 ```
 
@@ -162,16 +158,18 @@ classDiagram
         Estimator:                       +from_json()
         Estimator:                       +to_json()
         Estimator:                       +to_csv()
+        Estimator:                       +from_csv()
         
         Estimator:                       +groupby_data()$
         Estimator:                       +groupby()
         Estimator:                       +apply_function_upon_data_store_it()
         Estimator:                       +apply_function_upon_data()
         Estimator:                       +append()
+        Estimator:                       +contains()
 
 
 
-        Plot_estimator:                +from_path_csv()$ 
+        Plot_estimator:                +from_csv()$ 
         Plot_estimator:                +generate_title()$ 
         Plot_estimator:                +is_true_value_unique()$
         Plot_estimator:                +draw()* 
@@ -184,18 +182,12 @@ classDiagram
         
 
         
-  
-
-        
-        
         Estim_function_name :                      +Index columns
         Estim_function_name:                       +Set CORE_COL
 
         
 
-        Plot_estim_function_name:                +from_path_csv()$ 
         Plot_estim_function_name:                +generate_title()$ 
-        Plot_estim_function_name:                +is_true_value_unique()$
         Plot_estim_function_name:                +draw()* 
 
         Plot_estim_function_name:                +Estimator estimator 

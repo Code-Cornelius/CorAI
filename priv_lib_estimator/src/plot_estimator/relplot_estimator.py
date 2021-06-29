@@ -65,12 +65,8 @@ class Relplot_estimator(Plot_estimator):
             column_slice: the data we are interested in. Should be a list of key.
 
         Returns:
-
-        Examples for child class:
-            def get_evolution_name_plot_data(self, data):
-                return self.get_grouped_evolution_name_feature(data, 'value').mean().to_numpy()
         """
-        pass
+        return self.get_data2group_sliced(data, column_slice).mean().to_numpy()
 
     def get_data2true_evolution(self, data, column_slice):
         """
@@ -161,7 +157,7 @@ class Relplot_estimator(Plot_estimator):
     # plot:
 
     @abstractmethod
-    def get_default_dict_fig(self, grouped_data_by, key=None, **kwargs):
+    def get_dict_fig(self, grouped_data_by, key=None, **kwargs):
         """
         Semantics:
             default parameters for the drawing of evolution_plot_estimator, depending on grouped_data_by.
@@ -178,6 +174,7 @@ class Relplot_estimator(Plot_estimator):
 
     def draw(self, separators_plot=None, not_use_grouping_by=False, *args, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
+        super().draw(*args, **kwargs)
         pass
 
     def lineplot(self, column_name_draw, column_name_true_values=None, envelope_flag=True, separators_plot=None,

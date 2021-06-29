@@ -22,6 +22,7 @@ class Test_Estimator(TestCase):
         pass
 
     def test_apply_function_upon_data(self):
+        # TODO LOOK INTO
         fcts = [np.sqrt, np.square]
         separators = [['Size'], ['Size', 'People']]
         solution1 = pd.DataFrame(data=[40, 50, 30, 100, 50], columns=['Size'])
@@ -48,38 +49,9 @@ class Test_Estimator(TestCase):
                     assert (ans == solution[i * len(fcts) + j]).to_numpy().all()
 
     def test_apply_function_upon_data_store_it(self):
+        # TODO LOOK INTO
         pass
 
-    # todo loop into estimator group mean
-    @unittest.skip
-    def test_estimator_mean(self):
-        keys_grouping = [None, ['People'], ['People', 'number_rooms']]
-        solution = [[3500], [1966 + 2 / 3, 1600, 10000], [1700, 2500, 1600, 10000]]
-        for i, key in enumerate(keys_grouping):
-            with self.subTest(key=key):
-                if key is not None:
-                    self.skipTest("Check why the test fails otherwise")
-                ans = self.estimator.estimation_group_mean(columns_for_computation=['Size'],
-                                                           keys_grouping=key)
-                size_reshape = len(solution[i])
-                assert (solution[i] == ans.to_numpy().reshape((1,
-                                                               size_reshape))).all()  # converting ans to numpy (from DF) then reshaping it so comparable to list and finally compare.
-
-        keys_grouping = [None, ['People']]
-        solution = [
-            [3500, 3],
-            [[1966 + 2 / 3, 4 / 3],
-             [1600, 1],
-             [10000, 10]]
-        ]
-
-        for i, key in enumerate(keys_grouping):
-            with self.subTest(key=key):
-                if key is not None:
-                    self.skipTest("Check why the test fails otherwise")
-                ans = self.estimator.estimation_group_mean(columns_for_computation=['Size', 'number_rooms'],
-                                                           keys_grouping=key)
-                assert (solution[i] == ans.to_numpy()).all()
 
     def test_to_csv_and_from_csv(self):
         self.estimator.to_csv("test.csv")
