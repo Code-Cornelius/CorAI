@@ -21,6 +21,13 @@ def index_access(arr):
         i + 1
 
 
+def double_index_access(arr):
+    for i in range(len(arr)):
+        arr[i] + 1
+        i + 1
+        arr[i] + 1
+
+
 def elem_enum(arr):
     for i, elem in enumerate(arr):
         elem + 1
@@ -33,7 +40,7 @@ def benchmark_and_save(estim, func, method_name, number_of_reps=100, *args, **kw
                  "Comput. Time": []}
 
     for _ in range(number_of_reps):
-        time = benchmark(func, number_of_rep=5, silent_benchmark=True, *args, **kwargs)
+        time = benchmark(func, number_of_rep=1, silent_benchmark=True, *args, **kwargs)
         time_dict["Comput. Time"].append(time)
 
     estim.append(pd.DataFrame(time_dict))
@@ -46,13 +53,13 @@ def benchmark_and_save(estim, func, method_name, number_of_reps=100, *args, **kw
 # prepare data
 import numpy as np
 
-TEST = True
+TEST = False
 if TEST:
-    powers = np.array(range(13, 18))
+    powers = np.array(range(13, 17))
 else:
-    powers = np.array(range(13, 20))
+    powers = np.array(range(13, 21))
 
-number_of_reps = 100
+number_of_reps = 200
 sizes = 2 ** powers
 
 estim = Estim_benchmark_array()
@@ -60,6 +67,7 @@ estim = Estim_benchmark_array()
 for size in tqdm(sizes):
     test_arr = list(range(size))
     benchmark_and_save(estim, index_access, "index_access", arr=test_arr, number_of_reps=number_of_reps)
+    benchmark_and_save(estim, elem_enum, "double_index_access", arr=test_arr, number_of_reps=number_of_reps)
     benchmark_and_save(estim, elem_enum, "elem_enum", arr=test_arr, number_of_reps=number_of_reps)
 
 print(estim)

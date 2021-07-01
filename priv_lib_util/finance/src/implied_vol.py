@@ -1,20 +1,16 @@
 # normal libraries
-import numpy as np
-import math
-
-from priv_lib_util.calculus.src.optimization import newtons_method, newtons_method_vectorised
-from scipy.integrate import simps
-from scipy.interpolate import interp1d
-from scipy.optimize import bisect
 import warnings
 
-# my libraries
-from priv_lib_util.finance.src.BS_model import BlackScholes, BlackScholesVegaCore
-
+import numpy as np
+from scipy.optimize import bisect
 # section ######################################################################
 #  #############################################################################
 # IV
 from scipy.stats import norm
+
+from priv_lib_util.calculus.src.optimization import newtons_method_vectorised
+# my libraries
+from priv_lib_util.finance.src.BS_model import BlackScholes, BlackScholesVegaCore
 
 
 def implied_vol_bisect(CallPutFlag, s0, K, T, R, d, experimented_price):

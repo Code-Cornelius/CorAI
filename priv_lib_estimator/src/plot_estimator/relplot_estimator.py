@@ -30,7 +30,7 @@ class Relplot_estimator(Plot_estimator):
 
         Abstract members:
             EVOLUTION_COLUMN
-            get_default_dict_fig
+            get_dict_fig
             get_data2evolution
 
             if you want to use true_evolution you will want to redefine:
@@ -186,6 +186,10 @@ class Relplot_estimator(Plot_estimator):
         """
         Semantics:
             Draw the lineplot.
+            Issue with seaborn:
+                When writing overloading, always draw before using super().
+                Otherwise, the legend is not actualised.
+                If it is, then seaborn's style in the legend will be erased.
 
         Args:
             column_name_draw (str): The column of the dataframe used to retrieve the data to draw
@@ -204,12 +208,13 @@ class Relplot_estimator(Plot_estimator):
             list_aplots (list of Aplot): Plot for plotting.
                 There should be as many axs as in the number of groups given by separators_plotters
                  (with the grouping_by parameter of the plot_estimator).
-            kwargs: passed to super and to get_default_dict_fig.
+            kwargs: passed to super and to get_dict_fig.
 
         Returns:
 
         Dependency:
             todo write the dependency
+
         """
         # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
@@ -253,9 +258,8 @@ class Relplot_estimator(Plot_estimator):
                              palette=palette, data=data, ax=ax,
                              color='r', linestyle='--', linewidth=0.5, label='true value')
 
-            # todo i want the thing to still appear.
-
-            fig_dict = self.get_default_dict_fig(separators_plot, key, **kwargs)
+            # todo i want the thing to still appear. (the legend sorry)
+            fig_dict = self.get_dict_fig(separators_plot, key, **kwargs)
             aplot.set_dict_ax(0, fig_dict)
 
             if path_save_plot is not None:
@@ -272,6 +276,10 @@ class Relplot_estimator(Plot_estimator):
         """
         Semantics:
             Draw the scatterplot.
+            Issue with seaborn:
+                When writing overloading, always draw before using super().
+                Otherwise, the legend is not actualised.
+                If it is, then seaborn's style in the legend will be erased.
 
         Args:
             column_name_draw (str): The column of the dataframe used to retrieve the data to draw
@@ -319,7 +327,7 @@ class Relplot_estimator(Plot_estimator):
                              color='r', linestyle='--', linewidth=0.5, label='true value',
                              **dict_plot_for_main_line)
 
-            fig_dict = self.get_default_dict_fig(separators_plot, key, **kwargs)
+            fig_dict = self.get_dict_fig(separators_plot, key, **kwargs)
             plot.set_dict_ax(0, fig_dict)
 
             if path_save_plot is not None:

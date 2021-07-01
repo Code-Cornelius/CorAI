@@ -1,6 +1,7 @@
 # normal libraries
-import numpy as np
 import math
+
+import numpy as np
 from scipy.stats import norm
 
 # my libraries

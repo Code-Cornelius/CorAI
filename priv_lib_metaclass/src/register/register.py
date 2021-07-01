@@ -1,7 +1,4 @@
 # I want to create a metaclass which creates a dict in order to register the instances of a class.
-
-from .deco_register import deco_register
-
 # dict where I store the classes that appear in the registering.
 dict_register_classes = {}
 

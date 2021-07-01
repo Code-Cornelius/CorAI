@@ -28,6 +28,10 @@ class Plot_estimator(Root_plot_estimator):
     """
     COLORMAP = AColorsetDiscrete('Dark2')  # colormap for all plots.
 
+    @staticmethod
+    def color_scheme(palette):
+        return palette
+
     # it can be changed by self.COLORMAP; setting it allows to always use the same colormaps.
 
     def __init__(self, estimator, grouping_by=None, *args, **kwargs):

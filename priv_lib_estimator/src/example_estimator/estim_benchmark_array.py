@@ -2,6 +2,7 @@
 
 
 # priv libraries
+import seaborn as sns
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator import Plot_estimator, Relplot_estimator, Distplot_estimator
 from priv_lib_estimator.src.estimator.estim_time import Estim_time
@@ -10,6 +11,8 @@ from priv_lib_estimator.src.estimator.estim_time import Estim_time
 # section ######################################################################
 #  #############################################################################
 # Classes
+from priv_lib_plot import APlot
+
 
 class Estim_benchmark_array(Estim_time):
     CORE_COL = Estim_time.CORE_COL.copy()
@@ -44,6 +47,28 @@ class Relplot_benchmark_array(Plot_estim_benchmark_array, Relplot_estimator):
                     }
         return fig_dict
 
+    def lineplot(self, column_name_draw, column_name_true_values=None, envelope_flag=True, separators_plot=None,
+                 palette='PuOr',
+                 hue=None, style=None, markers=None, sizes=None,
+                 dict_plot_for_main_line={}, path_save_plot=None,
+                 list_aplots=None,
+                 *args, **kwargs):
+        list_aplots = [APlot()]
+        xx = self.get_values_evolution_column(self.estimator.df)
+        list_unique_length = self.get_data2evolution(self.estimator.df, column_name_draw)
+        rescaled_xx = xx / xx[0] * list_unique_length[0] * 3
+        # rescaled_xx2 = rescaled_xx * rescaled_xx
+
+        print(list_unique_length)
+        list_aplots[0].uni_plot(0,xx, rescaled_xx, dict_plot_param={'label':'o(x)', 'linewidth': 0.9,
+                                                                          'markersize': 0, 'color': 'black'})
+        # list_aplots[0].uni_plot(0, xx, rescaled_xx2, dict_plot_param={'label': 'o(x^2)', 'linewidth'  : 0.9,
+        #                                                                             'markersize' : 0, 'color' : 'black'})
+
+        current_plots = super().lineplot(column_name_draw, column_name_true_values, envelope_flag, separators_plot,
+                         palette, hue, style, markers, sizes, dict_plot_for_main_line, path_save_plot, list_aplots,
+                         *args, **kwargs)
+        return current_plots
 
 class Distplot_benchmark_array(Plot_estim_benchmark_array, Distplot_estimator):
     def ___init__(self, estimator, *args, **kwargs):
@@ -56,3 +81,8 @@ class Distplot_benchmark_array(Plot_estim_benchmark_array, Distplot_estimator):
                     'xlabel': "Time",
                     'ylabel': "Nb of runs inside a bin."}
         return fig_dict
+
+    @staticmethod
+    def color_scheme(palette):
+        palette = sns.color_palette(palette, n_colors=4)[:3]
+        return palette  # only adapted to the particular main

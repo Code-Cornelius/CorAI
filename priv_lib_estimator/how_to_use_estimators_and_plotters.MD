@@ -98,7 +98,7 @@ classDiagram
         Relplot_estimator:       +get_values_evolution_column()$     
         Relplot_estimator:       +get_evolution_name_extremes()$  
         Relplot_estimator:       +get_data2evolution()* 
-        Relplot_estimator:       +get_default_dict_fig()* 
+        Relplot_estimator:       +get_dict_fig()* 
         
         Relplot_estimator:       #_raise_if_separator_is_evolution()    
         Relplot_estimator:       +draw()     

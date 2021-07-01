@@ -1,13 +1,10 @@
 # normal libraries
-import warnings
 
 import numpy as np  # maths library and arrays
-import scipy.stats  # functions of statistics
 from scipy.integrate import simps
 
+
 # my libraries
-import priv_lib_util.calculus.src.optimization
-from priv_lib_util.tools import function_recurrent
 
 
 # other files

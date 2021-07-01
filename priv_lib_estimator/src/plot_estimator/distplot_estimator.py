@@ -63,6 +63,10 @@ class Distplot_estimator(Plot_estimator):
         """
         Semantics:
             histogram plot.
+            Issue with seaborn:
+                When writing overloading, always draw before using super().
+                Otherwise, the legend is not actualised.
+                If it is, then seaborn's style in the legend will be erased.
 
         Args:
             column_name_draw:
@@ -93,6 +97,12 @@ class Distplot_estimator(Plot_estimator):
             data = global_dict.get_group(key)
             plot = APlot()
             plots.append(plot)
+
+            # get the good palette (sliced avoiding white.
+            palette = self.color_scheme(palette)
+
+
+
             sns.histplot(x=column_name_draw, bins=bins,
                          hue=hue, multiple=multiple, binrange=binrange,
                          legend='full', kde=kde,

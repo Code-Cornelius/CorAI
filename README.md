@@ -4,9 +4,10 @@
 
 * *version 1.000* :  Released in September 2020. It was released in order for me to have a stable version that was compatible with my summer projects. There is still a lot to do on it. 
 * *version 1.142* : Released in June 2021. The library is better documented, and better structured. It is now separated in the corresponding libraries, and there are tests for most of the functions.
-* current work : incorporate new financial functions as well as neural networks functions.
+* current work : incorporate new financial functions, 3D plots as well as neural networks functions. Estimator is being reworked. This version is expected to be released by Winter 2022.
 
-One should download the latest version and add the path to it before running code.
+
+One should download the latest version and add the path to it to the interpreter before running code.
 
 ### General information
 
@@ -37,10 +38,9 @@ Project
 │  │  ├── estimator
 │  │  │  └── estimator.py
 │  │  └── plot_estimator
+│  │     ├── distplot_estimator.py
 │  │     ├── plot_estimator.py
-│  │     ├── histogram_estimator.py
-│  │     ├── statistic_plot_estimator.py
-│  │     └── evolution_plot_estimator.py
+│  │     └── relplot_estimator.py
 │  └── tests
 │
 ├── priv_lib_metaclass 
@@ -88,21 +88,12 @@ Project
       └── tests
 ```
 
-However, one can import the meaningful objects in the following way, where one `from the_path import the_object`:
-
-
- Error_convergence
-from .error_not_allowed_input import Error_not_allowed_input
-from .error_not_enough_information import Error_not_enough_information
-from .error_not_yet_allowed import Error_not_yet_allowed
-from .error_type_setter import Error_type_setter
-from .warning_deprecated import deprecated_function
-from .numpy_function_used import numpy_function_used
+However, one can import the meaningful objects in the following way, where one `from path import object`:
 
 ```
 Project
 ├── priv_lib_error 
-│  ├── Error_convergence
+│  ├── Error_convergence.py
 │  ├── Error_not_allowed_input.py
 │  ├── Error_not_enough_information.py
 │  ├── Error_not_yet_allowed.py
@@ -145,9 +136,26 @@ Project
       └── operator.py
 ```
 
+
+
+
 For example, in order to import `benchmarking.py`, one should write:  `from priv_lib_util.tools import benchmarking`
 
-* All libraries start with the name *"priv_lib_{NAME LIBRARY}"*,
+Also, the priv_lib are codependent in the following way:
+
+```mermaid
+graph TD;
+    priv_lib_error-->priv_lib_util;
+    priv_lib_util-->priv_lib_plot;
+    priv_lib_plot-->priv_lib_estimator;
+    priv_lib_metaclass-->priv_lib_plot
+    priv_lib_estimator-->priv_lib_ml
+
+```
+
+Meaning one can download only part of the library by keeping these relationship in mind.
+
+* All libraries start with the name `priv_lib_{NAME LIBRARY}`,
 inside each library,  there is a source folder and a tests folder. In order to import any module, one should simply write:
 
 ```
@@ -171,8 +179,6 @@ function()
 ```
 
 
-
-### Available version
 ## library_errors
 
 Custom errors for better handling of errors in the library. They all inherit from the built-in exception and intends to make the code clearer.
@@ -184,13 +190,15 @@ Custom errors for better handling of errors in the library. They all inherit fro
 * **Error_type_setter** inherits from TypeError,
 * **Warning_deprecated** function that rise a deprecation warning.
 
-## library_estimator
+## priv_lib_estimator
 
-## library_metaclass
+## priv_lib_metaclass
 
-## library_plot
+## priv_lib_ML
 
-## library_util
+## priv_lib_plot
+
+## priv_lib_util
 
 
 
