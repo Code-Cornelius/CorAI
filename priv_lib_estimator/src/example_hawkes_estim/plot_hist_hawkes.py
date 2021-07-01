@@ -1,7 +1,7 @@
 # normal libraries
 
 
-# my libraries
+# priv_libraries
 
 # other files
 from priv_lib_estimator import Distplot_estimator

@@ -7,7 +7,7 @@ import seaborn as sns  # environment for plots
 from matplotlib import pyplot as plt  # plotting
 # errors:
 from priv_lib_error import Error_not_allowed_input
-# my libraries
+# priv_libraries
 from priv_lib_metaclass import Register, deco_register
 from priv_lib_plot.src.acolor.acolorsetcontinuous import \
     AColorsetContinuous  # forced to write whole path as aplot would also be imported.
@@ -57,19 +57,6 @@ Examples:
             given by the class Dict_ax_for_APlot
             
 """
-
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# THINGS TODO:
-#         - change the nb_ax by index_ax.
-#         - homogeneous input, not nb_ax then xx then xx then nb_ax. It should always be the same order.
-#                           A possibility would be to put first the data, then the axis.
-#         - change return to give an ax. such that one can continue drawing on an axis!
-#         - what is happening with bis axis is a bit obscure. Let s clarify it. Not sure how.
-#         - labels when both axis are on the same graph, see if there is any comments about it and change it to adapt the new behavior.
-#         - verify that if I acces an nb_ax, I also check that the number is correct!
-#         - put the test at the bottom into a right test.
-#   - when dict of parameters given, mention if some are unused.
-
 
 """
 For now are supported the features:

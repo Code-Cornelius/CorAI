@@ -69,7 +69,10 @@ Project
    │  └── tests
    ├── finance
    │  ├── src
-   │  │  └── financial.py
+   │  │  ├── bs_model.py
+   │  │  ├── financials.py
+   │  │  ├── implied_vol.py
+   │  │  └── param_iv.py
    │  └── tests
    ├── ML  
    │  ├── src
@@ -82,6 +85,7 @@ Project
       │  ├── function_dict.py
       │  ├── function_iterable.py
       │  ├── function_recurrent.py
+      │  ├── function_json.py
       │  ├── function_str.py
       │  ├── function_writer.py
       │  └── operator.py
@@ -89,6 +93,8 @@ Project
 ```
 
 However, one can import the meaningful objects in the following way, where one `from path import object`:
+
+
 
 ```
 Project
@@ -101,20 +107,19 @@ Project
 │  └── deprecated_function.py
 │
 ├── priv_lib_estimator 
-│  ├── Estimator
-│  ├── Plot_estimator
-│  ├── Histogram_estimator
-│  ├── Statistic_plot_estimator
-│  └── Evolution_plot_estimator
+│  ├── Estimator.py
+│  ├── Plot_estimator.py
+│  ├── Distplot_estimator.py
+│  └── Relplot_estimator.py
 │
 ├── priv_lib_metaclass 
-│  ├── deco_register
-│  └── Register
+│  ├── deco_register.py
+│  └── Register.py
 │
 ├── priv_lib_plot 
-│  ├── APlot
-│  ├── AColorsetDiscrete
-│  └── AColorsetContinuous
+│  ├── APlot.py
+│  ├── AColorsetDiscrete.py
+│  └── AColorsetContinuous.py
 │
 └── priv_lib_util 
    ├── calculus
@@ -122,7 +127,10 @@ Project
    │  ├── integration.py
    │  └── optimization.py
    ├── finance
-   │  └── financial.py
+   │  ├── bs_model.py
+   │  ├── financials.py
+   │  ├── implied_vol.py
+   │  └── param_iv.py
    ├── ML  
    │  └── networkx.py
    └── tools
@@ -130,6 +138,7 @@ Project
       ├── decorator.py
       ├── function_dict.py
       ├── function_iterable.py
+      ├── function_json.py
       ├── function_recurrent.py
       ├── function_str.py
       ├── function_writer.py
@@ -192,7 +201,14 @@ Custom errors for better handling of errors in the library. They all inherit fro
 
 ## priv_lib_estimator
 
+* **Estimator** : A class that intends to make dataframes more accessible.
+* **Plotters** : Classes of objects that extend the behavior of seaborns' in-built functions. 
+  We used seaborn's names for the classes and methods. 
+  We rely on polymorphism to adapt behavior of general functions to each case's need.
+  
 ## priv_lib_metaclass
+Metaclasses are most the times unnecessary. However, in some cases, they carry the exact idea needed for some design. 
+For now, we only use metaclasses for `APlot`, where it allows a registration pattern for all plots.
 
 ## priv_lib_ML
 
@@ -206,4 +222,3 @@ Custom errors for better handling of errors in the library. They all inherit fro
 We created two original objects. 
 
 * **APlot** : A class that simplifies drawing using the library matplotlib ; 
-* **Estimator** : A class that intends to make dataframes more accessible. 

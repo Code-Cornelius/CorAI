@@ -6,3 +6,4 @@ from . import function_recurrent
 from . import function_str
 from . import operator
 from . import function_writer
+from . import function_json

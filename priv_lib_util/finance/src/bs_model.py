@@ -4,7 +4,7 @@ import math
 import numpy as np
 from scipy.stats import norm
 
-# my libraries
+# priv_libraries
 from priv_lib_util.tools.src import function_recurrent
 
 

@@ -1,7 +1,7 @@
 # normal libraries
 import numpy as np
 
-# my libraries
+# priv_libraries
 from priv_lib_estimator import Relplot_estimator
 from priv_lib_estimator.src.example_hawkes_estim.plot_estim_hawkes import Plot_estim_hawkes
 

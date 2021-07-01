@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 # errors:
 from priv_lib_error import Error_type_setter
-# my libraries
+# priv_libraries
 from priv_lib_estimator import Plot_estimator
 from priv_lib_estimator.src.example_hawkes_estim.estim_hawkes import Estim_hawkes
 from priv_lib_util.tools import function_iterable

@@ -4,7 +4,7 @@ from abc import abstractmethod
 import pandas as pd
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator.src.estimator.estimator import Estimator
-# my libraries
+# priv_libraries
 from priv_lib_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
 from priv_lib_plot import AColorsetDiscrete
 from priv_lib_util.tools import function_iterable
@@ -30,6 +30,12 @@ class Plot_estimator(Root_plot_estimator):
 
     @staticmethod
     def color_scheme(palette):
+        # used in the plotting function. Redefine it if ones want to transform the palette before usage. For example, it is possible to slice the palette:
+        # Examples:
+        #     @staticmethod
+        #     def color_scheme(palette):
+        #         palette = sns.color_palette(palette, n_colors=4)[:3]
+        #         return palette
         return palette
 
     # it can be changed by self.COLORMAP; setting it allows to always use the same colormaps.

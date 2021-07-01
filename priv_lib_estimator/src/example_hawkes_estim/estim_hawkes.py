@@ -1,6 +1,6 @@
 # normal libraries
 
-# my libraries
+# priv_libraries
 from priv_lib_estimator import Estimator
 
 

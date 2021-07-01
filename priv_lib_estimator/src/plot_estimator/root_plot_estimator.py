@@ -1,7 +1,7 @@
 # normal libraries
 from abc import ABCMeta
 
-# my libraries
+# priv_libraries
 
 
 # errors:

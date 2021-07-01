@@ -2,7 +2,7 @@
 import unittest
 
 
-# my libraries
+# priv_libraries
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

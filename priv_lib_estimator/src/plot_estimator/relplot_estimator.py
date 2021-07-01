@@ -4,7 +4,7 @@ from abc import abstractmethod
 import seaborn as sns
 from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 from priv_lib_plot import APlot
-# my libraries
+# priv_libraries
 from priv_lib_util.tools import function_str
 
 
@@ -258,7 +258,7 @@ class Relplot_estimator(Plot_estimator):
                              palette=palette, data=data, ax=ax,
                              color='r', linestyle='--', linewidth=0.5, label='true value')
 
-            # todo i want the thing to still appear. (the legend sorry)
+            # TODO 01/07/2021 nie_k:  is there a way to retrieve the complete legend, with annotations?
             fig_dict = self.get_dict_fig(separators_plot, key, **kwargs)
             aplot.set_dict_ax(0, fig_dict)
 
@@ -272,7 +272,7 @@ class Relplot_estimator(Plot_estimator):
                 hue=None, style=None, markers=None, sizes=None,
                 dict_plot_for_main_line={}, path_save_plot=None,
                 *args, **kwargs):
-        # TODO 27/06/2021 nie_k:  add the ax parameter as line plot.
+        # TODO 27/06/2021 nie_k:  add the ax parameter as it is in line plot.
         """
         Semantics:
             Draw the scatterplot.

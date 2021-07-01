@@ -38,15 +38,21 @@ https://en.wikipedia.org/wiki/Class_diagram
 ### Basic Structure diagram of the plotter. 
 
 Typical diamond form where the left wing (`Plot_estim_function_name`) indicates the common behavior of plotting 
-a certain function, and the right wing (`Typeplot_estimator`) indicates the way to plot such type of plot.
+a certain function, and the right wing (`Typeplot_estimator`) indicates the way to plot such type of plot. 
+
+Example: 
+* `Plot_estim_function_name` would be `Plot_estim_benchmark`.
+* `Typeplot_estimator` would be `Relplot_estimator`.
+*`Typelot_function_name` would become `Relplot_benchmark` .
+  
 ```mermaid
 classDiagram
         
         
-        Plot_estimator       <|-- Typeplot_estimator
-        Plot_estimator       <|-- Plot_estim_function_name
+        Plot_estimator                 <|-- Typeplot_estimator
+        Plot_estimator                 <|-- Plot_estim_function_name
         Plot_estim_function_name       <|-- Typeplot_function_name
-        Typeplot_estimator       <|-- Typeplot_function_name
+        Typeplot_estimator             <|-- Typeplot_function_name
 
         
         <<abstract>> Plot_estimator
@@ -82,6 +88,7 @@ classDiagram
         Plot_estimator:                +from_path_csv()$ 
         Plot_estimator:                +generate_title()$ 
         Plot_estimator:                +is_true_value_unique()$
+        Plot_estimator:                +color_scheme()$
         Plot_estimator:                +draw()* 
 
         Plot_estimator:                +Estimator estimator 

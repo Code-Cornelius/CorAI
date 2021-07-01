@@ -2,7 +2,7 @@ import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 
-# my libraries:
+# priv_libraries:
 from priv_lib_plot.src.acolor.acolorset import AColorset
 
 

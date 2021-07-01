@@ -3,7 +3,7 @@ import numpy as np  # maths library and arrays
 import scipy.integrate  # for the method quad allows integration
 import scipy.optimize  # for knowing when a function crosses 0, for implied volatility computation.
 import scipy.stats  # functions of statistics
-# my libraries
+# priv_libraries
 from priv_lib_error import warning_deprecated
 
 

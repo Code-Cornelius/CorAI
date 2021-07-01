@@ -4,7 +4,7 @@ import numpy as np  # maths library and arrays
 from scipy.integrate import simps
 
 
-# my libraries
+# priv_libraries
 
 
 # other files

@@ -2,8 +2,7 @@
 import math
 
 import numpy as np
-
-# my libraries
+# priv_libraries
 from priv_lib_util.finance.src.financials import compute_price, compute_integral
 from priv_lib_util.finance.src.implied_vol import implied_volatility_newton, total_implied_vol_newton
 

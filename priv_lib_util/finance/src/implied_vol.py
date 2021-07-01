@@ -3,14 +3,18 @@ import warnings
 
 import numpy as np
 from scipy.optimize import bisect
+from scipy.stats import norm
+
+# priv_libraries
+from priv_lib_util.finance.src.bs_model import BlackScholes, BlackScholesVegaCore
+from priv_lib_util.calculus.src.optimization import newtons_method_vectorised
+
+
+
 # section ######################################################################
 #  #############################################################################
 # IV
-from scipy.stats import norm
 
-from priv_lib_util.calculus.src.optimization import newtons_method_vectorised
-# my libraries
-from priv_lib_util.finance.src.BS_model import BlackScholes, BlackScholesVegaCore
 
 
 def implied_vol_bisect(CallPutFlag, s0, K, T, R, d, experimented_price):
