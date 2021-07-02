@@ -64,6 +64,12 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json", compress=F
     with open(file_name, 'w') as file:
         json.dump(parameter_options, file)
 
+def json2python(path, compress = False):
+    with open(path, 'r') as file:
+        history = json.load(file)
+        if compress:
+            history = unzip_json(history)
+        file.close()
 
 
 def factory_fct_linked_path(ROOT_DIR, path_to_folder):
@@ -74,6 +80,7 @@ def factory_fct_linked_path(ROOT_DIR, path_to_folder):
         # ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
     PATH_TO_ROOT = os.path.join(ROOT_DIR, path_to_folder)
     def linked_path(path):
+        # a list of folders like: ['C','users','name'...]
         return os.path.join(PATH_TO_ROOT, *path)
     return linked_path
 
