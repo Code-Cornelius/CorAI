@@ -1,6 +1,7 @@
 import json
 
 import pandas as pd
+import os
 from priv_lib_error import Error_type_setter
 from priv_lib_util.tools.src.function_json import zip_json, unzip_json
 
@@ -256,6 +257,9 @@ class Estimator(object):
         Returns:
 
         """
+        directory_where_to_save = os.path.dirname(path)
+        if not os.path.exists(directory_where_to_save):
+            os.makedirs(directory_where_to_save)
         self.df.to_csv(path, index=False, **kwargs)
         return
 
@@ -287,6 +291,9 @@ class Estimator(object):
         if compress:
             parsed = zip_json(parsed)
 
+        directory_where_to_save = os.path.dirname(path)
+        if not os.path.exists(directory_where_to_save):
+            os.makedirs(directory_where_to_save)
         with open(path, 'w') as file:
             json.dump(parsed, file)
 
