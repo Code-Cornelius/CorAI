@@ -280,7 +280,7 @@ class Estimator(object):
             attrs = {'name': self.name}
             super().to_json(path, compress, attrs)
         """
-        json_df = self.df.to_json(orient='split')
+        json_df = self.df.to_json(orient='split', index = False)
         parsed = json.loads(json_df)
         parsed['attrs'] = attrs
 

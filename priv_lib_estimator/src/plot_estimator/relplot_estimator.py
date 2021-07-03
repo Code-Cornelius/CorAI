@@ -261,9 +261,10 @@ class Relplot_estimator(Plot_estimator):
             # TODO 01/07/2021 nie_k:  is there a way to retrieve the complete legend, with annotations?
             fig_dict = self.get_dict_fig(separators_plot, key, **kwargs)
             aplot.set_dict_ax(0, fig_dict)
-
+            
+            #todo make the path actually used.
             if path_save_plot is not None:
-                name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
+                name_file = ''.join([function_str.tuple_to_str(key, ''), 'relplot_estimation'])
                 aplot.save_plot(name_save_file=name_file)
         return current_plots
 

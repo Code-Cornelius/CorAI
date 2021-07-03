@@ -43,8 +43,9 @@ def my_list_argmax(iterable):
     return iterable.index(max(iterable))
 
 
-# todo version array and list
 def find_smallest_rank_leq_to_K(my_list, K, is_sorted=True):
+    # todo version array and list
+
     # when applied to an empty array, returns 0, which is the behaviour one would expect.
     # this functions is for np.arrays
     if np.isscalar(my_list):

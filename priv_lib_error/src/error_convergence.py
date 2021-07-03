@@ -3,7 +3,7 @@ class Error_convergence(Exception):
         Semantics:
             Type of error for when an algorithm didn't converge to a satisfying answer.
     """
-    DEFAULT_MESSAGE = 'Error of convergence. '
+    DEFAULT_MESSAGE = 'Error of convergence.'
 
     def __init__(self, *args, **kwargs):
         if args:
