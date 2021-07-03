@@ -80,7 +80,7 @@ class Estim_hawkes(Estimator):
         times_rounded = np.around(times_of_estimation, 8)
         # wip time estim is wrong: time estim is repeated but should round robin, right now 0 0 100 100 200 200,
         # but we want 0 100 200, 0 100 200
-        time_estimation = np.repeat(np.repeat(times_rounded, dim + dim * dim * 2, axis = 0), nb_simul)
+        time_estimation = np.tile(np.repeat(times_rounded, dim + dim * dim * 2, axis = 0), nb_simul)
         # the time_estimation is rounded because sometimes the registered number is not exactly correct.
 
         estimation = np.concatenate([alpha_flat, beta_flat, nu_flat], axis=0)
@@ -101,18 +101,23 @@ class Estim_hawkes(Estimator):
 
         # wip same problem as time estimation, too little betas, too many nus, alpha is good
         # though order beta nus is right
-        parameters_name = ["alpha"] * len(alpha_flat) + ["beta"] * len(beta_flat) + ["nu"] * len(nu_flat)
+        parameters_name = np.concatenate([np.repeat("alpha", len(alpha_flat)),
+                                          np.repeat("beta", len(beta_flat)),
+                                          np.repeat("nu", len(nu_flat))], axis=0)
+        parameters_name = np.tile(parameters_name, nb_simul)
 
         # wip some problem as above, use tile, repeat alpha beta by number of estim
         nn_alpha_index_pattern = np.tile(np.arange(dim).reshape((1, dim)).transpose(), (1, dim)).flatten()
+        nn_alpha_index_pattern = np.tile(nn_alpha_index_pattern, nb_time_estim)
         nn_nu_index_pattern = np.tile(np.arange(dim), nb_time_estim)
-        nn = np.repeat(np.concatenate([nn_alpha_index_pattern, nn_alpha_index_pattern, nn_nu_index_pattern], axis=0),
-                       nb_simul)
+        nn = np.concatenate([nn_alpha_index_pattern, nn_alpha_index_pattern, nn_nu_index_pattern], axis=0)
+        nn = np.tile(nn, nb_simul)
 
         mm_alpha_index_pattern = np.tile(np.arange(dim), (dim, 1)).flatten()
+        mm_alpha_index_pattern = np.tile(mm_alpha_index_pattern, nb_time_estim)
         mm_nu_index_pattern = np.repeat(0, dim * nb_time_estim)
-        mm = np.repeat(np.concatenate([mm_alpha_index_pattern, mm_alpha_index_pattern, mm_nu_index_pattern], axis=0),
-                       nb_simul)
+        mm = np.concatenate([mm_alpha_index_pattern, mm_alpha_index_pattern, mm_nu_index_pattern], axis=0)
+        mm = np.tile(mm, nb_simul)
 
 
         # todo parameter out of the constant?
