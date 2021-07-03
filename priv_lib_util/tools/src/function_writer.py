@@ -1,7 +1,7 @@
 import json
 import os
 
-from priv_lib_util.tools.src.function_json import zip_json
+from priv_lib_util.tools.src.function_json import zip_json, unzip_json
 
 
 def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):
@@ -65,11 +65,13 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json", compress=F
         json.dump(parameter_options, file)
 
 def json2python(path, compress = False):
+    # TODO CHANGE NAME HISTORY
     with open(path, 'r') as file:
         history = json.load(file)
         if compress:
             history = unzip_json(history)
         file.close()
+    return history
 
 
 def factory_fct_linked_path(ROOT_DIR, path_to_folder):

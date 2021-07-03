@@ -56,7 +56,7 @@ def estimation_remaining_time_computation(total_nb_tries, multiplicator_factor, 
     Semantics:
         Decorator for a function that predicts the amount of time left to do a task.
         In order to do so, it compares the actual state of processing with respect to the total amount.
-
+        tqdm might be easier to use, but does not provide a multiplicator factor.
 
     Args:
         total_nb_tries: total number of iterations, this is the total complexity.
@@ -81,8 +81,9 @@ def estimation_remaining_time_computation(total_nb_tries, multiplicator_factor, 
             # computations and saving / printing
             run_time = end_time - start_time
             list_deco_estimation_times.append(run_time)
-            total_run_time = priv_lib_util.tools.function_iterable.mean_list(
-                list_deco_estimation_times) * (total_nb_tries - actual_state[0]) * multiplicator_factor
+            total_run_time = priv_lib_util.tools.function_iterable.mean_list(list_deco_estimation_times) *\
+                             (total_nb_tries - actual_state[0]) * \
+                             multiplicator_factor
             s, m, h, _ = priv_lib_util.tools.benchmarking.time_convertor_sec2hours_min_sec(total_run_time,
                                                                                            time_format=2)  # the _ is second frac.
             ts, tm, th = priv_lib_util.tools.benchmarking.time_time2text(s, m, h, 0)

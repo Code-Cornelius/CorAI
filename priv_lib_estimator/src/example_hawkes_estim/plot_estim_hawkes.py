@@ -41,6 +41,8 @@ class Plot_estim_hawkes(Plot_estimator):
         self.BETA = fct_parameters[2]  # of one parameter fct_parameters because such names are more readable.
         self.parameters_line = np.append(np.append(self.NU, np.ravel(self.ALPHA)), np.ravel(
             self.BETA))  # Here is the parameter in full line, instead of matrix 3dimensions.
+
+        # wip wth is this
         self.range_estimation = range_estimation
         self.number_of_estimations = number_of_estimations
 
@@ -48,7 +50,8 @@ class Plot_estim_hawkes(Plot_estimator):
     def from_path(cls, path, parameters):
         # path has to be raw. with \\
         estimator = Estim_hawkes(pd.read_csv(path))
-        return cls(estimator_hawkes=estimator, fct_parameters=parameters)
+        return cls(estimator_hawkes=estimator, fct_parameters=parameters) # WIP THIS IS WRONG
+
 
     # section ######################################################################
     #  #############################################################################
