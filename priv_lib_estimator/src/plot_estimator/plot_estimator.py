@@ -153,7 +153,7 @@ class Plot_estimator(Root_plot_estimator):
             parameters_value = [parameters_value]
         assert len(parameters) == len(parameters_value), \
             "Parameters and parameters_value should have the same length. " \
-            "But first has {len(parameters)} and second {len(parameters_value)}."
+            f"But first has {len(parameters)} and second {len(parameters_value)}."
 
         beg_title_with_new_line = before_text
         # when a before text is given,  carriage return. Otherwise no need for a newline.

@@ -259,7 +259,8 @@ class Estimator(object):
         """
         directory_where_to_save = os.path.dirname(path)
         if not os.path.exists(directory_where_to_save):
-            os.makedirs(directory_where_to_save)
+            if directory_where_to_save != '':
+                os.makedirs(directory_where_to_save)
         self.df.to_csv(path, index=False, **kwargs)
         return
 
@@ -293,7 +294,8 @@ class Estimator(object):
 
         directory_where_to_save = os.path.dirname(path)
         if not os.path.exists(directory_where_to_save):
-            os.makedirs(directory_where_to_save)
+            if directory_where_to_save != '':
+                os.makedirs(directory_where_to_save)
         with open(path, 'w') as file:
             json.dump(parsed, file)
 

@@ -94,7 +94,13 @@ class Distplot_estimator(Plot_estimator):
         keys = filter(separators, keys, separators_filter)
         plots = []
         for key in keys:
-            data = global_dict.get_group(key)
+            if key is None:  # case where we cannot use groupby.
+                data = global_dict
+                separators = ["data used"]
+                key = ["whole dataset"]  # for the title
+            else:
+                data = global_dict.get_group(key)
+
             plot = APlot()
             plots.append(plot)
 
