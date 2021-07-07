@@ -60,7 +60,7 @@ class Estimator(object):
         return cls(df=pd.read_csv(path, **kwargs))  # calling the constructor of the class.
 
     @classmethod
-    def from_json(cls, path):
+    def from_json(cls, path, *args, **kwargs):
         """
         Semantics:
             Read json dataframe and construct the object.
@@ -107,6 +107,52 @@ class Estimator(object):
             json.dump(df_info, file)
 
         return attrs
+
+    @classmethod
+    def folder_json2list_estim(cls, path, *args, **kwargs):
+        """
+        Semantics:
+            Open a folder containing only estimators(of the same type) saved to json and create a list of estimators.
+            The estimators will be of the type the function is called on.
+            example:
+                Estim_history.folder_json2list_estim will produce a list of Estim_history.
+        Args:
+            path (str): The path to the folder.
+
+        Returns:
+            A list of estim_history.
+        """
+        estimators = []
+
+        # collect all the estimators from the folder
+        for file in os.listdir(path):
+            estimator = cls.from_json(path=os.path.join(path, file), *args, **kwargs)
+            estimators.append(estimator)
+
+        return estimators
+
+    @classmethod
+    def folder_csv2list_estim(cls, path):
+        """
+        Semantics:
+            Open a folder containing only estimators(of the same type) saved to csv and create a list of estimators.
+            The estimators will be of the type the function is called on.
+            example:
+                Estim_history.folder_json2list_estim will produce a list of Estim_history.
+        Args:
+            path (str): The path to the folder.
+
+        Returns:
+            A list of estim_history.
+        """
+        estimators = []
+
+        # collect all the estimators from the folder
+        for file in os.listdir(path):
+            estimator = cls.from_csv(path=os.path.join(path, file))
+            estimators.append(estimator)
+
+        return estimators
 
     # section ######################################################################
     #  #############################################################################
