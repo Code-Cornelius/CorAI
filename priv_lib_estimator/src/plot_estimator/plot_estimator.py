@@ -8,6 +8,7 @@ from priv_lib_estimator.src.estimator.estimator import Estimator
 from priv_lib_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
 from priv_lib_plot import AColorsetDiscrete
 from priv_lib_util.tools import function_iterable
+from priv_lib_util.tools.src import function_str
 
 
 class Plot_estimator(Root_plot_estimator):
@@ -175,6 +176,13 @@ class Plot_estimator(Root_plot_estimator):
         else:
             title = ''.join([beg_title_with_new_line, names_and_values, '.'])
         return title
+
+
+    def _saveplot(self, aplot, path_to_dir, name, key):
+        # just the path to the directory. Naming is automatic depending on the keys.
+        if path_to_dir is not None:
+            name_file = ''.join([path_to_dir, name, function_str.tuple_to_str(key, '')])
+            aplot.save_plot(name_save_file=name_file)
 
     # section ######################################################################
     #  #############################################################################

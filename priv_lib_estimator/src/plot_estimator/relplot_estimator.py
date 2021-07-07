@@ -263,9 +263,7 @@ class Relplot_estimator(Plot_estimator):
             aplot.set_dict_ax(0, fig_dict)
             
             #todo make the path actually used.
-            if path_save_plot is not None:
-                name_file = ''.join([function_str.tuple_to_str(key, ''), 'relplot_estimation'])
-                aplot.save_plot(name_save_file=name_file)
+            super()._saveplot(aplot, path_save_plot, 'relplot_', key)
         return current_plots
 
     def scatter(self, column_name_draw, column_name_true_values=None, separators_plot=None,

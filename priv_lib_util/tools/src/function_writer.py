@@ -60,7 +60,8 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json", compress=F
 
     directory_where_to_save = os.path.dirname(file_name)
     if not os.path.exists(directory_where_to_save):
-        os.makedirs(directory_where_to_save)
+        if directory_where_to_save != '':
+            os.makedirs(directory_where_to_save)
     with open(file_name, 'w') as file:
         json.dump(parameter_options, file)
 
@@ -83,6 +84,10 @@ def factory_fct_linked_path(ROOT_DIR, path_to_folder):
     PATH_TO_ROOT = os.path.join(ROOT_DIR, path_to_folder)
     def linked_path(path):
         # a list of folders like: ['C','users','name'...]
+
+        # in order to write a path, and then use the path to append a file name, use it like this:
+        # path_to_directory = linker_path_to_result_file(["path", ''])
+
         return os.path.join(PATH_TO_ROOT, *path)
     return linked_path
 
