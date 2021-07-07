@@ -154,6 +154,13 @@ class Estimator(object):
 
         return estimators
 
+    @classmethod
+    def merge(cls, estimators):
+        dataframes = [estimator.df for estimator in estimators]
+
+        concat_df = pd.concat(dataframes, ignore_index=True)
+        return cls(concat_df)
+
     # section ######################################################################
     #  #############################################################################
     # Methods
