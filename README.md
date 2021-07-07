@@ -53,8 +53,9 @@ Project
 ├── priv_lib_plot 
 │  ├── src
 │  │  ├── acolor
+│  │  │  ├── acolorsetcontinuous.py
 │  │  │  ├── acolorsetdiscrete.py
-│  │  │  └── acolorsetcontinuous.py
+│  │  │  └── colors_seaborn.py
 │  │  └── aplot
 │  │     ├── aplot.py
 │  │     └── dict_ax_for_aplot.py
@@ -214,6 +215,7 @@ For now, we only use metaclasses for `APlot`, where it allows a registration pat
 
 ## priv_lib_plot
 
+`colors_seaborn.py` gives a presentation of the different (personal) favorite palette of seaborn.
 ## priv_lib_util
 
 

@@ -59,7 +59,7 @@ class Distplot_estimator(Plot_estimator):
 
     def hist(self, column_name_draw, separators_plot=None, separators_filter=None,
              palette='PuOr', hue=None, bins=20,
-             binrange=None, stat='count', multiple="stack", kde=True, path_save_plot=None):
+             binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None):
         """
         Semantics:
             histogram plot.
