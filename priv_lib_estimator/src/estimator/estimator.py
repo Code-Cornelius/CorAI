@@ -23,7 +23,7 @@ class Estimator(object):
         It is good practice to put the names of the columns / features in the class object, as a security.
     """
 
-    CORE_COL = set()
+    CORE_COL = set() # we use a set in order to avoid redundancy. However, Dataframes requires lists and for this reason we always    
 
     def __init__(self, df=None, *args, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
@@ -155,17 +155,17 @@ class Estimator(object):
         return estimators
 
     @classmethod
-    def merge(cls, estimators):
+    def merge(cls, list_estim):
         """
         Semantics:
             Build and estimator from a list of estimators
         Args:
-            estimators(list of estimators): List of estimators to combine.
+            list_estim(list of estimators): List of estimators to combine.
 
         Returns:
             An estimator containing the combined dataframes from the list of estimators.
         """
-        dataframes = [estimator.df for estimator in estimators]
+        dataframes = [estimator.df for estimator in list_estim]
 
         concat_df = pd.concat(dataframes, ignore_index=True)
         return cls(concat_df)

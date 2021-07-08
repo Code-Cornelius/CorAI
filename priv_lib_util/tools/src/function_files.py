@@ -1,6 +1,6 @@
 import os
 
-def clean_folder(folder_path, file_start, file_extension):
+def remove_files_from_dir(folder_path, file_start, file_extension):
     """
     Semantics:
         Remove files from a folder at folder_path.

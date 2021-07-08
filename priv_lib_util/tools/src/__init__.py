@@ -7,3 +7,4 @@ from . import function_str
 from . import operator
 from . import function_writer
 from . import function_json
+from . import function_files
