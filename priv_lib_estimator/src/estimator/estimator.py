@@ -135,7 +135,7 @@ class Estimator(object):
     def folder_csv2list_estim(cls, path):
         """
         Semantics:
-            Open a folder containing only estimators(of the same type) saved to csv and create a list of estimators.
+            Open a folder containing ONLY CSV estimators(of the same type) saved to csv and create a list of estimators.
             The estimators will be of the type the function is called on.
             example:
                 Estim_history.folder_json2list_estim will produce a list of Estim_history.

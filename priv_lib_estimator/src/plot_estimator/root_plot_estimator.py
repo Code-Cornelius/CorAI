@@ -18,7 +18,7 @@ Abstract class.
 
 
 class Root_plot_estimator(metaclass=ABCMeta):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__()
 
     pass

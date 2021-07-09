@@ -45,9 +45,9 @@ class Relplot_estimator(Plot_estimator):
         # EVOLUTION_COLUMN is a string, column name from the estimator.
         pass
 
-    def __init__(self, estimator, grouping_by=None, *args, **kwargs):
+    def __init__(self, estimator, grouping_by=None, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
-        super().__init__(estimator=estimator, grouping_by=grouping_by, *args, **kwargs)
+        super().__init__(estimator=estimator, grouping_by=grouping_by, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
@@ -180,8 +180,7 @@ class Relplot_estimator(Plot_estimator):
     def lineplot(self, column_name_draw, column_name_true_values=None, envelope_flag=True, separators_plot=None,
                  palette='PuOr',
                  hue=None, style=None, markers=None, sizes=None,
-                 dict_plot_for_main_line={}, path_save_plot=None,
-                 list_aplots = None,
+                 dict_plot_for_main_line={}, path_save_plot=None, list_aplots=None,
                  *args, **kwargs):
         """
         Semantics:
@@ -220,7 +219,7 @@ class Relplot_estimator(Plot_estimator):
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
 
-        current_plots = list_aplots if list_aplots is not None else [] # fetch the aplots of create an empty list
+        current_plots = list_aplots if list_aplots is not None else []  # fetch the aplots of create an empty list
 
         for i, key in enumerate(keys):
             if key is None:  # case where we cannot use groupby.
@@ -243,7 +242,8 @@ class Relplot_estimator(Plot_estimator):
                          hue=hue, style=style, sizes=sizes, markers=markers,
                          legend='full', ci=95, err_style="band",
                          palette=palette,
-                         data=data, ax=ax, **dict_plot_for_main_line)
+                         data=data, ax=ax,  **dict_plot_for_main_line)
+
             if envelope_flag:
                 for fct in ['min', 'max']:
                     sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
@@ -261,8 +261,7 @@ class Relplot_estimator(Plot_estimator):
             # TODO 01/07/2021 nie_k:  is there a way to retrieve the complete legend, with annotations?
             fig_dict = self.get_dict_fig(separators_plot, key, **kwargs)
             aplot.set_dict_ax(0, fig_dict)
-            
-            #todo make the path actually used.
+
             super()._saveplot(aplot, path_save_plot, 'relplot_', key)
         return current_plots
 

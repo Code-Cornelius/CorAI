@@ -41,19 +41,18 @@ class Plot_estimator(Root_plot_estimator):
 
     # it can be changed by self.COLORMAP; setting it allows to always use the same colormaps.
 
-    def __init__(self, estimator, grouping_by=None, *args, **kwargs):
+    def __init__(self, estimator, grouping_by=None, **kwargs):
         """
         Args:
             estimator (priv_lib_estimator.src.estimator.estimator):
             grouping_by (iter of str):  list of names of features from estimator.
             Default is None, and means no grouping is done, so all data is used for plotting.
 
-            *args: additional parameters for the construction of the object.
             **kwargs: additional parameters for the construction of the object.
         """
         self.estimator = estimator
         self.grouping_by = grouping_by
-        super().__init__(estimator=estimator, grouping_by=grouping_by, *args, **kwargs)
+        super().__init__(estimator=estimator, grouping_by=grouping_by, **kwargs)
 
     @classmethod
     def from_csv(cls, path, grouping_by=None):

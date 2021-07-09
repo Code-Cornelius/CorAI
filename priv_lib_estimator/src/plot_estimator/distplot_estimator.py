@@ -24,9 +24,9 @@ class Distplot_estimator(Plot_estimator):
         get_dict_plot_param
     """
 
-    def __init__(self, estimator, separators=None, *args, **kwargs):
+    def __init__(self, estimator, separators=None, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
-        super().__init__(estimator, separators, *args, **kwargs)
+        super().__init__(estimator, separators,**kwargs)
 
     # section ######################################################################
     #  #############################################################################
