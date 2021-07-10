@@ -16,3 +16,17 @@ def remove_files_from_dir(folder_path, file_start, file_extension):
         if file.startswith(file_start) and file.endswith(file_extension):
             file_path = os.path.join(folder_path, file)
             os.remove(file_path)
+
+
+def file_is_empty(path):
+    """
+    Semantics:
+        Check whether the file is empty.
+    Args:
+        path(str): The path to the file.
+
+    Returns:
+        True if the file is empty.
+        False otherwise.
+    """
+    return os.path.getsize(path) > 0
