@@ -18,7 +18,7 @@ def remove_files_from_dir(folder_path, file_start, file_extension):
             os.remove(file_path)
 
 
-def file_is_empty(path):
+def is_empty_file(path):
     """
     Semantics:
         Check whether the file is empty.
