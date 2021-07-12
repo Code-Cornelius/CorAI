@@ -7,6 +7,9 @@ from priv_lib_metaclass import Register, deco_register
 
 
 class Displayable_plot(object, metaclass=Register):
+    # _fig needs to be redefined lower class (APlot does it).
+
+    _fig = None
 
     @deco_register
     def __init__(self):
@@ -30,8 +33,7 @@ class Displayable_plot(object, metaclass=Register):
         plt.show()
         return
 
-    @staticmethod
-    def save_plot(name_save_file='plots/image'):
+    def save_plot(self, name_save_file='plots/image'):
         """
         Semantics:
             saves the plot drawn.
@@ -48,7 +50,7 @@ class Displayable_plot(object, metaclass=Register):
         if not os.path.exists(directory_where_to_save):
             if directory_where_to_save != '':
                 os.makedirs(directory_where_to_save)
-        plt.savefig(name_save_file + '.png', dpi=500)
+        self._fig.savefig(name_save_file + '.png', dpi=500)
         return
 
     def tight_layout(self):

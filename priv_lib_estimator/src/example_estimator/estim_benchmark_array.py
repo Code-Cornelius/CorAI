@@ -65,10 +65,10 @@ class Relplot_benchmark_array(Plot_estim_benchmark_array, Relplot_estimator):
         # list_aplots[0].uni_plot(0, xx, rescaled_xx2, dict_plot_param={'label': 'o(x^2)', 'linewidth'  : 0.9,
         #                                                                             'markersize' : 0, 'color' : 'black'})
 
-        current_plots = super().lineplot(column_name_draw, column_name_true_values, envelope_flag, separators_plot,
+        current_plots, keys = super().lineplot(column_name_draw, column_name_true_values, envelope_flag, separators_plot,
                          palette, hue, style, markers, sizes, dict_plot_for_main_line, path_save_plot, list_aplots,
                          *args, **kwargs)
-        return current_plots
+        return current_plots, keys
 
 class Distplot_benchmark_array(Plot_estim_benchmark_array, Distplot_estimator):
     def ___init__(self, estimator, *args, **kwargs):

@@ -220,7 +220,7 @@ class Relplot_estimator(Plot_estimator):
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
 
         current_plots = list_aplots if list_aplots is not None else []  # fetch the aplots of create an empty list
-
+        current_keys = [] # we return current_keys which is the list version of keys, in the iteration order.
         for i, key in enumerate(keys):
             if key is None:  # case where we cannot use groupby.
                 data = global_dict
@@ -228,6 +228,9 @@ class Relplot_estimator(Plot_estimator):
                 key = ["whole dataset"]  # for the title
             else:
                 data = global_dict.get_group(key)
+            # TODO 13/07/2021 nie_k:  is key necessarly iterable? what if there is only one key? (i.e. not 0 or 3...?)
+            current_keys.append(key)
+
             # creation of the plot
             # choice of ax
             if list_aplots is not None:
@@ -263,7 +266,7 @@ class Relplot_estimator(Plot_estimator):
             aplot.set_dict_ax(0, fig_dict)
 
             super()._saveplot(aplot, path_save_plot, 'relplot_', key)
-        return current_plots
+        return current_plots, current_keys
 
     def scatter(self, column_name_draw, column_name_true_values=None, separators_plot=None,
                 palette='PuOr',
