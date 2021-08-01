@@ -361,6 +361,44 @@ class Estimator(object):
         with open(path, 'w') as file:
             json.dump(parsed, file)
 
+    def order(self, column_names, ascending=True, inplace=False):
+        """
+            Order the dataframe by the column_names.
+        Args:
+            column_names(list of str): The column names to be used for sorting the dataframe.
+            ascending(bool): Flag for sorting ascending or descending.
+            inplace(bool): Flag for sort inplace.
+
+        Returns:
+            If in place is False, returns the sorted dataframe, otherwise the internal dataframe is updated.
+        """
+        return self.df.sort_values(by=column_names, ascending=ascending, inplace=inplace)
+
+    def get_best_by(self, metrics, count=10, ascending=True, inplace_sort=False, crop=False):
+        """
+            Get the best rows according to metrics.
+        Args:
+            metrics(list of str): The column names to compare by.
+            count(int): The number of rows to return. If count is bigger than the number of rows, it will return
+                the whole dataframe.
+            ascending(bool): Flag for sorting ascending or descending.
+            inplace_sort(bool): Flag for sort inplace. Will not crop the dataframe.
+            crop(bool): Only applied when inplace_sort is true. A flag to notify is the internal dataframe
+                should be cropped to count.
+
+        Returns:
+            A dataframe with <count> rows representing the best entries according to the list of metrics.
+        """
+        count = min(count, len(self.df))
+
+        sorted_df = self.order(column_names=metrics, ascending=ascending, inplace=inplace_sort)
+        if inplace_sort:
+            if crop:
+                self.df = self.df[:count]
+            return self.df[:count]
+        else:
+            return sorted_df[:count]
+
     @staticmethod
     def groupby_data(data, separators):
         """
