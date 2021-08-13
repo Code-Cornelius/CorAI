@@ -2,21 +2,32 @@
 
 ### Available version
 
-* *version 1.000* :  Released in September 2020. It was released in order for me to have a stable version that was compatible with my summer projects. There is still a lot to do on it. 
-* *version 1.142* : Released in June 2021. The library is better documented, and better structured. It is now separated in the corresponding libraries, and there are tests for most of the functions.
-* current work : incorporate new financial functions, 3D plots as well as neural networks functions. Estimator is being reworked. This version is expected to be released by Winter 2022.
+* *version 1.000* :  Released in September 2020. 
+It was released in order for me to have a stable version that was compatible with my summer projects. 
+There is still a lot to do on it. 
+* *version 1.142* : Released in June 2021. 
+The library is better documented, and better structured.
+It is now separated in the corresponding libraries, and there are tests for most of the functions.
+* current work : incorporate new financial functions, 3D plots as well as neural networks functions. 
+Estimator is being reworked. This version is expected to be released by Winter 2022.
 
 
-One should download the latest version and add the path to it to the interpreter before running code.
 
 ### General information
 
-The aim of this repository is to automatise and optimise classical python routines. We detail here the different directories available, which depends on the intended usage. 
+The aim of this repository is to automatise and optimise classical python routines. 
+We detail here the different directories available, which depends on the intended usage. 
 
-Some functions are simple classical routines. Other files offer more advanced code, involving wrappers classes, classes objects, metaclasses…
+Some functions are simple classical routines. 
+Other files offer more advanced code, involving wrappers classes, classes objects, metaclasses…
 
 Finally, we are trying to incorporate some C++ routines in the code for very efficient code. This part is still in the project phase.
  
+### Where to put the Library?
+One should download the latest version and add the path to it to the interpreter before running code.
+The easiest way to use the libraries would be to put the library folders at the root of the project. 
+It is not possible to only download part of a library, as there might be some dependencies.
+
 ### Structure of the Project and how to import
 
 The main structure is the following:
@@ -84,6 +95,7 @@ Project
       │  ├── benchmarking.py
       │  ├── decorator.py
       │  ├── function_dict.py
+      │  ├── function_file.py
       │  ├── function_iterable.py
       │  ├── function_recurrent.py
       │  ├── function_json.py
@@ -138,6 +150,7 @@ Project
       ├── benchmarking.py
       ├── decorator.py
       ├── function_dict.py
+      ├── function_file.py
       ├── function_iterable.py
       ├── function_json.py
       ├── function_recurrent.py
@@ -163,10 +176,10 @@ graph TD;
 
 ```
 
-Meaning one can download only part of the library by keeping these relationship in mind.
+Meaning one can download only part of the library by keeping these relationships in mind.
 
 * All libraries start with the name `priv_lib_{NAME LIBRARY}`,
-inside each library,  there is a source folder and a tests folder. In order to import any module, one should simply write:
+inside each library,  there is a source folder and a test folder. In order to import any module, one should simply write:
 
 ```
 from priv_lib import module
@@ -180,7 +193,7 @@ Then, the functions written in the module are callable with:
 module.function()
 ```
 
-if one wants to simply use the name of the function without refering to the private call table of the library, one can write:
+if one wants to simply use the name of the function without referring to the private call table of the library, one can write:
 
 ```
 function = module.function
