@@ -60,7 +60,7 @@ class Estimator(object):
         return cls(df=pd.read_csv(path, **kwargs))  # calling the constructor of the class.
 
     @classmethod
-    def from_json(cls, path, *args, **kwargs):
+    def from_json(cls, path, **kwargs):
         """
         Semantics:
             Read json dataframe and construct the object.
@@ -70,6 +70,7 @@ class Estimator(object):
                 - override from_json with a function calling from_json_attributes and retrieve the attributes,
                 - then call super().from_json to create the estimator,
                 - finally add to the estimator the attributes.
+                - at the end, the function needs to rewrite the original json back together.
 
         Args:
             path: The path where to retrieve the dataframe from. Extension json needed.
@@ -77,10 +78,16 @@ class Estimator(object):
         Returns:
             Void
 
+        Postcondition:
+            the json at path remains identical.
+
         Examples of overriding:
-            attrs = super().from_json_attributes(path, compressed)
-            estimator = super().from_json(path)
-            estimator.name = attrs['name']
+            def from_json(cls, path, compressed=True):
+                attrs = super().from_json_attributes(path, compressed)
+                estimator = super().from_json(path)
+                estimator.name = attrs['name']
+                estimator.to_json(path=path, compress=compressed)
+            return estimator
         """
         dataframe = pd.read_json(path, orient='split')
         return cls(df=dataframe)
@@ -96,20 +103,19 @@ class Estimator(object):
         Returns:
 
         """
-        with open(path, 'r') as file:
+        with open(path, 'r') as file: # read file
             df_info = json.load(file)
-            if compress:
+            if compress: # decompress
                 df_info = unzip_json(df_info)
-            attrs = df_info['attrs']
-            del df_info['attrs']
+            attrs = df_info['attrs'] # retrieve the attributes (metadata)
+            del df_info['attrs'] # deletes them from the loaded json
 
-        with open(path, 'w') as file:
-            json.dump(df_info, file)
-
+        with open(path, 'w') as file:  # writtes inside the file
+            json.dump(df_info, file)  # converts python object into json.
         return attrs
 
     @classmethod
-    def folder_json2list_estim(cls, path, *args, **kwargs):
+    def folder_json2list_estim(cls, path, compress, **kwargs):
         """
         Semantics:
             Open a folder containing only estimators(of the same type) saved to json and create a list of estimators.
@@ -126,7 +132,7 @@ class Estimator(object):
 
         # collect all the estimators from the folder
         for file in os.listdir(path):
-            estimator = cls.from_json(path=os.path.join(path, file), *args, **kwargs)
+            estimator = cls.from_json(path=os.path.join(path, file), **kwargs)
             estimators.append(estimator)
 
         return estimators
