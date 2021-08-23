@@ -66,13 +66,12 @@ def list_of_dicts_to_json(parameter_options, file_name="config.json", compress=F
         json.dump(parameter_options, file)
 
 def json2python(path, compress = False):
-    # TODO CHANGE NAME HISTORY
     with open(path, 'r') as file:
-        history = json.load(file)
+        dict = json.load(file)
         if compress:
-            history = unzip_json(history)
+            dict = unzip_json(dict)
         file.close()
-    return history
+    return dict
 
 
 def factory_fct_linked_path(ROOT_DIR, path_to_folder):
