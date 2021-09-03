@@ -17,7 +17,7 @@ from priv_lib_util.tools.src.function_dict import filter
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Distplot_estimator(Plot_estimator):
     """
-    Abstract class, distribution plot.
+    Abstract class, distribution plot. hist.
 
     Redefine:
         get_dict_fig
@@ -26,7 +26,7 @@ class Distplot_estimator(Plot_estimator):
 
     def __init__(self, estimator, separators=None, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
-        super().__init__(estimator, separators,**kwargs)
+        super().__init__(estimator=estimator, separators=separators,**kwargs)
 
     # section ######################################################################
     #  #############################################################################

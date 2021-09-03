@@ -1,7 +1,7 @@
 import json
+import os
 
 import pandas as pd
-import os
 from priv_lib_error import Error_type_setter
 from priv_lib_util.tools.src.function_json import zip_json, unzip_json
 
@@ -23,7 +23,7 @@ class Estimator(object):
         It is good practice to put the names of the columns / features in the class object, as a security.
     """
 
-    CORE_COL = set() # we use a set in order to avoid redundancy. However, Dataframes requires lists and for this reason we always    
+    CORE_COL = set()  # we use a set in order to avoid redundancy. However, Dataframes requires lists and for this reason we always
 
     def __init__(self, df=None, *args, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
@@ -71,6 +71,7 @@ class Estimator(object):
                 - then call super().from_json to create the estimator,
                 - finally add to the estimator the attributes.
                 - at the end, the function needs to rewrite the original json back together.
+            use the parameter compressed if one wants to allow compressing / decompression.
 
         Args:
             path: The path where to retrieve the dataframe from. Extension json needed.
@@ -103,12 +104,12 @@ class Estimator(object):
         Returns:
 
         """
-        with open(path, 'r') as file: # read file
+        with open(path, 'r') as file:  # read file
             df_info = json.load(file)
-            if compress: # decompress
+            if compress:  # decompress
                 df_info = unzip_json(df_info)
-            attrs = df_info['attrs'] # retrieve the attributes (metadata)
-            del df_info['attrs'] # deletes them from the loaded json
+            attrs = df_info['attrs']  # retrieve the attributes (metadata)
+            del df_info['attrs']  # deletes them from the loaded json
 
         with open(path, 'w') as file:  # writtes inside the file
             json.dump(df_info, file)  # converts python object into json.
@@ -132,7 +133,7 @@ class Estimator(object):
 
         # collect all the estimators from the folder
         for file in os.listdir(path):
-            estimator = cls.from_json(path=os.path.join(path, file), **kwargs)
+            estimator = cls.from_json(path=os.path.join(path, file), compressed = compress, **kwargs) # added the parameter compressed. What happens in the case when the parameter compressed is not expected.
             estimators.append(estimator)
 
         return estimators
@@ -353,7 +354,7 @@ class Estimator(object):
             attrs = {'name': self.name}
             super().to_json(path, compress, attrs)
         """
-        json_df = self.df.to_json(orient='split', index = False)
+        json_df = self.df.to_json(orient='split', index=False)
         parsed = json.loads(json_df)
         parsed['attrs'] = attrs
 

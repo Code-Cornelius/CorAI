@@ -23,7 +23,7 @@ class Relplot_estimator(Plot_estimator):
         The purpose is to automatise the plots showing evolution of a feature
             with respect to an other as a time-series.
         The class is showing common behavior for evolution_plot: retrieving data for the time series,
-            plotting according to some standards...
+            plotting according to some standards... lineplot / scatterplot.
 
         EVOLUTION_COLUMN is the parameter with respect to which the feature is evolving. It is usually time or position.
         It is the x-axis of the evolution plot.
@@ -181,6 +181,7 @@ class Relplot_estimator(Plot_estimator):
                  palette='PuOr',
                  hue=None, style=None, markers=None, sizes=None,
                  dict_plot_for_main_line={}, path_save_plot=None, list_aplots=None,
+                 second_column_to_draw_abscissa = None,
                  *args, **kwargs):
         """
         Semantics:
@@ -207,6 +208,7 @@ class Relplot_estimator(Plot_estimator):
             list_aplots (list of Aplot): Plot for plotting.
                 There should be as many axs as in the number of groups given by separators_plotters
                  (with the grouping_by parameter of the plot_estimator).
+            second_column_to_draw_abscissa (str): column of the dataframe to use as the abscissa.
             kwargs: passed to super and to get_dict_fig.
 
         Returns:
@@ -215,6 +217,7 @@ class Relplot_estimator(Plot_estimator):
             todo write the dependency
 
         """
+        x_axis = second_column_to_draw_abscissa if not None else self.EVOLUTION_COLUMN
         # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
@@ -241,7 +244,7 @@ class Relplot_estimator(Plot_estimator):
                 aplot = APlot()
                 current_plots.append(aplot)
                 ax = aplot._axs[0]
-            sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+            sns.lineplot(x=x_axis, y=column_name_draw,
                          hue=hue, style=style, sizes=sizes, markers=markers,
                          legend='full', ci=95, err_style="band",
                          palette=palette,
@@ -249,14 +252,14 @@ class Relplot_estimator(Plot_estimator):
 
             if envelope_flag:
                 for fct in ['min', 'max']:
-                    sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+                    sns.lineplot(x=x_axis, y=column_name_draw,
                                  estimator=fct, hue=hue,
                                  legend=False, err_style="band", ci=None,
                                  # no Conf. Inter. for max value (does not make actually sense with bootstrapping)
                                  palette=palette, data=data, ax=ax,
                                  color='r', linestyle='--', linewidth=0.5, label=fct)
             if column_name_true_values is not None:
-                sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_true_values,
+                sns.lineplot(x=x_axis, y=column_name_true_values,
                              hue=hue, legend=False, err_style="band", ci=None,
                              palette=palette, data=data, ax=ax,
                              color='r', linestyle='--', linewidth=0.5, label='true value')
@@ -271,7 +274,9 @@ class Relplot_estimator(Plot_estimator):
     def scatter(self, column_name_draw, column_name_true_values=None, separators_plot=None,
                 palette='PuOr',
                 hue=None, style=None, markers=None, sizes=None,
-                dict_plot_for_main_line={}, path_save_plot=None,
+                dict_plot_for_main_line={}, hue_norm = None,
+                second_column_to_draw_abscissa = None,
+                path_save_plot=None,
                 *args, **kwargs):
         # TODO 27/06/2021 nie_k:  add the ax parameter as it is in line plot.
         """
@@ -294,13 +299,17 @@ class Relplot_estimator(Plot_estimator):
             markers (bool):
             sizes:
             dict_plot_for_main_line (dict): additional parameters for the plot (evolution line).
+            hue_norm (tuple):
+            second_column_to_draw_abscissa (str): column of the dataframe to use as the abscissa.
             path_save_plot (str): Path to specify where the plot should be saved. Not saved if is None.
-
+            kwargs:
         Returns:
 
         Dependency:
             todo write the dependency
         """
+        x_axis = second_column_to_draw_abscissa if not None else self.EVOLUTION_COLUMN
+
         # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
@@ -316,13 +325,13 @@ class Relplot_estimator(Plot_estimator):
             plot = APlot()
             plots.append(plot)
 
-            sns.scatterplot(x=self.EVOLUTION_COLUMN, y=column_name_draw,
+            sns.scatterplot(x=x_axis, y=column_name_draw,
                             hue=hue, style=style, sizes=sizes, markers=markers,
-                            legend='full', palette=palette,
+                            legend='full', palette=palette, hue_norm = hue_norm,
                             data=data, ax=plot._axs[0], **dict_plot_for_main_line)
 
             if column_name_true_values is not None:
-                sns.lineplot(x=self.EVOLUTION_COLUMN, y=column_name_true_values,
+                sns.lineplot(x=x_axis, y=column_name_true_values,
                              hue=hue,
                              legend=False, palette=palette, data=data, ax=plot._axs[0],
                              color='r', linestyle='--', linewidth=0.5, label='true value',
