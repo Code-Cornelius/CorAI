@@ -274,7 +274,7 @@ class Relplot_estimator(Plot_estimator):
     def scatter(self, column_name_draw, column_name_true_values=None, separators_plot=None,
                 palette='PuOr',
                 hue=None, style=None, markers=None, sizes=None,
-                dict_plot_for_main_line={}, hue_norm = None,
+                dict_plot_for_main_line={}, hue_norm = None, legend='full',
                 second_column_to_draw_abscissa = None,
                 path_save_plot=None,
                 *args, **kwargs):
@@ -327,7 +327,7 @@ class Relplot_estimator(Plot_estimator):
 
             sns.scatterplot(x=x_axis, y=column_name_draw,
                             hue=hue, style=style, sizes=sizes, markers=markers,
-                            legend='full', palette=palette, hue_norm = hue_norm,
+                            legend=legend, palette=palette, hue_norm = hue_norm,
                             data=data, ax=plot._axs[0], **dict_plot_for_main_line)
 
             if column_name_true_values is not None:

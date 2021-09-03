@@ -7,7 +7,6 @@ from priv_lib_error import Error_type_setter
 from priv_lib_estimator import Plot_estimator, Relplot_estimator, Distplot_estimator
 from priv_lib_estimator.src.estimator.estim_time import Estim_time
 
-
 # section ######################################################################
 #  #############################################################################
 # Classes
@@ -60,15 +59,17 @@ class Relplot_benchmark_array(Plot_estim_benchmark_array, Relplot_estimator):
         # rescaled_xx2 = rescaled_xx * rescaled_xx
 
         print(list_unique_length)
-        list_aplots[0].uni_plot(0,xx, rescaled_xx, dict_plot_param={'label':'o(x)', 'linewidth': 0.9,
-                                                                          'markersize': 0, 'color': 'black'})
-        # list_aplots[0].uni_plot(0, xx, rescaled_xx2, dict_plot_param={'label': 'o(x^2)', 'linewidth'  : 0.9,
-        #                                                                             'markersize' : 0, 'color' : 'black'})
+        list_aplots[0].uni_plot(0, xx, rescaled_xx, dict_plot_param={'label': 'o(x)', 'linewidth': 0.9,
+                                                                     'markersize': 0, 'color': 'black'})
+        # list_aplots[0].uni_plot(0, xx, rescaled_xx2, dict_plot_param={'label': 'o(x^2)', 'linewidth'  : 0.9, 'markersize' : 0, 'color' : 'black'})
 
-        current_plots, keys = super().lineplot(column_name_draw, column_name_true_values, envelope_flag, separators_plot,
-                         palette, hue, style, markers, sizes, dict_plot_for_main_line, path_save_plot, list_aplots,
-                         *args, **kwargs)
+        current_plots, keys = super().lineplot(column_name_draw, column_name_true_values, envelope_flag,
+                                               separators_plot,
+                                               palette, hue, style, markers, sizes, dict_plot_for_main_line,
+                                               path_save_plot, list_aplots,
+                                               *args, **kwargs)
         return current_plots, keys
+
 
 class Distplot_benchmark_array(Plot_estim_benchmark_array, Distplot_estimator):
     def ___init__(self, estimator, *args, **kwargs):

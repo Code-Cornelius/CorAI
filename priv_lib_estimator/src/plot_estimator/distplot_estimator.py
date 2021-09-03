@@ -26,23 +26,24 @@ class Distplot_estimator(Plot_estimator):
 
     def __init__(self, estimator, separators=None, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
-        super().__init__(estimator=estimator, separators=separators,**kwargs)
+        super().__init__(estimator=estimator, separators=separators, **kwargs)
 
     # section ######################################################################
     #  #############################################################################
     # plot
     def draw(self, separators_plot=None, not_use_grouping_by=False, *args, **kwargs):
         # args and kwargs for the child super() method. Do not forget them in child classes.
-        super().draw(*args,**kwargs)
+        super().draw(*args, **kwargs)
         pass
 
     @abstractmethod
-    def get_dict_fig(self, separators, key):
+    def get_dict_fig(self, grouped_data_by, key, **kwargs):
         """
 
         Args:
-            separators:
+            grouped_data_by:
             key:
+            kwargs: kwargs['column_name_draw'] is the name of the column draw.
 
         Returns:
 
@@ -59,7 +60,7 @@ class Distplot_estimator(Plot_estimator):
 
     def hist(self, column_name_draw, separators_plot=None, separators_filter=None,
              palette='PuOr', hue=None, bins=20,
-             binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None):
+             binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None, **kwargs):
         """
         Semantics:
             histogram plot.
@@ -107,13 +108,12 @@ class Distplot_estimator(Plot_estimator):
             # get the good palette (sliced avoiding white.
             palette = self.color_scheme(palette)
 
-
-
             sns.histplot(x=column_name_draw, bins=bins,
                          hue=hue, multiple=multiple, binrange=binrange,
                          legend='full', kde=kde,
                          palette=palette, data=data, ax=plot._axs[0], stat=stat)
-            fig_dict = self.get_dict_fig(separators, key)
+            kwargs['column_name_draw'] = column_name_draw
+            fig_dict = self.get_dict_fig(separators, key, **kwargs)
             plot.set_dict_ax(0, fig_dict)
 
             if path_save_plot is not None:
