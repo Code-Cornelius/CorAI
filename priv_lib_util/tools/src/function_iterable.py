@@ -1,10 +1,9 @@
 import bisect  # for finding position in a list
+import collections  # for the method is_a_container
 import itertools  # for roundrobin
 import warnings
-import collections  # for the method is_a_container
 
 import numpy as np
-
 from priv_lib_error import Error_not_allowed_input
 from priv_lib_error import numpy_function_used
 
@@ -63,11 +62,11 @@ def find_smallest_rank_leq_to_K(my_list, K, is_sorted=True):
         # I sort every line, and i search the minimal column for each row such that it satisfies certain properties.
         if not is_sorted:
             for i in range(np.shape(my_list)[0]):
-                my_list[i,:].sort()
+                my_list[i, :].sort()
         # Here I had a problem, np.zeros gives back an array with floats in it. So I specify the dtype.
         ans = np.zeros(np.shape(my_list)[0], dtype=int)
         for i in range(np.shape(my_list)[0]):
-            ans[i] = bisect.bisect_right(my_list[i,:], K)
+            ans[i] = bisect.bisect_right(my_list[i, :], K)
         return ans
 
 
@@ -245,3 +244,44 @@ def raise_if_not_all_None(list_parameters):
             raise ValueError("Given a parameter not None while the others are. "
                              "Is it a mistake ? Parameter not None : " + str(parameter))
     return
+
+
+def is_np_arr_constant(arr, tol):
+    """
+    Condition if all values are equal (up to some allowed error).
+    Args:
+        arr:
+        tol: percent error of the mean, unless the mean is zero, then it is the exact value.
+
+    Returns:
+
+    """
+    the_mean = np.mean(arr)
+    if the_mean == 0:
+        cdt1 = arr <= tol
+        cdt2 = arr >= -tol
+    else:
+        cdt1 = np.abs(arr - the_mean) <= abs(the_mean) * tol
+        cdt2 = np.abs(arr - the_mean) >= -abs(the_mean) * tol
+    if np.all(cdt1 & cdt2):
+        return True
+    else:
+        return False
+
+# print(1)
+# arr = np.array([1, 2, 3])
+# print(is_np_arr_constant(arr, 0.1))
+# print(is_np_arr_constant(arr, 0.5))
+# print(is_np_arr_constant(arr, 5.))
+#
+# print(2)
+# arr = np.array([-1, -2, -3])
+# print(is_np_arr_constant(arr, 0.1))
+# print(is_np_arr_constant(arr, 0.5))
+# print(is_np_arr_constant(arr, 5.))
+#
+# print(3)
+# arr = np.array([-1, 1, -2, 2])
+# print(is_np_arr_constant(arr, 0.))
+# print(is_np_arr_constant(arr, 0.5))
+# print(is_np_arr_constant(arr, 2.))
