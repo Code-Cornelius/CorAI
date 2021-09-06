@@ -442,6 +442,28 @@ class Estimator(object):
     def contains(self, column):
         return column in self.df.columns
 
+
+    def slice(self, column, condition, save=False):
+        """
+        Semantics:
+            Slice the dataframe by applying a condition on a column
+        Args:
+            column(str): The name of the column the condition is applied on
+            condition(lambda): The condition to slice by.
+                Must contain one parameter for the column.
+                Example: lambda column: column <= 2
+            save(bool): Flag to specify whether or not to update the dataframe.
+
+        Returns:
+            The sliced dataframe.
+        """
+        df_filter = condition(self.df[column])
+        filtered_df = self.df[df_filter]
+        if save:
+            self.df = filtered_df
+
+        return filtered_df
+
     @property
     def df(self):
         # getter for df.
