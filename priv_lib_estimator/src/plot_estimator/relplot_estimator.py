@@ -217,7 +217,7 @@ class Relplot_estimator(Plot_estimator):
             todo write the dependency
 
         """
-        x_axis = second_column_to_draw_abscissa if not None else self.EVOLUTION_COLUMN
+        x_axis = second_column_to_draw_abscissa if (second_column_to_draw_abscissa is not None) else self.EVOLUTION_COLUMN
         # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.

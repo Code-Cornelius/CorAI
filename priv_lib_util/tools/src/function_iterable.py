@@ -257,7 +257,7 @@ def is_np_arr_constant(arr, tol):
 
     """
     the_mean = np.mean(arr)
-    if the_mean == 0:
+    if the_mean <= 1E-8: # threshold.
         cdt1 = arr <= tol
         cdt2 = arr >= -tol
     else:
