@@ -119,7 +119,7 @@ def mean_list(iterable):
 
     elif isinstance(iterable, np.ndarray):
         numpy_function_used(which_function_used_instead="mean")
-        return np.mean(iterable)
+        return np.nanmean(iterable)
 
     else:
         raise Error_not_allowed_input("Mean list takes either a list or a numpy array.")

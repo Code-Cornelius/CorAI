@@ -449,10 +449,10 @@ class Estimator(object):
             Slice the dataframe by applying a condition on a column
         Args:
             column(str): The name of the column the condition is applied on
-            condition(lambda): The condition to slice by.
-                Must contain one parameter for the column.
-                Example: lambda column: column <= 2
-            save(bool): Flag to specify whether or not to update the dataframe.
+            condition(callable): The condition to slice by.
+            Function of one parameter: the column on which the condition is set.
+                Example of condition: lambda column: column <= 2
+            save(bool): Flag to specify whether or not to update the dataframe which the conditioned df.
 
         Returns:
             The sliced dataframe.
