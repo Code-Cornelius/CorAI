@@ -1,1 +1,1 @@
-from .src import *
+from priv_lib_error.src import *
