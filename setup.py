@@ -19,7 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"estimator": "priv_lib_estimator"},
-    packages=setuptools.find_packages(where="priv_lib_estimator"),
+    package_dir={"error": "priv_lib_error/src"},
+    packages=setuptools.find_packages(where="priv_lib_error/src"),
     python_requires=">=3.6",
 )
