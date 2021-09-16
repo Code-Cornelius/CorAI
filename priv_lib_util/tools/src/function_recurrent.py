@@ -4,7 +4,7 @@ import scipy.integrate  # for the method quad allows integration
 import scipy.optimize  # for knowing when a function crosses 0, for implied volatility computation.
 import scipy.stats  # functions of statistics
 # priv_libraries
-from priv_lib_error.src.error_package import warning_deprecated
+from priv_lib_error import warning_deprecated
 
 
 # other files
