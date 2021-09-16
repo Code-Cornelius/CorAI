@@ -19,7 +19,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "priv_lib_error/src"},
-    packages=setuptools.find_packages(where=""),
+    package_dir={"": "priv_lib_error"},
+    packages=setuptools.find_packages(where="priv_lib_error"),
     python_requires=">=3.6",
 )
