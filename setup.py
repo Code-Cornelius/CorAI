@@ -20,6 +20,6 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     package_dir={"": "priv_lib_error/src"},
-    packages=setuptools.find_packages(where="priv_lib_error/src"),
+    packages=setuptools.find_packages(where=""),
     python_requires=">=3.6",
 )
