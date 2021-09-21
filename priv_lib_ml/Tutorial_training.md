@@ -1,10 +1,6 @@
-This is a tutorial on how to use the library
+The tutorial follows closely the `example_hyper_param.py` file.
 
-Niels, please insert any other information you see useful
-
-This file follows closely the example_hyper_param.py file.
 # Training example
-
 ### 0. Setup
 
 Good practices are to
@@ -14,9 +10,10 @@ Good practices are to
 ```python
 device = pytorch_device_setting('cpu')
 ```
-
+# TODO
 - when predicting values using the functions... that are wrapped up with the decorator...
 
+- set the seed
 - other good practices?
 
 ### 1. Define the training parameters
@@ -37,7 +34,7 @@ params_training = NNTrainParameters(batch_size,
 In particular, one decides the metrics used to compute the loss during training.
 These are defined in the following way:
 
-- define the metrics
+- define the `metric`s
 ```python
 def L4loss(net, xx, yy):
     return torch.norm(net.nn_predict(xx) - yy, 4)
@@ -58,7 +55,7 @@ optimiser_parameters = {"lr": 0.001,
 optim_wrapper = Optim_wrapper(optimiser, optimiser_parameters)
 ```
 
- - one can also use a scheduler to adapt the learning rate during training
+ - one can also use a `scheduler` to adapt the learning rate during training
 
 ```python
 scheduler = torch.optim.lr_scheduler.StepLR
@@ -118,7 +115,9 @@ net, estimator_history = nn_kfold_train(train_X,
 
 #### 3.b Training without k-fold
 
-In order to use the function after splitting, one needs to input an `estim_history`, where the values of the training are stored.
+It is also possible to use the training pipeline, without any predefined splitting (and perhaps do the splitting by hand beforehand).
+In order to use the function without the splitting,  one should use `train_kfold_a_fold_after_split`. 
+The function takes as an input an `estim_history`, where the values of the training are stored. The steps are:
 
 - initialise estimator:
 ```python

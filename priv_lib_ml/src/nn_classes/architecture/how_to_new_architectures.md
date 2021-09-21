@@ -50,11 +50,3 @@ nn_kfold_train(data_training_X, data_training_Y, model_NN, parameters_training,
                 early_stopper_validation=Early_stopper_vanilla(), early_stopper_training=Early_stopper_vanilla(), nb_split=5,
                 shuffle_kfold=True, percent_validation_for_1_fold=20, compute_accuracy=False, silent=False)
 ```
-
-
-### todo
-
-talk about not using kfold as in forecast flight.
-
-
-talk about estimator history and estimator hyperparam.

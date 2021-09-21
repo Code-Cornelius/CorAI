@@ -6,7 +6,7 @@ from torch import nn
 from nn_classes.estimator.history.relplot_history import Relplot_history
 from nn_train.kfold_training import nn_kfold_train
 from plot.nn_plots import nn_plot_prediction_vs_true, nn_errors_compute_mean
-from src.nn_classes.architecture.fully_connected import factory_parametrised_FC_NN
+from priv_lib_ml.src.nn_classes.architecture.fully_connected import factory_parametrised_FC_NN
 from src.nn_classes.metric.metric import Metric
 from src.nn_classes.optim_wrapper import Optim_wrapper
 from src.nn_classes.training_stopper.Early_stopper_training import Early_stopper_training

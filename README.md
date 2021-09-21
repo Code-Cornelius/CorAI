@@ -9,7 +9,7 @@ There is still a lot to do on it.
 The library is better documented, and better structured.
 It is now separated in the corresponding libraries, and there are tests for most of the functions.
 * current work : incorporate new financial functions, 3D plots as well as neural networks functions. 
-Estimator is being reworked. This version is expected to be released by Winter 2022.
+Estimator reworked. This version is expected to be released by Winter 2022.
 
 
 

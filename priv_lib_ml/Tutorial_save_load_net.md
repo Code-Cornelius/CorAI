@@ -16,7 +16,7 @@ net.save_net(path)
 
 ### 2. Loading a net
 A net can be loaded using the `load_net` function.
-todo explain how it works, the dict, what is net here, a class, initialised object with untrained parameters (i think the latter)
+todo explain how it works, the dict, what is net here, initialised object with untrained parameters (I think the latter)
 ```python
 net.load_net(path)
 ```

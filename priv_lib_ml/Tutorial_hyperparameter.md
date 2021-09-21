@@ -23,8 +23,9 @@ for params in hyper_params:
 ```
 
 ### 1. During Training
-By using a unique id, one can connect the results of the training and the hyper-parameters used to the previously
-saved net.
+
+By using a unique id, one can connect the results of the training and 
+the hyper-parameters used to the previously saved net.
 
 This can be done by:
 - Keeping an index to be used as an id while iterating over the `hyper_params`,
@@ -63,7 +64,7 @@ estimator_history = initialise_estimator(compute_validation,
                                          train_param_dict=param)
 ```
 
-This way, the parameters used are stored as meta-data in the estimator.
+This way, the hyper-parameters used are stored as meta-data in the estimator.
 This allows to know which model corresponds to what parameters.
 
 ### 2. Creating an `Estim_hyper_param`
@@ -86,7 +87,9 @@ estim_hyper_param = Estim_hyper_param.from_list(estims,
 
 #### 2.b From folder
 
-If instead of appending all of `estim_history` estimators to a list one decides to save them individually as **json** files, all in the same folder, they can then be retreived using the path:
+If instead of appending all of `estim_history` estimators to a list one 
+decides to save them individually as **json** files, 
+all in the same folder, they can then be retrieved using the path:
  
 ```python
 estim_hyper_param = Estim_hyper_param.from_folder(path,
@@ -114,7 +117,7 @@ The we can use the `slice` function to slice the estimator by applying the condi
 sliced_datafram = estim_hyper_param.slice(column, condition)
 ```
 
-We can also update the estimator if we want the change to be permanent.
+We can also update the estimator if we want the change to be inplace.
 ```python
 estim_hyper_param.slice(column, condition, save=True)
 ```

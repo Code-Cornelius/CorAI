@@ -74,7 +74,7 @@ class Savable_net(nn.Module):
     def update_best_weights(self, epoch):
         # : We decide to keep a copy instead of saving the model in a file
         # because we might not want to save this model (E.G. if we do a K-FOLD)
-        self.best_weights = deepcopy(self.state_dict())
+        self.best_weights = deepcopy(self.state_dict()) # used in early stoppers.
         self.best_epoch = epoch
 
     # section ######################################################################
