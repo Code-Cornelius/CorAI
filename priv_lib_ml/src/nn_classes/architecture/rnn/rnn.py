@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from priv_lib_error import Error_type_setter
 
-from src.nn_classes.architecture.savable_net import Savable_net
+from priv_lib_ml.src.nn_classes.architecture.savable_net import Savable_net
 
 
 class RNN(Savable_net, metaclass=ABCMeta):

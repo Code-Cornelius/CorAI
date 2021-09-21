@@ -5,7 +5,7 @@ import os
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator import Estimator
 
-from plot.nn_plots import nn_errors_compute_mean
+from priv_lib_ml.src.plot.nn_plots import nn_errors_compute_mean
 
 
 class Estim_history(Estimator):

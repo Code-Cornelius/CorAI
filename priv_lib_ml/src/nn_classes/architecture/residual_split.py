@@ -6,7 +6,7 @@ from priv_lib_error import Error_type_setter
 from priv_lib_util.tools import function_iterable
 
 # Savable_net
-from src.nn_classes.architecture.savable_net import Savable_net
+from priv_lib_ml.src.nn_classes.architecture.savable_net import Savable_net
 
 class Residual_split(Savable_net):
     def __init__(self, in_p, out_p):

@@ -1,4 +1,4 @@
-from src.nn_classes.training_stopper.Early_stopper import Early_stopper
+from priv_lib_ml.src.nn_classes.training_stopper.Early_stopper import Early_stopper
 
 
 class Early_stopper_training(Early_stopper):

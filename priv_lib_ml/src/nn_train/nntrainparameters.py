@@ -1,7 +1,7 @@
 # from metric.Metric import Metric
 from priv_lib_util.tools import function_iterable
 
-from src.nn_classes.metric.metric import Metric
+from priv_lib_ml.src.nn_classes.metric.metric import Metric
 
 
 class NNTrainParameters:

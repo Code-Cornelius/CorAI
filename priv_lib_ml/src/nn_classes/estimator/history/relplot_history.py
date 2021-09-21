@@ -2,7 +2,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from nn_classes.estimator.history.plot_estim_history import Plot_estim_history
+from priv_lib_ml.src.nn_classes.estimator.history.plot_estim_history import Plot_estim_history
 
 from priv_lib_estimator import Relplot_estimator
 from priv_lib_plot import AColorsetContinuous, APlot

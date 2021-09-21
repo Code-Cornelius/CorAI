@@ -1,7 +1,7 @@
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator import Plot_estimator
 
-from nn_classes.estimator.hyper_parameters.estim_hyper_param import Estim_hyper_param
+from priv_lib_ml.src.nn_classes.estimator.hyper_parameters.estim_hyper_param import Estim_hyper_param
 
 
 class Plot_estim_hyper_param(Plot_estimator):

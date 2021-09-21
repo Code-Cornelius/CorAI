@@ -4,8 +4,8 @@ import numpy as np
 import pandas as pd
 from priv_lib_estimator import Estimator
 
-from nn_classes.architecture.fully_connected import Fully_connected_NN
-from nn_classes.estimator.history.estim_history import Estim_history
+from priv_lib_ml.src.nn_classes.architecture.fully_connected import Fully_connected_NN
+from priv_lib_ml.src.nn_classes.estimator.history.estim_history import Estim_history
 
 
 class Estim_hyper_param(Estimator):

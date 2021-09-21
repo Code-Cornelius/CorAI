@@ -10,7 +10,7 @@ import torch
 from priv_lib_plot import APlot
 from sklearn import metrics
 
-from util_training import decorator_on_cpu_during_fct
+from priv_lib_ml.src.util_training import decorator_on_cpu_during_fct
 
 sns.set()
 
