@@ -165,14 +165,14 @@ class Estimator(object):
     def merge(cls, list_estim):
         """
         Semantics:
-            Build and estimator from a list of estimators
+            Build and estimator from a list of estimators.
         Args:
             list_estim(list of estimators): List of estimators to combine.
 
         Returns:
             An estimator containing the combined dataframes from the list of estimators.
         """
-        dataframes = [estimator.df for estimator in list_estim]
+        dataframes = [estimator.df for estimator in list_estim] # optimised in order to create a single df.
 
         concat_df = pd.concat(dataframes, ignore_index=True)
         return cls(concat_df)
