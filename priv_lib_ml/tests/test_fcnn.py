@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import torch
 
-from nn_classes.architecture.fully_connected import factory_parametrised_FC_NN
+from priv_lib_ml.src.classes.architecture.fully_connected import factory_parametrised_FC_NN
 
 class Test_fcnn(TestCase):
 

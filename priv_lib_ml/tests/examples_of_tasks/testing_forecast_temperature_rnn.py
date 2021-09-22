@@ -4,20 +4,20 @@ import torch.nn as nn
 from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 
-from data_processing_fct import add_column_cyclical_features
-from nn_classes.architecture.free_nn import factory_parametrised_Free_NN
-from nn_classes.architecture.reshape import Reshape
-from nn_classes.architecture.rnn.lstm import LSTM
-from nn_classes.architecture.rnn.rnn import factory_parametrised_RNN
-from nn_classes.estimator.history.relplot_history import Relplot_history
-from nn_classes.windowcreator import Windowcreator
-from nn_classes.estimator.history.estim_history import Estim_history
-from src.nn_classes.optim_wrapper import Optim_wrapper
-from src.nn_train.nntrainparameters import NNTrainParameters
-from src.util_training import pytorch_device_setting, set_seeds
-from src.nn_classes.training_stopper.Early_stopper_training import Early_stopper_training
-from src.nn_classes.training_stopper.Early_stopper_validation import Early_stopper_validation
-from src.nn_train.kfold_training import train_kfold_a_fold_after_split
+from priv_lib_ml.src.data_processing_fct import add_column_cyclical_features
+from priv_lib_ml.src.classes.architecture.free_nn import factory_parametrised_Free_NN
+from priv_lib_ml.src.classes.architecture.reshape import Reshape
+from priv_lib_ml.src.classes.architecture.rnn.lstm import LSTM
+from priv_lib_ml.src.classes.architecture.rnn.rnn import factory_parametrised_RNN
+from priv_lib_ml.src.classes.estimator.history.relplot_history import Relplot_history
+from priv_lib_ml.src.classes.windowcreator import Windowcreator
+from priv_lib_ml.src.classes.estimator.history.estim_history import Estim_history
+from priv_lib_ml.src.classes.optim_wrapper import Optim_wrapper
+from priv_lib_ml.src.train.nntrainparameters import NNTrainParameters
+from priv_lib_ml.src.util_training import pytorch_device_setting, set_seeds
+from priv_lib_ml.src.classes.training_stopper.early_stopper_training import Early_stopper_training
+from priv_lib_ml.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
+from priv_lib_ml.src.train.kfold_training import train_kfold_a_fold_after_split
 
 from priv_lib_plot import APlot
 

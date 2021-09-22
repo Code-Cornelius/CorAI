@@ -61,6 +61,52 @@ Project
 │  │     └── register.py
 │  └── tests
 │
+├── priv_lib_ml
+│  ├── src
+│  │  ├── classes
+│  │  │  ├── architecture
+│  │  │  │  ├── rnn
+│  │  │  │  │  ├── gru.py
+│  │  │  │  │  ├── lstm.py
+│  │  │  │  │  └── rnn.py
+│  │  │  │  ├── conv2dlstm.py
+│  │  │  │  ├── free_nn.py
+│  │  │  │  ├── fully_connected.py
+│  │  │  │  ├── reshape.py
+│  │  │  │  ├── residual_split.py
+│  │  │  │  └── savable_net.py
+│  │  │  ├── estimator
+│  │  │  │  ├── history
+│  │  │  │  │  ├── estim_history.py
+│  │  │  │  │  ├── plot_estim_history.py
+│  │  │  │  │  └── relplot_history.py
+│  │  │  │  └── hyper_parameters
+│  │  │  │     ├── distplot_hyper_param.py
+│  │  │  │     ├── estim_hyper_param.py
+│  │  │  │     ├── plot_estim_hyper_param.py
+│  │  │  │     └── relplot_hyper_param.py
+│  │  │  ├── metric
+│  │  │  │  └── metric.py
+│  │  │  ├── training_stopper
+│  │  │  │  ├── early_stopper.py
+│  │  │  │  ├── early_stopper_training.py
+│  │  │  │  ├── early_stopper_validation.py
+│  │  │  │  └── early_stopper_vanilla.py
+│  │  │  ├── fast_tensor_dataloader.py
+│  │  │  ├── optim_wrapper.py
+│  │  │  └── windowcreator.py
+│  │  ├── plot
+│  │  │  └── nn_plots.py
+│  │  ├── train
+│  │  │  ├── fit.py
+│  │  │  ├── kfold_training.py
+│  │  │  ├── nntrainparameters.py
+│  │  │  └── train.py
+│  │  ├── data_processing_fct.py
+│  │  ├── methods_train.py
+│  │  └── util_train.py
+│  └── tests
+│
 ├── priv_lib_plot 
 │  ├── src
 │  │  ├── acolor
@@ -112,27 +158,67 @@ However, one can import the meaningful objects in the following way, where one `
 ```
 Project
 ├── priv_lib_error 
-│  ├── Error_convergence.py
-│  ├── Error_not_allowed_input.py
-│  ├── Error_not_enough_information.py
-│  ├── Error_not_yet_allowed.py
-│  ├── Error_type_setter.py
+│  ├── error_convergence.py
+│  ├── error_not_allowed_input.py
+│  ├── error_not_enough_information.py
+│  ├── error_not_yet_allowed.py
+│  ├── error_type_setter.py
 │  └── deprecated_function.py
 │
 ├── priv_lib_estimator 
-│  ├── Estimator.py
-│  ├── Plot_estimator.py
-│  ├── Distplot_estimator.py
-│  └── Relplot_estimator.py
+│  ├── estimator.py
+│  ├── plot_estimator.py
+│  ├── distplot_estimator.py
+│  └── relplot_estimator.py
+│
+├── priv_lib_ml
+│  ├── architecture
+│  │  ├── rnn
+│  │  │  ├── gru.py
+│  │  │  ├── lstm.py
+│  │  │  └── rnn.py
+│  │  ├── conv2dlstm.py
+│  │  ├── free_nn.py
+│  │  ├── fully_connected.py
+│  │  ├── reshape.py
+│  │  ├── residual_split.py
+│  │  └── savable_net.py
+│  ├── estimator
+│  │  ├── estim_history.py
+│  │  ├── plot_estim_history.py
+│  │  └── relplot_history.py
+│  │  ├── distplot_hyper_param.py
+│  │  ├── estim_hyper_param.py
+│  │  ├── plot_estim_hyper_param.py
+│  │  └── relplot_hyper_param.py
+│  ├── metric.py
+│  ├── training_stopper
+│  │  ├── early_stopper.py
+│  │  ├── early_stopper_training.py
+│  │  ├── early_stopper_validation.py
+│  │  └── early_stopper_vanilla.py
+│  ├── fast_tensor_dataloader.py
+│  ├── optim_wrapper.py
+│  └── windowcreator.py
+│  ├── plot
+│  │  └── nn_plots.py
+│  ├── train
+│  │  ├── fit.py
+│  │  ├── kfold_training.py
+│  │  ├── nntrainparameters.py
+│  │  └── train.py
+│  ├── data_processing_fct.py
+│  ├── methods_train.py
+│  └── util_train.py
 │
 ├── priv_lib_metaclass 
 │  ├── deco_register.py
-│  └── Register.py
+│  └── register.py
 │
 ├── priv_lib_plot 
-│  ├── APlot.py
-│  ├── AColorsetDiscrete.py
-│  └── AColorsetContinuous.py
+│  ├── aplot.py
+│  ├── acolorsetdiscrete.py
+│  └── acolorsetcontinuous.py
 │
 └── priv_lib_util 
    ├── calculus

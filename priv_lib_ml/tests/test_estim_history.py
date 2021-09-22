@@ -2,12 +2,12 @@ from unittest import TestCase
 
 from priv_lib_util.tools.src.function_file import remove_files_from_dir
 
-from nn_classes.estimator.history.estim_history import Estim_history
+from priv_lib_ml.src.classes.estimator.history.estim_history import Estim_history
 import numpy as np
 import os
 
-from nn_classes.estimator.hyper_parameters.estim_hyper_param import Estim_hyper_param
-from nn_train.kfold_training import _translate_history_to_dataframe
+from priv_lib_ml.src.classes.estimator.hyper_parameters.estim_hyper_param import Estim_hyper_param
+from priv_lib_ml.src.train.kfold_training import _translate_history_to_dataframe
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 train_history = {
