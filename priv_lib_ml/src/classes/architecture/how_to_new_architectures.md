@@ -37,16 +37,23 @@ def factory_parametrised_NN(parameter, param_predict_fct):
 For all neural networks architecture, we use a construction in two pieces. First the actual class, then the class factory. 
 We use class factory because since the basic of k-fold is creating different neural networks that are trained on different data.
 
-It also allows to have the class at hand when one wants to use hyper-parameters estimator.
+## Use of `Savable_net`:
+### 1. Saving a net
 
-# Training:
-
-One can use the helper `NNTrainParameters` that stores all the important hyper-parameters for training.
-
-Then, the usual method to use is:
+A good practice is to save the net with a `.pth` extension, as recommended:
+(cf. https://pytorch.org/tutorials/recipes/recipes/saving_and_loading_models_for_inference.html).
 
 ```python
-nn_kfold_train(data_training_X, data_training_Y, model_NN, parameters_training,
-                early_stopper_validation=Early_stopper_vanilla(), early_stopper_training=Early_stopper_vanilla(), nb_split=5,
-                shuffle_kfold=True, percent_validation_for_1_fold=20, compute_accuracy=False, silent=False)
+net.save_net(path)
+```
+
+### 2. Loading a net
+In order to do this we need to create a net of the right architecture. Using a different architecture from
+the one used to save the net to file will throw an error.
+
+The initialised object will be a net with untrained parameters. From here we can use the `load_net` function
+to populate the net with the previously trained parameters.
+
+```python
+net.load_net(path)
 ```

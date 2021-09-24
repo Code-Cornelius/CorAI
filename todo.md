@@ -43,3 +43,28 @@
   - put the test at the bottom into a right test.
   - when dict of parameters given, mention if some are unused.
 
+# More todos
+- Tutorial training
+  - explain why one should not use the model directly to predict and what they should use instead, 
+    go through each function and explain what they add
+  - add plotting explanation: regression_sin
+  
+- Estim_history
+  - md, how to use it outside of normal pipeline
+  
+- Estim_hyper_param
+  - md, how to use it outside of normal pipeline
+  
+- Hyper param tutorial
+  - explain what params is (in the begining)
+  - explain what hp_estim is
+    - what do the col and line represent
+    - what is should contain (look at step 2)
+    - what one can do with it
+  - add plotting explanation: example_hyper_param  
+
+- General
+  - link other tutorials on each tutorial (ex. tutorial for estimators and plotters linked in training)
+  
+- Add md for packaging 
+- Add md with list of all tutorials

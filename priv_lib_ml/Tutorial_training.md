@@ -1,19 +1,22 @@
-The tutorial follows closely the `example_hyper_param.py` file.
-
 # Training example
+The tutorial follows closely the `example_hyper_param.py` file.
 ### 0. Setup
 
-Good practices are to
+Good practices:
 
 - get the device used for training
 
 ```python
 device = pytorch_device_setting('cpu')
 ```
-# TODO
-- when predicting values using the functions... that are wrapped up with the decorator...
 
 - set the seed
+```python
+from priv_lib_ml.src.util_training import set_seeds
+set_seeds(seed)
+```
+# TODO
+- when predicting values using the functions... that are wrapped up with the decorator...
 - other good practices?
 
 ### 1. Define the training parameters
@@ -136,6 +139,7 @@ net, _ = train_kfold_a_fold_after_split(train_X,
                                         early_stoppers)
 ```
 
-### Use the results
-// TODO: link tutorial for plotting from estim history
-// the hyperparam
+### Next setps:
+- The `net` can be saved to file for later use. For more details check:
+  *priv_lib_ml/src/classes/architecture/how_to_new_architectures.md*
+- The results can be used for plotting: <link file for plotting>

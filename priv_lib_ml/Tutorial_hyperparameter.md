@@ -1,5 +1,5 @@
 # Hyper-parameters example
-
+The tutorial follows closely the `example_hyper_param.py` file.
 ### 0. Setup (Grid search)
 The library offers an easy way to produce all the combinations of the parameters tweaked: a grid search regarding a list of parameters.
  - Define the options for each parameter as a dictionary of lists:
@@ -12,7 +12,6 @@ params_options = {
 }
 ```
 
-
 - Use the `parameter_product` function to produce all the possible combinations in the format of a list:
 
 
@@ -21,6 +20,9 @@ hyper_params = parameter_product(params_options)
 for params in hyper_params:
     pass # code
 ```
+
+- `params` is a dictionary containing the parameters that will change during different trainings and
+  which will be compared for performance at the end. 
 
 ### 1. During Training
 
@@ -123,4 +125,7 @@ estim_hyper_param.slice(column, condition, save=True)
 ```
 
 
-### Explain how to plot
+### Next steps:
+- The `net` can be saved to file for later use. For more details check: *priv_lib_ml/src/classes/architecture/how_to_new_architectures.md*
+  
+- For more details on estimators check: *priv_lib_estimator/how_to_use_estimators_and_plotters.MD*
