@@ -15,9 +15,27 @@ device = pytorch_device_setting('cpu')
 from priv_lib_ml.src.util_training import set_seeds
 set_seeds(seed)
 ```
-# TODO
-- when predicting values using the functions... that are wrapped up with the decorator...
-- other good practices?
+
+- use the `decorator_train_disable_no_grad` decorator for prediction function helpers.
+```python
+@decorator_train_disable_no_grad
+def predict(data):
+    pass
+```
+The decorator will disable the gradient computation. Since we don't want to perform backpropagation
+at this step, disabling the gradient computation will reduce memory consumption.
+On top of that, the decorator puts the net in test mode (`train(mode=False)`), which will disable
+the dropout and normalization. This is desired since we don't want to affect the performance of the 
+trained net during testing.
+
+- instead of using the model directly for predicting, use the dedicated `nn_predict` function:
+```python
+prediction = net.nn_predict(data_to_predict)
+```
+The `nn_predict` function is wrapped by the `decorator_train_disable_no_grad`. Internally, `nn_predict` 
+calls the `prediction` function, in turn calling `self.predict_ftc`, which is passed to the `net` at instantiation.
+ 
+
 
 ### 1. Define the training parameters
 

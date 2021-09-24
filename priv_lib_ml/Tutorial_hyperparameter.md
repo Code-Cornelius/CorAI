@@ -71,6 +71,11 @@ This allows to know which model corresponds to what parameters.
 
 ### 2. Creating an `Estim_hyper_param`
 
+An `estim_hyper_param` is an estimator used to store information related to different training configurations
+and their performance. The columns of the estimator are the names of the parameters we want to follow, 
+the metrics we choose for comparison and, optionally, the training time. Each line of the estimator 
+will represent a configuration.
+
 The library offers three ways of creating an `Estim_hyper_param`:
 
 #### 2.a From list
