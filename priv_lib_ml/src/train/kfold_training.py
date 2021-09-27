@@ -63,7 +63,7 @@ def initialise_estimator(compute_validation, param_train, train_param_dict={}):
         train_param_dict (dict): The hyper-parameters to be saved.
 
     Returns:
-        An Estim_history
+        Estim_history object.
     """
     metric_names = [metric.name for metric in param_train.metrics]
     # initialise the estimator history.
@@ -92,7 +92,7 @@ def _nn_multiplefold_train(data_train_X, data_train_Y,
         param_train (NNTrainParameters): The parameters used for training.
         indices (list of tuples): Each tuple contains the indices for training and for validation
         silent (bool): Verbose. Prints the nb of the best fold from 1 to K.
-        estimator_history (Estim_history): The estimator in which the results will be saved.
+        estimator_history (Estim_history): An estimator object which stores the history of a training.
         only_best_fold_history (bool): Flag to specify if only the history of the best fold should be saved.
 
     Returns:

@@ -1,0 +1,89 @@
+# Estim_history
+
+An estimator object which stores the history of a training. The history contains a column for the epoch 
+and columns for the metric values, which are chosen at creation. 
+
+The library integrates the estimator
+in the pipeline such that one only needs to initialise it and start the training. 
+
+### 1. Initialisation
+In order to initialise an `Estim_history` one will need three things:
+- a `list` of metric names, these will be used for the column names in the `dataframe` contained in the `estimator`,
+- a flag indicating whether validation will be used, if validation is present a second column
+will be added for each metric to store the result for validation,
+- a `dictionary` of hyper-parameters (optional), it is a dictionary containing the parameters that will change during
+  different trainings and which will be compared for performance at the end. 
+  #TODO: link hyper_param estim
+```python
+estimator_history =  Estim_hystory(metric_names, validation, hyper_params)
+```
+
+### 2. Handling data
+
+#### 2.1. Adding data
+Once the estimator is initialised we can add data using the append method. The general append method for estimators
+was overriden to accept information about a complete training or a fold in the case of a kfold training.
+The following parameters will be necessary:
+- the history, this is a `dictionary` of the collected data. One of the entries should have the name `epoch` 
+and it should be an array containing the epoch number. The rest of the entries in the dictionary should have
+  each of the column names as keys, and the results stored in arrays of values. All the arrays should have
+  the same lenght, equal to the maximum number of epochs.
+  
+- the best epoch of the fold, this is an `int` representing the epoch number with the best performance.
+- the `fold_time`, this is an `int` representing the training time in seconds.
+- optionally, one can pass the `split` argument. This is also an `int` and it dictates which rows to drop.
+  For example, if split is 5 then the rows 0...5...10...15... whill be removed.
+  
+```python
+estimator_history.append(history, fold_best_epoch, fold_time, split)
+```
+
+#### 2.2. Retrieving data
+The library offers multiple methods of retrieving data from the `estim_history`.
+
+- Retrieve the values of a column. The function will return a numpy array.
+```python
+values = estimator_history.get_values_col(column)
+```
+
+- Retrieve the values of a fold from a column. Same as above for one fold.
+```python
+values = estimator_history.get_values_fold_col(fold, column)
+```
+
+- Retrieve a specific value. Same as above for one fold, at one epoch.
+```python
+values = estimator_history.get_values_fold_epoch_col(fold, epoch, column)
+```
+
+### 3. Saving and loading
+There are two possible ways of storing an estimator to file: `csv` and `json`. The main difference between the two
+is that the `csv` will only store the values from the dataframe while the `json` will also store metadata.
+
+#### 3.1. Saving
+
+- Saving to `csv`. This method only requires the path where the file will be stored.
+```python
+estimator_history.to_csv(path)
+```
+
+- Saving to `json`. Additional to the path, this method takes a flat idication whether or not compression should
+be applied. It is important to always use the same flag for storing and loading an estimator.
+```python
+estimator_history.to_json(self, path, compress)
+```
+
+#### 3.2. Loading
+- Loading from `csv`. Similarly to saving, loading from `csv` only requires the path.
+```python
+Estim_history.from_csv(path)
+```
+
+- Loading from `json`. Similarly to saving, loading from `json` requires the path and the compression flag.
+```python
+Estim_history.from_csv(path, compressed)
+```
+
+
+### 4. Plotting
+

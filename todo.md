@@ -51,12 +51,13 @@
   
 - Estim_history
   - [ ] md, how to use it outside of normal pipeline
+  - [ ] in append change split to period_kept_data, reverse the behaviour. Explain behaviour in comment and tutorial
   
 - Estim_hyper_param
   - [ ] md, how to use it outside of normal pipeline
   
 - Hyper param tutorial
-  - [x] explain what params is (in the begining)
+  - [ ] give example of the shape of the params
   - explain what hp_estim is
     - [x] what do the col and line represent
     - [x] what is should contain (look at step 2)
@@ -68,3 +69,4 @@
   
 - [ ] Add md for packaging 
 - [ ] Add md with list of all tutorials
+
