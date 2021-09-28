@@ -34,8 +34,18 @@ def factory_parametrised_NN(parameter, param_predict_fct):
 
     return Parametrised_NN
 ```
-For all neural networks architecture, we use a construction in two pieces. First the actual class, then the class factory. 
-We use class factory because since the basic of k-fold is creating different neural networks that are trained on different data.
+
+For all neural networks architecture, we use a construction in two pieces. 
+
+1. The actual class,
+2. The class factory. 
+
+This two-way to declare classes has the advantage to be able to carry 
+around classes-object instead of classes instance object. 
+This is convenient because while doing k-fold, we need `k` different models. 
+Each is trained over different data. 
+
+
 
 ## Use of `Savable_net`:
 ### 1. Saving a net

@@ -1,6 +1,5 @@
 # Ideas for continuing the project:
 
-# Todos:
 
 * **Estimator**
     * for hawkes estim, not mandatory to have true values. in init, in the estim plotters.
@@ -43,30 +42,25 @@
   - put the test at the bottom into a right test.
   - when dict of parameters given, mention if some are unused.
 
-# More todos
-- Tutorial training
-  - [x] explain why one should not use the model directly to predict and what they should use instead, 
-    go through each function and explain what they add 
-  - [ ] add plotting explanation: regression_sin
-  
+* **Estimators ML**.
+  - [ ] Tutorial training add plotting explanation: regression_sin
+
 - Estim_history
-  - [ ] md, how to use it outside of normal pipeline
-  - [ ] in append change split to period_kept_data, reverse the behaviour. Explain behaviour in comment and tutorial
-  
-- Estim_hyper_param
-  - [ ] md, how to use it outside of normal pipeline
-  
+  - [ ] in append change split to `period_kept_data`, reverse the behaviour. 
+  Explain behaviour in comment and tutorial.
+  - [ ] Estim_hyper_param md, how to use it outside of normal pipeline
+
 - Hyper param tutorial
   - [ ] give example of the shape of the params
-  - explain what hp_estim is
+  - explain what hyperparam_estim is
     - [x] what do the col and line represent
     - [x] what is should contain (look at step 2)
     - [ ] what one can do with it
-  - [ ] add plotting explanation: example_hyper_param  
+  - [ ] add plotting explanation: `example_hyper_param`
 
-- General
-  - [ ] link other tutorials on each tutorial (ex. tutorial for estimators and plotters linked in training)
+  - [ ] link other tutorials on each tutorial (ex. tutorial for estimators and plotters linked in training).
   
-- [ ] Add md for packaging 
-- [ ] Add md with list of all tutorials
+* **General**
+- [ ] Add md for packaging .
+- [ ] Add md with list of all tutorials.
 

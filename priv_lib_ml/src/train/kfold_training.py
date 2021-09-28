@@ -154,7 +154,7 @@ def train_kfold_a_fold_after_split(data_train_X, data_train_Y, index_training, i
         silent (bool): Verbose.
 
     Returns:
-        best_net, value_metric_for_best_net, number_kfold_best_net
+        best_net, value_metric_for_best_net
 
     Post-conditions:
         estimator_history is updated to contain the training and the parameter best_fold updated.
@@ -196,7 +196,7 @@ def _new_best_model(best_net, i, net, value_metric_for_best_NN, estimator_histor
         silent (bool): Verbose.
 
     Returns:
-        best_net, value_metric_for_best_NN, number_kfold_best_net
+        best_net, value_metric_for_best_NN
     """
     rookie_perf = -estimator_history.get_values_fold_epoch_col(i, estimator_history.list_best_epoch[i], "loss_training")
 
