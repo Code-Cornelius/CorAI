@@ -78,15 +78,16 @@ def factory_fct_linked_path(ROOT_DIR, path_to_folder):
     # example:
     #   path_save_history = linked_path(['plots', f"best_score_{nb}"])
     # and ROOT_DIR should be imported from a script at the root where it is written:
-        # import os
-        # ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    # import os
+    # ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
     PATH_TO_ROOT = os.path.join(ROOT_DIR, path_to_folder)
+
     def linked_path(path):
         # a list of folders like: ['C','users','name'...]
-
-        # in order to write a path, and then use the path to append a file name, use it like this:
-        # path_to_directory = linker_path_to_result_file(["path", ''])
-
+        # when adding a '' at the end like
+        #       path_to_directory = linker_path_to_result_file([path, ''])
+        # one adds a \ at the end of the path. This is necessary in order to continue writing the path.
         return os.path.join(PATH_TO_ROOT, *path)
+
     return linked_path
 
