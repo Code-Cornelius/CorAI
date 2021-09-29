@@ -152,14 +152,15 @@ class Estim_history(Estimator):
 
         return df_column_names
 
-    def append(self, history, fold_best_epoch, fold_time, split=None, *args, **kwargs):
+    def append(self, history, fold_best_epoch, fold_time, period_kept_data=None, *args, **kwargs):
         """
             Append information from history to the estimator
         Args:
             history (dict): history of the training, a certain shape that is agreed upon in the training,
             fold_best_epoch (int): best epoch for a model,
             fold_time (int): the time it took to train one fold, seconds.
-            split(int): Remove every skip index. If None dataframe is not affected. best_epoch will not be removed.
+            period_kept_data(int): Keep only elements on indices that are multiple of period_kept_data.
+                If None dataframe is not affected. best_epoch will not be removed.
         Returns:
             Void
         """
@@ -168,12 +169,13 @@ class Estim_history(Estimator):
         history = pd.DataFrame(history)
 
         # Remove every split index from dataframe before appending
-        if split:
+        if period_kept_data:
             # save best row
             row = history.loc[fold_best_epoch]
             n = history.loc[:, 'epoch'].max() + 1
 
-            index_to_remove = [i for i in range(0, n, split)]
+            index_to_remove = [j for i in range(0, n, period_kept_data) for j in range(i+1, min(i+period_kept_data, n))]
+
             index_to_remove.append(fold_best_epoch)
 
             history = history.drop(index_to_remove)

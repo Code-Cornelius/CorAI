@@ -35,11 +35,11 @@ parameters will be necessary:
 
 - the best epoch of the fold. It is an `int` representing the epoch number with the best performance.
 - the `fold_time`, this is an `int` representing the training time in seconds.
-- optionally, one can pass the `split` argument. This is also an `int` and it dictates which rows to drop. For example,
-  if split is 5 then the rows 0...5...10...15... whill be removed.
+- optionally, one can pass the `period_kept_data` argument. This is also an `int` and it dictates which rows to keep.
+    For example, if period_kept_data is 5 then only the rows 0...5...10...15... will be kept.
 
 ```python
-estimator_history.append(history, fold_best_epoch, fold_time, split)
+estimator_history.append(history, fold_best_epoch, fold_time, period_kept_data)
 ```
 
 #### 2.2. Retrieving data

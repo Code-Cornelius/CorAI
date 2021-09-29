@@ -46,7 +46,7 @@
   - [ ] Tutorial training add plotting explanation: regression_sin
 
 - Estim_history
-  - [ ] in append change split to `period_kept_data`, reverse the behaviour. 
+  - [x] in append change split to `period_kept_data`, reverse the behaviour. 
   Explain behaviour in comment and tutorial.
   - [x] Estim_hyper_param md, how to use it outside of normal pipeline
  
