@@ -12,7 +12,7 @@ class Relplot_history(Plot_estim_history, Relplot_estimator):
     EVOLUTION_COLUMN = 'epoch'
 
     def __init__(self, estimator, *args, **kwargs):
-        super().__init__(estimator=estimator, *args, **kwargs)
+        super().__init__(estimator_hist=estimator, *args, **kwargs)
         return
 
     def get_data2evolution(self, data, feature_to_draw):

@@ -48,8 +48,8 @@
 - Estim_history
   - [ ] in append change split to `period_kept_data`, reverse the behaviour. 
   Explain behaviour in comment and tutorial.
-  - [ ] Estim_hyper_param md, how to use it outside of normal pipeline
-
+  - [x] Estim_hyper_param md, how to use it outside of normal pipeline
+ 
 - Hyper param tutorial
   - [ ] give example of the shape of the params
   - explain what hyperparam_estim is
