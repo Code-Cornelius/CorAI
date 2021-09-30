@@ -2,6 +2,7 @@
 from abc import abstractmethod
 
 import seaborn as sns
+
 from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
 from priv_lib_plot import APlot
 # priv_libraries
@@ -181,7 +182,7 @@ class Relplot_estimator(Plot_estimator):
                  palette='PuOr',
                  hue=None, style=None, markers=None, sizes=None,
                  dict_plot_for_main_line={}, path_save_plot=None, list_aplots=None,
-                 second_column_to_draw_abscissa = None,
+                 second_column_to_draw_abscissa=None,
                  *args, **kwargs):
         """
         Semantics:
@@ -214,16 +215,19 @@ class Relplot_estimator(Plot_estimator):
         Returns:
 
         Dependency:
-            todo write the dependency
+            draw from Plot_estimator
+            sns.lineplot
+            Aplot
 
         """
-        x_axis = second_column_to_draw_abscissa if (second_column_to_draw_abscissa is not None) else self.EVOLUTION_COLUMN
+        x_axis = second_column_to_draw_abscissa if (
+                    second_column_to_draw_abscissa is not None) else self.EVOLUTION_COLUMN
         # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
 
         current_plots = list_aplots if list_aplots is not None else []  # fetch the aplots of create an empty list
-        current_keys = [] # we return current_keys which is the list version of keys, in the iteration order.
+        current_keys = []  # we return current_keys which is the list version of keys, in the iteration order.
         for i, key in enumerate(keys):
             if key is None:  # case where we cannot use groupby.
                 data = global_dict
@@ -248,19 +252,18 @@ class Relplot_estimator(Plot_estimator):
                          hue=hue, style=style, sizes=sizes, markers=markers,
                          legend='full', ci=95, err_style="band",
                          palette=palette,
-                         data=data, ax=ax,  **dict_plot_for_main_line)
-
+                         data=data, ax=ax, **dict_plot_for_main_line)
             if envelope_flag:
                 for fct in ['min', 'max']:
                     sns.lineplot(x=x_axis, y=column_name_draw,
-                                 estimator=fct, hue=hue,
+                                 estimator=fct, # hue=hue,
                                  legend=False, err_style="band", ci=None,
                                  # no Conf. Inter. for max value (does not make actually sense with bootstrapping)
                                  palette=palette, data=data, ax=ax,
                                  color='r', linestyle='--', linewidth=0.5, label=fct)
             if column_name_true_values is not None:
                 sns.lineplot(x=x_axis, y=column_name_true_values,
-                             hue=hue, legend=False, err_style="band", ci=None,
+                             legend=False, err_style="band", ci=None, # hue = hue,
                              palette=palette, data=data, ax=ax,
                              color='r', linestyle='--', linewidth=0.5, label='true value')
 
@@ -274,8 +277,8 @@ class Relplot_estimator(Plot_estimator):
     def scatter(self, column_name_draw, column_name_true_values=None, separators_plot=None,
                 palette='PuOr',
                 hue=None, style=None, markers=None, sizes=None,
-                dict_plot_for_main_line={}, hue_norm = None, legend='full',
-                second_column_to_draw_abscissa = None,
+                dict_plot_for_main_line={}, hue_norm=None, legend='full',
+                second_column_to_draw_abscissa=None,
                 path_save_plot=None,
                 *args, **kwargs):
         # TODO 27/06/2021 nie_k:  add the ax parameter as it is in line plot.
@@ -327,7 +330,7 @@ class Relplot_estimator(Plot_estimator):
 
             sns.scatterplot(x=x_axis, y=column_name_draw,
                             hue=hue, style=style, sizes=sizes, markers=markers,
-                            legend=legend, palette=palette, hue_norm = hue_norm,
+                            legend=legend, palette=palette, hue_norm=hue_norm,
                             data=data, ax=plot._axs[0], **dict_plot_for_main_line)
 
             if column_name_true_values is not None:

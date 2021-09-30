@@ -30,7 +30,9 @@ bright_mix_colors = ['inferno', 'magma', 'CMRmap', 'afmhot', 'plasma', 'gnuplot'
 discrete_colors = ['Dark2', 'Paired', 'Set1', 'Set2', 'Set3']
 other_colors = ['coolwarm', 'icefire', 'seismic', 'viridis', 'ocean', 'brg']
 
-COLOR = mixed_colors
+################################################ Pick set of colors to plot here
+COLOR = discrete_colors
+################################################
 
 nb_elmts = 60
 x = y = np.linspace(0, 1, nb_elmts)

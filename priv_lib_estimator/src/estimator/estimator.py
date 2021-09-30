@@ -2,6 +2,7 @@ import json
 import os
 
 import pandas as pd
+
 from priv_lib_error import Error_type_setter
 from priv_lib_util.tools.src.function_json import zip_json, unzip_json
 
@@ -111,7 +112,7 @@ class Estimator(object):
             attrs = df_info['attrs']  # retrieve the attributes (metadata)
             del df_info['attrs']  # deletes them from the loaded json
 
-        with open(path, 'w') as file:  # writtes inside the file
+        with open(path, 'w') as file:  # writes inside the file
             json.dump(df_info, file)  # converts python object into json.
         return attrs
 
@@ -133,7 +134,8 @@ class Estimator(object):
 
         # collect all the estimators from the folder
         for file in os.listdir(path):
-            estimator = cls.from_json(path=os.path.join(path, file), compressed = compress, **kwargs) # added the parameter compressed. What happens in the case when the parameter compressed is not expected.
+            estimator = cls.from_json(path=os.path.join(path, file), compressed=compress, **kwargs)
+            # added the parameter compressed. What happens in the case when the parameter compressed is not expected.
             estimators.append(estimator)
 
         return estimators
@@ -172,7 +174,7 @@ class Estimator(object):
         Returns:
             An estimator containing the combined dataframes from the list of estimators.
         """
-        dataframes = [estimator.df for estimator in list_estim] # optimised in order to create a single df.
+        dataframes = [estimator.df for estimator in list_estim]  # optimised in order to create a single df.
 
         concat_df = pd.concat(dataframes, ignore_index=True)
         return cls(concat_df)
@@ -185,14 +187,16 @@ class Estimator(object):
         """
         Semantics:
             adaptor for the method append from DF at the estimator level.
+            We make it an in place operation.
 
         Args:
             appending_df: the df to append to the self object.
 
         Returns:
+            self.
             quoting: "Pandas dataframe.append() function
             is used to append rows of other dataframe to the end of the given dataframe,
-            returning a new dataframe object. I.E. NOT IN PLACE.
+            returning a new dataframe object. (I.E. NOT IN PLACE)
             Columns not in the original dataframes are added as new columns
             and the new cells are populated with NaN value."
 
@@ -200,6 +204,7 @@ class Estimator(object):
         """
         self.df = self.df.append(appending_df, *args, **kwargs)
         self.df.reset_index(drop=True, inplace=True)  # Ensure uniqueness of the indices
+        return self
 
     def apply_function_upon_data(self, separators, fct, **kwargs):
         # TODO verify it does what one wants.
@@ -441,7 +446,6 @@ class Estimator(object):
 
     def contains(self, column):
         return column in self.df.columns
-
 
     def slice(self, column, condition, save=False):
         """

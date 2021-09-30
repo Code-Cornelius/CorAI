@@ -1,11 +1,9 @@
-import numpy as np
 import pandas as pd
-import os
 
 from priv_lib_error import Error_type_setter
 from priv_lib_estimator import Estimator
-
 from priv_lib_ml.src.plot.nn_plots import nn_errors_compute_mean
+
 
 class Estim_history(Estimator):
     NAMES_COLUMNS = {'fold', 'epoch'}
@@ -18,8 +16,8 @@ class Estim_history(Estimator):
         # metric names contain all ["L1","L4"...] but not the loss used for back prop.
         self.metric_names = metric_names
         self.validation = validation
-        self.list_best_epoch = [] # list each entry corresponds to a fold
-        self.list_train_times = [] # list of times it takes to train each fold
+        self.list_best_epoch = []  # list each entry corresponds to a fold
+        self.list_train_times = []  # list of times it takes to train each fold
         self.hyper_params = hyper_params
         self.best_fold = -1  # negative strictly number means no best_fold found yet. Will be set in
         # train_kfold_a_fold_after_split
@@ -164,8 +162,8 @@ class Estim_history(Estimator):
         Returns:
             Void
         """
-        self.list_best_epoch.append(fold_best_epoch) # append to the best_epochs, the current folds' best epoch.
-        self.list_train_times.append(fold_time) # append the time to run current epoch
+        self.list_best_epoch.append(fold_best_epoch)  # append to the best_epochs, the current folds' best epoch.
+        self.list_train_times.append(fold_time)  # append the time to run current epoch
         history = pd.DataFrame(history)
 
         # Remove every split index from dataframe before appending
@@ -174,7 +172,8 @@ class Estim_history(Estimator):
             row = history.loc[fold_best_epoch]
             n = history.loc[:, 'epoch'].max() + 1
 
-            index_to_remove = [j for i in range(0, n, period_kept_data) for j in range(i+1, min(i+period_kept_data, n))]
+            index_to_remove = [j for i in range(0, n, period_kept_data) for j in
+                               range(i + 1, min(i + period_kept_data, n))]
 
             index_to_remove.append(fold_best_epoch)
 
@@ -183,7 +182,6 @@ class Estim_history(Estimator):
 
         super().append(history, *args, **kwargs)
         return
-
 
     def _index_mask(self, fold, epoch):
         return (self.df.loc[:, 'fold'] == fold) & (self.df.loc[:, 'epoch'] == epoch)
@@ -276,4 +274,3 @@ class Estim_history(Estimator):
             print("Relative Mean Testing L2 Error: {:e}%.".format(self.test_mean_loss_L2 * 100))
             print("Relative Mean Testing Linf Error: {:e}%.".format(self.test_mean_loss_Linf * 100))
         return
-
