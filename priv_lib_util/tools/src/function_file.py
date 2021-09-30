@@ -29,4 +29,4 @@ def is_empty_file(path):
         True if the file is empty.
         False otherwise.
     """
-    return os.path.getsize(path) > 0
+    return os.path.getsize(path) == 0
