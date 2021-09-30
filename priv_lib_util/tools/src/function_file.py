@@ -21,12 +21,18 @@ def remove_files_from_dir(folder_path, file_start, file_extension):
 def is_empty_file(path):
     """
     Semantics:
-        Check whether the file is empty.
+        Check whether the file is empty. Checks the size of it and of its subdirectory.
+        Raise OSError if the file does not exist or is inaccessible.
     Args:
         path(str): The path to the file.
 
     Returns:
         True if the file is empty.
         False otherwise.
+
+    References:
+        https://stackoverflow.com/questions/1392413/calculating-a-directorys-size-using-python
     """
-    return os.path.getsize(path) == 0
+    # Using os.path.getsize() will only get you the size of the directory, NOT of its content.
+    size = sum(os.path.getsize(f) for f in os.listdir('.') if os.path.isfile(f))
+    return size == 0
