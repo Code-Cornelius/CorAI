@@ -150,7 +150,7 @@ if __name__ == '__main__':
         histplot_hyperparam.hist(column_name_draw='train_time', separators_plot=None, hue='dropout',
                                  palette='RdYlBu', bins=50,
                                  binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
-        histplot_hyperparam.hist(column_name_draw='loss_validation', separators_plot=None, hue='seed',
+        histplot_hyperparam.hist(column_name_draw='loss_validation', separators_plot=None, hue='lr',
                                  palette='RdYlBu', bins=20,
                                  binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
         scatplot_hyperparam = Relplot_hyper_param(estimator=estim_hyper_param)
@@ -158,14 +158,14 @@ if __name__ == '__main__':
                                     hue='train_time', hue_norm=(0, 30), legend=False)
 
 
-        condition = lambda t: t > 2
+        condition = lambda t: t <= 2
         estim_hyper_param.slice(column='train_time', condition=condition, save=True)
         histplot_hyperparam = Distplot_hyper_param(estimator=estim_hyper_param)
         histplot_hyperparam.hist(column_name_draw='train_time', separators_plot=None, hue='dropout',
                                  palette='RdYlBu', bins=50,
                                  binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
 
-        histplot_hyperparam.hist(column_name_draw='loss_validation', separators_plot=None, hue='seed',
+        histplot_hyperparam.hist(column_name_draw='loss_validation', separators_plot=None, hue='lr',
                                  palette='RdYlBu', bins=20,
                                  binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
 
