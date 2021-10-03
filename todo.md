@@ -62,5 +62,5 @@
   
 * **General**
 - [ ] Add md for packaging .
-- [ ] Add md with list of all tutorials.
+- [x] Add md with list of all tutorials.
 
