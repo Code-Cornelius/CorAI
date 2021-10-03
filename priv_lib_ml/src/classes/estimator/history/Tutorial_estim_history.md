@@ -13,8 +13,9 @@ In order to initialise an `Estim_history` one will need three things:
 - a flag indicating whether validation will be used, if validation is present a second column will be added for each
   metric to store the result for validation,
 - a `dictionary` of hyper-parameters (optional), it is a dictionary containing the parameters that will change during
-  different trainings and which will be compared for performance at the end.
-  # TODO: link hyper_param estim
+  different trainings and which will be compared for performance at the end. For more details on hyper parameters check
+  out:
+  `priv_lib_ml/src/classes/estimator/hyper_parameters/Tutorial_estim_hyperparameter.md`
 
 ```python
 estimator_history = Estim_hystory(metric_names, validation, hyper_params)

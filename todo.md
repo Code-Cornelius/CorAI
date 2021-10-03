@@ -43,7 +43,7 @@
   - when dict of parameters given, mention if some are unused.
 
 * **Estimators ML**.
-  - [ ] Tutorial training add plotting explanation: regression_sin
+  - [x] Tutorial training add plotting explanation: regression_sin
 
 - Estim_history
   - [x] in append change split to `period_kept_data`, reverse the behaviour. 
@@ -51,14 +51,14 @@
   - [x] Estim_hyper_param md, how to use it outside of normal pipeline
  
 - Hyper param tutorial
-  - [ ] give example of the shape of the params
+  - [x] give example of the shape of the params
   - explain what hyperparam_estim is
     - [x] what do the col and line represent
     - [x] what is should contain (look at step 2)
-    - [ ] what one can do with it
-  - [ ] add plotting explanation: `example_hyper_param`
+    - [x] what one can do with it
+  - [x] add plotting explanation: `example_hyper_param`
 
-  - [ ] link other tutorials on each tutorial (ex. tutorial for estimators and plotters linked in training).
+  - [x] link other tutorials on each tutorial (ex. tutorial for estimators and plotters linked in training).
   
 * **General**
 - [ ] Add md for packaging .
