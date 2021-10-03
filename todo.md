@@ -61,6 +61,6 @@
   - [x] link other tutorials on each tutorial (ex. tutorial for estimators and plotters linked in training).
   
 * **General**
-- [ ] Add md for packaging .
+- [x] Add md for packaging .
 - [x] Add md with list of all tutorials.
 
