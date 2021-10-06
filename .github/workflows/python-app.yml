@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r priv_lib_error/requirements.txt
+        pip install -r requirements.txt
     - name: Test
       run: |
         python -m unittest discover priv_lib_error
@@ -39,7 +39,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r priv_lib_estimator/requirements.txt
+        pip install -r requirements.txt
     - name: Test
       run: |
         python -m unittest discover priv_lib_estimator
@@ -57,7 +57,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r priv_lib_metaclass/requirements.txt
+        pip install -r requirements.txt
     - name: Test
       run: |
         python -m unittest discover priv_lib_metaclass
@@ -75,7 +75,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r priv_lib_util/requirements.txt
+        pip install -r requirements.txt
     - name: Test
       run: |
         sh ./scripts/util_tests
