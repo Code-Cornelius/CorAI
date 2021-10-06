@@ -8,10 +8,10 @@ There is still a lot to do on it.
 * *version 1.142* : Released in June 2021. 
 The library is better documented, and better structured.
 It is now separated in the corresponding libraries, and there are tests for most of the functions.
+* *version 1.222* : Release in October 2021.
+Incorporate new financial functions, as well as neural networks functions. Estimator reworked.
 * *version 1.600* : Expected release: Winter 2022.
-Incorporate new financial functions, 3D plots as well as neural networks functions. 
-Estimator reworked. 
-
+3D plots.
 
 
 ### General information
