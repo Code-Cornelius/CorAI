@@ -11,10 +11,10 @@ of parameters.
 
 ```python
 params_options = {
-    "lr": [0.0001, 0.001, 0.01, 0.1],
+    'lr': [0.0001, 0.001, 0.01, 0.1],
     'activation_function': ['tanh'],
-    "dropout": [0., 0.2, 0.5],
-    "list_hidden_sizes": [[2, 4, 2], [4, 8, 4]]
+    'dropout': [0., 0.2, 0.5],
+    'list_hidden_sizes': [[2, 4, 2], [4, 8, 4]]
 }
 ```
 
@@ -74,6 +74,18 @@ for id, params in enumerate(hyper_params):
 params['id'] = id
 ```
 
+After this step, the `params` should look like:
+
+```python
+params = {
+    'id': 0,
+    'lr': 0.0001,
+    'activation_function': 'tanh',
+    'dropout': 0.,
+    'list_hidden_sizes': [2, 4, 2]
+}
+```
+
 3. Using the id as part of the filename when saving the net.
 
 ```python
@@ -122,7 +134,7 @@ estim_hyper_param = Estim_hyper_param.from_json(path)
 
 ```
 
-### Slicing
+### *3.Slicing
 
 The resulting estimator can be sliced. That way, it is possible to visualise only part of the data with the plotters. In
 order to slice one needs to first define the slicing condition:
@@ -143,9 +155,82 @@ We can also update the estimator if we want the change to be inplace.
 estim_hyper_param.slice(column, condition, save=True)
 ```
 
-### Next steps:
+### 4. Plotting
+
+#### 4.1 Relplot
+
+Relplots are used for showing evolution of a feature with respect to another as a time-series.
+
+`Relplot_hyper_param` is initialised with the data used for plotting.
+
+```python
+relplot_hyperparam = Relplot_hyper_param(estimator=estim_hyper_param)
+```
+
+The scatter plot can be used for visualising the influence of one parameter over the results.
+
+For example, one can visualise the relation between `train_time` (or a hyper-parameter) and the loss for training and
+validation (or a different metric).
+
+```python
+relplot_hyperparam.scatter(column_name_draw='loss_training',
+                           second_column_to_draw_abscissa='loss_validation',
+                           hue='train_time',
+                           hue_norm=(0, 30),
+                           legend=False)
+```
+
+![alt text](Tutorial_estim_hyperparam_sin_scatter.png?raw=true "Title")
+
+*Image obtained by running priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py, whole dataset*
+
+#### 4.2 Distplot
+
+Distplots are used for ...
+
+`Distplot_hyper_param` is initialised with the data used for plotting.
+
+```python
+distplot_hyperparam = Distplot_hyper_param(estimator=estim_hyper_param)
+```
+
+```python
+distplot_hyperparam.hist(column_name_draw='loss_validation',
+                         separators_plot=None,
+                         hue='lr',
+                         palette='RdYlBu',
+                         bins=20,
+                         binrange=None,
+                         stat='count',
+                         multiple='dodge',
+                         kde=True,
+                         path_save_plot=None)
+```
+
+![alt text](Tutorial_estim_hyperparam_sin_hist_lr.png?raw=true "Title")
+
+*Image obtained by running priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py, whole dataset*
+
+```python
+distplot_hyperparam.hist(column_name_draw='train_time',
+                         separators_plot=None,
+                         hue='dropout',
+                         palette='RdYlBu',
+                         bins=50,
+                         binrange=None,
+                         stat='count',
+                         multiple='stack',
+                         kde=False,
+                         path_save_plot=None)
+```
+
+![alt text](Tutorial_estim_hyperparam_sin_hist_dropout_slice.png?raw=true "Title")
+
+*Image obtained by running priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py, dataset sliced with condition
+from 3.*
+
+### More info:
 
 - The `net` can be saved to file for later use. For more details
   check: `priv_lib_ml/src/classes/architecture/how_to_new_architectures.md`
-
 - For more details on estimators check: `priv_lib_estimator/how_to_use_estimators_and_plotters.md`.
