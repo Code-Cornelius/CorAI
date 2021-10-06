@@ -12,10 +12,6 @@
     * change name of super draw to something else
     * make readme tutorial about the whole pipeline training + selecting best model + prediction with the best model
       
-# List of tasks to tackle:
-
-* plot relplot hawkes mseerrors todo for unique MSE ( Niels will do) in draw.
-* organise the init such that imports are intuitive.
 
 
 * **APLOT**. The 3D plot have a different logic, due to the fact that axis is 3D axis. How to deal with it ? 3DAPlot?
@@ -41,26 +37,4 @@
   - verify that if I access a nb_ax, I also check that the number is correct!
   - put the test at the bottom into a right test.
   - when dict of parameters given, mention if some are unused.
-
-* **Estimators ML**.
-  - [x] Tutorial training add plotting explanation: regression_sin
-
-- Estim_history
-  - [x] in append change split to `period_kept_data`, reverse the behaviour. 
-  Explain behaviour in comment and tutorial.
-  - [x] Estim_hyper_param md, how to use it outside of normal pipeline
- 
-- Hyper param tutorial
-  - [x] give example of the shape of the params
-  - explain what hyperparam_estim is
-    - [x] what do the col and line represent
-    - [x] what is should contain (look at step 2)
-    - [x] what one can do with it
-  - [x] add plotting explanation: `example_hyper_param`
-
-  - [x] link other tutorials on each tutorial (ex. tutorial for estimators and plotters linked in training).
-  
-* **General**
-- [x] Add md for packaging .
-- [x] Add md with list of all tutorials.
 

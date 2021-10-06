@@ -134,7 +134,7 @@ estim_hyper_param = Estim_hyper_param.from_json(path)
 
 ```
 
-### *3.Slicing
+### 3.Slicing
 
 The resulting estimator can be sliced. That way, it is possible to visualise only part of the data with the plotters. In
 order to slice one needs to first define the slicing condition:
@@ -157,6 +157,8 @@ estim_hyper_param.slice(column, condition, save=True)
 
 ### 4. Plotting
 
+It is possible to observe the impact of hyper-parameters upon the final losses very easily. Either one can make a scatter-plot of the losses, or make the distribution of an attribute with respect to the hyper-parameter.
+
 #### 4.1 Relplot
 
 Relplots are used for showing evolution of a feature with respect to another as a time-series.
@@ -167,10 +169,10 @@ Relplots are used for showing evolution of a feature with respect to another as 
 relplot_hyperparam = Relplot_hyper_param(estimator=estim_hyper_param)
 ```
 
-The scatter plot can be used for visualising the influence of one parameter over the results.
+The scatter-plot can be used for visualising the influence of one parameter over the results.
 
-For example, one can visualise the relation between `train_time` (or a hyper-parameter) and the loss for training and
-validation (or a different metric).
+For example, one can plot two metrics with respect to each other. 
+It is also possible to change influence the way the points are plot with respect ot some other criteria: here the `train_time`.
 
 ```python
 relplot_hyperparam.scatter(column_name_draw='loss_training',
@@ -182,17 +184,18 @@ relplot_hyperparam.scatter(column_name_draw='loss_training',
 
 ![alt text](Tutorial_estim_hyperparam_sin_scatter.png?raw=true "Title")
 
-*Image obtained by running priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py, whole dataset*
+*Image obtained by running `priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py`, whole dataset*
 
 #### 4.2 Distplot
 
-Distplots are used for ...
+Distplots are used for observing the underlying distribution of the data.
 
 `Distplot_hyper_param` is initialised with the data used for plotting.
 
 ```python
 distplot_hyperparam = Distplot_hyper_param(estimator=estim_hyper_param)
 ```
+
 
 ```python
 distplot_hyperparam.hist(column_name_draw='loss_validation',

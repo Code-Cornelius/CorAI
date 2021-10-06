@@ -2,9 +2,7 @@
 
 The tutorial follows closely the `example_hyper_param.py` file.
 
-### 0. Setup
-
-Good practices:
+### 0. Good practices:
 
 - get the device used for training
 

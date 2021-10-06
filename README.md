@@ -8,8 +8,9 @@ There is still a lot to do on it.
 * *version 1.142* : Released in June 2021. 
 The library is better documented, and better structured.
 It is now separated in the corresponding libraries, and there are tests for most of the functions.
-* current work : incorporate new financial functions, 3D plots as well as neural networks functions. 
-Estimator reworked. This version is expected to be released by Winter 2022.
+* *version 1.600* : Expected release: Winter 2022.
+Incorporate new financial functions, 3D plots as well as neural networks functions. 
+Estimator reworked. 
 
 
 
@@ -318,8 +319,6 @@ For now, we only use metaclasses for `APlot`, where it allows a registration pat
 ## priv_lib_util
 
 
-
-||||||||||||||||||||||||||||||||||||||||||||
 We created two original objects. 
 
 * **APlot** : A class that simplifies drawing using the library matplotlib ; 

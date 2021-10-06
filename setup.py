@@ -6,8 +6,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name="python_libraries",
     version="0.0.1",
-    author="Niels Cariou-Kotlarek",
-    author_email="cateabianca@gmail.com",
+    author="Niels Cariou-Kotlarek, Bianca T. Catea",
+    author_email="niels.carioukotlarek@gmail.com, cateabianca@gmail.com",
     description="A collection of python libraries",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -26,5 +26,5 @@ setuptools.setup(
                  "priv_lib_plot": "priv_lib_plot",
                  "priv_lib_util": "priv_lib_util"},
     packages=setuptools.find_packages(),
-    python_requires=">=3.6",
+    python_requires=">=3.8",
 )

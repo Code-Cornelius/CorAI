@@ -1,0 +1,12 @@
+setuptools>=56.0.0
+matplotlib>=3.4.2
+numpy>=1.21.0
+pandas>=1.2.3
+seaborn>=0.11.1
+torch>=1.9.0+cu102
+sklearn>=0.0
+scikit-learn>=0.23.2
+tqdm>=4.61.1
+Keras>=2.4.3
+Pillow>=8.2.0
+scipy>=1.7.0
