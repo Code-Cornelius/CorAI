@@ -96,8 +96,7 @@ Project
 │  │  │  ├── fast_tensor_dataloader.py
 │  │  │  ├── optim_wrapper.py
 │  │  │  └── windowcreator.py
-│  │  ├── plot
-│  │  │  └── nn_plots.py
+│  │  ├── nn_plots.py
 │  │  ├── train
 │  │  │  ├── fit.py
 │  │  │  ├── kfold_training.py
@@ -167,47 +166,44 @@ Project
 │  └── deprecated_function.py
 │
 ├── priv_lib_estimator 
-│  ├── estimator.py
-│  ├── plot_estimator.py
-│  ├── distplot_estimator.py
-│  └── relplot_estimator.py
+│  ├── Estimator
+│  ├── Distplot_estimator
+│  ├── Plot_estimator
+│  └── Relplot_estimator
 │
 ├── priv_lib_ml
 │  ├── architecture
-│  │  ├── rnn
-│  │  │  ├── gru.py
-│  │  │  ├── lstm.py
-│  │  │  └── rnn.py
-│  │  ├── conv2dlstm.py
-│  │  ├── free_nn.py
-│  │  ├── fully_connected.py
-│  │  ├── reshape.py
-│  │  ├── residual_split.py
-│  │  └── savable_net.py
+│  │  ├── GRU
+│  │  ├── RNN, factory_parametrised_RNN
+│  │  ├── LSTM
+│  │  ├── Savable_net
+│  │  ├── Residual_split
+│  │  ├── Reshape
+│  │  ├── Fully_connected_NN, factory_parametrised_FC_NN
+│  │  ├── Free_NN, factory_parametrised_Free_NN
+│  │  └── Conv2dLSTMCell
 │  ├── estimator
-│  │  ├── estim_history.py
-│  │  ├── plot_estim_history.py
-│  │  └── relplot_history.py
-│  │  ├── distplot_hyper_param.py
-│  │  ├── estim_hyper_param.py
-│  │  ├── plot_estim_hyper_param.py
-│  │  └── relplot_hyper_param.py
-│  ├── metric.py
+│  │  ├── Estim_history
+│  │  ├── Plot_estim_history
+│  │  ├── Relplot_history
+│  │  ├── Relplot_hyper_param
+│  │  ├── Estim_hyper_param
+│  │  ├── Distplot_hyper_param
+│  │  └── Plot_estim_hyper_param
+│  ├── Metric
 │  ├── training_stopper
-│  │  ├── early_stopper.py
-│  │  ├── early_stopper_training.py
-│  │  ├── early_stopper_validation.py
-│  │  └── early_stopper_vanilla.py
-│  ├── fast_tensor_dataloader.py
-│  ├── optim_wrapper.py
-│  └── windowcreator.py
-│  ├── plot
-│  │  └── nn_plots.py
-│  ├── train
-│  │  ├── fit.py
-│  │  ├── kfold_training.py
-│  │  ├── nntrainparameters.py
-│  │  └── train.py
+│  │  ├── Early_stopper
+│  │  ├── Early_stopper_training
+│  │  ├── Early_stopper_validation
+│  │  └── Early_stopper_vanilla
+│  ├── FastTensorDataLoader
+│  ├── Optim_wrapper
+│  ├── Windowcreator
+│  ├── nn_fit
+│  ├── nn_kfold_train, initialise_estimator, train_kfold_a_fold_after_split
+│  ├── NNTrainParameters
+│  ├── nn_train
+│  ├── nn_plots.py
 │  ├── data_processing_fct.py
 │  ├── methods_train.py
 │  └── util_train.py
@@ -217,9 +213,9 @@ Project
 │  └── register.py
 │
 ├── priv_lib_plot 
-│  ├── aplot.py
-│  ├── acolorsetdiscrete.py
-│  └── acolorsetcontinuous.py
+│  ├── APlot
+│  ├── AColorsetContinuous
+│  └── AColorsetDiscrete
 │
 └── priv_lib_util 
    ├── calculus
@@ -250,6 +246,14 @@ Project
 
 
 For example, in order to import `benchmarking.py`, one should write:  `from priv_lib_util.tools import benchmarking`
+Another example, it is good practice importing the `priv_lib_ml` as `corai`. 
+
+It looks like:
+
+    import priv_lib_ml as corai
+    from priv_lib_ml import training_stopper
+    training_stopper.Early_stopper()
+    corai.Optim_wrapper()
 
 Also, the priv_lib are codependent in the following way:
 
@@ -313,6 +317,7 @@ For now, we only use metaclasses for `APlot`, where it allows a registration pat
 
 ## priv_lib_ML
 
+It should be imported as the alias: `corai`, as a reference to Cornelius AI.
 ## priv_lib_plot
 
 `colors_seaborn.py` gives a presentation of the different (personal) favorite palette of seaborn.

@@ -10,7 +10,7 @@ PLOT_WHILE_TRAIN = False
 FREQ_NEW_IMAGE = 40
 
 
-def plot_while_training(params_training, history, ax):
+def _plot_while_training(params_training, history, ax):
     ax.clear()
     ax.semilogy(range(params_training.epochs), history['training']['loss'], 'b', label='Train Loss')
     ax.semilogy(range(params_training.epochs), history['validation']['loss'], 'r', label='Validation Loss')
@@ -104,7 +104,7 @@ def nn_fit(net, X_train_on_device, Y_train_on_device,
 
         if PLOT_WHILE_TRAIN:
             if epoch % FREQ_NEW_IMAGE == 0:
-                plot_while_training(params_training, history, ax)
+                _plot_while_training(params_training, history, ax)
 
     # ~~~~~~~~ end of the for in epoch. Training
     return _return_the_stop(net, epoch, early_stoppers)

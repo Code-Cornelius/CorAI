@@ -1,6 +1,7 @@
 from .classes import *
-# import classes
-from .data_processing_fct import *
-from .methods_train import *
-from .util_training import *
-from .plot import *
+from .train import *
+
+from . import data_processing_fct
+from . import methods_train
+from . import util_training
+from . import nn_plots
