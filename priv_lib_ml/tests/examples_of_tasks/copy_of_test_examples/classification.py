@@ -8,7 +8,7 @@ from torch import nn
 
 from priv_lib_ml.src.classes.estimator.history.relplot_history import Relplot_history
 from priv_lib_ml.src.train.kfold_training import nn_kfold_train
-from priv_lib_ml.src.plot.nn_plots import confusion_matrix_creator
+from priv_lib_ml.src.nn_plots import confusion_matrix_creator
 from priv_lib_ml.src.classes.architecture.fully_connected import factory_parametrised_FC_NN
 from priv_lib_ml.src.classes.metric.metric import Metric
 from priv_lib_ml.src.classes.optim_wrapper import Optim_wrapper
