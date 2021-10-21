@@ -3,14 +3,13 @@ import math
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 import seaborn as sns
 import torch
 # my libraries
 from priv_lib_plot import APlot
 from sklearn import metrics
 
-from priv_lib_ml.src.util_training import decorator_on_cpu_during_fct
+from priv_lib_ml.src.util_train import decorator_on_cpu_during_fct
 
 sns.set()
 

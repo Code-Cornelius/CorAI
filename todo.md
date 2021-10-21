@@ -38,3 +38,4 @@
   - put the test at the bottom into a right test.
   - when dict of parameters given, mention if some are unused.
 
+Verify if it is L2 error or L2 squared.

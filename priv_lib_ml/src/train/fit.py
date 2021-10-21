@@ -4,7 +4,7 @@ from tqdm import tqdm
 
 from priv_lib_ml.src.classes.fast_tensor_dataloader import FastTensorDataLoader
 from priv_lib_ml.src.classes.training_stopper.early_stopper_vanilla import Early_stopper_vanilla
-from priv_lib_ml.src.util_training import decorator_train_disable_no_grad
+from priv_lib_ml.src.util_train import decorator_train_disable_no_grad
 
 PLOT_WHILE_TRAIN = False
 FREQ_NEW_IMAGE = 40

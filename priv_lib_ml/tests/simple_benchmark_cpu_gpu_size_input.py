@@ -12,7 +12,7 @@ from priv_lib_ml.src.train.kfold_training import nn_kfold_train
 from priv_lib_ml.src.classes.architecture.fully_connected import factory_parametrised_FC_NN
 from priv_lib_ml.src.classes.optim_wrapper import Optim_wrapper
 from priv_lib_ml.src.train.nntrainparameters import NNTrainParameters
-from priv_lib_ml.src.util_training import set_seeds, pytorch_device_setting
+from priv_lib_ml.src.util_train import set_seeds, pytorch_device_setting
 
 # set seed for pytorch.
 set_seeds(42)

@@ -4,24 +4,28 @@ The tutorial follows closely the `example_hyper_param.py` file.
 
 ### 0. Good practices:
 
-- get the device used for training
+- import the libraries as `corai`:
 
 ```python
-device = pytorch_device_setting('cpu')
+import priv_lib_ml as corai
 ```
 
-- set the seed
+- get the device used for training:
 
 ```python
-from priv_lib_ml.src.util_training import set_seeds
-
-set_seeds(seed)
+device = corai.pytorch_device_setting('cpu')
 ```
 
-- use the `decorator_train_disable_no_grad` decorator for prediction function helpers.
+- set the seed:
 
 ```python
-@decorator_train_disable_no_grad
+corai.set_seeds(seed)
+```
+
+- use the `decorator_train_disable_no_grad` decorator for prediction function helpers:
+
+```python
+@corai.decorator_train_disable_no_grad
 def predict(data):
     pass
 ```
@@ -47,9 +51,9 @@ The training parameters are passed with `NNTrainParameters`.
 - initialise a `NNTrainParameters`
 
 ```python
-params_training = NNTrainParameters(batch_size, epochs,
-                                    device, criterion,
-                                    optim_wrapper, metrics)
+params_training = corai.NNTrainParameters(batch_size, epochs,
+                                          device, criterion,
+                                          optim_wrapper, metrics)
 ```
 
 In particular, one decides the metrics used to compute the loss during training. These are defined in the following way:
@@ -61,7 +65,7 @@ def L4loss(net, xx, yy):
     return torch.norm(net.nn_predict(xx) - yy, 4)
 
 
-L4metric = Metric('L4', L4loss)
+L4metric = corai.Metric('L4', L4loss)
 metrics = (L4metric,)  # tuple of metrics
 ```
 
@@ -75,7 +79,7 @@ optimiser = torch.optim.Adam
 optimiser_parameters = {"lr": 0.001,
                         "weight_decay": 0.00001}
 
-optim_wrapper = Optim_wrapper(optimiser, optimiser_parameters)
+optim_wrapper = corai.Optim_wrapper(optimiser, optimiser_parameters)
 ```
 
 - one can also use a `scheduler` to adapt the learning rate during training:
@@ -84,7 +88,7 @@ optim_wrapper = Optim_wrapper(optimiser, optimiser_parameters)
 scheduler = torch.optim.lr_scheduler.StepLR
 scheduler_parameters = {"gamma": 0.1}
 
-optim_wrapper = Optim_wrapper(optimiser,
+optim_wrapper = corai.Optim_wrapper(optimiser,
                               optimiser_parameters,
                               scheduler,
                               scheduler_parameters)
@@ -93,8 +97,8 @@ optim_wrapper = Optim_wrapper(optimiser,
 - define the `early_stoppers`:
 
 ```python
-early_stop_train = Early_stopper_training(patience=20, silent=SILENT, delta=-int(1E-6))
-early_stop_valid = Early_stopper_validation(patience=20, silent=SILENT, delta=-int(1E-6))
+early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-int(1E-6))
+early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-int(1E-6))
 early_stoppers = (early_stop_train, early_stop_valid)
 ```
 
@@ -103,7 +107,7 @@ early_stoppers = (early_stop_train, early_stop_valid)
 - configure the class of the model that will be used for training:
 
 ```python
-model_class = factory_parametrised_FC_NN(param_input_size,
+model_class = corai.factory_parametrised_FC_NN(param_input_size,
                                          param_list_hidden_sizes,
                                          param_output_size,
                                          param_list_biases,
@@ -124,7 +128,7 @@ and use `train_kfold_a_fold_after_split`.
 - train the model by K-Fold:
 
 ```python
-net, estimator_history = nn_kfold_train(train_X,
+net, estimator_history = corai.nn_kfold_train(train_X,
                                         train_Y,
                                         model_class,
                                         params_training,
@@ -144,17 +148,24 @@ function takes as an input an `estim_history`, where the values of the training 
 - initialise estimator:
 
 ```python
-estimator_history = initialise_estimator(compute_validation, param_train)
+estimator_history = corai.initialise_estimator(compute_validation, param_train)
 ```
 
 - training:
 
 ```python
-net, value_metric_for_best_net = train_kfold_a_fold_after_split(train_X, train_Y,
+net, value_metric_for_best_net = corai.train_kfold_a_fold_after_split(train_X, train_Y,
                                                                 indices_train, indices_valid,
                                                                 model_class, params_training,
                                                                 estimator_history, early_stoppers)
 ```
+
+### Automatically reload models when parameters are stored in a json.
+
+It is possible to directly recreate a model by simply specifying where to find the hyper-parameters of the models.
+There is a tutorial about `parameter_product` that does create such json file in `priv_lib_ml/src/classes/estimator/history/Tutorial_estim_hyperparameter.md`.
+
+The function to recreate the model is `create_model_by_index` that lies in `util_train.py`.
 
 ### Next steps:
 

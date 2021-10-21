@@ -243,16 +243,13 @@ Project
 ```
 
 
+a) For example, in order to import `benchmarking.py`, one should write:  `from priv_lib_util.tools import benchmarking`.
 
-
-For example, in order to import `benchmarking.py`, one should write:  `from priv_lib_util.tools import benchmarking`
-Another example, it is good practice importing the `priv_lib_ml` as `corai`. 
-
-It looks like:
+b) Another example, it is good practice importing the `priv_lib_ml` as `corai`.
+Then, it looks like:
 
     import priv_lib_ml as corai
-    from priv_lib_ml import training_stopper
-    training_stopper.Early_stopper()
+    corai.Early_stopper()
     corai.Optim_wrapper()
 
 Also, the priv_lib are codependent in the following way:
@@ -316,11 +313,13 @@ Metaclasses are most the times unnecessary. However, in some cases, they carry t
 For now, we only use metaclasses for `APlot`, where it allows a registration pattern for all plots.
 
 ## priv_lib_ML
+It should be imported as the alias: `corai`, as a reference to Cornelius AI. It is possible to use all the functions and tools (everything is exposed to the root) by using `corai.name_fct`. 
+However, if one wants to be clearer in the code, one can also use `corai.folder.name_fct` as it is exposed in the structure above.
 
-It should be imported as the alias: `corai`, as a reference to Cornelius AI.
+
 ## priv_lib_plot
-
 `colors_seaborn.py` gives a presentation of the different (personal) favorite palette of seaborn.
+
 ## priv_lib_util
 
 

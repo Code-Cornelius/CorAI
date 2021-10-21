@@ -15,7 +15,7 @@ from priv_lib_ml.src.classes.optim_wrapper import Optim_wrapper
 from priv_lib_ml.src.classes.training_stopper.early_stopper_training import Early_stopper_training
 from priv_lib_ml.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
 from priv_lib_ml.src.train.nntrainparameters import NNTrainParameters
-from priv_lib_ml.src.util_training import set_seeds, pytorch_device_setting
+from priv_lib_ml.src.util_train import set_seeds, pytorch_device_setting
 
 
 class Test_classification(TestCase):

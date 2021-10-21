@@ -18,7 +18,7 @@ In order to initialise an `Estim_history` one will need three things:
   `priv_lib_ml/src/classes/estimator/hyper_parameters/Tutorial_estim_hyperparameter.md`
 
 ```python
-estimator_history = Estim_hystory(metric_names, validation, hyper_params)
+estimator_history = corai.Estim_hystory(metric_names, validation, hyper_params)
 ```
 
 ### 2. Handling data
@@ -90,13 +90,13 @@ estimator_history.to_json(self, path, compress)
 - Loading from `csv`. Similarly to saving, loading from `csv` only requires the path.
 
 ```python
-Estim_history.from_csv(path)
+corai.Estim_history.from_csv(path)
 ```
 
 - Loading from `json`. Similarly to saving, loading from `json` requires the path and the compression flag.
 
 ```python
-Estim_history.from_csv(path, compressed)
+corai.Estim_history.from_csv(path, compressed)
 ```
 
 ### 4. Plotting
@@ -116,7 +116,7 @@ Relplots are used for showing evolution of a feature with respect to another as 
 `Relplot_history` is initialised with the data used for plotting.
 
 ```python
-history_plot = Relplot_history(estimator_history)
+history_plot = corai.Relplot_history(estimator_history)
 ```
 
 One can plot the history of training along some metrics with:

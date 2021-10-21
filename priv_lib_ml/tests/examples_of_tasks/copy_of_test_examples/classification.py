@@ -1,4 +1,5 @@
 import pandas as pd
+import priv_lib_ml as corai
 import sklearn
 import torch
 import torch.nn.functional as F
@@ -6,36 +7,23 @@ from keras.datasets import mnist
 from priv_lib_plot import APlot
 from torch import nn
 
-from priv_lib_ml.src.classes.estimator.history.relplot_history import Relplot_history
-from priv_lib_ml.src.train.kfold_training import nn_kfold_train
-from priv_lib_ml.src.nn_plots import confusion_matrix_creator
-from priv_lib_ml.src.classes.architecture.fully_connected import factory_parametrised_FC_NN
-from priv_lib_ml.src.classes.metric.metric import Metric
-from priv_lib_ml.src.classes.optim_wrapper import Optim_wrapper
-from priv_lib_ml.src.classes.training_stopper.early_stopper_training import Early_stopper_training
-from priv_lib_ml.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
-from priv_lib_ml.src.train.nntrainparameters import NNTrainParameters
-from priv_lib_ml.src.util_training import set_seeds, pytorch_device_setting
-
-
-
 # set seed for pytorch.
-set_seeds(42)
+corai.set_seeds(42)
 
 ############################## GLOBAL PARAMETERS
 # Number of training samples
 n_samples = 10000
-device = pytorch_device_setting('not_cpu_please')
+device = corai.pytorch_device_setting('not_cpu_please')
 SILENT = False
-early_stop_train = Early_stopper_training(patience=200, silent=SILENT, delta=-0.05)
-early_stop_valid = Early_stopper_validation(patience=200, silent=SILENT, delta=-0.05)
+early_stop_train = corai.Early_stopper_training(patience=200, silent=SILENT, delta=-0.05)
+early_stop_valid = corai.Early_stopper_validation(patience=200, silent=SILENT, delta=-0.05)
 early_stoppers = (early_stop_train, early_stop_valid)
 
 accuracy_wrapper = lambda net, xx, yy: sklearn.metrics.accuracy_score(net.nn_predict_ans2cpu(xx),
                                                                       yy.reshape(-1, 1).to('cpu'),
                                                                       normalize=False
                                                                       )
-accuracy_metric = Metric(name="accuracy", function=accuracy_wrapper)
+accuracy_metric = corai.Metric(name="accuracy", function=accuracy_wrapper)
 metrics = (accuracy_metric,)
 #############################
 (train_X, train_y), (test_X, test_y) = mnist.load_data()
@@ -68,25 +56,25 @@ if __name__ == '__main__':
     optimiser = torch.optim.SGD
     criterion = nn.CrossEntropyLoss(reduction='sum')
     dict_optimiser = {"lr": 0.0000005, "weight_decay": 0.00001}
-    optim_wrapper = Optim_wrapper(optimiser, dict_optimiser)
+    optim_wrapper = corai.Optim_wrapper(optimiser, dict_optimiser)
 
-    param_training = NNTrainParameters(batch_size=batch_size, epochs=epochs, device=device,
-                                       criterion=criterion, optim_wrapper=optim_wrapper,
-                                       metrics=metrics)
-    Class_Parametrized_NN = factory_parametrised_FC_NN(param_input_size=input_size,
-                                                       param_list_hidden_sizes=hidden_sizes,
-                                                       param_output_size=output_size, param_list_biases=biases,
-                                                       param_activation_functions=activation_functions,
-                                                       param_dropout=dropout,
-                                                       param_predict_fct=lambda out: torch.max(out, 1)[1])
+    param_training = corai.NNTrainParameters(batch_size=batch_size, epochs=epochs, device=device,
+                                             criterion=criterion, optim_wrapper=optim_wrapper,
+                                             metrics=metrics)
+    Class_Parametrized_NN = corai.factory_parametrised_FC_NN(param_input_size=input_size,
+                                                             param_list_hidden_sizes=hidden_sizes,
+                                                             param_output_size=output_size, param_list_biases=biases,
+                                                             param_activation_functions=activation_functions,
+                                                             param_dropout=dropout,
+                                                             param_predict_fct=lambda out: torch.max(out, 1)[1])
 
-    (net, estimator_history) = nn_kfold_train(train_X, train_Y, Class_Parametrized_NN, param_train=param_training,
-                                              early_stoppers=early_stoppers, nb_split=1, shuffle_kfold=True,
-                                              percent_val_for_1_fold=10, silent=False)
+    (net, estimator_history) = corai.nn_kfold_train(train_X, train_Y, Class_Parametrized_NN, param_train=param_training,
+                                                    early_stoppers=early_stoppers, nb_split=1, shuffle_kfold=True,
+                                                    percent_val_for_1_fold=10, silent=False)
 
     # fetch the best value and assert if accuracy > threshold.
 
-    history_plot = Relplot_history(estimator_history)
+    history_plot = corai.Relplot_history(estimator_history)
     history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot='accuracy', log_axis_for_loss=True,
                                             log_axis_for_second_axis=False)
 
@@ -95,6 +83,6 @@ if __name__ == '__main__':
     net.to('cpu')
     prediction = net.nn_predict(train_X)
     # estimator_history.err_compute_best_net(net, train_X, train_Y, testing_X=test_X, testing_Y=test_Y, device='cpu')
-    confusion_matrix_creator(train_Y, prediction, range(10), title="")
+    corai.confusion_matrix_creator(train_Y, prediction, range(10), title="")
 
     APlot.show_plot()

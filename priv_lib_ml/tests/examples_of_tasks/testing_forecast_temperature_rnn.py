@@ -1,37 +1,22 @@
 import numpy as np
+import pandas as pd
+import priv_lib_ml as corai
 import torch
 import torch.nn as nn
-from sklearn.preprocessing import MinMaxScaler
-import pandas as pd
-
-from priv_lib_ml.src.data_processing_fct import add_column_cyclical_features
-from priv_lib_ml.src.classes.architecture.free_nn import factory_parametrised_Free_NN
-from priv_lib_ml.src.classes.architecture.reshape import Reshape
-from priv_lib_ml.src.classes.architecture.rnn.lstm import LSTM
-from priv_lib_ml.src.classes.architecture.rnn.rnn import factory_parametrised_RNN
-from priv_lib_ml.src.classes.estimator.history.relplot_history import Relplot_history
-from priv_lib_ml.src.classes.windowcreator import Windowcreator
-from priv_lib_ml.src.classes.estimator.history.estim_history import Estim_history
-from priv_lib_ml.src.classes.optim_wrapper import Optim_wrapper
-from priv_lib_ml.src.train.nntrainparameters import NNTrainParameters
-from priv_lib_ml.src.util_training import pytorch_device_setting, set_seeds
-from priv_lib_ml.src.classes.training_stopper.early_stopper_training import Early_stopper_training
-from priv_lib_ml.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
-from priv_lib_ml.src.train.kfold_training import train_kfold_a_fold_after_split
-
 from priv_lib_plot import APlot
+from sklearn.preprocessing import MinMaxScaler
 
 # set seed for pytorch.
-set_seeds(42)
+corai.set_seeds(42)
 
 # Import Data
 TEMP_DATA = pd.read_csv("../../research_on_time_series_forecasting/daily_min_temperatures.csv")
 
 ############################## GLOBAL PARAMETERS
-device = pytorch_device_setting('gpu')
+device = corai.pytorch_device_setting('gpu')
 SILENT = False
-early_stop_train = Early_stopper_training(patience=100, silent=SILENT, delta=-int(1E-2))
-early_stop_valid = Early_stopper_validation(patience=100, silent=SILENT, delta=-int(1E-2))
+early_stop_train = corai.Early_stopper_training(patience=100, silent=SILENT, delta=-int(1E-2))
+early_stop_valid = corai.Early_stopper_validation(patience=100, silent=SILENT, delta=-int(1E-2))
 early_stoppers = (early_stop_train, early_stop_valid)
 metrics = ()
 ##########################################  DATA PARAMETERS:
@@ -55,28 +40,28 @@ if __name__ == '__main__':
     optimiser = torch.optim.Adam
     criterion = nn.MSELoss(reduction='sum')
     dict_optimiser = {"lr": 0.001, "weight_decay": 1E-6}
-    optim_wrapper = Optim_wrapper(optimiser, dict_optimiser)
+    optim_wrapper = corai.Optim_wrapper(optimiser, dict_optimiser)
 
-    param_training = NNTrainParameters(batch_size=batch_size, epochs=epochs, device=device,
-                                       criterion=criterion, optim_wrapper=optim_wrapper,
-                                       metrics=metrics)
+    param_training = corai.NNTrainParameters(batch_size=batch_size, epochs=epochs, device=device,
+                                             criterion=criterion, optim_wrapper=optim_wrapper,
+                                             metrics=metrics)
 
     seq_nn = [
-        (model := factory_parametrised_RNN(input_dim=input_dim, output_dim=output_size,
-                                           num_layers=num_layers, bidirectional=bidirectional,
-                                           input_time_series_len=lookback_window,
-                                           output_time_series_len=lookforward_window,
-                                           nb_output_consider=lookforward_window,
-                                           hidden_size=hidden_size, dropout=dropout,
-                                           Parent=LSTM, rnn_class=nn.LSTM)()),  # walrus operator
-        Reshape([-1, model.output_len]),
+        (model := corai.factory_parametrised_RNN(input_dim=input_dim, output_dim=output_size,
+                                                 num_layers=num_layers, bidirectional=bidirectional,
+                                                 input_time_series_len=lookback_window,
+                                                 output_time_series_len=lookforward_window,
+                                                 nb_output_consider=lookforward_window,
+                                                 hidden_size=hidden_size, dropout=dropout,
+                                                 Parent=LSTM, rnn_class=nn.LSTM)()),  # walrus operator
+        corai.Reshape([-1, model.output_len]),
         nn.Linear(model.output_len, hidden_FC, bias=True),
         nn.CELU(),
         nn.Linear(hidden_FC, lookforward_window * output_size, bias=True),
-        Reshape([-1, lookforward_window, output_size]),
+        corai.Reshape([-1, lookforward_window, output_size]),
     ]
 
-    parametrized_NN = factory_parametrised_Free_NN(seq_nn)
+    parametrized_NN = corai.factory_parametrised_Free_NN(seq_nn)
 
     ########################################## DATA
     print(TEMP_DATA.head())
@@ -84,7 +69,7 @@ if __name__ == '__main__':
     TEMP_DATA = TEMP_DATA.drop(columns=["Date"])
     # add cyclicity
     PERIOD_CYCLE = 364.25
-    TEMP_DATA = add_column_cyclical_features(TEMP_DATA, 'day', PERIOD_CYCLE)
+    TEMP_DATA = corai.add_column_cyclical_features(TEMP_DATA, 'day', PERIOD_CYCLE)
     print(TEMP_DATA.head())
 
     if input_dim == 1:
@@ -100,9 +85,9 @@ if __name__ == '__main__':
     testing_data_normalised = torch.FloatTensor(minimax.transform(testing_data))
     testing_data = torch.FloatTensor(testing_data)
 
-    window = Windowcreator(input_dim=input_dim, output_dim=1, lookback_window=lookback_window,
-                           lag_last_pred_fut=lookforward_window,
-                           lookforward_window=lookforward_window, type_window="Moving")
+    window = corai.Windowcreator(input_dim=input_dim, output_dim=1, lookback_window=lookback_window,
+                                 lag_last_pred_fut=lookforward_window,
+                                 lookforward_window=lookforward_window, type_window="Moving")
     (data_training_X,
      data_training_Y) = window.create_input_sequences(train_data_normalized, train_data_normalized[:, 0].unsqueeze(1))
 
@@ -120,12 +105,12 @@ if __name__ == '__main__':
 
     ##########################################  TRAINING
 
-    estimator_history = Estim_history(metric_names=[], validation=True)
-    net, _ = train_kfold_a_fold_after_split(data_training_X, data_training_Y, indices_train, indices_valid,
-                                               parametrized_NN, param_training, estimator_history,
-                                               early_stoppers=early_stoppers)
+    estimator_history = corai.Estim_history(metric_names=[], validation=True)
+    net, _ = corai.train_kfold_a_fold_after_split(data_training_X, data_training_Y, indices_train, indices_valid,
+                                                  parametrized_NN, param_training, estimator_history,
+                                                  early_stoppers=early_stoppers)
     net.to(torch.device('cpu'))
-    history_plot = Relplot_history(estimator_history)
+    history_plot = corai.Relplot_history(estimator_history)
     history_plot.lineplot(log_axis_for_loss=True)
 
 

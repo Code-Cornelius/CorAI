@@ -18,10 +18,11 @@ params_options = {
 }
 ```
 
-- Use the `parameter_product` function to produce all the possible combinations in the format of a list:
+- Use the `parameter_product` function (from `priv_lib_util`) to produce all the possible combinations in the format of
+  a list:
 
 ```python
-hyper_params = parameter_product(params_options)
+hyper_params = priv_lib_util.function_dict.parameter_product(params_options)
 for params in hyper_params:
     pass  # code
 ```
@@ -38,18 +39,18 @@ Add the parameter `hyper_param` to the function `nn_kfold_train` where it is pas
 function `initialise_estimator`:
 
 ```python
-net, estimator_history = nn_kfold_train(train_X, train_Y,
-                                        model_class, params_training,
-                                        early_stoppers,
-                                        nb_split, shuffle_kfold, percent_val_for_1_fold,
-                                        silent,
-                                        hyper_param=param)
+net, estimator_history = corai.nn_kfold_train(train_X, train_Y,
+                                              model_class, params_training,
+                                              early_stoppers,
+                                              nb_split, shuffle_kfold, percent_val_for_1_fold,
+                                              silent,
+                                              hyper_param=param)
 #################
 # inside the function:
 #################
 
-estimator_history = initialise_estimator(compute_validation, param_train,
-                                         train_param_dict=param)
+estimator_history = corai.initialise_estimator(compute_validation, param_train,
+                                               train_param_dict=param)
 ```
 
 This way, the hyper-parameters used are stored as meta-data in the estimator.
@@ -109,7 +110,7 @@ one could've appended every `estim_history` to a list after each training.
 - Using the list `estims`:
 
 ```python
-estim_hyper_param = Estim_hyper_param.from_list(estims, metric_names, flg_time)
+estim_hyper_param = corai.Estim_hyper_param.from_list(estims, metric_names, flg_time)
 ```
 
 - If the flat flg_time is set to `True` the training times will also be stored besides any metric results.
@@ -120,7 +121,7 @@ If instead of appending all of `estim_history` estimators to a list one decides 
 files, all in the same folder, they can then be retrieved using the path:
 
 ```python
-estim_hyper_param = Estim_hyper_param.from_folder(path, metric_names, flg_time, compressed)
+estim_hyper_param = corai.Estim_hyper_param.from_folder(path, metric_names, flg_time, compressed)
 ```
 
 #### 2.c From a json/csv file
@@ -128,9 +129,9 @@ estim_hyper_param = Estim_hyper_param.from_folder(path, metric_names, flg_time, 
 If the `estim_hyper_param` was previously stored as a json/csv file it can be retrieved using the path.
 
 ```python
-estim_hyper_param = Estim_hyper_param.from_csv(path)
+estim_hyper_param = corai.Estim_hyper_param.from_csv(path)
 # or
-estim_hyper_param = Estim_hyper_param.from_json(path)
+estim_hyper_param = corai.Estim_hyper_param.from_json(path)
 
 ```
 
@@ -157,7 +158,8 @@ estim_hyper_param.slice(column, condition, save=True)
 
 ### 4. Plotting
 
-It is possible to observe the impact of hyper-parameters upon the final losses very easily. Either one can make a scatter-plot of the losses, or make the distribution of an attribute with respect to the hyper-parameter.
+It is possible to observe the impact of hyper-parameters upon the final losses very easily. Either one can make a
+scatter-plot of the losses, or make the distribution of an attribute with respect to the hyper-parameter.
 
 #### 4.1 Relplot
 
@@ -166,13 +168,13 @@ Relplots are used for showing evolution of a feature with respect to another as 
 `Relplot_hyper_param` is initialised with the data used for plotting.
 
 ```python
-relplot_hyperparam = Relplot_hyper_param(estimator=estim_hyper_param)
+relplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
 ```
 
 The scatter-plot can be used for visualising the influence of one parameter over the results.
 
-For example, one can plot two metrics with respect to each other. 
-It is also possible to change influence the way the points are plot with respect ot some other criteria: here the `train_time`.
+For example, one can plot two metrics with respect to each other. It is also possible to change influence the way the
+points are plot with respect ot some other criteria: here the `train_time`.
 
 ```python
 relplot_hyperparam.scatter(column_name_draw='loss_training',
@@ -193,9 +195,8 @@ Distplots are used for observing the underlying distribution of the data.
 `Distplot_hyper_param` is initialised with the data used for plotting.
 
 ```python
-distplot_hyperparam = Distplot_hyper_param(estimator=estim_hyper_param)
+distplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
 ```
-
 
 ```python
 distplot_hyperparam.hist(column_name_draw='loss_validation',

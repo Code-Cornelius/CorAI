@@ -8,7 +8,7 @@ import torch.nn as nn
 from priv_lib_error import Error_type_setter
 from priv_lib_util.tools.src.function_writer import list_of_dicts_to_json
 
-from priv_lib_ml.src.util_training import decorator_train_disable_no_grad
+from priv_lib_ml.src.util_train import decorator_train_disable_no_grad
 
 
 class Savable_net(nn.Module):
