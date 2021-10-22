@@ -4,7 +4,7 @@ import numpy as np
 import priv_lib_ml as corai
 import torch
 from priv_lib_plot import APlot
-from priv_lib_util.tools.src.function_dict import parameter_product
+from priv_lib_util.tools import function_dict
 from torch import nn
 from tqdm import tqdm
 
@@ -58,7 +58,7 @@ params_options = {
     "list_hidden_sizes": [[2, 4, 2], [4, 8, 4], [16, 32, 16], [2, 32, 2], [32, 128, 32]],
 }
 
-hyper_params = parameter_product(params_options)
+hyper_params = function_dict.parameter_product(params_options)
 
 
 def config_architecture(params):

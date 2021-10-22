@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import priv_lib_ml as corai
+from priv_lib_util.tools import function_dict
 import torch
 from torch import nn
 from tqdm import tqdm
@@ -56,7 +57,7 @@ params_options = {
     "list_hidden_sizes": [[2, 4, 2], [4, 8, 4]],
 }
 
-hyper_params = corai.parameter_product(params_options)
+hyper_params = function_dict.parameter_product(params_options)
 
 
 def config_architecture(params):
