@@ -1,5 +1,5 @@
 setuptools>=56.0.0
-matplotlib>=3.4.2
+matplotlib==3.2.2
 numpy>=1.21.0
 pandas>=1.2.3
 seaborn>=0.11.1
