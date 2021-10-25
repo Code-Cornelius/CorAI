@@ -1,4 +1,5 @@
 import os
+import sys
 
 import numpy as np
 import priv_lib_ml as corai
@@ -122,4 +123,5 @@ if __name__ == '__main__':
     estim_hyper_param = corai.Estim_hyper_param.from_list(estims,
                                                           metric_names=["loss_validation", "loss_training"],
                                                           flg_time=True)
-    estim_hyper_param.to_csv("colab_hyper_param.csv")
+    data_path = sys.argv[1]
+    estim_hyper_param.to_csv(data_path)
