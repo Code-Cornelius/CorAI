@@ -7,7 +7,11 @@ from priv_lib_plot.src.acolor.acolorset import AColorset
 
 
 class AColorsetContinuous(AColorset):
+    """
+    take colors_name from the list of colors_seaborn. Look into the file in the same directory.
+    """
     def __init__(self, colors_name, nb_of_needed_colors=10, restrain_range_colors=(0, 1)):
+
         try:
             self.cm = plt.get_cmap(colors_name)
         except ValueError:

@@ -8,6 +8,8 @@ from priv_lib_plot.src.acolor.acolorset import AColorset
 
 class AColorsetDiscrete(AColorset):
     """
+    take colors_name from the list of colors_seaborn. Look into the file in the same directory.
+
     """
 
     def __init__(self, colors_name):
