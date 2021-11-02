@@ -4,10 +4,10 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="python_libraries",
-    version="0.0.1",
+    name="corai",
+    version="1.222.2",
     author="Niels Cariou-Kotlarek, Bianca T. Catea",
-    author_email="niels.carioukotlarek@gmail.com, cateabianca@gmail.com",
+    author_email="niels.carioukotlarek@gmail.com",
     description="A collection of python libraries",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -18,6 +18,20 @@ setuptools.setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+    ],
+    install_requires=[
+        'setuptools>=56.0.0',
+        'matplotlib==3.2.2',
+        'numpy>=1.21.0',
+        'pandas>=1.2.3',
+        'seaborn>=0.11.1',
+        'torch>=1.9.0+cu102',
+        'sklearn>=0.0',
+        'scikit-learn>=0.23.2',
+        'tqdm>=4.61.1',
+        'Keras>=2.4.3',
+        'Pillow>=8.2.0',
+        'scipy>=1.7.0'
     ],
     package_dir={"priv_lib_error": "priv_lib_error",
                  "priv_lib_estimator": "priv_lib_estimator",
