@@ -16,7 +16,8 @@ from priv_lib_plot.src.aplot.displayable_plot import Displayable_plot
 from priv_lib_util.tools import function_dict, function_iterable
 
 # other files
-sns.set()  # better layout, like blue background
+sns.set(style='white')  # better layout
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 Examples:

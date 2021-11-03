@@ -11,7 +11,7 @@ from sklearn import metrics
 
 from priv_lib_ml.src.util_train import decorator_on_cpu_during_fct
 
-sns.set()
+sns.set(style='white')
 
 
 def confusion_matrix_creator(Y, Y_predict_result, labels, title=""):
