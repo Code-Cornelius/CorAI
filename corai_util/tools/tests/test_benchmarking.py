@@ -1,7 +1,7 @@
 import math
 from unittest import TestCase
 
-from priv_lib_util.tools import benchmarking
+from corai_util.tools import benchmarking
 
 
 class Test_benchmarking(TestCase):

@@ -10,7 +10,10 @@ The library is better documented, and better structured.
 It is now separated in the corresponding libraries, and there are tests for most of the functions.
 * *version 1.222* : Release in October 2021.
 Incorporate new financial functions, as well as neural networks functions. Estimator reworked.
-* *version 1.600* : Expected release: Winter 2022.
+* *version 1.3*: Release in November 2021.
+The name of the library changed, most objects are simply exposed at the surface of the import. 
+Pip downloading incorporated.
+* *version 1.600* : Expected release: Summer 2022.
 3D plots.
 
 
@@ -24,10 +27,9 @@ Other files offer more advanced code, involving wrappers classes, classes object
 
 Finally, we are trying to incorporate some C++ routines in the code for very efficient code. This part is still in the project phase.
  
-### Where to put the Library?
-One should download the latest version and add the path to it to the interpreter before running code.
-The easiest way to use the libraries would be to put the library folders at the root of the project. 
-It is not possible to only download part of a library, as there might be some dependencies.
+### How to use the Library?
+
+    pip install Corai>=1.3
 
 ### Structure of the Project and how to import
 
@@ -172,7 +174,7 @@ Project
 │  └── Relplot_estimator
 │
 ├── corai
-│  ├── architecture
+│  ├── (architecture)
 │  │  ├── GRU
 │  │  ├── RNN, factory_parametrised_RNN
 │  │  ├── LSTM
@@ -182,7 +184,7 @@ Project
 │  │  ├── Fully_connected_NN, factory_parametrised_FC_NN
 │  │  ├── Free_NN, factory_parametrised_Free_NN
 │  │  └── Conv2dLSTMCell
-│  ├── estimator
+│  ├── (estimator)
 │  │  ├── Estim_history
 │  │  ├── Plot_estim_history
 │  │  ├── Relplot_history
@@ -191,7 +193,7 @@ Project
 │  │  ├── Distplot_hyper_param
 │  │  └── Plot_estim_hyper_param
 │  ├── Metric
-│  ├── training_stopper
+│  ├── (training_stopper)
 │  │  ├── Early_stopper
 │  │  ├── Early_stopper_training
 │  │  ├── Early_stopper_validation
@@ -257,8 +259,9 @@ graph TD;
 
 ```
 
-* All libraries start with the name `corai_{NAME LIBRARY}`, except for the ml library, which is just corai,
-inside each library,  there is a source folder and a test folder. In order to import any module, one should simply write:
+* All libraries start with the name `corai_{NAME LIBRARY}`, except for the machine learning / pytorch library, which is just corai.
+
+In the future we will explain better how to use imports. For now, everything is exposed in `corai`and in the other library, you might have to import the module first in this fashion:
 
 ```
 from corai import module
@@ -272,13 +275,15 @@ Then, the functions written in the module are callable with:
 module.function()
 ```
 
-if one wants to simply use the name of the function without referring to the private call table of the library, one can write:
+if one wants to simply use the name of the function without referring to the private call table of the library, one can
+write:
 
 ```
 function = module.function
 
 function()
 ```
+
 
 
 ## corai_error

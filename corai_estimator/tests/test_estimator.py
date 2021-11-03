@@ -1,6 +1,6 @@
 import unittest
 from unittest import TestCase
-from priv_lib_estimator import Estimator
+from corai_estimator import Estimator
 
 import numpy as np
 import pandas as pd

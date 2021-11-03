@@ -1,11 +1,11 @@
 import pandas as pd
-import priv_lib_ml as corai
+import corai
 import sklearn
 import torch
 import torch.nn.functional as F
-from keras.datasets import mnist
-from priv_lib_plot import APlot
+from corai_plot import APlot
 from torch import nn
+import numpy as np
 
 # set seed for pytorch.
 corai.set_seeds(42)
@@ -26,7 +26,11 @@ accuracy_wrapper = lambda net, xx, yy: sklearn.metrics.accuracy_score(net.nn_pre
 accuracy_metric = corai.Metric(name="accuracy", function=accuracy_wrapper)
 metrics = (accuracy_metric,)
 #############################
-(train_X, train_y), (test_X, test_y) = mnist.load_data()
+train_X = np.load("../../mnist_dataset/x_train.npy")
+train_y = np.load("../../mnist_dataset/y_train.npy")
+test_X = np.load("../../mnist_dataset/x_test.npy")
+test_y = np.load("../../mnist_dataset/y_test.npy")
+# (train_X, train_y), (test_X, test_y) = mnist.load_data() # instead we have saved the data
 train_X = pd.DataFrame(train_X.reshape(60000, 28 * 28))
 train_Y = pd.DataFrame(train_y)
 

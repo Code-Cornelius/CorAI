@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-from priv_lib_util.tools import function_iterable
+from corai_util.tools import function_iterable
 
 # defines the coefficients for fractional ADAMS method in order to compute a SDE path.
 # it needs the number of coefficients as well as the alpha of roughness.

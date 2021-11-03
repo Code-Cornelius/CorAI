@@ -1,9 +1,11 @@
 import numpy as np
 import pandas as pd
-import priv_lib_ml as corai
+import corai
 import torch
 import torch.nn as nn
-from priv_lib_plot import APlot
+
+from corai import LSTM
+from corai_plot import APlot
 from sklearn.preprocessing import MinMaxScaler
 
 # set seed for pytorch.

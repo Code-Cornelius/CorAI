@@ -1,7 +1,7 @@
-from priv_lib_error import Error_type_setter
-from priv_lib_estimator import Plot_estimator
+from corai_error import Error_type_setter
+from corai_estimator import Plot_estimator
 
-from priv_lib_ml.src.classes.estimator.hyper_parameters.estim_hyper_param import Estim_hyper_param
+from corai.src.classes.estimator.hyper_parameters.estim_hyper_param import Estim_hyper_param
 
 
 class Plot_estim_hyper_param(Plot_estimator):

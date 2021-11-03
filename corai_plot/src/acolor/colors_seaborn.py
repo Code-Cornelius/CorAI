@@ -1,5 +1,5 @@
 import seaborn as sns
-from priv_lib_plot import APlot
+from corai_plot import APlot
 import numpy as np
 
 list_of_all_colors = ['Accent', 'Accent_r', 'Blues', 'Blues_r', 'BrBG', 'BrBG_r', 'BuGn', 'BuGn_r', 'BuPu', 'BuPu_r',

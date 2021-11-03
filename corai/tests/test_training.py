@@ -5,17 +5,16 @@ import pandas as pd
 import sklearn
 import torch
 import torch.nn.functional as F
-from keras.datasets import mnist
 from torch import nn
 
-from priv_lib_ml.src.train.kfold_training import nn_kfold_train
-from priv_lib_ml.src.classes.architecture.fully_connected import factory_parametrised_FC_NN
-from priv_lib_ml.src.classes.metric.metric import Metric
-from priv_lib_ml.src.classes.optim_wrapper import Optim_wrapper
-from priv_lib_ml.src.classes.training_stopper.early_stopper_training import Early_stopper_training
-from priv_lib_ml.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
-from priv_lib_ml.src.train.nntrainparameters import NNTrainParameters
-from priv_lib_ml.src.util_train import set_seeds, pytorch_device_setting
+from corai.src.train.kfold_training import nn_kfold_train
+from corai.src.classes.architecture.fully_connected import factory_parametrised_FC_NN
+from corai.src.classes.metric.metric import Metric
+from corai.src.classes.optim_wrapper import Optim_wrapper
+from corai.src.classes.training_stopper.early_stopper_training import Early_stopper_training
+from corai.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
+from corai.src.train.nntrainparameters import NNTrainParameters
+from corai.src.util_train import set_seeds, pytorch_device_setting
 
 
 class Test_classification(TestCase):
@@ -37,7 +36,12 @@ class Test_classification(TestCase):
                                                                               normalize=False)
         accuracy_metric = Metric(name="accuracy", function=accuracy_wrapper)
         metrics = (accuracy_metric,)
-        (train_X, train_y), (test_X, test_y) = mnist.load_data()
+
+        train_X = np.load("mnist_dataset/x_train.npy")
+        train_y = np.load("mnist_dataset/y_train.npy")
+        test_X = np.load("mnist_dataset/x_test.npy")
+        test_y = np.load("mnist_dataset/y_test.npy")
+        # (train_X, train_y), (test_X, test_y) = mnist.load_data() # instead we have saved the data
         train_X = pd.DataFrame(train_X.reshape(60000, 28 * 28))
         train_Y = pd.DataFrame(train_y)
 

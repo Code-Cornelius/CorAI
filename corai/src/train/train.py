@@ -1,8 +1,8 @@
 import numpy as np
-from priv_lib_util.tools import function_iterable
+from corai_util.tools import function_iterable
 
-from priv_lib_ml.src.classes.training_stopper.early_stopper_vanilla import Early_stopper_vanilla
-from priv_lib_ml.src.train.fit import nn_fit
+from corai.src.classes.training_stopper.early_stopper_vanilla import Early_stopper_vanilla
+from corai.src.train.fit import nn_fit
 
 
 def nn_train(net, data_X, data_Y, params_training, indic_train_X, indic_train_Y,

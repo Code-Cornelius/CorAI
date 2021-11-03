@@ -2,11 +2,11 @@ from abc import abstractmethod, ABCMeta
 
 import torch.nn as nn
 # my lib
-from priv_lib_error import Error_type_setter
-from priv_lib_util.tools import function_iterable
+from corai_error import Error_type_setter
+from corai_util.tools import function_iterable
 
 # Savable_net
-from priv_lib_ml.src.classes.architecture.savable_net import Savable_net
+from corai.src.classes.architecture.savable_net import Savable_net
 
 
 class Free_NN(Savable_net, metaclass=ABCMeta):

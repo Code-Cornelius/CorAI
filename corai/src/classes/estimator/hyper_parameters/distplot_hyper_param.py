@@ -1,6 +1,6 @@
-from priv_lib_estimator import Distplot_estimator
+from corai_estimator import Distplot_estimator
 
-from priv_lib_ml.src.classes.estimator.hyper_parameters.plot_estim_hyper_paramm import Plot_estim_hyper_param
+from corai.src.classes.estimator.hyper_parameters.plot_estim_hyper_paramm import Plot_estim_hyper_param
 
 
 class Distplot_hyper_param(Plot_estim_hyper_param, Distplot_estimator):

@@ -2,10 +2,10 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from priv_lib_ml.src.classes.estimator.history.plot_estim_history import Plot_estim_history
+from corai.src.classes.estimator.history.plot_estim_history import Plot_estim_history
 
-from priv_lib_estimator import Relplot_estimator
-from priv_lib_plot import AColorsetContinuous, APlot
+from corai_estimator import Relplot_estimator
+from corai_plot import AColorsetContinuous, APlot
 
 
 class Relplot_history(Plot_estim_history, Relplot_estimator):

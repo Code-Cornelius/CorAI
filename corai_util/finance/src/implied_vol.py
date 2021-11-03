@@ -6,8 +6,8 @@ from scipy.optimize import bisect
 from scipy.stats import norm
 
 # priv_libraries
-from priv_lib_util.finance.src.bs_model import BlackScholes, BlackScholesVegaCore
-from priv_lib_util.calculus.src.optimization import newtons_method_vectorised
+from corai_util.finance.src.bs_model import BlackScholes, BlackScholesVegaCore
+from corai_util.calculus.src.optimization import newtons_method_vectorised
 
 
 

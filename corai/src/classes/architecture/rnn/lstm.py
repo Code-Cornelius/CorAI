@@ -3,7 +3,7 @@ from abc import ABCMeta
 import torch
 import torch.nn as nn
 
-from priv_lib_ml.src.classes.architecture.rnn.rnn import RNN
+from corai.src.classes.architecture.rnn.rnn import RNN
 
 
 class LSTM(RNN):

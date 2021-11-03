@@ -3,8 +3,8 @@ from unittest import TestCase
 import numpy as np
 from scipy.stats import norm, uniform, lognorm
 
-from priv_lib_util.calculus import diff_eq
-from priv_lib_util.tools import function_iterable
+from corai_util.calculus import diff_eq
+from corai_util.tools import function_iterable
 
 
 class Test_diff_eq(TestCase):

@@ -1,6 +1,6 @@
-from priv_lib_estimator import Relplot_estimator
+from corai_estimator import Relplot_estimator
 
-from priv_lib_ml.src.classes.estimator.hyper_parameters.plot_estim_hyper_paramm import Plot_estim_hyper_param
+from corai.src.classes.estimator.hyper_parameters.plot_estim_hyper_paramm import Plot_estim_hyper_param
 
 
 class Relplot_hyper_param(Plot_estim_hyper_param, Relplot_estimator):

@@ -2,11 +2,11 @@
 import time
 
 import pandas as pd
-from priv_lib_estimator.src.example_estimator.estim_benchmark_array import Relplot_benchmark_array, \
+from corai_estimator.src.example_estimator.estim_benchmark_array import Relplot_benchmark_array, \
     Estim_benchmark_array, Distplot_benchmark_array
 # priv libraries
-from priv_lib_plot import APlot
-from priv_lib_util.tools.src.benchmarking import benchmark
+from corai_plot import APlot
+from corai_util.tools.src.benchmarking import benchmark
 from tqdm import tqdm
 
 

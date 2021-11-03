@@ -1,10 +1,10 @@
 import numpy as np
 import torch
-from priv_lib_plot import APlot
+from corai_plot import APlot
 from torch import nn
 
 
-import priv_lib_ml as corai
+import corai
 
 # set seed for pytorch.
 corai.set_seeds(42)

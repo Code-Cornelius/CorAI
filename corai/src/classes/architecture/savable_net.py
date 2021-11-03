@@ -5,10 +5,10 @@ from copy import deepcopy
 import torch
 import torch.nn as nn
 # my lib
-from priv_lib_error import Error_type_setter
-from priv_lib_util.tools.src.function_writer import list_of_dicts_to_json
+from corai_error import Error_type_setter
+from corai_util.tools.src.function_writer import list_of_dicts_to_json
 
-from priv_lib_ml.src.util_train import decorator_train_disable_no_grad
+from corai.src.util_train import decorator_train_disable_no_grad
 
 
 class Savable_net(nn.Module):

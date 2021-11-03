@@ -3,14 +3,14 @@
 
 # priv libraries
 import seaborn as sns
-from priv_lib_error import Error_type_setter
-from priv_lib_estimator import Plot_estimator, Relplot_estimator, Distplot_estimator
-from priv_lib_estimator.src.estimator.estim_time import Estim_time
+from corai_error import Error_type_setter
+from corai_estimator import Plot_estimator, Relplot_estimator, Distplot_estimator
+from corai_estimator.src.estimator.estim_time import Estim_time
 
 # section ######################################################################
 #  #############################################################################
 # Classes
-from priv_lib_plot import APlot
+from corai_plot import APlot
 
 
 class Estim_benchmark_array(Estim_time):

@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import norm
 
 # priv_libraries
-from priv_lib_util.tools.src import function_recurrent
+from corai_util.tools.src import function_recurrent
 
 
 def BlackScholesVegaCore(DF, F, X, T, SIGMA):

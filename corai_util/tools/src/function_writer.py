@@ -1,7 +1,7 @@
 import json
 import os
 
-from priv_lib_util.tools.src.function_json import zip_json, unzip_json
+from corai_util.tools.src.function_json import zip_json, unzip_json
 
 
 def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.txt"):

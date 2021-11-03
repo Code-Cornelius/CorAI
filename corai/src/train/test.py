@@ -1,5 +1,5 @@
 # import seaborn as sns
-# from priv_lib_plot import APlot
+# from corai_plot import APlot
 # import numpy as np
 # import matplotlib.pyplot as plt
 #

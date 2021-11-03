@@ -18,11 +18,11 @@ params_options = {
 }
 ```
 
-- Use the `parameter_product` function (from `priv_lib_util`) to produce all the possible combinations in the format of
+- Use the `parameter_product` function (from `corai_util`) to produce all the possible combinations in the format of
   a list:
 
 ```python
-hyper_params = priv_lib_util.function_dict.parameter_product(params_options)
+hyper_params = corai_util.function_dict.parameter_product(params_options)
 for params in hyper_params:
     pass  # code
 ```
@@ -186,7 +186,7 @@ relplot_hyperparam.scatter(column_name_draw='loss_training',
 
 ![alt text](Tutorial_estim_hyperparam_sin_scatter.png?raw=true "Title")
 
-*Image obtained by running `priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py`, whole dataset*
+*Image obtained by running `corai/tests/examples_of_tasks/example_hyper_param.py`, whole dataset*
 
 #### 4.2 Distplot
 
@@ -213,7 +213,7 @@ distplot_hyperparam.hist(column_name_draw='loss_validation',
 
 ![alt text](Tutorial_estim_hyperparam_sin_hist_lr.png?raw=true "Title")
 
-*Image obtained by running priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py, whole dataset*
+*Image obtained by running corai/tests/examples_of_tasks/example_hyper_param.py, whole dataset*
 
 ```python
 distplot_hyperparam.hist(column_name_draw='train_time',
@@ -230,11 +230,11 @@ distplot_hyperparam.hist(column_name_draw='train_time',
 
 ![alt text](Tutorial_estim_hyperparam_sin_hist_dropout_slice.png?raw=true "Title")
 
-*Image obtained by running priv_lib_ml/tests/examples_of_tasks/example_hyper_param.py, dataset sliced with condition
+*Image obtained by running corai/tests/examples_of_tasks/example_hyper_param.py, dataset sliced with condition
 from 3.*
 
 ### More info:
 
 - The `net` can be saved to file for later use. For more details
-  check: `priv_lib_ml/src/classes/architecture/how_to_new_architectures.md`
-- For more details on estimators check: `priv_lib_estimator/how_to_use_estimators_and_plotters.md`.
+  check: `corai/src/classes/architecture/how_to_new_architectures.md`
+- For more details on estimators check: `corai_estimator/how_to_use_estimators_and_plotters.md`.

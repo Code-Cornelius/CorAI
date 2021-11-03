@@ -1,7 +1,7 @@
 from scipy.integrate import simps
 
-from priv_lib_plot import APlot
-from priv_lib_util.finance.src.param_iv import *
+from corai_plot import APlot
+from corai_util.finance.src.param_iv import *
 
 # section ######################################################################
 #  #############################################################################

@@ -1,9 +1,9 @@
 import numpy as np
-import priv_lib_ml as corai
+import corai
 import seaborn as sns
 import torch
 import torch.nn as nn
-from priv_lib_plot import APlot
+from corai_plot import APlot
 from sklearn.preprocessing import MinMaxScaler
 
 # set seed for pytorch.

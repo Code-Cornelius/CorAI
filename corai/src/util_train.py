@@ -3,7 +3,7 @@ import functools
 import numpy as np
 import torch
 import torch.cuda
-from priv_lib_util.tools.src.function_dict import \
+from corai_util.tools.src.function_dict import \
     retrieve_parameters_by_index_from_json, \
     replace_function_names_to_functions
 

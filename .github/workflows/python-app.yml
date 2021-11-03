@@ -24,7 +24,7 @@ jobs:
         pip install -r requirements.txt
     - name: Test
       run: |
-        python -m unittest discover priv_lib_error
+        python -m unittest discover corai_error
   
   lib_estimator:
 
@@ -42,7 +42,7 @@ jobs:
         pip install -r requirements.txt
     - name: Test
       run: |
-        python -m unittest discover priv_lib_estimator
+        python -m unittest discover corai_estimator
         
   lib_metaclass:
 
@@ -60,7 +60,7 @@ jobs:
         pip install -r requirements.txt
     - name: Test
       run: |
-        python -m unittest discover priv_lib_metaclass
+        python -m unittest discover corai_metaclass
         
   lib_util:
 

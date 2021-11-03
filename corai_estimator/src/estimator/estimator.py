@@ -3,8 +3,8 @@ import os
 
 import pandas as pd
 
-from priv_lib_error import Error_type_setter
-from priv_lib_util.tools.src.function_json import zip_json, unzip_json
+from corai_error import Error_type_setter
+from corai_util.tools.src.function_json import zip_json, unzip_json
 
 
 class Estimator(object):

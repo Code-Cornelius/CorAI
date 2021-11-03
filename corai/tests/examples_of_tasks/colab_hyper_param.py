@@ -2,8 +2,8 @@ import os
 import sys
 
 import numpy as np
-import priv_lib_ml as corai
-from priv_lib_util.tools import function_dict
+import corai
+from corai_util.tools import function_dict
 import torch
 from torch import nn
 from tqdm import tqdm

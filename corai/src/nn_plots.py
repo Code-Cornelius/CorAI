@@ -6,10 +6,10 @@ import numpy as np
 import seaborn as sns
 import torch
 # my libraries
-from priv_lib_plot import APlot
+from corai_plot import APlot
 from sklearn import metrics
 
-from priv_lib_ml.src.util_train import decorator_on_cpu_during_fct
+from corai.src.util_train import decorator_on_cpu_during_fct
 
 sns.set(style='white')
 

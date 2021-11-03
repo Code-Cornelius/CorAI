@@ -2,9 +2,9 @@ from abc import ABCMeta, abstractmethod
 
 import torch
 import torch.nn as nn
-from priv_lib_error import Error_type_setter
+from corai_error import Error_type_setter
 
-from priv_lib_ml.src.classes.architecture.savable_net import Savable_net
+from corai.src.classes.architecture.savable_net import Savable_net
 
 
 class RNN(Savable_net, metaclass=ABCMeta):

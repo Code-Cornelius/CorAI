@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from PIL import ImageChops, Image  # image comparison
 
 # other files
-from priv_lib_plot import APlot
-from priv_lib_metaclass import Register,deco_register, dict_register_classes
+from corai_plot import APlot
+from corai_metaclass import Register,deco_register, dict_register_classes
 
 
 

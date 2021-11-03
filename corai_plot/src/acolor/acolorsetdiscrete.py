@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # priv_libraries:
-from priv_lib_plot.src.acolor.acolorset import AColorset
+from corai_plot.src.acolor.acolorset import AColorset
 
 
 class AColorsetDiscrete(AColorset):

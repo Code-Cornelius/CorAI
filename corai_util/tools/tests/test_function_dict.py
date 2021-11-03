@@ -3,11 +3,11 @@ from collections import Callable
 from unittest import TestCase
 
 from config import ROOT_DIR
-from priv_lib_util.tools.src.function_dict import parameter_product, replace_function_names_to_functions, \
+from corai_util.tools.src.function_dict import parameter_product, replace_function_names_to_functions, \
     retrieve_parameters_by_index_from_json
-from priv_lib_util.tools.src.function_writer import list_of_dicts_to_json
+from corai_util.tools.src.function_writer import list_of_dicts_to_json
 
-PATH = os.path.join(ROOT_DIR, 'priv_lib_util', 'tools', 'tests', 'generated_test_files')
+PATH = os.path.join(ROOT_DIR, 'corai_util', 'tools', 'tests', 'generated_test_files')
 
 test_input = {
     'parameter_1': [1, 2],

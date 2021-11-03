@@ -1,7 +1,7 @@
 # from metric.Metric import Metric
-from priv_lib_util.tools import function_iterable
+from corai_util.tools import function_iterable
 
-from priv_lib_ml.src.classes.metric.metric import Metric
+from corai.src.classes.metric.metric import Metric
 
 
 class NNTrainParameters:

@@ -6,14 +6,14 @@ import numpy as np  # maths library and arrays
 import seaborn as sns  # environment for plots
 from matplotlib import pyplot as plt  # plotting
 # errors:
-from priv_lib_error import Error_not_allowed_input
+from corai_error import Error_not_allowed_input
 # priv_libraries
-from priv_lib_metaclass import Register, deco_register
-from priv_lib_plot.src.acolor.acolorsetcontinuous import \
+from corai_metaclass import Register, deco_register
+from corai_plot.src.acolor.acolorsetcontinuous import \
     AColorsetContinuous  # forced to write whole path as aplot would also be imported.
-from priv_lib_plot.src.aplot.dict_ax_for_aplot import Dict_ax_for_APlot
-from priv_lib_plot.src.aplot.displayable_plot import Displayable_plot
-from priv_lib_util.tools import function_dict, function_iterable
+from corai_plot.src.aplot.dict_ax_for_aplot import Dict_ax_for_APlot
+from corai_plot.src.aplot.displayable_plot import Displayable_plot
+from corai_util.tools import function_dict, function_iterable
 
 # other files
 sns.set(style='white')  # better layout
@@ -285,7 +285,7 @@ class APlot(Displayable_plot, metaclass=Register):
             benefit from the automatic ax configuration without having to write it all oneself.
         Args:
             axis: plt.axis, unique.
-            dict_ax: needs to contain, with value with no impact in parenthesis:
+            dict_ax: needs to contain, with default values in parenthesis:
                 xscale ('linear')
                 basex (10)
                 yscale ('linear')
@@ -316,13 +316,12 @@ class APlot(Displayable_plot, metaclass=Register):
 
         # we discriminate the log case, for the possibility of setting up a base.
         # Giving a base without giving the logscale does nothing.
-        if dict_ax['xscale'] == 'log':
+        if dict_ax['xscale'] == 'log':  # BASE ARGUMENT DOES NOT WORK WITH PRIOR VERSION OF MATPLOTLIB (<3.3.1)
             axis.set_xscale(dict_ax['xscale'],
                             base=dict_ax['basex'])
         else:
             axis.set_xscale(dict_ax['xscale'])
-
-        if dict_ax['yscale'] == 'log':
+        if dict_ax['yscale'] == 'log':  # BASE ARGUMENT DOES NOT WORK WITH PRIOR VERSION OF MATPLOTLIB (<3.3.1)
             axis.set_yscale(dict_ax['yscale'],
                             base=dict_ax['basey'])
         else:

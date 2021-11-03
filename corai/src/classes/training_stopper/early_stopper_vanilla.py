@@ -1,4 +1,4 @@
-from priv_lib_ml.src.classes.training_stopper.early_stopper import Early_stopper
+from corai.src.classes.training_stopper.early_stopper import Early_stopper
 
 
 class Early_stopper_vanilla(Early_stopper):

@@ -4,9 +4,9 @@ import numpy as np
 import sklearn.model_selection
 import torch
 
-from priv_lib_ml.src.classes.estimator.history.estim_history import Estim_history
-from priv_lib_ml.src.classes.training_stopper.early_stopper_vanilla import Early_stopper_vanilla
-from priv_lib_ml.src.train.train import nn_train
+from corai.src.classes.estimator.history.estim_history import Estim_history
+from corai.src.classes.training_stopper.early_stopper_vanilla import Early_stopper_vanilla
+from corai.src.train.train import nn_train
 
 
 def nn_kfold_train(data_train_X, data_train_Y, Model_NN, param_train,

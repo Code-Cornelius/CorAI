@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABCMeta
 
 import numpy as np
-from priv_lib_error import Error_type_setter
+from corai_error import Error_type_setter
 
 DEBUG = False
 

@@ -10,9 +10,9 @@ from PIL import ImageChops, Image  # image comparison
 import os
 import pathlib
 # other files
-from priv_lib_plot import APlot
+from corai_plot import APlot
 from config import ROOT_DIR
-from priv_lib_metaclass import Register, deco_register, dict_register_classes
+from corai_metaclass import Register, deco_register, dict_register_classes
 
 """
     Auto
@@ -25,7 +25,7 @@ from priv_lib_metaclass import Register, deco_register, dict_register_classes
 
 AUTO = True
 DELETE_TEST_PLOT = True
-PATH = os.path.join(ROOT_DIR, 'priv_lib_plot', 'tests', 'image_reference_test_plot')
+PATH = os.path.join(ROOT_DIR, 'corai_plot', 'tests', 'image_reference_test_plot')
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

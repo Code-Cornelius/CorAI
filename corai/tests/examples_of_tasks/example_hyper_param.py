@@ -1,10 +1,10 @@
 import os
 
 import numpy as np
-import priv_lib_ml as corai
+import corai
 import torch
-from priv_lib_plot import APlot
-from priv_lib_util.tools import function_dict
+from corai_plot import APlot
+from corai_util.tools import function_dict
 from torch import nn
 from tqdm import tqdm
 

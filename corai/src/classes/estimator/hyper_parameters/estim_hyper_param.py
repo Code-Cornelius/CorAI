@@ -2,10 +2,10 @@ import ast
 
 import numpy as np
 import pandas as pd
-from priv_lib_estimator import Estimator
+from corai_estimator import Estimator
 
-from priv_lib_ml.src.classes.architecture.fully_connected import Fully_connected_NN
-from priv_lib_ml.src.classes.estimator.history.estim_history import Estim_history
+from corai.src.classes.architecture.fully_connected import Fully_connected_NN
+from corai.src.classes.estimator.history.estim_history import Estim_history
 
 
 class Estim_hyper_param(Estimator):

@@ -3,8 +3,8 @@ import math
 
 import numpy as np
 # priv_libraries
-from priv_lib_util.finance.src.financials import compute_price, compute_integral
-from priv_lib_util.finance.src.implied_vol import implied_volatility_newton, total_implied_vol_newton
+from corai_util.finance.src.financials import compute_price, compute_integral
+from corai_util.finance.src.implied_vol import implied_volatility_newton, total_implied_vol_newton
 
 phi_heston = lambda xx: (1 - (1 - np.exp(-xx)) / xx) / xx
 phi_heston_lambda = lambda xx, lamb: phi_heston(xx * lamb)

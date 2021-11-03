@@ -1,6 +1,6 @@
 from typing import Callable
 
-from priv_lib_error import Error_type_setter
+from corai_error import Error_type_setter
 
 
 class Metric(object):

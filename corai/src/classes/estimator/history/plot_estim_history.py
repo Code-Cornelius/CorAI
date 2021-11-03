@@ -1,4 +1,4 @@
-from priv_lib_estimator import Plot_estimator
+from corai_estimator import Plot_estimator
 
 
 class Plot_estim_history(Plot_estimator):

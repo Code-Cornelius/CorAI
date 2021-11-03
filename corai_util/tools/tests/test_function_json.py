@@ -1,10 +1,10 @@
 from unittest import TestCase
 
-from priv_lib_util.tools.src.function_json import zip_json, unzip_json
+from corai_util.tools.src.function_json import zip_json, unzip_json
 
 import json, os
 
-from priv_lib_util.tools.src.function_writer import list_of_dicts_to_json
+from corai_util.tools.src.function_writer import list_of_dicts_to_json
 
 
 class Test_function_json(TestCase):

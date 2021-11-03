@@ -2,20 +2,20 @@
 from abc import abstractmethod
 
 import pandas as pd
-from priv_lib_error import Error_type_setter
-from priv_lib_estimator.src.estimator.estimator import Estimator
+from corai_error import Error_type_setter
+from corai_estimator.src.estimator.estimator import Estimator
 # priv_libraries
-from priv_lib_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
-from priv_lib_plot import AColorsetDiscrete
-from priv_lib_util.tools import function_iterable
-from priv_lib_util.tools.src import function_str
+from corai_estimator.src.plot_estimator.root_plot_estimator import Root_plot_estimator
+from corai_plot import AColorsetDiscrete
+from corai_util.tools import function_iterable
+from corai_util.tools.src import function_str
 
 
 class Plot_estimator(Root_plot_estimator):
     """
     Semantics:
         Plot_estimator is an abstract class that abstract the idea of plotting
-        an estimator (class defined in priv_lib_estimator.src.estimator.estimator).
+        an estimator (class defined in corai_estimator.src.estimator.estimator).
         The aim is to define the base of what is required to plot an estimator:
             - an Estimator: the object giving the data,
             - a slicer: which part of the data we plot,
@@ -44,7 +44,7 @@ class Plot_estimator(Root_plot_estimator):
     def __init__(self, estimator, grouping_by=None, **kwargs):
         """
         Args:
-            estimator (priv_lib_estimator.src.estimator.estimator):
+            estimator (corai_estimator.src.estimator.estimator):
             grouping_by (iter of str):  list of names of features from estimator.
             Default is None, and means no grouping is done, so all data is used for plotting.
 

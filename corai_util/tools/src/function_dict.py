@@ -1,6 +1,6 @@
 import json
 
-from priv_lib_util.tools.src.function_iterable import is_iterable
+from corai_util.tools.src.function_iterable import is_iterable
 
 
 def up(my_dict, new_dict):

@@ -1,4 +1,4 @@
-from priv_lib_estimator import Estimator
+from corai_estimator import Estimator
 
 
 class Estim_time(Estimator):

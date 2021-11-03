@@ -2,9 +2,9 @@
 import unittest
 
 # priv_libraries
-from priv_lib_error import Error_not_yet_allowed
+from corai_error import Error_not_yet_allowed
 
-from priv_lib_error.tests.broken_function import broken_function_with_message, broken_function_without_message
+from corai_error.tests.broken_function import broken_function_with_message, broken_function_without_message
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

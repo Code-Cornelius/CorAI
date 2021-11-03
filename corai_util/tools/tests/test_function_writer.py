@@ -3,9 +3,9 @@ import os
 from unittest import TestCase
 
 from config import ROOT_DIR
-from priv_lib_util.tools.src.function_writer import list_of_dicts_to_json
+from corai_util.tools.src.function_writer import list_of_dicts_to_json
 
-PATH = os.path.join(ROOT_DIR, 'priv_lib_util', 'tools', 'tests', 'generated_test_files')
+PATH = os.path.join(ROOT_DIR, 'corai_util', 'tools', 'tests', 'generated_test_files')
 
 example_data = [
     {"param1": 1,

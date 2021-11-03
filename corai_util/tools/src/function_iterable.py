@@ -4,8 +4,8 @@ import itertools  # for roundrobin
 import warnings
 
 import numpy as np
-from priv_lib_error import Error_not_allowed_input
-from priv_lib_error import numpy_function_used
+from corai_error import Error_not_allowed_input
+from corai_error import numpy_function_used
 
 
 def my_list_argmin(my_list):

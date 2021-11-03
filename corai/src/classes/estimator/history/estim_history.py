@@ -1,8 +1,8 @@
 import pandas as pd
 
-from priv_lib_error import Error_type_setter
-from priv_lib_estimator import Estimator
-from priv_lib_ml.src.nn_plots import nn_errors_compute_mean
+from corai_error import Error_type_setter
+from corai_estimator import Estimator
+from corai.src.nn_plots import nn_errors_compute_mean
 
 
 class Estim_history(Estimator):

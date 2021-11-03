@@ -3,10 +3,10 @@ from abc import abstractmethod
 
 import seaborn as sns
 
-from priv_lib_estimator.src.plot_estimator.plot_estimator import Plot_estimator
-from priv_lib_plot import APlot
+from corai_estimator.src.plot_estimator.plot_estimator import Plot_estimator
+from corai_plot import APlot
 # priv_libraries
-from priv_lib_util.tools import function_str
+from corai_util.tools import function_str
 
 
 # errors:
@@ -198,7 +198,7 @@ class Relplot_estimator(Plot_estimator):
             envelope_flag (bool): Flag to specify whether or not to draw the min and max of the data
             separators_plot (list of str): List of columns to group by, this will generate a plot for the product of unique
                 elements in each column
-            palette (colors of seaborn): colors for hue. Some example in priv_lib_plot/acolor/colors_seaborn.py
+            palette (colors of seaborn): colors for hue. Some example in corai_plot/acolor/colors_seaborn.py
             hue (str): The column used in order to draw multiple lines on the same plot for the data,
                 discriminating by this column
             style (str): separator for line and marker style.
@@ -295,7 +295,7 @@ class Relplot_estimator(Plot_estimator):
             column_name_true_values (str): The column where true values are present
             separators_plot (list of str): List of columns to group by, this will generate a plot for the product of unique
                 elements in each column
-            palette (colors of seaborn): colors for hue. Some example in priv_lib_plot/acolor/colors_seaborn.py
+            palette (colors of seaborn): colors for hue. Some example in corai_plot/acolor/colors_seaborn.py
             hue (str): The column used in order to draw multiple lines on the same plot for the data,
                 discriminating by this column
             style (str): separator for marker style

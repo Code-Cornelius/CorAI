@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt  # plotting
 import os
 
 # priv_libraries
-from priv_lib_metaclass import Register, deco_register
+from corai_metaclass import Register, deco_register
 
 
 class Displayable_plot(object, metaclass=Register):
