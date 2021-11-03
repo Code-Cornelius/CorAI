@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="corai",
+    name="CorAI",
     version="1.222.2",
     author="Niels Cariou-Kotlarek, Bianca T. Catea",
     author_email="niels.carioukotlarek@gmail.com",
@@ -33,12 +33,12 @@ setuptools.setup(
         'Pillow>=8.2.0',
         'scipy>=1.7.0'
     ],
-    package_dir={"priv_lib_error": "priv_lib_error",
-                 "priv_lib_estimator": "priv_lib_estimator",
-                 "priv_lib_metaclass": "priv_lib_metaclass",
-                 "priv_lib_ml": "priv_lib_ml",
-                 "priv_lib_plot": "priv_lib_plot",
-                 "priv_lib_util": "priv_lib_util"},
+    package_dir={"corai_error": "corai_error",
+                 "corai_estimator": "corai_estimator",
+                 "corai_metaclass": "corai_metaclass",
+                 "corai": "corai",
+                 "corai_plot": "corai_plot",
+                 "corai_util": "corai_util"},
     packages=setuptools.find_packages(),
     python_requires=">=3.8",
 )

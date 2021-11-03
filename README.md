@@ -1,4 +1,4 @@
-# Python Personal Libraries
+# CorAI
 
 ### Available version
 
@@ -34,7 +34,7 @@ It is not possible to only download part of a library, as there might be some de
 The main structure is the following:
 ```
 Project
-├── priv_lib_error 
+├── corai_error 
 │  ├── src
 │  │  ├── error_convergence.py
 │  │  ├── error_not_allowed_input.py
@@ -45,7 +45,7 @@ Project
 │  │  └── warning_deprecated.py
 │  └── tests
 │
-├── priv_lib_estimator 
+├── corai_estimator 
 │  ├── src
 │  │  ├── estimator
 │  │  │  └── estimator.py
@@ -55,14 +55,14 @@ Project
 │  │     └── relplot_estimator.py
 │  └── tests
 │
-├── priv_lib_metaclass 
+├── corai_metaclass 
 │  ├── src
 │  │  └── register
 │  │     ├── deco_register.py
 │  │     └── register.py
 │  └── tests
 │
-├── priv_lib_ml
+├── corai
 │  ├── src
 │  │  ├── classes
 │  │  │  ├── architecture
@@ -107,7 +107,7 @@ Project
 │  │  └── util_train.py
 │  └── tests
 │
-├── priv_lib_plot 
+├── corai_plot 
 │  ├── src
 │  │  ├── acolor
 │  │  │  ├── acolorsetcontinuous.py
@@ -118,7 +118,7 @@ Project
 │  │     └── dict_ax_for_aplot.py
 │  └── tests
 │
-└── priv_lib_util 
+└── corai_util 
    ├── calculus
    │  ├── src
    │  │  ├── diff_eq.py
@@ -157,7 +157,7 @@ However, one can import the meaningful objects in the following way, where one `
 
 ```
 Project
-├── priv_lib_error 
+├── corai_error 
 │  ├── error_convergence.py
 │  ├── error_not_allowed_input.py
 │  ├── error_not_enough_information.py
@@ -165,13 +165,13 @@ Project
 │  ├── error_type_setter.py
 │  └── deprecated_function.py
 │
-├── priv_lib_estimator 
+├── corai_estimator 
 │  ├── Estimator
 │  ├── Distplot_estimator
 │  ├── Plot_estimator
 │  └── Relplot_estimator
 │
-├── priv_lib_ml
+├── corai
 │  ├── architecture
 │  │  ├── GRU
 │  │  ├── RNN, factory_parametrised_RNN
@@ -208,16 +208,16 @@ Project
 │  ├── methods_train.py
 │  └── util_train.py
 │
-├── priv_lib_metaclass 
+├── corai_metaclass 
 │  ├── deco_register.py
 │  └── register.py
 │
-├── priv_lib_plot 
+├── corai_plot 
 │  ├── APlot
 │  ├── AColorsetContinuous
 │  └── AColorsetDiscrete
 │
-└── priv_lib_util 
+└── corai_util 
    ├── calculus
    │  ├── diff_eq.py
    │  ├── integration.py
@@ -243,36 +243,27 @@ Project
 ```
 
 
-a) For example, in order to import `benchmarking.py`, one should write:  `from priv_lib_util.tools import benchmarking`.
+a) For example, in order to import `benchmarking.py`, one should write:  `from corai_util.tools import benchmarking`.
 
-b) Another example, it is good practice importing the `priv_lib_ml` as `corai`.
-Then, it looks like:
-
-    import priv_lib_ml as corai
-    corai.Early_stopper()
-    corai.Optim_wrapper()
-
-Also, the priv_lib are codependent in the following way:
+Also, the corai libraries are codependent in the following way:
 
 ```mermaid
 graph TD;
-    priv_lib_error-->priv_lib_util;
-    priv_lib_util-->priv_lib_plot;
-    priv_lib_plot-->priv_lib_estimator;
-    priv_lib_metaclass-->priv_lib_plot
-    priv_lib_estimator-->priv_lib_ml
+    corai_error-->corai_util;
+    corai_util-->corai_plot;
+    corai_plot-->corai_estimator;
+    corai_metaclass-->corai_plot
+    corai_estimator-->corai
 
 ```
 
-Meaning one can download only part of the library by keeping these relationships in mind.
-
-* All libraries start with the name `priv_lib_{NAME LIBRARY}`,
+* All libraries start with the name `corai_{NAME LIBRARY}`, except for the ml library, which is just corai,
 inside each library,  there is a source folder and a test folder. In order to import any module, one should simply write:
 
 ```
-from priv_lib import module
+from corai import module
 or
-from priv_lib.extension import module
+from corai.extension import module
 ```
 
 Then, the functions written in the module are callable with:
@@ -290,7 +281,7 @@ function()
 ```
 
 
-## library_errors
+## corai_error
 
 Custom errors for better handling of errors in the library. They all inherit from the built-in exception and intends to make the code clearer.
 
@@ -301,26 +292,26 @@ Custom errors for better handling of errors in the library. They all inherit fro
 * **Error_type_setter** inherits from TypeError,
 * **Warning_deprecated** function that rise a deprecation warning.
 
-## priv_lib_estimator
+## corai_estimator
 
 * **Estimator** : A class that intends to make dataframes more accessible.
 * **Plotters** : Classes of objects that extend the behavior of seaborns' in-built functions. 
   We used seaborn's names for the classes and methods. 
   We rely on polymorphism to adapt behavior of general functions to each case's need.
   
-## priv_lib_metaclass
+## corai_metaclass
 Metaclasses are most the times unnecessary. However, in some cases, they carry the exact idea needed for some design. 
 For now, we only use metaclasses for `APlot`, where it allows a registration pattern for all plots.
 
-## priv_lib_ML
+## corai
 It should be imported as the alias: `corai`, as a reference to Cornelius AI. It is possible to use all the functions and tools (everything is exposed to the root) by using `corai.name_fct`. 
 However, if one wants to be clearer in the code, one can also use `corai.folder.name_fct` as it is exposed in the structure above.
 
 
-## priv_lib_plot
+## corai_plot
 `colors_seaborn.py` gives a presentation of the different (personal) favorite palette of seaborn.
 
-## priv_lib_util
+## corai_util
 
 
 We created two original objects. 
