@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 jobs:
-  lib_error:
+  corai_error:
 
     runs-on: ubuntu-latest
 
@@ -26,7 +26,7 @@ jobs:
       run: |
         python -m unittest discover corai_error
   
-  lib_estimator:
+  corai_estimator:
 
     runs-on: ubuntu-latest
 
@@ -44,7 +44,7 @@ jobs:
       run: |
         python -m unittest discover corai_estimator
         
-  lib_metaclass:
+  corai_metaclass:
 
     runs-on: ubuntu-latest
 
@@ -62,7 +62,7 @@ jobs:
       run: |
         python -m unittest discover corai_metaclass
         
-  lib_util:
+  corai_util:
 
     runs-on: ubuntu-latest
 
