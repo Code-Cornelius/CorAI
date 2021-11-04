@@ -15,7 +15,9 @@ from corai.src.classes.training_stopper.early_stopper_training import Early_stop
 from corai.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
 from corai.src.train.nntrainparameters import NNTrainParameters
 from corai.src.util_train import set_seeds, pytorch_device_setting
+from corai_util.tools.src.function_writer import factory_fct_linked_path
 
+from config import ROOT_DIR
 
 class Test_classification(TestCase):
     def setUp(self) -> None:
@@ -37,10 +39,11 @@ class Test_classification(TestCase):
         accuracy_metric = Metric(name="accuracy", function=accuracy_wrapper)
         metrics = (accuracy_metric,)
 
-        train_X = np.load("../mnist_dataset/x_train.npy")
-        train_y = np.load("../mnist_dataset/y_train.npy")
-        test_X = np.load("../mnist_dataset/x_test.npy")
-        test_y = np.load("../mnist_dataset/y_test.npy")
+        linker = factory_fct_linked_path(ROOT_DIR, "corai/tests/mnist_dataset")
+        train_X = np.load(linker(["x_train.npy"]))
+        train_y = np.load(linker(["y_train.npy"]))
+        test_X = np.load(linker(["x_test.npy"]))
+        test_y = np.load(linker(["y_test.npy"]))
         # (train_X, train_y), (test_X, test_y) = mnist.load_data() # instead we have saved the data
         train_X = pd.DataFrame(train_X.reshape(60000, 28 * 28))
         train_Y = pd.DataFrame(train_y)
@@ -142,7 +145,7 @@ class Test_regression(TestCase):
         biases = [True, True, True, True]
         activation_functions = [torch.tanh, torch.tanh, torch.relu]
         dropout = 0.
-        epochs = 7500
+        epochs = 1000
         batch_size = 200
         optimiser = torch.optim.Adam
         criterion = nn.MSELoss(reduction='sum')
