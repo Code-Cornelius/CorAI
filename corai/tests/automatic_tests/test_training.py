@@ -37,10 +37,10 @@ class Test_classification(TestCase):
         accuracy_metric = Metric(name="accuracy", function=accuracy_wrapper)
         metrics = (accuracy_metric,)
 
-        train_X = np.load("mnist_dataset/x_train.npy")
-        train_y = np.load("mnist_dataset/y_train.npy")
-        test_X = np.load("mnist_dataset/x_test.npy")
-        test_y = np.load("mnist_dataset/y_test.npy")
+        train_X = np.load("../mnist_dataset/x_train.npy")
+        train_y = np.load("../mnist_dataset/y_train.npy")
+        test_X = np.load("../mnist_dataset/x_test.npy")
+        test_y = np.load("../mnist_dataset/y_test.npy")
         # (train_X, train_y), (test_X, test_y) = mnist.load_data() # instead we have saved the data
         train_X = pd.DataFrame(train_X.reshape(60000, 28 * 28))
         train_Y = pd.DataFrame(train_y)
