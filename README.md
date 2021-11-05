@@ -10,7 +10,7 @@ The library is better documented, and better structured.
 It is now separated in the corresponding libraries, and there are tests for most of the functions.
 * *version 1.222* : Release in October 2021.
 Incorporate new financial functions, as well as neural networks functions. Estimator reworked.
-* *version 1.300*: Release in November 2021.
+* *version 1.301*: Release in November 2021.
 The name of the library changed, most objects are simply exposed at the surface of the import. 
 Pip downloading incorporated.
 * *version 1.600* : Expected release: Summer 2022.
