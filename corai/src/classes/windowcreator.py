@@ -13,9 +13,8 @@ class Windowcreator(object):
     References:
         https://www.tensorflow.org/tutorials/structured_data/time_series#2_split
 
-    todo a bit too much for forecasting.
-
-    todo not sure how increasing window work...
+    Todos:
+        todo not sure how increasing window work...
     """
 
     def __init__(self, input_dim, output_dim,
@@ -23,6 +22,7 @@ class Windowcreator(object):
                  lookforward_window=0, lag_last_pred_fut=1,
                  type_window="Moving",
                  batch_first=True, silent=False):
+        """Look inside the class to see what the parameters correspond to."""
 
         assert type_window == "Increasing" or type_window == "Moving", "Only two types supported."
         assert not (type_window == "Increasing" and lookback_window != 0), "Increasing so window ==0."
@@ -64,7 +64,8 @@ class Windowcreator(object):
     def create_input_sequences(self, input_data, output_data):
         """
         Semantics:
-            create the dataset for training.
+            create the dataset for training. Give time-series as u[t], v[t], without any time difference.
+            They should be of matching size, and the function will deduce which values correspond to which.
 
         Args:
             input_data (pytorch tensor): should be a N*M matrix, column is a time series (length N).
@@ -109,59 +110,59 @@ class Windowcreator(object):
                                                                         self.lookforward_window, :]
             return data_X, data_Y
 
-    def prediction_over_training_data(self, net, data_start, increase_data_for_pred, device):
+    def prediction_over_training_data(self, net, data, increase_data_for_pred, device):
         """
         Semantics:
-            predict the output by taking the input data and iterating over it by the window.
-            calls the method nn_predict of net.
+            predict the output by taking the input data and iterating over data by the window.
+            Used to make prediction iteratively over known input.
+            In order to add the data that has not been forecasted (for example you predict 2D -> 1D,
+            the output is missing 1D for the future predictions), we use an adaptor. It is the parameter increase_data_for_pred.
 
         Args:
-            net: derived from Savable_net.
-            data_start:
-            increase_data_for_pred:
-            device (): where the net lies.
-
+            net (Savable_net): model with the method nn_predict.
+            data: tensor with shape (N batch, L length time series, Dim Input)
+            increase_data_for_pred (callable):  Using a class for this allows to store some parameters.
+            device (pytorch device): where the net lies with data.
 
         Returns:
 
         """
         # a container has the lookback window (at least) of data.
-        # Then iteratively, it predicts the future.
         # data_start should be not prepared dataset
         # format L * dim_input
 
-        # we predict by each window of prediction, which is what seems to have the more sense.
-        assert self.lookback_window <= len(data_start), "For prediction, needs at least a window of data for prediction"
+        # we predict batches of window of prediction, and then going forward by this batch size for next estim.
+        assert self.lookback_window <= data.shape[1], "For prediction, needs at least a window of data for prediction"
 
-        nb_of_cycle_pred = (len(data_start) - self.lookback_window) // self.lookforward_window
+        nb_of_cycle_pred = (data.shape[1] - self.lookback_window) // self.lookforward_window
         prediction = torch.zeros(1, self.lookforward_window * nb_of_cycle_pred, self.input_dim)
         for i in range(nb_of_cycle_pred):
-            indices_input = slice(i * self.lookforward_window, i * self.lookforward_window + self.lookback_window)
-            #  : we start at the lookforward_window * i and need lookback_window elements.
-            indices_pred = slice(i * self.lookforward_window, (i + 1) * self.lookforward_window)
-            new_values = net.nn_predict(data_start[indices_input, :].view(1, -1, self.input_dim))
-            # the view for the batch size.
+            indices_input = slice(i * self.lookforward_window,
+                                  i * self.lookforward_window + self.lookback_window)
+            #  : we start at the lookforward_window * i and we need lookback_window elements.
+            indices_pred = slice(i * self.lookforward_window,
+                                 (i + 1) * self.lookforward_window)
 
+            # predicting the next values, size (1,-1,self.input_dim) reflects (batch_size, length pred, self.input_dim)
+            new_values = net.nn_predict(data[:, indices_input, :])
+            # add values to the prediction:
             new_values = self._adding_input_to_output(increase_data_for_pred, new_values, device)
 
-            prediction[0, indices_pred, :] = new_values
+            prediction[:, indices_pred, :] = new_values
         return prediction
-
-    def _adding_input_to_output(self, increase_data_for_pred, new_values, device):
-        if increase_data_for_pred is not None:
-            new_values = increase_data_for_pred(new_values.cpu().numpy()).to(device)
-            # cpu to make sure, numpy to avoid implicit conversion.
-        return new_values
 
     def prediction_recurrent(self, net, data_start, nb_of_cycle_pred, increase_data_for_pred=None, device='cpu'):
         """
-
+        Semantics:
+            Prediction by iteratively using the previous prediction as inputs for the following ones.
+            In order to add the data that has not been forecasted (for example you predict 2D -> 1D,
+            the output is missing 1D for the future predictions), we use an adaptor. It is the parameter increase_data_for_pred.
         Args:
-            net:
-            data_start:
+            net (Savable_net): model with the method nn_predict.
+            data_start: starting data, to initialise the recurrent process. tensor with shape (N batch, L length time series, Dim Input)
             nb_of_cycle_pred:
-            increase_data_for_pred:
-            device:  where data_start lies.
+            increase_data_for_pred (callable):  Using a class for this allows to store some parameters.
+            device (pytorch device): where the net lies with data_start.
 
         Returns:
 
@@ -171,39 +172,29 @@ class Windowcreator(object):
         # data_start should be not prepared dataset
         # format L * dim_input
         # increase data in the case the output is not exactly the input for next prediction!
-        assert self.lookback_window == len(data_start), "For prediction, needs at least a window of data for prediction"
+        assert self.lookback_window == data_start.shape[
+            1], "For prediction, needs a window of data for prediction. Given {}.".format(data_start.shape[1])
 
         input_prediction = data_start.clone()
         prediction = torch.zeros(1, self.lookforward_window * nb_of_cycle_pred, self.output_dim)
 
         for i in range(nb_of_cycle_pred):
-            indices_in = slice(i * self.lookforward_window, i * self.lookforward_window + self.lookback_window)
+            indices_in = slice(i * self.lookforward_window,
+                               i * self.lookforward_window + self.lookback_window)
             #  : we start at the lookforward_window * i and need lookback_window elements.
-            indices_pred = slice(i * self.lookforward_window, (i + 1) * self.lookforward_window)
-            new_values = net.nn_predict(input_prediction[indices_in, :].view(1, -1, self.input_dim))
-            prediction[0, indices_pred, :] = new_values
+            indices_pred = slice(i * self.lookforward_window,
+                                 (i + 1) * self.lookforward_window)
+
+            # predicting the next values, size (1,-1,self.input_dim) reflects (batch_size, length pred, self.input_dim)
+            new_values = net.nn_predict(input_prediction[:, indices_in, :])
+            prediction[:, indices_pred, :] = new_values
 
             new_values = self._adding_input_to_output(increase_data_for_pred, new_values, device)
+            input_prediction = torch.cat((input_prediction, new_values), dim=1)
+        return input_prediction[:, self.lookback_window:]  # remove the starting time series
 
-            input_prediction = torch.cat((input_prediction, new_values.view(-1, self.input_dim)))
-            # the view for the batch size.
-        return input_prediction[self.lookback_window:].view(1, -1, self.input_dim)
-
-
-"""
-example of increase_data_for_pred:
-
-class Adaptor_output(object):
-    def __init__(self, incrm, start_num, period):
-        self.incrm = incrm
-        self.start_num = start_num
-        self.period = period
-
-    def __call__(self, arr):
-        times = np.arange(self.incrm, self.incrm + output_time_series_len)
-        cos_val = np.sin(2 * np.pi * (times - self.start_num) / self.period).reshape(-1, 1)
-        sin_val = np.cos(2 * np.pi * (times - self.start_num) / self.period).reshape(-1, 1)
-        self.incrm += input_time_series_len
-        res = np.concatenate((arr.reshape(-1, 2), cos_val, sin_val), axis=1).reshape(1, -1, 4)
-        return torch.tensor(res, dtype=torch.float32)
-"""
+    def _adding_input_to_output(self, increase_data_for_pred, new_values, device):
+        if increase_data_for_pred is not None:
+            new_values = increase_data_for_pred(new_values.cpu().numpy()).to(device)
+            # cpu to make sure, numpy to avoid implicit conversion.
+        return new_values

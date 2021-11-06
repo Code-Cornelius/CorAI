@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
-import corai
 import torch
 import torch.nn as nn
+from sklearn.preprocessing import MinMaxScaler
 
+import corai
 from corai import LSTM
 from corai_plot import APlot
-from sklearn.preprocessing import MinMaxScaler
 
 # set seed for pytorch.
 corai.set_seeds(42)
@@ -124,10 +124,10 @@ if __name__ == '__main__':
 
         def __call__(self, arr):
             times = np.arange(self.incrm, self.incrm + lookforward_window)
-            cos_val = np.sin(2 * np.pi * (times - self.start_num) / self.period).reshape(-1, 1)
-            sin_val = np.cos(2 * np.pi * (times - self.start_num) / self.period).reshape(-1, 1)
+            cos_val = np.sin(2 * np.pi * (times - self.start_num) / self.period).reshape(1, -1, 1)
+            sin_val = np.cos(2 * np.pi * (times - self.start_num) / self.period).reshape(1, -1, 1)
             self.incrm += lookforward_window
-            res = np.concatenate((arr.reshape(-1, 1), cos_val, sin_val), axis=1).reshape(1, -1, 3)
+            res = np.concatenate((arr, cos_val, sin_val), axis=2)
             return torch.tensor(res, dtype=torch.float32)
 
 
@@ -137,8 +137,8 @@ if __name__ == '__main__':
         increase_data_for_pred = Adaptor_output(0, 0, PERIOD_CYCLE)  # 0 initial and 12 month for a period.
     else:
         increase_data_for_pred = None
-    train_prediction = window.prediction_over_training_data(net, train_data_normalized, increase_data_for_pred,
-                                                            device=device)
+    train_prediction = window.prediction_over_training_data(net, train_data_normalized.unsqueeze(0),
+                                                            increase_data_for_pred, device=device)
 
     if input_dim > 1:
         increase_data_for_pred = Adaptor_output(train_data_normalized.shape[0], 0, PERIOD_CYCLE)
@@ -146,7 +146,7 @@ if __name__ == '__main__':
     else:
         increase_data_for_pred = None
     ##########################################  prediction unknown set. Corresponds to predicting the black line.
-    test_prediction = window.prediction_recurrent(net, train_data_normalized[-lookback_window:],
+    test_prediction = window.prediction_recurrent(net, train_data_normalized[-lookback_window:].unsqueeze(0),
                                                   nb_test_prediction, increase_data_for_pred, device='cpu')
 
     ##########################################  prediction of TESTING unknown data by starting with black line.
@@ -155,7 +155,7 @@ if __name__ == '__main__':
                                                 0, PERIOD_CYCLE)  # 0 initial and 12 month for a period.
     else:
         increase_data_for_pred = None
-    unknwon_prediction = window.prediction_recurrent(net, testing_data_normalised[-lookback_window:, :],
+    unknwon_prediction = window.prediction_recurrent(net, testing_data_normalised[-lookback_window:, :].unsqueeze(0),
                                                      nb_unknown_prediction, increase_data_for_pred, device='cpu')
 
     # x-axis data for plotting

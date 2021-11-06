@@ -1,10 +1,11 @@
 import numpy as np
-import corai
 import seaborn as sns
 import torch
 import torch.nn as nn
-from corai_plot import APlot
 from sklearn.preprocessing import MinMaxScaler
+
+import corai
+from corai_plot import APlot
 
 # set seed for pytorch.
 corai.set_seeds(42)
@@ -91,8 +92,9 @@ if __name__ == '__main__':
     window = corai.Windowcreator(input_dim=input_size, output_dim=1, lookback_window=lookback_window,
                                  lag_last_pred_fut=lookforward_window,
                                  lookforward_window=lookforward_window, type_window="Moving")
-    (data_training_X, data_training_Y) = window.create_input_sequences(train_data_normalized,
+    (data_training_X, data_training_Y) = window.create_input_sequences(train_data_normalized,  # input
                                                                        train_data_normalized[:, 0].unsqueeze(1))
+    # : output that we take only prediction qte and unsqueeze it to match dimensions.
 
     indices_train = torch.arange(len(data_training_X) - lookback_window)
     indices_valid = torch.arange(len(data_training_X) - lookback_window, len(data_training_X))
@@ -126,10 +128,10 @@ if __name__ == '__main__':
 
         def __call__(self, arr):
             times = np.arange(self.incrm, self.incrm + lookforward_window)
-            cos_val = np.sin(2 * np.pi * (times - self.start_num) / self.period).reshape(-1, 1)
-            sin_val = np.cos(2 * np.pi * (times - self.start_num) / self.period).reshape(-1, 1)
+            cos_val = np.sin(2 * np.pi * (times - self.start_num) / self.period).reshape(1, -1, 1)
+            sin_val = np.cos(2 * np.pi * (times - self.start_num) / self.period).reshape(1, -1, 1)
             self.incrm += lookforward_window
-            res = np.concatenate((arr.reshape(-1, 1), cos_val, sin_val), axis=1).reshape(1, -1, 3)
+            res = np.concatenate((arr, cos_val, sin_val), axis=2)
             return torch.tensor(res, dtype=torch.float32)
 
 
@@ -139,16 +141,15 @@ if __name__ == '__main__':
         increase_data_for_pred = Adaptor_output(0, 0, 12)  # 0 initial and 12 month for a period.
     else:
         increase_data_for_pred = None
-    train_prediction = window.prediction_over_training_data(net, train_data_normalized, increase_data_for_pred,
-                                                            device=device)
-
+    train_prediction = window.prediction_over_training_data(net, train_data_normalized.unsqueeze(0),
+                                                            increase_data_for_pred, device=device)
     if input_size > 1:
-        increase_data_for_pred = Adaptor_output(train_data_normalized.shape[0],
-                                                0, 12)  # 0 initial and 12 month for a period.
+        increase_data_for_pred = Adaptor_output(train_data_normalized.shape[1], 0,
+                                                12)  # 0 initial and 12 month for a period.
     else:
         increase_data_for_pred = None
     ##########################################  prediction unknown set. Corresponds to predicting the black line.
-    test_prediction = window.prediction_recurrent(net, train_data_normalized[-lookback_window:],
+    test_prediction = window.prediction_recurrent(net, train_data_normalized[-lookback_window:].unsqueeze(0),
                                                   nb_test_prediction, increase_data_for_pred, device='cpu')
 
     ##########################################  prediction of TESTING unknown data by starting with black line.
@@ -157,9 +158,10 @@ if __name__ == '__main__':
                                                 0, 12)  # 0 initial and 12 month for a period.
     else:
         increase_data_for_pred = None
-    unknwon_prediction = window.prediction_recurrent(net, testing_data_normalised[-lookback_window:, :],
+    unknwon_prediction = window.prediction_recurrent(net, testing_data_normalised[-lookback_window:].unsqueeze(0),
                                                      nb_unknown_prediction, increase_data_for_pred, device='cpu')
 
+    ##########################################
     # x-axis data for plotting
     months_total = np.arange(0, len(data), 1)  # data for testing
     months_train = np.arange(0, len(train_data), 1)  # data for training

@@ -38,4 +38,8 @@
   - put the test at the bottom into a right test.
   - when dict of parameters given, mention if some are unused.
 
-Verify if it is L2 error or L2 squared.
+
+
+*Verify if it is L2 error or L2 squared.
+* asserts when reading loading json for estimator history to avoid obscure error message.
+* dtype for the architectures.

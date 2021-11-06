@@ -32,12 +32,13 @@ class RNN(Savable_net, metaclass=ABCMeta):
     def forward(self, time_series):
         """
         Args:
-            time_series: shape L,N, input_dim
+            time_series: shape batch size N,  Length sequence, Linput_dim
 
         Returns:
         """
         batch_size = 1, time_series.shape[0], 1
-        h0 = self.get_hidden_states(batch_size)
+        h0 = self.get_hidden_states(batch_size) # polymorphism for gru and lstm
+
         out, _ = self.stacked_rnn(time_series, h0)  # shape of out is  N,L,Hidden_size * nb_direction
 
         if self.bidirectional:
