@@ -728,7 +728,7 @@ class APlot(Displayable_plot, metaclass=Register):
 
         Examples:
             In order to get the limit of the current axis :
-            yy = np.array([aplot.get_y_lim(nb_ax = 0)])
+            yy = np.array(aplot.get_y_lim(nb_ax = 0))
             aplot.plot_vertical_line(best_epoch_of_NN, yy = [0,1], nb_ax=0, dict_plot_param ={"color": "black",
                                                                                               "linewidth": 0.5,
                                                                                               "label": f"Best model for fold nb {i}"
