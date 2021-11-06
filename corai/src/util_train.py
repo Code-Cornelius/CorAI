@@ -46,11 +46,11 @@ def pytorch_device_setting(type='', silent=False):
     """
     Semantics : sets the device for NeuralNetwork computations.
     Put nothing for automatic choice.
-    If cpu given, sets cpu
+    If 'cpu' given, sets cpu
     else, see if cuda available, otherwise cpu.
 
     Args:
-        type:
+        type (str):
 
     Returns:
 

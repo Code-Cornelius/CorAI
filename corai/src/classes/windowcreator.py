@@ -28,13 +28,18 @@ class Windowcreator(object):
         assert not (type_window == "Increasing" and lookback_window != 0), "Increasing so window ==0."
         assert not (type_window == "Moving" and lookback_window == 0), "Moving so window > 0."
 
+        assert lookforward_window <= lag_last_pred_fut, "lag_last_pred_fut is at least as long as lookforward_window."
         # Window parameters.
-        self.input_dim = input_dim
-        self.output_dim = output_dim
-        self.lookback_window = lookback_window
-        self.lookforward_window = lookforward_window
-        self.type_window = type_window
-        self.lag_last_pred_fut = lag_last_pred_fut
+        self.input_dim = input_dim  # dimension of input
+        self.output_dim = output_dim  # dimension of output
+        self.lookback_window = lookback_window  # how many steps in the back input should have.
+        self.lookforward_window = lookforward_window  # how many steps in the future should be predicted.
+        self.type_window = type_window  # type of windows
+        self.lag_last_pred_fut = lag_last_pred_fut  # difference in time between last known data and last prediction.
+        # in other words,  lag_last_pred_fut = t+h - t where t+h is predicted, t is known.
+        # lag_last_pred_fut might be different from lookforward window if we are not predicting the +1 step, but the +2 step.
+        # in this example: u[0],u[1],u[2]. We predict u[4].
+        # Then,  lag_last_pred_fut = 2; lookforward_window = 1.
 
         self.batch_first = batch_first
 
@@ -62,8 +67,8 @@ class Windowcreator(object):
             create the dataset for training.
 
         Args:
-            input_data (pytorch tensor): should be a N*M matrix, column is a time series.
-            output_data (pytorch tensor): should be a N'*M' matrix, column is a time series.
+            input_data (pytorch tensor): should be a N*M matrix, column is a time series (length N).
+            output_data (pytorch tensor): should be a N'*M' matrix, column is a time series (length N').
 
         Returns:
             Two tensors with the data split in this shape:
@@ -75,6 +80,7 @@ class Windowcreator(object):
         """
         L = len(input_data)  # shape[0]
         nb_of_data = L - self.complete_window_data + 1  # nb of data - the window, but there is always one data so +1.
+        # nb_of_data represents the amount of different input to the learning algo.
 
         assert self.lookback_window < L, \
             f"lookback window is bigger than data. Window size : {self.lookback_window}, Data length : {L}."
@@ -107,9 +113,10 @@ class Windowcreator(object):
         """
         Semantics:
             predict the output by taking the input data and iterating over it by the window.
+            calls the method nn_predict of net.
 
         Args:
-            net:
+            net: derived from Savable_net.
             data_start:
             increase_data_for_pred:
             device (): where the net lies.
@@ -135,12 +142,12 @@ class Windowcreator(object):
             new_values = net.nn_predict(data_start[indices_input, :].view(1, -1, self.input_dim))
             # the view for the batch size.
 
-            new_values = self.adding_input_to_output(increase_data_for_pred, new_values, device)
+            new_values = self._adding_input_to_output(increase_data_for_pred, new_values, device)
 
             prediction[0, indices_pred, :] = new_values
         return prediction
 
-    def adding_input_to_output(self, increase_data_for_pred, new_values, device):
+    def _adding_input_to_output(self, increase_data_for_pred, new_values, device):
         if increase_data_for_pred is not None:
             new_values = increase_data_for_pred(new_values.cpu().numpy()).to(device)
             # cpu to make sure, numpy to avoid implicit conversion.
@@ -176,7 +183,7 @@ class Windowcreator(object):
             new_values = net.nn_predict(input_prediction[indices_in, :].view(1, -1, self.input_dim))
             prediction[0, indices_pred, :] = new_values
 
-            new_values = self.adding_input_to_output(increase_data_for_pred, new_values, device)
+            new_values = self._adding_input_to_output(increase_data_for_pred, new_values, device)
 
             input_prediction = torch.cat((input_prediction, new_values.view(-1, self.input_dim)))
             # the view for the batch size.
