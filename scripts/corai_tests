@@ -1,0 +1,3 @@
+python -m unittest corai/tests/automatic_tests/test_estim_history.py
+python -m unittest corai/tests/automatic_tests/test_fcnn.py
+python -m unittest corai/tests/automatic_tests/test_training.py

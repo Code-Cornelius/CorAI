@@ -5,8 +5,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="CorAI",
-    version="1.222.2",
-    author="Niels Cariou-Kotlarek, Bianca T. Catea",
+    version="1.301",
+    author="Niels D. Kotlarek, Bianca T. Catea",
     author_email="niels.carioukotlarek@gmail.com",
     description="A collection of python libraries",
     long_description=long_description,
@@ -40,5 +40,5 @@ setuptools.setup(
                  "corai_plot": "corai_plot",
                  "corai_util": "corai_util"},
     packages=setuptools.find_packages(),
-    python_requires=">=3.8",
+    python_requires=">=3.7.12",
 )
