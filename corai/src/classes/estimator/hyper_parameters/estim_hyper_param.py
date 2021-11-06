@@ -9,8 +9,6 @@ from corai.src.classes.estimator.history.estim_history import Estim_history
 
 
 class Estim_hyper_param(Estimator):
-    # TODO 26/07/2021 nie_k: Refactor with factory pattern!!
-
     def __init__(self, df=None):
         super().__init__(df)
 
@@ -31,12 +29,12 @@ class Estim_hyper_param(Estimator):
         return Estim_hyper_param.from_list(list_estimators, metric_names, flg_time)
 
     @classmethod
-    def from_list(cls, estimators, metric_names, flg_time=False):
+    def from_list(cls, list_estimator, metric_names, flg_time=False):
         """
         Semantics:
             Initialise an estim_hyper_param from a list of estim_history.
         Args:
-            estimators(list of Estim_history): The estimators to be used.
+            list_estimator(list of Estim_history): The estimators to be used.
             metric_names(list of str): The metrics used for comparison.
             flg_time(bool): Flag to specify if the training time should be saved to the dataframe.
 
@@ -46,7 +44,7 @@ class Estim_hyper_param(Estimator):
         # collect the data from the estimators
         assert not isinstance(metric_names, str), "metric_names shall be a list of str."
         dataframe_information = \
-            [Estim_hyper_param._get_dict_from_estimator(estimator, metric_names, flg_time) for estimator in estimators]
+            [Estim_hyper_param._get_dict_from_estimator(estimator, metric_names, flg_time) for estimator in list_estimator]
 
         # initialise the dataframe
         dataframe = pd.DataFrame(dataframe_information)

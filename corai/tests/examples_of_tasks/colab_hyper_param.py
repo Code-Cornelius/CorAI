@@ -2,11 +2,12 @@ import os
 import sys
 
 import numpy as np
-import corai
-from corai_util.tools import function_dict
 import torch
 from torch import nn
 from tqdm import tqdm
+
+import corai
+from corai_util.tools import function_dict
 
 
 # Define the exact solution
