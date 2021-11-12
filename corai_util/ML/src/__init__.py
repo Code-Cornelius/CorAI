@@ -1,1 +1,1 @@
-from .networkx import *
+from .networkx_fct import *
