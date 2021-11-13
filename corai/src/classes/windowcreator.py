@@ -65,11 +65,12 @@ class Windowcreator(object):
         """
         Semantics:
             create the dataset for training. Give time-series as u[t], v[t], without any time difference.
-            They should be of matching size, and the function will deduce which values correspond to which.
+            They should be of matching size, and the function will deduce which values correspond to which, by the windows given at initialisation.
 
         Args:
-            input_data (pytorch tensor): should be a N*M matrix, column is a time series (length N).
-            output_data (pytorch tensor): should be a N'*M' matrix, column is a time series (length N').
+            input_data  (pytorch tensor (batch N, length L, D_in nb dimensions) if batch first): all time-series from batch must have the same length,
+                because otherwise they would not fit inside a tensor.
+            output_data (pytorch tensor (batch N, length L, D_out nb dimensions)):
 
         Returns:
             Two tensors with the data split in this shape:
@@ -79,35 +80,53 @@ class Windowcreator(object):
             from https://stackabuse.com/time-series-prediction-using-lstm-with-pytorch-in-python/?fbclid=IwAR17NoARUlBsBLzanKmyuvmCXfU6Rxc69T9BZpowXfSUSYQNEFzl2pfDhSo
 
         """
-        L = len(input_data)  # shape[0]
-        nb_of_data = L - self.complete_window_data + 1  # nb of data - the window, but there is always one data so +1.
-        # nb_of_data represents the amount of different input to the learning algo.
+        nb_batch = input_data.shape[0]  # N as in documentation.
+        L = input_data.shape[1]  # L as in documentation.
+
+        nb_data = L - self.complete_window_data + 1  # nb of data - the window, but there is always one data so +1.
+        # nb_data represents the amount of different input to the learning algo.
 
         assert self.lookback_window < L, \
             f"lookback window is bigger than data. Window size : {self.lookback_window}, Data length : {L}."
         assert self.lookforward_window < L, \
             f"lookforward window is bigger than data. Window size : {self.lookback_window}, Data length : {L}."
-        assert len(input_data) == len(output_data)
 
+        assert input_data.shape[0] == output_data.shape[0], \
+            f"Batch size not matching {input_data.shape[0]}, {output_data.shape[0]}."
+        assert input_data.shape[1] == output_data.shape[1], \
+            f"Time-series length not matching {input_data.shape[1]}, {output_data.shape[1]}."
+
+        # in the following, we have data as nb_batch and as nb_data.
+        # nb_data corresponds to how many samples of observation we create out of
+        # one time series from the batches we gave (first component).
+        # but we do the same for all time-series. Hence the nb_batch.
+        # However we do not care in the end what data comes from what batch and we flatten the dimensions together.
         if self.batch_first:  # specifies how to take the input
-            data_X = torch.zeros(nb_of_data, self.lookback_window, self.input_dim)
-            data_Y = torch.zeros(nb_of_data, self.lookforward_window, self.output_dim)
+            data_X = torch.zeros(nb_batch, nb_data, self.lookback_window, self.input_dim)
+            data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim)
 
-            for i in tqdm(range(nb_of_data), disable=self.silent):
-                data_X[i, :, :] = input_data[i:i + self.lookback_window, :].view(1, self.lookback_window,
-                                                                                 self.input_dim)
+            for i in tqdm(range(nb_data), disable=self.silent):
+                data_X[:, i, :, :] = input_data[:,
+                                     i:i + self.lookback_window, :].unsqueeze(1)  # add dimension of nb_data
                 slice_out = slice(i + self.lookback_window, i + self.lookback_window + self.lookforward_window)
-                data_Y[i, :, :] = output_data[slice_out, :].view(1, self.lookforward_window, self.output_dim)
+                data_Y[:, i, :, :] = output_data[:, slice_out, :].unsqueeze(1)  # add dimension of nb_data
+
+            data_X = torch.flatten(data_X, start_dim=0, end_dim=1)
+            data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
             return data_X, data_Y
 
         else:
-            data_X = torch.zeros(self.lookback_window, nb_of_data, self.input_dim)
-            data_Y = torch.zeros(nb_of_data, self.input_dim, self.output_dim)
+            data_X = torch.zeros(self.lookback_window, nb_batch, nb_data, self.input_dim)
+            data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim)
 
-            for i in tqdm(range(nb_of_data), disable=self.silent):
-                data_X[:, i, :] = input_data[i:i + self.lookback_window, :].view(self.lookback_window, self.input_dim)
-                data_Y[:, i, :] = output_data[i + self.lookback_window: i + self.lookback_window +
-                                                                        self.lookforward_window, :]
+            for i in tqdm(range(nb_data), disable=self.silent):
+                data_X[:, :, i, :] = \
+                    input_data[i:i + self.lookback_window, :].view(self.lookback_window, self.input_dim)
+                data_Y[:, i, :, :] = \
+                    output_data[i + self.lookback_window: i + self.lookback_window + self.lookforward_window, :]
+
+            data_X = torch.flatten(data_X, start_dim=1, end_dim=2)
+            data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
             return data_X, data_Y
 
     def prediction_over_training_data(self, net, data, increase_data_for_pred, device):

@@ -91,7 +91,9 @@ if __name__ == '__main__':
                                  lag_last_pred_fut=lookforward_window,
                                  lookforward_window=lookforward_window, type_window="Moving")
     (data_training_X,
-     data_training_Y) = window.create_input_sequences(train_data_normalized, train_data_normalized[:, 0].unsqueeze(1))
+     data_training_Y) = window.create_input_sequences(train_data_normalized.unsqueeze(0),
+                                                      # unsqueeze bc batch size missing.
+                                                      train_data_normalized[:, 0].unsqueeze(0).unsqueeze(2))
 
     indices_train = torch.arange(len(data_training_X) - lookback_window)
     indices_valid = torch.arange(len(data_training_X) - lookback_window, len(data_training_X))

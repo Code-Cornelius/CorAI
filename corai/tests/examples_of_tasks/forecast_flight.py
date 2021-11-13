@@ -92,8 +92,8 @@ if __name__ == '__main__':
     window = corai.Windowcreator(input_dim=input_size, output_dim=1, lookback_window=lookback_window,
                                  lag_last_pred_fut=lookforward_window,
                                  lookforward_window=lookforward_window, type_window="Moving")
-    (data_training_X, data_training_Y) = window.create_input_sequences(train_data_normalized,  # input
-                                                                       train_data_normalized[:, 0].unsqueeze(1))
+    (data_training_X, data_training_Y) = window.create_input_sequences(train_data_normalized.unsqueeze(0),  # unsqueeze bc batch size missing.
+                                                                       train_data_normalized[:, 0].unsqueeze(0).unsqueeze(2))
     # : output that we take only prediction qte and unsqueeze it to match dimensions.
 
     indices_train = torch.arange(len(data_training_X) - lookback_window)
@@ -142,6 +142,7 @@ if __name__ == '__main__':
     else:
         increase_data_for_pred = None
     train_prediction = window.prediction_over_training_data(net, train_data_normalized.unsqueeze(0),
+                                                            # unsqueeze bc batch size missing.
                                                             increase_data_for_pred, device=device)
     if input_size > 1:
         increase_data_for_pred = Adaptor_output(train_data_normalized.shape[1], 0,
@@ -150,6 +151,7 @@ if __name__ == '__main__':
         increase_data_for_pred = None
     ##########################################  prediction unknown set. Corresponds to predicting the black line.
     test_prediction = window.prediction_recurrent(net, train_data_normalized[-lookback_window:].unsqueeze(0),
+                                                  # unsqueeze bc batch size missing.
                                                   nb_test_prediction, increase_data_for_pred, device='cpu')
 
     ##########################################  prediction of TESTING unknown data by starting with black line.
@@ -159,6 +161,7 @@ if __name__ == '__main__':
     else:
         increase_data_for_pred = None
     unknwon_prediction = window.prediction_recurrent(net, testing_data_normalised[-lookback_window:].unsqueeze(0),
+                                                     # unsqueeze bc batch size missing.
                                                      nb_unknown_prediction, increase_data_for_pred, device='cpu')
 
     ##########################################

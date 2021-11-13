@@ -82,7 +82,7 @@ class Test_classification(TestCase):
         (net, estimator_history) = nn_kfold_train(self.train_X, self.train_Y, self.Class_Parametrized_NN,
                                                   param_train=self.param_training,
                                                   early_stoppers=self.early_stoppers, nb_split=1, shuffle_kfold=True,
-                                                  percent_val_for_1_fold=10, silent=False)
+                                                  percent_val_for_1_fold=10, silent=True)
 
         best_acc = estimator_history.get_best_value_for('accuracy_validation')
         # : fetch the best value and assert if accuracy > threshold.
@@ -92,7 +92,7 @@ class Test_classification(TestCase):
         (net, estimator_history) = nn_kfold_train(self.train_X, self.train_Y, self.Class_Parametrized_NN,
                                                   param_train=self.param_training,
                                                   early_stoppers=self.early_stoppers, nb_split=5, shuffle_kfold=True,
-                                                  percent_val_for_1_fold=10, silent=False)
+                                                  percent_val_for_1_fold=10, silent=True)
 
         best_acc = estimator_history.get_best_value_for(
             'accuracy_validation')  # : fetch the best value and assert if accuracy > threshold.
@@ -165,7 +165,7 @@ class Test_regression(TestCase):
         (net, estimator_history) = nn_kfold_train(self.train_X, self.train_Y, self.Class_Parametrized_NN,
                                                   param_train=self.param_training,
                                                   early_stoppers=self.early_stoppers, nb_split=1, shuffle_kfold=True,
-                                                  percent_val_for_1_fold=20, silent=False)
+                                                  percent_val_for_1_fold=20, silent=True)
 
         best_loss = estimator_history.get_best_value_for('loss_validation')
         # : fetch the best value and assert if accuracy > threshold.
@@ -175,7 +175,7 @@ class Test_regression(TestCase):
         (net, estimator_history) = nn_kfold_train(self.train_X, self.train_Y, self.Class_Parametrized_NN,
                                                   param_train=self.param_training,
                                                   early_stoppers=self.early_stoppers, nb_split=10, shuffle_kfold=True,
-                                                  percent_val_for_1_fold=10, silent=False)
+                                                  percent_val_for_1_fold=10, silent=True)
 
         best_loss = estimator_history.get_best_value_for('loss_validation')
         # : fetch the best value and assert if accuracy > threshold.
@@ -187,7 +187,7 @@ class Test_regression(TestCase):
                                                       param_train=self.param_training,
                                                       early_stoppers=self.early_stoppers, nb_split=1,
                                                       shuffle_kfold=True,
-                                                      percent_val_for_1_fold=0, silent=False)
+                                                      percent_val_for_1_fold=0, silent=True)
             raise PermissionError('Should have broke there, and the error caught! The error should have been: '
                                   'AssertionError: Input validation stopper while no validation set given.')
 
@@ -198,7 +198,7 @@ class Test_regression(TestCase):
             (net, estimator_history) = nn_kfold_train(self.train_X, self.train_Y, self.Class_Parametrized_NN,
                                                       param_train=self.param_training,
                                                       early_stoppers=early_stoppers, nb_split=1, shuffle_kfold=True,
-                                                      percent_val_for_1_fold=0, silent=False)
+                                                      percent_val_for_1_fold=0, silent=True)
 
             best_loss = estimator_history.get_best_value_for('loss_training')
             # : fetch the best value and assert if accuracy > threshold.
@@ -210,7 +210,7 @@ class Test_regression(TestCase):
                                                       param_train=self.param_training,
                                                       early_stoppers=self.early_stoppers, nb_split=1,
                                                       shuffle_kfold=True,
-                                                      percent_val_for_1_fold=-5, silent=False)
+                                                      percent_val_for_1_fold=-5, silent=True)
             PermissionError('Should have broke there, and the error caught! The error should have been: '
                             'AssertionError: percent_validation_for_1_fold should be in [0,100[ !')
 
@@ -221,7 +221,7 @@ class Test_regression(TestCase):
                                                       param_train=self.param_training,
                                                       early_stoppers=self.early_stoppers, nb_split=1,
                                                       shuffle_kfold=True,
-                                                      percent_val_for_1_fold=150, silent=False)
+                                                      percent_val_for_1_fold=150, silent=True)
             PermissionError('Should have broke there, and the error caught! The error should have been: '
                             'AssertionError: percent_validation_for_1_fold should be in [0,100[ !')
 
