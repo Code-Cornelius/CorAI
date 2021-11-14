@@ -3,7 +3,8 @@ import os
 
 import pandas as pd
 
-from corai_error import Error_type_setter
+import corai_error
+from corai_error import Error_type_setter, Error_not_allowed_input
 from corai_util.tools.src.function_json import zip_json, unzip_json
 
 
@@ -58,6 +59,8 @@ class Estimator(object):
         Returns: new estimator.
 
         """
+        if os.path.getsize(path) <= 0:
+            raise Error_not_allowed_input("The input csv file cannot be empty")
         return cls(df=pd.read_csv(path, **kwargs))  # calling the constructor of the class.
 
     @classmethod
@@ -91,6 +94,9 @@ class Estimator(object):
                 estimator.to_json(path=path, compress=compressed)
             return estimator
         """
+        if os.path.getsize(path) <= 0:
+            raise Error_not_allowed_input("The input json file cannot be empty")
+
         dataframe = pd.read_json(path, orient='split')
         return cls(df=dataframe)
 
@@ -105,6 +111,9 @@ class Estimator(object):
         Returns:
 
         """
+        if os.path.getsize(path) <= 0:
+            raise Error_not_allowed_input("The input json file cannot be empty")
+
         with open(path, 'r') as file:  # read file
             df_info = json.load(file)
             if compress:  # decompress
