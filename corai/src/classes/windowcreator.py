@@ -62,6 +62,7 @@ class Windowcreator(object):
             f'Y indices: {self.indices_prediction}'])
 
     def create_input_sequences(self, input_data, output_data):
+        # todo assert dims
         """
         Semantics:
             create the dataset for training. Give time-series as u[t], v[t], without any time difference.
@@ -108,7 +109,7 @@ class Windowcreator(object):
             for i in tqdm(range(nb_data), disable=self.silent):
                 data_X[:, i, :, :] = input_data[:,
                                      i:i + self.lookback_window, :]  # add dimension of nb_data
-                slice_out = slice(i + self.lookback_window, i + self.lookback_window + self.lookforward_window)
+                slice_out = slice(i + self.lookback_window, i + self.lookback_window + self.lookforward_window) # wip  lag_last_pred_fut mssing
                 data_Y[:, i, :, :] = output_data[:, slice_out, :]  # add dimension of nb_data
 
             data_X = torch.flatten(data_X, start_dim=0, end_dim=1)
