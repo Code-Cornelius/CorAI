@@ -87,9 +87,9 @@ class Windowcreator(object):
         # nb_data represents the amount of different input to the learning algo.
 
         assert self.lookback_window < L, \
-            f"lookback window is bigger than data. Window size : {self.lookback_window}, Data length : {L}."
+            f"lookback window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
         assert self.lookforward_window < L, \
-            f"lookforward window is bigger than data. Window size : {self.lookback_window}, Data length : {L}."
+            f"lookforward window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
 
         assert input_data.shape[0] == output_data.shape[0], \
             f"Batch size not matching {input_data.shape[0]}, {output_data.shape[0]}."
@@ -107,9 +107,9 @@ class Windowcreator(object):
 
             for i in tqdm(range(nb_data), disable=self.silent):
                 data_X[:, i, :, :] = input_data[:,
-                                     i:i + self.lookback_window, :].unsqueeze(1)  # add dimension of nb_data
+                                     i:i + self.lookback_window, :]  # add dimension of nb_data
                 slice_out = slice(i + self.lookback_window, i + self.lookback_window + self.lookforward_window)
-                data_Y[:, i, :, :] = output_data[:, slice_out, :].unsqueeze(1)  # add dimension of nb_data
+                data_Y[:, i, :, :] = output_data[:, slice_out, :]  # add dimension of nb_data
 
             data_X = torch.flatten(data_X, start_dim=0, end_dim=1)
             data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
@@ -120,10 +120,9 @@ class Windowcreator(object):
             data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim)
 
             for i in tqdm(range(nb_data), disable=self.silent):
-                data_X[:, :, i, :] = \
-                    input_data[i:i + self.lookback_window, :].view(self.lookback_window, self.input_dim)
-                data_Y[:, i, :, :] = \
-                    output_data[i + self.lookback_window: i + self.lookback_window + self.lookforward_window, :]
+                data_X[:, :, i, :] = input_data[i:i + self.lookback_window]
+                slice_out =  slice(i + self.lookback_window, i + self.lookback_window + self.lookforward_window)
+                data_Y[:, i, :, :] = output_data[:, slice_out, :]
 
             data_X = torch.flatten(data_X, start_dim=1, end_dim=2)
             data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
