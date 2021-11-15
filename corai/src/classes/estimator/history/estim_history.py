@@ -156,7 +156,7 @@ class Estim_history(Estimator):
         Args:
             history (dict): history of the training, a certain shape that is agreed upon in the training,
             fold_best_epoch (int): best epoch for a model,
-            fold_time (int): the time it took to train one fold, seconds.
+            fold_time (float): the time it took to train one fold, seconds.
             period_kept_data(int): Keep only elements on indices that are multiple of period_kept_data.
                 If None dataframe is not affected. best_epoch will not be removed.
         Returns:

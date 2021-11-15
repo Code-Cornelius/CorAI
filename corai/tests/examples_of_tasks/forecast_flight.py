@@ -89,6 +89,7 @@ if __name__ == '__main__':
     testing_data_normalised = torch.FloatTensor(minimax.transform(testing_data))
     testing_data = torch.FloatTensor(testing_data)
 
+    # todo add parameter lag_last_pred_fut such that it is reflected on the plots.
     window = corai.Windowcreator(input_dim=input_size, output_dim=1, lookback_window=lookback_window,
                                  lag_last_pred_fut=lookforward_window,
                                  lookforward_window=lookforward_window, type_window="Moving")

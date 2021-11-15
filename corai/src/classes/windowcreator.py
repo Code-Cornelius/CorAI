@@ -1,4 +1,3 @@
-import numpy as np
 import torch
 from tqdm import tqdm
 
@@ -28,7 +27,10 @@ class Windowcreator(object):
         assert not (type_window == "Increasing" and lookback_window != 0), "Increasing so window ==0."
         assert not (type_window == "Moving" and lookback_window == 0), "Moving so window > 0."
 
-        assert lookforward_window <= lag_last_pred_fut, "lag_last_pred_fut is at least as long as lookforward_window."
+        assert (lookforward_window <= lag_last_pred_fut), \
+            "lag_last_pred_fut is at least as long as lookforward_window. " \
+            "It correspond to the maximal lag between the last seen data  and the maximum prediction required." \
+            "There might be a mismatch if one requires a prediction at time +1."
         # Window parameters.
         self.input_dim = input_dim  # dimension of input
         self.output_dim = output_dim  # dimension of output
@@ -48,21 +50,7 @@ class Windowcreator(object):
         # Parameters of the slices
         self.complete_window_data = self.lookback_window + self.lag_last_pred_fut
 
-        self.input_slice = slice(0, self.lookback_window)
-        self.input_indices = np.arange(self.complete_window_data)[self.input_slice]
-
-        self.index_start_prediction = self.complete_window_data - self.lookforward_window
-        self.slices_prediction = slice(self.index_start_prediction, None)  # None means to the end
-        self.indices_prediction = np.arange(self.complete_window_data)[self.slices_prediction]
-
-    def __repr__(self):
-        return '\n'.join([
-            f'Total window size: {self.complete_window_data}',
-            f'X indices: {self.input_indices}',
-            f'Y indices: {self.indices_prediction}'])
-
     def create_input_sequences(self, input_data, output_data):
-        # todo assert dims
         """
         Semantics:
             create the dataset for training. Give time-series as u[t], v[t], without any time difference.
@@ -87,47 +75,42 @@ class Windowcreator(object):
         nb_data = L - self.complete_window_data + 1  # nb of data - the window, but there is always one data so +1.
         # nb_data represents the amount of different input to the learning algo.
 
-        assert self.lookback_window < L, \
-            f"lookback window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
-        assert self.lookforward_window < L, \
-            f"lookforward window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
-
-        assert input_data.shape[0] == output_data.shape[0], \
-            f"Batch size not matching {input_data.shape[0]}, {output_data.shape[0]}."
-        assert input_data.shape[1] == output_data.shape[1], \
-            f"Time-series length not matching {input_data.shape[1]}, {output_data.shape[1]}."
+        self._assert_cdt_create_sequences(L, input_data, output_data)
 
         # in the following, we have data as nb_batch and as nb_data.
         # nb_data corresponds to how many samples of observation we create out of
         # one time series from the batches we gave (first component).
         # but we do the same for all time-series. Hence the nb_batch.
         # However we do not care in the end what data comes from what batch and we flatten the dimensions together.
-        if self.batch_first:  # specifies how to take the input
-            data_X = torch.zeros(nb_batch, nb_data, self.lookback_window, self.input_dim)
-            data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim)
+        data_X = torch.zeros(nb_batch, nb_data, self.lookback_window, self.input_dim)
+        data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim)
 
-            for i in tqdm(range(nb_data), disable=self.silent):
-                data_X[:, i, :, :] = input_data[:,
-                                     i:i + self.lookback_window, :]  # add dimension of nb_data
-                slice_out = slice(i + self.lookback_window, i + self.lookback_window + self.lookforward_window) # wip  lag_last_pred_fut mssing
-                data_Y[:, i, :, :] = output_data[:, slice_out, :]  # add dimension of nb_data
+        for i in tqdm(range(nb_data), disable=self.silent):
+            data_X[:, i, :, :] = input_data[:, i:i + self.lookback_window, :]  # add dimension of nb_data
+            slice_out = slice(i + self.lookback_window + self.lag_last_pred_fut - self.lookforward_window,
+                              i + self.lookback_window + self.lag_last_pred_fut)
+            data_Y[:, i, :, :] = output_data[:, slice_out, :]  # add dimension of nb_data
 
-            data_X = torch.flatten(data_X, start_dim=0, end_dim=1)
-            data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
-            return data_X, data_Y
+        data_X = torch.flatten(data_X, start_dim=0, end_dim=1)
+        data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
 
-        else:
-            data_X = torch.zeros(self.lookback_window, nb_batch, nb_data, self.input_dim)
-            data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim)
+        if not self.batch_first:
+            data_X = data_X.transpose(0,1) # swaping dimensions.
+        return data_X, data_Y
 
-            for i in tqdm(range(nb_data), disable=self.silent):
-                data_X[:, :, i, :] = input_data[i:i + self.lookback_window]
-                slice_out =  slice(i + self.lookback_window, i + self.lookback_window + self.lookforward_window)
-                data_Y[:, i, :, :] = output_data[:, slice_out, :]
-
-            data_X = torch.flatten(data_X, start_dim=1, end_dim=2)
-            data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
-            return data_X, data_Y
+    def _assert_cdt_create_sequences(self, L, input_data, output_data):
+        assert self.lookback_window < L, \
+            f"lookback window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
+        assert self.lookforward_window < L, \
+            f"lookforward window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
+        assert input_data.shape[0] == output_data.shape[0], \
+            f"Batch size not matching: {input_data.shape[0]}, {output_data.shape[0]}."
+        assert input_data.shape[1] == output_data.shape[1], \
+            f"Time-series length not matching: {input_data.shape[1]}, {output_data.shape[1]}."
+        assert input_data.shape[2] == self.input_dim, \
+            f"Time-series input dimension not corresponding to the window's: {input_data.shape[2]}, {self.input_dim}."
+        assert output_data.shape[2] == self.output_dim, \
+            f"Time-series output dimension not corresponding to the window's: {output_data.shape[2]}, {self.output_dim}."
 
     def prediction_over_training_data(self, net, data, increase_data_for_pred, device):
         """

@@ -147,7 +147,7 @@ def train_kfold_a_fold_after_split(data_train_X, data_train_Y, index_training, i
         param_train (NNTrainParameters): The parameters used for training.
         estimator_history (Estim_history): The estimator in which the results will be saved.
         early_stoppers (iterable of Early_stopper): Used for deciding if the training should stop early.
-        value_metric_for_best_NN: #todo Niels explain this
+        value_metric_for_best_NN (float): current best error that is a benchmark of what has to be beaten.
         best_net (Savable_net): Best net so far, based on comparison.
         i (int): Number of fold.
             Requirements: 0 <= i < nb_of_split
@@ -190,8 +190,8 @@ def _new_best_model(best_net, i, net, value_metric_for_best_NN, estimator_histor
     Args:
         best_net (Savable_net): Current best net.
         i: The index of the current fold.
-        net: Current net.
-        value_metric_for_best_NN: #todo Niels, find explanation
+        net (savable net): Current net.
+        value_metric_for_best_NN (float): current best error that is a benchmark of what has to be beaten.
         estimator_history (Estim_history): The estimator in which the results will be saved.
         silent (bool): Verbose.
 
@@ -201,8 +201,12 @@ def _new_best_model(best_net, i, net, value_metric_for_best_NN, estimator_histor
     rookie_perf = -estimator_history.get_values_fold_epoch_col(i, estimator_history.list_best_epoch[i], "loss_training")
 
     if not silent:  # -1 * ... bc we want to keep order below :
-        print("New best model updated: rookie perf : {:e}"
-              " and old best perf : {:e}.".format(-rookie_perf, -value_metric_for_best_NN))
+        if value_metric_for_best_NN != -np.Inf:
+            end_sentence = " and old best perf : {:e}.".format(-value_metric_for_best_NN)
+        else:
+            end_sentence = "."
+        print("New best model updated: rookie perf : {:e}".format(-rookie_perf) + end_sentence)
+
     if value_metric_for_best_NN < rookie_perf:
         best_net = net
         value_metric_for_best_NN = rookie_perf
