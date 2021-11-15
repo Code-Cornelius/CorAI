@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="CorAI",
-    version="1.301",
+    version="1.302",
     author="Niels D. Kotlarek, Bianca T. Catea",
     author_email="niels.carioukotlarek@gmail.com",
     description="A collection of python libraries",
