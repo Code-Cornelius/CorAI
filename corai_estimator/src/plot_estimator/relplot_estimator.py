@@ -1,6 +1,7 @@
 # normal libraries
 from abc import abstractmethod
 
+import matplotlib.pyplot as plt
 import seaborn as sns
 
 from corai_estimator.src.plot_estimator.plot_estimator import Plot_estimator
@@ -221,7 +222,7 @@ class Relplot_estimator(Plot_estimator):
 
         """
         x_axis = second_column_to_draw_abscissa if (
-                    second_column_to_draw_abscissa is not None) else self.EVOLUTION_COLUMN
+                second_column_to_draw_abscissa is not None) else self.EVOLUTION_COLUMN
         # super call for gathering all separators together and having the group by done.
         separators_plot, global_dict, keys = super().draw(separators_plot=separators_plot, *args, **kwargs)
         self._raise_if_separator_is_evolution(separators_plot)  # test evolution_name is not part of separators.
@@ -256,14 +257,14 @@ class Relplot_estimator(Plot_estimator):
             if envelope_flag:
                 for fct in ['min', 'max']:
                     sns.lineplot(x=x_axis, y=column_name_draw,
-                                 estimator=fct, # hue=hue,
+                                 estimator=fct,  # hue=hue,
                                  legend=False, err_style="band", ci=None,
                                  # no Conf. Inter. for max value (does not make actually sense with bootstrapping)
                                  palette=palette, data=data, ax=ax,
                                  color='r', linestyle='--', linewidth=0.5, label=fct)
             if column_name_true_values is not None:
                 sns.lineplot(x=x_axis, y=column_name_true_values,
-                             legend=False, err_style="band", ci=None, # hue = hue,
+                             legend=False, err_style="band", ci=None,  # hue = hue,
                              palette=palette, data=data, ax=ax,
                              color='r', linestyle='--', linewidth=0.5, label='true value')
 
@@ -336,6 +337,22 @@ class Relplot_estimator(Plot_estimator):
                             legend=legend, palette=palette, hue_norm=hue_norm,
                             data=data, ax=plot._axs[0], **dict_plot_for_main_line)
 
+            # we add a colorbar when the hue is given.
+            # cf: https://stackoverflow.com/questions/62884183/trying-to-add-a-colorbar-to-a-seaborn-scatterplot
+            if hue is not None:
+                if hue_norm is None:
+                    minn = data[hue].min()
+                    maxx = data[hue].max()
+                else:
+                    # TODO 16/11/2021 nie_k:
+                    #  potentially it is wrong if hue_norm is not a tuple. How to handle other cases?
+                    minn = hue_norm[0]
+                    maxx = hue_norm[1]
+
+                norm = plt.Normalize(minn, maxx)
+                sm = plt.cm.ScalarMappable(cmap=palette, norm=norm)
+                plot._axs[0].figure.colorbar(sm)
+
             if column_name_true_values is not None:
                 sns.lineplot(x=x_axis, y=column_name_true_values,
                              hue=hue,
@@ -351,6 +368,7 @@ class Relplot_estimator(Plot_estimator):
                 # TODO 26/06/2021 nie_k: refactor function using path_save_plot + fct. LIKE PARAMETER + KEYS + NAME FCT (hist, scatter, lineplot...)
                 name_file = ''.join([function_str.tuple_to_str(key, ''), 'evol_estimation'])
                 plot.save_plot(name_save_file=name_file)
+
         return plots
 
     # section ######################################################################

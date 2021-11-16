@@ -177,5 +177,5 @@ if __name__ == '__main__':
 
         scatplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
         scatplot_hyperparam.scatter(column_name_draw='loss_training', second_column_to_draw_abscissa='loss_validation',
-                                    hue='train_time', hue_norm=(0, 30), legend=False)
+                                    hue='train_time', hue_norm=(0, 2), legend=False)
         APlot.show_plot()
