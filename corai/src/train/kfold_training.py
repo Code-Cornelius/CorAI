@@ -6,6 +6,7 @@ import torch
 
 from corai.src.classes.estimator.history.estim_history import Estim_history
 from corai.src.classes.training_stopper.early_stopper_vanilla import Early_stopper_vanilla
+from corai.src.train.history import translate_history_to_dataframe
 from corai.src.train.train import nn_train
 
 
@@ -177,10 +178,10 @@ def train_kfold_a_fold_after_split(data_train_X, data_train_Y, index_training, i
                                                indic_val_X=index_validation, indic_val_Y=index_validation,
                                                silent=silent)  # train network and save results
     end_train_fold_time = time.time() - start_train_fold_time
-    history = _translate_history_to_dataframe(history=kfold_history,
-                                              fold_number=i,
-                                              validation=estimator_history.validation)
+    history = translate_history_to_dataframe(history=kfold_history, fold_number=i,
+                                             validation=estimator_history.validation)
     estimator_history.append(history=history, fold_best_epoch=kfold_best_epoch, fold_time=end_train_fold_time)
+    # changed the best fold in new_best_model : estimator_history.best_fold = i
 
     return _new_best_model(best_net, i, net, value_metric_for_best_NN, estimator_history, silent)
 
@@ -276,43 +277,3 @@ def _nn_kfold_indices_creation_random(data_training_X, data_training_Y,
             # the seed is not fixed here but outside.
 
         return kfold.split(data_training_X, data_training_Y), True
-
-
-def _translate_history_to_dataframe(history, fold_number, validation):
-    """
-        Translate from history structure to a flat structure that will be used to add the history to the dataframe
-    Args:
-        history: the history of the training.
-        fold_number (int): the fold number the history corresponds to.
-        validation (bool): flag to specify weather validation is used.
-        validation (bool): is there a validation metric computed.
-
-    Returns:
-        The translated history
-    """
-    # TODO 26/07/2021 nie_k:  a good idea would be to slice the data wrt criterea, like only 1/25 of the epochs saved.
-    translated_history = {}
-
-    # collect training information
-    for key, value in history['training'].items():
-        new_key = Estim_history.generate_column_name(key)
-        new_value = value[~np.isnan(value)] # we slice out the value that are nan.
-        translated_history[new_key] = new_value.tolist()
-
-    assert ('validation' in history) == validation, "Validation required / not required and " \
-                                                    "validation not present / present in the history."
-    # collect validation information if present
-    if 'validation' in history:
-        for key, value in history['validation'].items():
-            new_key = Estim_history.generate_column_name(key, validation=True)
-            new_value = value[~np.isnan(value)]
-            translated_history[new_key] = new_value.tolist()
-
-    # add the epoch number to the translated history
-    nb_epochs = len(translated_history['loss_training'])
-    translated_history['epoch'] = [*range(nb_epochs)]
-
-    # add the fold number to the history
-    translated_history['fold'] = [fold_number] * nb_epochs
-
-    return translated_history

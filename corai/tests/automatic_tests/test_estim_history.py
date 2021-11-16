@@ -7,7 +7,7 @@ import numpy as np
 import os
 
 from corai.src.classes.estimator.hyper_parameters.estim_hyper_param import Estim_hyper_param
-from corai.src.train.kfold_training import _translate_history_to_dataframe
+from corai.src.train.history import translate_history_to_dataframe
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 train_history = {
@@ -59,17 +59,17 @@ class Test_estim_history(TestCase):
         assert column_names == df_column_names
 
     def test_translate_flattens_the_history(self):
-        translated_history = _translate_history_to_dataframe(train_history, 1, True)
+        translated_history = translate_history_to_dataframe(train_history, 1, True)
 
         assert translated_history == flattened_history
 
     def test_append_history_from_folds_to_estim(self):
         estimator = Estim_history(metric_names=metric_names, validation=True)
 
-        history = _translate_history_to_dataframe(train_history, 0, True)
+        history = translate_history_to_dataframe(train_history, 0, True)
         estimator.append(history, fold_best_epoch =  2, fold_time = 3)
 
-        history = _translate_history_to_dataframe(train_history, 1, True)
+        history = translate_history_to_dataframe(train_history, 1, True)
         estimator.append(history, fold_best_epoch = 3, fold_time = 3)
 
         df = estimator._df
@@ -83,10 +83,10 @@ class Test_estim_history(TestCase):
         path = os.path.join(FOLDER_PATH, file_name)
         estimator = Estim_history(metric_names=metric_names, validation=True)
 
-        history = _translate_history_to_dataframe(train_history, 0, True)
+        history = translate_history_to_dataframe(train_history, 0, True)
         estimator.append(history, 2, 2)
 
-        history = _translate_history_to_dataframe(train_history, 1, True)
+        history = translate_history_to_dataframe(train_history, 1, True)
         estimator.append(history, 3, 2)
 
         estimator.to_json(path)
@@ -102,14 +102,14 @@ class Test_estim_history(TestCase):
                                                        'lr': 0.7,
                                                        'layers': [12, 10]})
 
-        history = _translate_history_to_dataframe(train_history, 0, True)
+        history = translate_history_to_dataframe(train_history, 0, True)
         estimator.append(history, fold_best_epoch= 2, fold_time= 3)
         estimator.best_fold = 0 # manually set, normally set during training.
 
         file_path1 = os.path.join(FOLDER_PATH, "estim_1.json")
         estimator.to_json(file_path1)
 
-        history = _translate_history_to_dataframe(train_history, 1, True)
+        history = translate_history_to_dataframe(train_history, 1, True)
         estimator.append(history, 3, 2)
 
         estimator.best_fold = 1
