@@ -13,5 +13,5 @@ class Distplot_hyper_param(Plot_estim_hyper_param, Distplot_estimator):
                                     before_text="Histogram of the performances with respect to the hyper-parameters")
         fig_dict = {'title': title,
                     'xlabel': kwargs['column_name_draw'],
-                    'ylabel': "Nb of bins"}
+                    'ylabel': "Nb of elements in a bin"}
         return fig_dict

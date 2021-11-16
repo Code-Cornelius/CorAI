@@ -112,7 +112,7 @@ def nn_fit(net, X_train_on_device, Y_train_on_device,
 
 def _do_early_stop(net, early_stoppers, history, epoch, silent):
     for early_stopper in early_stoppers:
-        if early_stopper(net, history, epoch): # if any earlly stops, then we return true.
+        if early_stopper(net, history, epoch): # if any early stops, then we return true.
             if not silent: print("Terminated epochs, with early stopper training at epoch {}.".format(epoch))
             return True
     return False
