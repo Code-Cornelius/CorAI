@@ -63,7 +63,7 @@ In particular, one decides the metrics used to compute the loss during training.
 ```python
 from torch import linalg as LA
 def L4loss(net, xx, yy):
-  return LA.norm(net.nn_predict(xx) - yy[net.washout:], 4)
+  return LA.norm(net.nn_predict(xx) - yy, 4)
 
 
 L4metric = corai.Metric('L4', L4loss)

@@ -17,7 +17,7 @@ def exact_solution(x):
 
 
 def L4loss(net, xx, yy):
-    return LA.norm(net.nn_predict(xx) - yy[net.washout:], 4)
+    return LA.norm(net.nn_predict(xx) - yy, 4)
 
 
 L4metric = corai.Metric('L4', L4loss)
@@ -133,7 +133,7 @@ if __name__ == '__main__':
                                                                 metric_names=["loss_validation", "loss_training"],
                                                                 flg_time=True, compressed=False)
 
-        ######## possibilities:
+        ######## example of usage:
         # estim_hyper_param = corai.Estim_hyper_param.from_list(estims, metric_names=["loss_validation", "loss_training"],
         #                                                 flg_time=True)
         # estim_hyper_param.to_csv("example_estim_hyper_param.csv")
@@ -141,28 +141,37 @@ if __name__ == '__main__':
 
         ######## drawing the distribution plot:
         histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
-        histplot_hyperparam.hist(column_name_draw='train_time', separators_plot=None, hue='dropout',
+        histplot_hyperparam.hist(column_name_draw='train_time',  hue='dropout',
+                                 separators_plot=None,
                                  palette='RdYlBu', bins=50,
                                  binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
-        histplot_hyperparam.hist(column_name_draw='loss_validation', separators_plot=None, hue='lr',
+        histplot_hyperparam.hist(column_name_draw='loss_validation',
+                                 separators_plot=None,
+                                 hue='lr',
                                  palette='RdYlBu', bins=20,
                                  binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
 
         ######## drawing the relation plot:
         scatplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
-        scatplot_hyperparam.scatter(column_name_draw='loss_training', second_column_to_draw_abscissa='loss_validation',
-                                    hue='train_time', hue_norm=(0, 30), legend=False)
+        scatplot_hyperparam.scatter(column_name_draw='loss_training',
+                                    second_column_to_draw_abscissa='loss_validation',
+                                    hue='train_time',
+                                    hue_norm=(0, 30), legend=False)
 
         ######## conditioning the data to plot a subset:
         condition = lambda t: t <= 2
         estim_hyper_param.slice(column='train_time', condition=condition, save=True)  # slice data, removing some part.
 
         histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
-        histplot_hyperparam.hist(column_name_draw='train_time', separators_plot=None, hue='dropout',
+        histplot_hyperparam.hist(column_name_draw='train_time',
+                                 separators_plot=None,
+                                 hue='dropout',
                                  palette='RdYlBu', bins=50,
                                  binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
 
-        histplot_hyperparam.hist(column_name_draw='loss_validation', separators_plot=None, hue='lr',
+        histplot_hyperparam.hist(column_name_draw='loss_validation',
+                                 separators_plot=None,
+                                 hue='lr',
                                  palette='RdYlBu', bins=20,
                                  binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
 
