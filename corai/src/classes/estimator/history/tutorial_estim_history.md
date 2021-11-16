@@ -13,7 +13,7 @@ In order to initialise an `Estim_history` one will need three things:
 - a flag indicating whether validation will be used, if validation is present a second column will be added for each
   metric to store the result for validation,
 - a `dictionary` of hyper-parameters (optional), it is a dictionary containing the parameters that will change during
-  different trainings and which will be compared for performance at the end. For more details on hyper parameters check
+  different trainings and which will be compared for performance at the end. For more details on hyper-parameters check
   out:
   `corai/src/classes/estimator/hyper_parameters/Tutorial_estim_hyperparameter.md`
 
@@ -26,12 +26,12 @@ estimator_history = corai.Estim_hystory(metric_names, validation, hyper_params)
 #### 2.1. Adding data
 
 Once the estimator is initialised we can add data using the append method. The general append method for estimators was
-overriden to accept information about a complete training or a fold in the case of a kfold training. The following
+overriden to accept information about a complete training or a fold in the case of a k-fold training. The following
 parameters will be necessary:
 
 - the history. It is a `dictionary` of the collected data. One of the entries should have the name `epoch`
   and it should be an array containing the epoch number. The rest of the entries in the dictionary should have each of
-  the column names as keys, and the results stored in arrays of values. All the arrays should have the same lenght,
+  the column names as keys, and the results stored in arrays of values. All the arrays should have the same length,
   equal to the maximum number of epochs.
 
 - the best epoch of the fold. It is an `int` representing the epoch number with the best performance.

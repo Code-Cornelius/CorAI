@@ -299,8 +299,8 @@ def _translate_history_to_dataframe(history, fold_number, validation):
         new_value = value[~np.isnan(value)] # we slice out the value that are nan.
         translated_history[new_key] = new_value.tolist()
 
-    assert ('validation' in history) == validation, "The information about validation in estimator " \
-                                                    "is not reflected in history"
+    assert ('validation' in history) == validation, "Validation required / not required and " \
+                                                    "validation not present / present in the history."
     # collect validation information if present
     if 'validation' in history:
         for key, value in history['validation'].items():
