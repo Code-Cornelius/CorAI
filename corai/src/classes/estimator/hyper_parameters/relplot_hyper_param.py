@@ -24,6 +24,30 @@ class Relplot_hyper_param(Plot_estim_hyper_param, Relplot_estimator):
                 column_name_true_values=None, separators_plot=None, palette='PuOr',
                 hue=None, style=None, markers=None, sizes=None, dict_plot_for_main_line={}, hue_norm=None,
                 legend='full', path_save_plot=None, *args, **kwargs):
+        """
+        Draw the scatterplot. Most parameters goes down to scatterplot (see documentation):
+        https://seaborn.pydata.org/generated/seaborn.scatterplot.html
+
+        Args:
+            column_name_draw:
+            second_column_to_draw_abscissa:
+            column_name_true_values:
+            separators_plot:
+            palette:
+            hue:
+            style:
+            markers:
+            sizes:
+            dict_plot_for_main_line:
+            hue_norm:
+            legend:
+            path_save_plot:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        """
         kwargs['xlabel'] = second_column_to_draw_abscissa
         kwargs['ylabel'] = column_name_draw
         return super().scatter(column_name_draw, column_name_true_values, separators_plot, palette, hue, style, markers,

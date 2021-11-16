@@ -284,7 +284,8 @@ class Relplot_estimator(Plot_estimator):
         # TODO 27/06/2021 nie_k:  add the ax parameter as it is in line plot.
         """
         Semantics:
-            Draw the scatterplot.
+            Draw the scatterplot. Most parameters goes down to scatterplot (see documentation):
+            https://seaborn.pydata.org/generated/seaborn.scatterplot.html
             Issue with seaborn:
                 When writing overloading, always draw before using super().
                 Otherwise, the legend is not actualised.
@@ -302,7 +303,9 @@ class Relplot_estimator(Plot_estimator):
             markers (bool):
             sizes:
             dict_plot_for_main_line (dict): additional parameters for the plot (evolution line).
-            hue_norm (tuple):
+            hue_norm (tuple): Either a pair of values that set the normalization range in data units
+                or an object that will map from data units into a [0, 1] interval.
+                Usage implies numeric mapping.
             second_column_to_draw_abscissa (str): column of the dataframe to use as the abscissa.
             path_save_plot (str): Path to specify where the plot should be saved. Not saved if is None.
             kwargs:
