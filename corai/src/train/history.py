@@ -3,22 +3,22 @@ import numpy as np
 from corai.src.classes.estimator.history.estim_history import Estim_history
 
 
-def history_create(nb_epochs_total, metrics):
+def history_create(nb_epochs_total, metrics, is_validation_included):
     # initialise the training history for loss and any other metric included
     history = {'training': {}}
     history['training']['loss'] = np.full(nb_epochs_total, np.nan)
     for metric in metrics:
         history['training'][metric.name] = np.full(nb_epochs_total, np.nan)
 
-        # initialise the validation history for loss and any other metrics included
-        # initialise with nans such that no plot if no value.
-        history['validation'] = {}
-        history['validation']['loss'] = np.full(nb_epochs_total, np.nan)
-
-        for metric in metrics:
+        if is_validation_included:
+            # initialise the validation history for loss and any other metrics included
             # initialise with nans such that no plot if no value.
-            history['validation'][metric.name] = np.full(nb_epochs_total, np.nan)
+            history['validation'] = {}
+            history['validation']['loss'] = np.full(nb_epochs_total, np.nan)
 
+            for metric in metrics:
+                # initialise with nans such that no plot if no value.
+                history['validation'][metric.name] = np.full(nb_epochs_total, np.nan)
     return history
 
 

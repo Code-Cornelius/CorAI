@@ -78,5 +78,5 @@ def _prep_data_history(data_X, data_Y, device, epoch, indic_validation_X, indic_
         X_val_on_device = 0
         Y_val_on_device = 0
 
-    history = history_create(epoch, params_training.metrics)
+    history = history_create(epoch, params_training.metrics, is_validation_included)
     return X_val_on_device, Y_val_on_device, history
