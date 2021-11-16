@@ -9,7 +9,7 @@ class Metric(object):
     Examples
         from torch import linalg as LA
         def L4loss(net, xx, yy):
-            return LA.norm(net.nn_predict(xx) - yy, 4)
+            return torch.norm(net.nn_predict(xx) - yy, 4)
         L4metric = Metric('L4',L4loss)
         metrics = (L4metric,)
 

@@ -17,7 +17,7 @@ def exact_solution(x):
 
 
 def L4loss(net, xx, yy):
-    return LA.norm(net.nn_predict(xx) - yy, 4)
+    return torch.norm(net.nn_predict(xx) - yy, 4)
 
 
 L4metric = corai.Metric('L4', L4loss)
