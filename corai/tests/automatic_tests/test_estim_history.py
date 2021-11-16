@@ -77,7 +77,7 @@ class Test_estim_history(TestCase):
         assert df.shape == (20, 8)
 
 
-    def test_to_csv(self):
+    def test_to_json(self):
         file_name = "test.json"
 
         path = os.path.join(FOLDER_PATH, file_name)
@@ -90,6 +90,8 @@ class Test_estim_history(TestCase):
         estimator.append(history, 3, 2)
 
         estimator.to_json(path)
+
+        print(estimator)
 
         new_estim = Estim_history.from_json(path)
 

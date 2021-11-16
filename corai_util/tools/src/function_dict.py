@@ -48,7 +48,7 @@ def parameter_product(parameter_options):
 
         for option in parameter_options[p_names[i]]:
             options_dict[p_names[i]] = option
-            product(p_names, options_dict, i+1)
+            product(p_names, options_dict, i + 1)
 
     product(p_names, {})
     return result
@@ -95,11 +95,11 @@ def retrieve_parameters_by_index_from_json(index, file_path):
         Retrieve the dictionary at the specified index from a list stored in a json file
 
     Args:
-        index: index of the dictionary to be returned
-        file_path: the path to the json file where the information should be read from
+        index: index of the dictionary to be returned,
+        file_path: the path to the json file where the information should be read from.
 
     Returns:
-        dictionary at index from json file
+        dictionary at index from json file.
     """
     with open(file_path, 'r') as file:
         parameters = json.load(file)
@@ -107,6 +107,7 @@ def retrieve_parameters_by_index_from_json(index, file_path):
     assert 0 <= index < len(parameters), "Parameter index is outside the bounds (number of settings)."
 
     return parameters[index]
+
 
 def filter(names, keys, filter_rules):
     if filter_rules is None:
@@ -124,30 +125,3 @@ def filter(names, keys, filter_rules):
                         unwanted.append(key)
 
     return [key for key in keys if key in unwanted]
-
-
-"""
-example:
-
-parameterstest = {'SEED': [42],
-                  'HIDDEN_SIZES': [[16, 16, 32, 32, 16, 8],
-                                   [8, 16, 8, 4]],
-                  'ACTIVATION_FUNCTIONS': [['Tanh', 'Celu', 'Tanh', 'Celu', 'Celu', 'Celu']],
-                  'BATCH_SIZE': [0],
-                  'DROPOUT': [0.],
-                  'OPTIMISER': ['Adam'],
-                  'DICT_OPTIMISER': [{'lr': 0.001, 'weight_decay': 1E-8}]
-                  }
-
-if __name__ == '__main__':
-    # convert them to the product
-    product_param = function_dict.parameter_product(parametersTASK3_1)
-    # write them down with the given name
-    path = "Task3/data/parameters_grid_search.json"
-    function_writer.list_of_dicts_to_json(product_param, file_name=path)
-    print(f"File {path} has been updated.")
-    print(f"    Number of configurations: {len(product_param)}.")
-
-
-
-"""

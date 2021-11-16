@@ -17,7 +17,7 @@ class Estim_history(Estimator):
         self.validation = validation
         self.list_best_epoch = []  # list each entry corresponds to a fold
         self.list_train_times = []  # list of times it takes to train each fold
-        self.hyper_params = hyper_params
+        self.hyper_params = hyper_params  # dict with serializable objects to be saved into a json.
         self.best_fold = -1  # negative strictly number means no best_fold found yet. Will be set in
         # train_kfold_a_fold_after_split
 
@@ -38,12 +38,15 @@ class Estim_history(Estimator):
         Returns:`
             Void
         """
-        attrs = {'validation': self.validation,
+        attrs = {'metric_names': self.metric_names,
+                 'validation': self.validation,
                  'best_epoch': self.list_best_epoch,
+                 'time': self.list_train_times,
                  'hyper_params': self.hyper_params,
                  'best_fold': self.best_fold,
-                 'time': self.list_train_times
                  }
+        ######## debugging advice:
+        # if not serializable, check hyper_params that might contain wrong type objects.
         super().to_json(path, compress, attrs)
 
     @classmethod
@@ -52,7 +55,7 @@ class Estim_history(Estimator):
             Create estimator from previously stored json file
         Args:
             compressed: whether or not compression is applied
-            path: The source path for the json
+            path: The source path for the json, with extension.
 
         Returns:
             Void
@@ -60,6 +63,7 @@ class Estim_history(Estimator):
         attrs = super().from_json_attributes(path, compressed)
         estimator = super().from_json(path)
 
+        estimator.metric_names = attrs['metric_names']
         estimator.validation = attrs['validation']
         estimator.list_best_epoch = attrs['best_epoch']
         estimator.hyper_params = attrs['hyper_params']

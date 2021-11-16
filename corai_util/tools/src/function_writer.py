@@ -42,28 +42,28 @@ def list_of_dicts_to_txt(parameter_options, column_size=15, file_name="config.tx
             file.write(line)
 
 
-def list_of_dicts_to_json(parameter_options, file_name="config.json", compress=False):
+def list_of_dicts_to_json(list_of_dicts, file_name="config.json", compress=False):
     """
-        Writes the parameter options to a json file.
+        Writes the list_of_dicts to a json file.
         Create a directory if the path yields a non-existent directory.
     Args:
-        parameter_options: The list of dictionaries to be written to the file
-        file_name: The path to where the config file should be written
-        compress: Boolean to specify if compression should be applied before writing to the file
+        list_of_dicts(list<dict>): to be written to the file
+        file_name (str): The path to where the config file should be written with extension.
+        compress: Boolean to specify if compression should be applied before writing to the file.
 
     Returns:
         None
     """
 
     if compress:
-        parameter_options = zip_json(parameter_options)
+        list_of_dicts = zip_json(list_of_dicts)
 
     directory_where_to_save = os.path.dirname(file_name)
     if not os.path.exists(directory_where_to_save):
         if directory_where_to_save != '':
             os.makedirs(directory_where_to_save)
     with open(file_name, 'w') as file:
-        json.dump(parameter_options, file)
+        json.dump(list_of_dicts, file)
 
 def json2python(path, compress = False):
     with open(path, 'r') as file:

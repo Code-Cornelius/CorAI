@@ -61,7 +61,7 @@ def initialise_estimator(compute_validation, param_train, train_param_dict={}):
     Args:
         compute_validation (bool): Flag to specify is validation is included.
         param_train (NNTrainParameters): The parameters used for training.
-        train_param_dict (dict): The hyper-parameters to be saved.
+        train_param_dict (dict): The hyper-parameters to be saved. All elements of the dict should be serializable (for saving in a json).
 
     Returns:
         Estim_history object.

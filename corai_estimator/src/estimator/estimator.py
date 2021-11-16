@@ -46,7 +46,11 @@ class Estimator(object):
         # this is for the print function.
         # We want the estimator to inherit the properties from DF!
         return repr(self.df)
-
+    
+    # section ######################################################################
+    #  #############################################################################
+    # constructors
+    
     @classmethod
     def from_csv(cls, path, **kwargs):
         """
@@ -274,117 +278,12 @@ class Estimator(object):
         self.df[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
         return
 
-    # def estimation_group_mean(self, columns_for_computation, keys_grouping=None):
-    #     # TODO verify it does what one wants.
-    #     """
-    #     Semantics:
-    #         empirical mean of the data separated with the keys keys_grouping at column name.
-    #     Args:
-    #         columns_for_computation: list of strings, which columns/feature are the means computed.
-    #         keys_grouping: list of strings, which keys should be considered to groupby data together.
-    #         If None, then no grouping by and mean computed on whole data.
-    #
-    #      Returns: return a df of the means.
-    #
-    #     Dependencies:
-    #         groupby_DF
-    #
-    #     """
-    #     if keys_grouping is None:
-    #         return self.df[columns_for_computation].mean()
-    #     else:
-    #         return self.groupby_DF(keys_grouping)[0][columns_for_computation].mean()
-    #         #                      keys are how we groupby
-    #         #                                    [0] because groupby hands back a tuple and we need the groups
-    #         #                                        for which feature are we interested in.
-    #
-    # def estimation_group_variance(self, columns_for_computation, keys_grouping=None, ddof=1):
-    #     # TODO verify it does what one wants.
-    #     """
-    #     Semantics: empirical variance of the data of the variance.
-    #
-    #     Args:
-    #         columns_for_computation:  list of strings, which columns/feature are the variances computed.
-    #         keys_grouping:  list of strings, which keys should be considered to groupby data together.
-    #             If None, then no grouping by and variance computed on whole data.
-    #         ddof: delta of degree of freedom, how much one normalize the results
-    #             (usually  you divide by (len data-1), this gives the
-    #             unbiased estimator of the variance if the mean is unknown).
-    #
-    #     Returns: normalized S^2
-    #
-    #     Dependencies:
-    #         groupby_DF
-    #
-    #     """
-    #     if keys_grouping is not None:
-    #         return self.groupby_DF(keys_grouping)[columns_for_computation].var(ddof=ddof)
-    #     else:
-    #         return self.df[columns_for_computation].var(ddof=ddof)
 
-    # section ######################################################################
-    #  #############################################################################
-    # Save methods
 
-    def to_csv(self, path, **kwargs):
-        """
-        Semantics:
-            void adaptor of the method to_csv from dataframes.
-            Does not save the attributes. For this, use to_json. Index are dropped.
-
-        Args:
-            path: path where the dataframe of the estimator is saved. Extension should be written.
-            **kwargs: Additional keyword arguments to pass as keywords arguments to
-            pandas' function to_csv.
-
-        Returns:
-
-        """
-        directory_where_to_save = os.path.dirname(path)
-        if not os.path.exists(directory_where_to_save):
-            if directory_where_to_save != '':
-                os.makedirs(directory_where_to_save)
-        self.df.to_csv(path, index=False, **kwargs)
-        return
-
-    def to_json(self, path, compress=True, attrs={}.copy()):
-        """
-            Save an estimator without extra attributes to json.
-
-            To save an estimator with extra attributes:
-                - The to_json function should be overridden
-                - The extra attributes should be saved in a dictionary linked to the key 'attrs'.
-                - The super to_json should be called, passing in the dictionary from above, to save all the information
-                to the json.
-        Args:
-            attrs: The extra attributes to save
-            compress: Whether or not compression is applied
-            path: The path where to store the estimator, with extension.
-
-        Returns:
-            Void
-
-        Examples of overriding:
-            attrs = {'name': self.name}
-            super().to_json(path, compress, attrs)
-        """
-        json_df = self.df.to_json(orient='split', index=False)
-        parsed = json.loads(json_df)
-        parsed['attrs'] = attrs
-
-        if compress:
-            parsed = zip_json(parsed)
-
-        directory_where_to_save = os.path.dirname(path)
-        if not os.path.exists(directory_where_to_save):
-            if directory_where_to_save != '':
-                os.makedirs(directory_where_to_save)
-        with open(path, 'w') as file:
-            json.dump(parsed, file)
-
+    
     def order(self, column_names, ascending=True, inplace=False):
         """
-            Order the dataframe by the column_names.
+            Order the dataframe by the column_names. Uses the method sort_values of pandas.
         Args:
             column_names(list of str): The column names to be used for sorting the dataframe.
             ascending(bool): Flag for sorting ascending or descending.
@@ -397,7 +296,7 @@ class Estimator(object):
 
     def get_best_by(self, metrics, count=10, ascending=True, inplace_sort=False, crop=False):
         """
-            Get the best rows according to metrics.
+            Get the best rows according to metrics. Uses the method sort_values of pandas.
         Args:
             metrics(list of str): The column names to compare by.
             count(int): The number of rows to return. If count is bigger than the number of rows, it will return
@@ -409,8 +308,12 @@ class Estimator(object):
 
         Returns:
             A dataframe with <count> rows representing the best entries according to the list of metrics.
+            The corresponding index is given with `df_best.index`.
+
+        Dependencies:
+            order, sort_values (pandas).
         """
-        count = min(count, len(self.df))
+        count = min(count, len(self.df)) # verification there are enough rows.
 
         sorted_df = self.order(column_names=metrics, ascending=ascending, inplace=inplace_sort)
         if inplace_sort:
@@ -477,6 +380,70 @@ class Estimator(object):
 
         return filtered_df
 
+    # section ######################################################################
+    #  #############################################################################
+    # Save methods
+
+    def to_csv(self, path, **kwargs):
+        """
+        Semantics:
+            void adaptor of the method to_csv from dataframes.
+            Does not save the attributes. For this, use to_json. Index are dropped.
+
+        Args:
+            path: path where the dataframe of the estimator is saved. Extension should be written.
+            **kwargs: Additional keyword arguments to pass as keywords arguments to
+            pandas' function to_csv.
+
+        Returns:
+
+        """
+        directory_where_to_save = os.path.dirname(path)
+        if not os.path.exists(directory_where_to_save):
+            if directory_where_to_save != '':
+                os.makedirs(directory_where_to_save)
+        self.df.to_csv(path, index=False, **kwargs)
+        return
+
+    def to_json(self, path, compress=True, attrs={}.copy()):
+        """
+            Save an estimator without extra attributes to json.
+
+            To save an estimator with extra attributes:
+                - The to_json function should be overridden
+                - The extra attributes should be saved in a dictionary linked to the key 'attrs'.
+                - The super to_json should be called, passing in the dictionary from above, to save all the information
+                to the json.
+        Args:
+            attrs: The extra attributes to save
+            compress: Whether or not compression is applied
+            path: The path where to store the estimator, with extension.
+
+        Returns:
+            Void
+
+        Examples of overriding:
+            attrs = {'name': self.name}
+            super().to_json(path, compress, attrs)
+        """
+        json_df = self.df.to_json(orient='split', index=False)
+        parsed = json.loads(json_df)
+        parsed['attrs'] = attrs
+
+        if compress:
+            parsed = zip_json(parsed)
+
+        directory_where_to_save = os.path.dirname(path)
+        if not os.path.exists(directory_where_to_save):
+            if directory_where_to_save != '':
+                os.makedirs(directory_where_to_save)
+        with open(path, 'w') as file:
+            json.dump(parsed, file)
+
+    # section ######################################################################
+    #  #############################################################################
+    #  get/set
+    
     @property
     def df(self):
         # getter for df.

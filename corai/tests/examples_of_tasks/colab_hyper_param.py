@@ -96,10 +96,6 @@ def config_architecture(params):
     return param_training, Class_Parametrized_NN
 
 
-ROOTPATH = os.path.dirname(os.path.abspath(__file__))
-FOLDER_PATH = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_history")
-
-
 def generate_estims_history():
     estims = []
     for i, params in enumerate(tqdm(hyper_params)):

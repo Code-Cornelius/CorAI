@@ -3,6 +3,7 @@ import functools
 import numpy as np
 import torch
 import torch.cuda
+
 from corai_util.tools.src.function_dict import \
     retrieve_parameters_by_index_from_json, \
     replace_function_names_to_functions
@@ -51,6 +52,7 @@ def pytorch_device_setting(type='', silent=False):
 
     Args:
         type (str):
+        silent (bool):
 
     Returns:
 
@@ -75,29 +77,44 @@ def set_seeds(seed):
     np.random.seed(seed)
 
 
-def create_model_by_index(index, path2json,
-                          path2net, Model_nn, mapping_names2functions,
-                          list_of_names_args, *args, **kwargs):
+def create_model_by_index(index, path2json, path2net,
+                          config_architecture, mapping_names2functions, **kwargs):
     """
         Create a model using the index when the parameters of the model can be found in a json.
     Args:
         index(int): The index of the parameters used for training in the json file.
-        path2json(str): The path to the json file containing the training parameters.
-        path2net(str): The path to the saved model.
-        Model_nn(class): The class that will be used to initialise the model.
-        mapping_names2functions(dict): A mapping from the string name of a function to the python function.
-        list_of_names_args(list of str):
+        path2json(str): The path to the json file containing the training parameters (as list of dicts).
+        path2net(str): The path to the saved model, where the parameters are stored.
+        config_architecture(callable): A callable returning the class that will be used to initialise the model.
+        mapping_names2functions(dict): A mapping from the string name of a function to the python function. Check
+            the function replace_function_names_to_functions.
+        kwargs: passed to Model_nn at creation.
 
     Returns:
         The nn model.
     """
-    parameters = retrieve_parameters_by_index_from_json(index, path2json)
-    print(f"For config {index}, the parameters are : \n{parameters}.")
-    replace_function_names_to_functions(parameters, mapping_names2functions, silent=True)
-    dict_params = {key: value
-                   for key, value in zip(list_of_names_args,
-                                         list(parameters.values())
-                                         )
-                   }
-    parametrized_NN = Model_nn(*args, **dict_params, **kwargs)().load_net(path2net)
+    dict_params = retrieve_parameters_by_index_from_json(index, path2json)
+    replace_function_names_to_functions(dict_params, mapping_names2functions, silent=True)
+
+    print(f"For config {index}, the parameters are : \n{dict_params}.")
+
+    parametrized_NN = config_architecture(dict_params, **kwargs)().load_net(path2net)
     return parametrized_NN
+
+############### old code for create_model_bu_index:
+# assert set(keys_to_pop).issubset(
+#     set(list_of_names_args)), "list_of_names_args must contain all elements of keys_to_pop."
+
+# if list_of_names_args is None: # no need to filter and rename keywords
+#     dict_params = parameters
+# else :
+#     dict_params = {key: value for key, value in
+#                zip(list_of_names_args, list(parameters.values())
+#                    )}
+# for key in keys_to_pop:
+#     dict_params.pop(key)
+
+#         list_of_names_args(list of str): order should be the same as the dict_params' values, read from path2json.
+#         keys_to_pop(list of str): the list should be a subset of list_of_names_args.
+#                                   Keys removed from the fetched parameters.
+#                                   The one that should not be given to the model.
