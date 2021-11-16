@@ -1,7 +1,8 @@
 import torch
 
-
+######### comment
 # TESTED AND I WAS I NOTICE IS HUGE SPEEDUP, RESULTS EXACTLY IDENTICAL FOR 1-FOLD and SHUFFLING IS DIFFERENT
+#########
 
 class FastTensorDataLoader:
     """

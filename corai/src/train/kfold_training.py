@@ -65,6 +65,7 @@ def initialise_estimator(compute_validation, param_train, train_param_dict={}):
     Returns:
         Estim_history object.
     """
+    # TODO 16/11/2021 nie_k:  find better names for the parameters...
     metric_names = [metric.name for metric in param_train.metrics]
     # initialise the estimator history.
     estimator_history = Estim_history(metric_names=metric_names, validation=compute_validation,

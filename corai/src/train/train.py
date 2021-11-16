@@ -69,8 +69,8 @@ def nn_train(net, data_X, data_Y, params_training, indic_train_X, indic_train_Y,
     return history, epoch_best_net
 
 
-def _history_creation(data_X, data_Y, device, epoch, indic_validation_X, indic_validation_Y, is_validation_included,
-                      params_training):
+def _history_creation(data_X, data_Y, device, epoch, indic_validation_X, indic_validation_Y,
+                      is_validation_included, params_training):
     # initialise the training history for loss and any other metric included
     history = {'training': {}}
     history['training']['loss'] = np.full(epoch, np.nan)
