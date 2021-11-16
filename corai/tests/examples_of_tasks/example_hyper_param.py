@@ -1,12 +1,13 @@
 import os
 
 import numpy as np
-import corai
 import torch
-from corai_plot import APlot
-from corai_util.tools import function_dict
 from torch import nn
 from tqdm import tqdm
+
+import corai
+from corai_plot import APlot
+from corai_util.tools import function_dict
 
 
 # Define the exact solution
@@ -129,12 +130,15 @@ if __name__ == '__main__':
     if not NEW_DATASET:
         estim_hyper_param = corai.Estim_hyper_param.from_folder(FOLDER_PATH,
                                                                 metric_names=["loss_validation", "loss_training"],
-                                                                flg_time=True,
-                                                                compressed=False)
-        # estim_hyper_param = Estim_hyper_param.from_list(estims, metric_names=["loss_validation", "loss_training"],
+                                                                flg_time=True, compressed=False)
+
+        ######## possibilities:
+        # estim_hyper_param = corai.Estim_hyper_param.from_list(estims, metric_names=["loss_validation", "loss_training"],
         #                                                 flg_time=True)
-        estim_hyper_param.to_csv("example_estim_hyper_param.csv")
+        # estim_hyper_param.to_csv("example_estim_hyper_param.csv")
         # estim_hyper_param.compute_number_params_for_fcnn()
+
+        ######## drawing the distribution plot:
         histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
         histplot_hyperparam.hist(column_name_draw='train_time', separators_plot=None, hue='dropout',
                                  palette='RdYlBu', bins=50,
@@ -142,12 +146,16 @@ if __name__ == '__main__':
         histplot_hyperparam.hist(column_name_draw='loss_validation', separators_plot=None, hue='lr',
                                  palette='RdYlBu', bins=20,
                                  binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
+
+        ######## drawing the relation plot:
         scatplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
         scatplot_hyperparam.scatter(column_name_draw='loss_training', second_column_to_draw_abscissa='loss_validation',
                                     hue='train_time', hue_norm=(0, 30), legend=False)
 
+        ######## conditioning the data to plot a subset:
         condition = lambda t: t <= 2
-        estim_hyper_param.slice(column='train_time', condition=condition, save=True)
+        estim_hyper_param.slice(column='train_time', condition=condition, save=True)  # slice data, removing some part.
+
         histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
         histplot_hyperparam.hist(column_name_draw='train_time', separators_plot=None, hue='dropout',
                                  palette='RdYlBu', bins=50,
@@ -161,5 +169,3 @@ if __name__ == '__main__':
         scatplot_hyperparam.scatter(column_name_draw='loss_training', second_column_to_draw_abscissa='loss_validation',
                                     hue='train_time', hue_norm=(0, 30), legend=False)
         APlot.show_plot()
-
-        # TODO 06/07/2021 nie_k:  how could i multiply all loses by 1000?
