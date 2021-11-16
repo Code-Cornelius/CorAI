@@ -7,8 +7,9 @@ class Metric(object):
     """
     Metric wrapper.
     Examples
-        def L4loss(net,xx,yy):
-            return torch.norm(net.nn_predict(xx) - yy, 4)
+        from torch import linalg as LA
+        def L4loss(net, xx, yy):
+            return LA.norm(net.nn_predict(xx) - yy[net.washout:], 4)
         L4metric = Metric('L4',L4loss)
         metrics = (L4metric,)
 

@@ -5,19 +5,20 @@ import pandas as pd
 import sklearn
 import torch
 import torch.nn.functional as F
+from torch import linalg as LA
 from torch import nn
 
-from corai.src.train.kfold_training import nn_kfold_train
+from config import ROOT_DIR
 from corai.src.classes.architecture.fully_connected import factory_parametrised_FC_NN
 from corai.src.classes.metric.metric import Metric
 from corai.src.classes.optim_wrapper import Optim_wrapper
 from corai.src.classes.training_stopper.early_stopper_training import Early_stopper_training
 from corai.src.classes.training_stopper.early_stopper_validation import Early_stopper_validation
+from corai.src.train.kfold_training import nn_kfold_train
 from corai.src.train.nntrainparameters import NNTrainParameters
 from corai.src.util_train import set_seeds, pytorch_device_setting
 from corai_util.tools.src.function_writer import factory_fct_linked_path
 
-from config import ROOT_DIR
 
 class Test_classification(TestCase):
     def setUp(self) -> None:
@@ -134,7 +135,7 @@ class Test_regression(TestCase):
         ##### end data
 
         def L4loss(net, xx, yy):
-            return torch.norm(net.nn_predict(xx) - yy, 4)
+            return LA.norm(net.nn_predict(xx) - yy[net.washout:], 4)
 
         L4metric = Metric('L4', L4loss)
         metrics = (L4metric,)
@@ -193,7 +194,7 @@ class Test_regression(TestCase):
 
 
         except AssertionError:
-            early_stoppers = (Early_stopper_training(patience=20, silent=True,delta=-int(1E-6)),)
+            early_stoppers = (Early_stopper_training(patience=20, silent=True, delta=-int(1E-6)),)
 
             (net, estimator_history) = nn_kfold_train(self.train_X, self.train_Y, self.Class_Parametrized_NN,
                                                       param_train=self.param_training,

@@ -61,8 +61,9 @@ In particular, one decides the metrics used to compute the loss during training.
 - define the `metric`s, metrics are always computed on the device (since net is):
 
 ```python
+from torch import linalg as LA
 def L4loss(net, xx, yy):
-    return torch.norm(net.nn_predict(xx) - yy, 4)
+  return LA.norm(net.nn_predict(xx) - yy[net.washout:], 4)
 
 
 L4metric = corai.Metric('L4', L4loss)

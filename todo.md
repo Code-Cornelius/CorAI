@@ -40,6 +40,6 @@
 
 
 
-*Verify if it is L2 error or L2 squared.
+*Verify if it is L2 error or L2 squared. Indeed, we should say MSE and not L2.
 * asserts when reading loading json for estimator history to avoid obscure error message.
 * dtype for the architectures.
