@@ -203,7 +203,8 @@ if __name__ == '__main__':
     config_architecture_second_elmt = lambda param: config_architecture(param)[1]  # fetch only the class
     best_model = create_model_by_index(index_best, PATH_JSON_PARAMS,
                                        path2net_best, config_architecture_second_elmt,
-                                       mapping_names2functions=mapping_names2functions)
+                                       mapping_names2functions=mapping_names2functions,
+                                       flag_factory=True)
 
     # plotting history of this model
     estimator_history = Estim_history.from_json(path2estim_best, compressed=False)

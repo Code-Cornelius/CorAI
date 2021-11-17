@@ -79,18 +79,21 @@ def set_seeds(seed):
 
 
 def create_model_by_index(index, path2json, path2net,
-                          config_architecture, mapping_names2functions, **kwargs):
+                          config_architecture, mapping_names2functions,
+                          flag_factory=False, **kwargs):
     """
         Create a model using the index when the parameters of the model can be found in a json.
     Args:
         index(int): The index of the parameters used for training in the json file.
         path2json(str): The path to the json file containing the training parameters (as list of dicts).
         path2net(str): The path to the saved model, where the trained parameters are stored.
-        config_architecture(callable): A callable returning the class that will be used to initialise the model.
-            It is able to create the model if given the parameters fetch from the json.
+        config_architecture(callable): A callable returning the class (or the instance, depending on flag_factory)
+            that will be used to initialise the model. It is able to create the model
+            if given the parameters fetch from the json.
         mapping_names2functions(dict): A mapping from the string name of a function to the python function. Check
             the function `replace_function_names_to_functions`.
-        config_architecture: passed to Model_nn at creation.
+        flag_factory(bool): if true, config_architecture returns a class and is instantiated with ().
+            Otherwise, returns an instance and is not re-instantiated.
 
     Returns:
         The nn model.
@@ -102,8 +105,10 @@ def create_model_by_index(index, path2json, path2net,
     replace_function_names_to_functions(dict_params, mapping_names2functions, silent=True)
 
     print(f"For config {index}, the parameters are : \n{dict_params}.")
-
-    parametrized_NN = config_architecture(dict_params, **kwargs)().load_net(path2net)
+    if flag_factory:
+        parametrized_NN = config_architecture(dict_params, **kwargs)().load_net(path2net)
+    else:
+        parametrized_NN = config_architecture(dict_params, **kwargs).load_net(path2net)
     return parametrized_NN
 
 ############### old code for create_model_bu_index:

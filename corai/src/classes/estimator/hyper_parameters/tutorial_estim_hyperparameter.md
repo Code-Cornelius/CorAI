@@ -256,7 +256,8 @@ path2estim_best = os.path.join(PATH_FOLDER_ESTIMS, f"estim_{index_best}.json")
 config_architecture_second_elmt = lambda param: config_architecture(param)[1]  # fetch only the class
 best_model = create_model_by_index(index_best, PATH_JSON_PARAMS,
                                    path2net_best, config_architecture_second_elmt,
-                                   mapping_names2functions=mapping_names2functions)
+                                   mapping_names2functions=mapping_names2functions,
+                                   flag_factory=True)
 ```
 
 We used above the function `create_model_by_index`. It takes the index of the model we want to create (corresponding to
