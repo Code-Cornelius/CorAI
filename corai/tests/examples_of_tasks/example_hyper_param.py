@@ -16,10 +16,10 @@ from corai import Estim_history
 
 
 ROOTPATH = os.path.dirname(os.path.abspath(__file__))
-FOLDER_PATH_ESTIM = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_history")
-FOLDER_PATH_MODEL = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_models")
+PATH_FOLDER_ESTIMS = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_history")
+PATH_FOLDER_MODELS = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_models")
 
-JSON_PARAM_PATH = os.path.join(ROOTPATH, "other_csv_from_examples", "param_hyper_param_tuning.json")
+PATH_JSON_PARAMS = os.path.join(ROOTPATH, "other_csv_from_examples", "param_hyper_param_tuning.json")
 
 NEW_DATASET = False
 SAVE_TO_FILE = True
@@ -77,8 +77,8 @@ params_options = {
 hyper_params = function_dict.parameter_product(params_options)
 
 # save the parameters
-function_writer.list_of_dicts_to_json(hyper_params, file_name=JSON_PARAM_PATH)
-print(f"File {JSON_PARAM_PATH} has been updated.")
+function_writer.list_of_dicts_to_json(hyper_params, file_name=PATH_JSON_PARAMS)
+print(f"File {PATH_JSON_PARAMS} has been updated.")
 print(f"    Number of configurations: {len(hyper_params)}.")
 
 mapping_names2functions = {'tanh': torch.tanh, 'celu': torch.tanh, 'relu': torch.relu}
@@ -135,8 +135,8 @@ def generate_estims_history():
                                                         silent=True, hyper_param=params)
         estims.append(estimator_history)
         if SAVE_TO_FILE:
-            estimator_history.to_json(path=os.path.join(FOLDER_PATH_ESTIM, f"estim_{i}.json"), compress=False)
-            net.save_net(path=os.path.join(FOLDER_PATH_MODEL, f"model_{i}.pth"))
+            estimator_history.to_json(path=os.path.join(PATH_FOLDER_ESTIMS, f"estim_{i}.json"), compress=False)
+            net.save_net(path=os.path.join(PATH_FOLDER_MODELS, f"model_{i}.pth"))
     return estims
 
 
@@ -146,7 +146,7 @@ if __name__ == '__main__':
         print("Training.")
         estims = generate_estims_history()
     print("Plotting.")
-    estim_hyper_param = corai.Estim_hyper_param.from_folder(FOLDER_PATH_ESTIM,
+    estim_hyper_param = corai.Estim_hyper_param.from_folder(PATH_FOLDER_ESTIMS,
                                                             metric_names=["loss_validation", "loss_training"],
                                                             flg_time=True, compressed=False)
 
@@ -197,14 +197,14 @@ if __name__ == '__main__':
                                 hue='train_time', hue_norm=(0, 2), legend=False)
 
     #################### finding the best model:
-    df_best = estim_hyper_param.get_best_by(metrics='loss_training', count=3)
+    df_best = estim_hyper_param.get_best_by(metrics='loss_validation', count=3)
     print(df_best.to_string())
-    index_best = df_best.index[0]
-    path2net_best = os.path.join(FOLDER_PATH_MODEL, f"model_{index_best}.pth")
-    path2estim_best = os.path.join(FOLDER_PATH_ESTIM, f"estim_{index_best}.json")
+    index_best = df_best.index[0]  # best model
+    path2net_best = os.path.join(PATH_FOLDER_MODELS, f"model_{index_best}.pth")
+    path2estim_best = os.path.join(PATH_FOLDER_ESTIMS, f"estim_{index_best}.json")
 
     config_architecture_second_elmt = lambda param: config_architecture(param)[1]  # fetch only the class
-    best_model = create_model_by_index(index_best, JSON_PARAM_PATH,
+    best_model = create_model_by_index(index_best, PATH_JSON_PARAMS,
                                        path2net_best, config_architecture_second_elmt,
                                        mapping_names2functions=mapping_names2functions)
 

@@ -85,14 +85,18 @@ def create_model_by_index(index, path2json, path2net,
     Args:
         index(int): The index of the parameters used for training in the json file.
         path2json(str): The path to the json file containing the training parameters (as list of dicts).
-        path2net(str): The path to the saved model, where the parameters are stored.
+        path2net(str): The path to the saved model, where the trained parameters are stored.
         config_architecture(callable): A callable returning the class that will be used to initialise the model.
+            It is able to create the model if given the parameters fetch from the json.
         mapping_names2functions(dict): A mapping from the string name of a function to the python function. Check
-            the function replace_function_names_to_functions.
-        kwargs: passed to Model_nn at creation.
+            the function `replace_function_names_to_functions`.
+        config_architecture: passed to Model_nn at creation.
 
     Returns:
         The nn model.
+
+    Examples:
+        see the tutorial: tutorial_estim_hyperparameter.md .
     """
     dict_params = retrieve_parameters_by_index_from_json(index, path2json)
     replace_function_names_to_functions(dict_params, mapping_names2functions, silent=True)

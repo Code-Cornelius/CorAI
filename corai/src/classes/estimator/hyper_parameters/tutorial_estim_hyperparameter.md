@@ -18,8 +18,8 @@ params_options = {
 }
 ```
 
-- Use the `parameter_product` function (from `corai_util`) to produce all the possible combinations in the format of
-  a list:
+- Use the `parameter_product` function (from `corai_util`) to produce all the possible combinations in the format of a
+  list:
 
 ```python
 hyper_params = corai_util.function_dict.parameter_product(params_options)
@@ -230,8 +230,53 @@ distplot_hyperparam.hist(column_name_draw='train_time',
 
 ![alt text](Tutorial_estim_hyperparam_sin_hist_dropout_slice.png?raw=true "Title")
 
-*Image obtained by running corai/tests/examples_of_tasks/example_hyper_param.py, dataset sliced with condition
-from 3.*
+*Image obtained by running corai/tests/examples_of_tasks/example_hyper_param.py, dataset sliced with condition from 3.*
+
+### 5. Loading the best model
+
+Once one has analysed the performance of the different models, how can he fetch the best model? The worst case scenario
+is when the models have been deleted already. In that case, we need to load the parameters and recreate the model, and
+then load the trained parameters inside the model.
+
+Assuming all the models' performance are stored in an `Estim_hyper_param`, it is very easy to order them, and get the
+index of the best one. This index corresponds to the name of the file where the data has been stored, if one has
+followed the convention of saving models and performance with a number (0 - nb of different models).
+
+The ordering is done with `get_best_by` and returns a dataframe with only the best nets.
+
+```python
+df_best = estim_hyper_param.get_best_by(metrics='loss_validation', count=3)
+print(df_best.to_string())
+index_best = df_best.index[0]  # best model
+path2net_best = os.path.join(PATH_FOLDER_MODELS, f"model_{index_best}.pth")
+path2estim_best = os.path.join(PATH_FOLDER_ESTIMS, f"estim_{index_best}.json")
+
+config_architecture_second_elmt = lambda param: config_architecture(param)[1]  # fetch only the class
+best_model = create_model_by_index(index_best, PATH_JSON_PARAMS,
+                                   path2net_best, config_architecture_second_elmt,
+                                   mapping_names2functions=mapping_names2functions)
+```
+
+We used above the function `create_model_by_index`. It takes the index of the model we want to create (corresponding to
+the index inside the list of parameters). The list of parameters is a `json` where the parameters from the product have
+been stored. It is created simply as:
+
+```python
+params_options = {
+    "architecture": ["fcnn"],
+    "seed": [42, 124],
+    "lr": [0.001, 0.01, 0.1, 1.],
+    'activation_function': ['tanh', 'relu', 'celu'],
+    "dropout": [0., 0.2, 0.5],
+    "list_hidden_sizes": [[2, 4, 2], [4, 8, 4], [16, 32, 16], [2, 32, 2], [32, 128, 32]], }
+
+# convert parameters to the product of the parameters
+hyper_params = function_dict.parameter_product(params_options)
+```
+
+The function `create_model_by_index` also takes the path towards the trained parameters of the model. Finally,
+`config_architecture_second_elmt` correspond to a function that is able to create 
+the model if given the parameters fetch from the `json`. 
 
 ### More info:
 
