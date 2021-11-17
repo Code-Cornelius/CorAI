@@ -234,6 +234,8 @@ distplot_hyperparam.hist(column_name_draw='train_time',
 
 ### 5. Loading the best model
 
+#### 5.1 How to proceed?
+
 Once one has analysed the performance of the different models, how can he fetch the best model? The worst case scenario
 is when the models have been deleted already. In that case, we need to load the parameters and recreate the model, and
 then load the trained parameters inside the model.
@@ -277,6 +279,14 @@ hyper_params = function_dict.parameter_product(params_options)
 The function `create_model_by_index` also takes the path towards the trained parameters of the model. Finally,
 `config_architecture_second_elmt` correspond to a function that is able to create 
 the model if given the parameters fetch from the `json`. 
+
+#### 5.2 Numbering of files
+
+The best practice is to save all the files from 0-nb of models. 
+That way, there is no issue between the file with the parameters (where we use line 0 as the first line of the file),
+the different files with the performance and the parameters saved, as well as the dataframes 
+where we order the performances.
+
 
 ### More info:
 
