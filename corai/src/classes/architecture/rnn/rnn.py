@@ -113,7 +113,7 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
                              output_time_series_len=1, nb_output_consider=1, hidden_size=150, dropout=0.,
                              * , rnn_class, Parent):
     """
-    GRU and LSTM are very close in terms of architecture. This factory allows to construct one or other at will.
+    GRU and LSTM are very close in terms of architecture. This factory allows to construct one or the other at will.
 
     Args:
         input_dim:
