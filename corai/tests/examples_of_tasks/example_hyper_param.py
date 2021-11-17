@@ -6,14 +6,13 @@ from torch import nn
 from tqdm import tqdm
 
 import corai
+from corai import Estim_history
 from corai import create_model_by_index, nn_plot_prediction_vs_true
 from corai_plot import APlot
 from corai_util.tools import function_dict
 from corai_util.tools import function_writer
 from corai_util.tools.src.function_dict import \
-    replace_function_names_to_functions, retrieve_parameters_by_index_from_json
-from corai import Estim_history
-
+    replace_function_names_to_functions
 
 ROOTPATH = os.path.dirname(os.path.abspath(__file__))
 PATH_FOLDER_ESTIMS = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_history")
@@ -208,9 +207,8 @@ if __name__ == '__main__':
                                        path2net_best, config_architecture_second_elmt,
                                        mapping_names2functions=mapping_names2functions)
 
-
     # plotting history of this model
-    estimator_history =  Estim_history.from_json(path2estim_best, compressed=False)
+    estimator_history = Estim_history.from_json(path2estim_best, compressed=False)
     history_plot = corai.Relplot_history(estimator_history)
     history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot='L4', log_axis_for_loss=True,
                                             log_axis_for_second_axis=True)
