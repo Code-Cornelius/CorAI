@@ -4,11 +4,11 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="CorAI",
-    version="1.302",
+    name="corai",
+    version="1.303",
     author="Niels D. Kotlarek, Bianca T. Catea",
     author_email="niels.carioukotlarek@gmail.com",
-    description="A collection of python libraries",
+    description="A collection of python libraries.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Code-Cornelius/python_libraries",
