@@ -100,7 +100,7 @@ def nn_fit(net, X_train_on_device, Y_train_on_device,
         # If has not, we do not improve the best_weights of the NN
         if all(early_stopper.has_improved_last_epoch for early_stopper in early_stoppers):
             net.update_best_weights(epoch)
-
+        ##################### early stop end
 
         if PLOT_WHILE_TRAIN:
             if epoch % FREQ_NEW_IMAGE == 0:
