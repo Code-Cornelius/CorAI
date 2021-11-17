@@ -64,7 +64,7 @@ def confusion_matrix_creator(Y, Y_predict_result, labels, title=""):
 
 
 @decorator_on_cpu_during_fct
-def nn_plot_prediction_vs_true(*, net, plot_xx, plot_yy=None, plot_yy_noisy=None):
+def nn_plot_prediction_vs_true(*, net, plot_xx, plot_yy=None, plot_yy_noisy=None, device = 'cpu'):
     aplot = APlot(how=(1, 1))
     plot_yy_pred = net.nn_predict_ans2cpu(plot_xx)
 

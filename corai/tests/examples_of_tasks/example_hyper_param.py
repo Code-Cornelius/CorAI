@@ -145,80 +145,79 @@ if __name__ == '__main__':
     if NEW_DATASET:
         print("Training.")
         estims = generate_estims_history()
-    else:
-        print("Plotting.")
-        estim_hyper_param = corai.Estim_hyper_param.from_folder(FOLDER_PATH_ESTIM,
-                                                                metric_names=["loss_validation", "loss_training"],
-                                                                flg_time=True, compressed=False)
+    print("Plotting.")
+    estim_hyper_param = corai.Estim_hyper_param.from_folder(FOLDER_PATH_ESTIM,
+                                                            metric_names=["loss_validation", "loss_training"],
+                                                            flg_time=True, compressed=False)
 
-        ######## example of usage:
-        # estim_hyper_param = corai.Estim_hyper_param.from_list(estims, metric_names=["loss_validation", "loss_training"],
-        #                                                 flg_time=True)
-        # estim_hyper_param.to_csv("other_csv_from_examples/example_estim_hyper_param.csv")
-        # estim_hyper_param.compute_number_params_for_fcnn()
+    ######## example of usage:
+    # estim_hyper_param = corai.Estim_hyper_param.from_list(estims, metric_names=["loss_validation", "loss_training"],
+    #                                                 flg_time=True)
+    # estim_hyper_param.to_csv("other_csv_from_examples/example_estim_hyper_param.csv")
+    # estim_hyper_param.compute_number_params_for_fcnn()
 
-        ######## drawing the distribution plot:
-        histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
-        histplot_hyperparam.hist(column_name_draw='train_time', hue='dropout',
-                                 separators_plot=None,
-                                 palette='RdYlBu', bins=50,
-                                 binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
-        histplot_hyperparam.hist(column_name_draw='loss_validation',
-                                 separators_plot=None,
-                                 hue='lr',
-                                 palette='RdYlBu', bins=20,
-                                 binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
+    ######## drawing the distribution plot:
+    histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
+    histplot_hyperparam.hist(column_name_draw='train_time', hue='dropout',
+                             separators_plot=None,
+                             palette='RdYlBu', bins=50,
+                             binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
+    histplot_hyperparam.hist(column_name_draw='loss_validation',
+                             separators_plot=None,
+                             hue='lr',
+                             palette='RdYlBu', bins=20,
+                             binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
 
-        ######## drawing the relation plot:
-        scatplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
-        scatplot_hyperparam.scatter(column_name_draw='loss_training',
-                                    second_column_to_draw_abscissa='loss_validation',
-                                    hue='train_time',
-                                    hue_norm=(0, 30), legend=False)
+    ######## drawing the relation plot:
+    scatplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
+    scatplot_hyperparam.scatter(column_name_draw='loss_training',
+                                second_column_to_draw_abscissa='loss_validation',
+                                hue='train_time',
+                                hue_norm=(0, 30), legend=False)
 
-        ######## conditioning the data to plot a subset:
-        condition = lambda t: t <= 2.
-        estim_hyper_param.slice(column='train_time', condition=condition, save=True)  # slice data, removing some part.
+    ######## conditioning the data to plot a subset:
+    condition = lambda t: t <= 2.
+    estim_hyper_param.slice(column='train_time', condition=condition, save=True)  # slice data, removing some part.
 
-        histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
-        histplot_hyperparam.hist(column_name_draw='train_time',
-                                 separators_plot=None,
-                                 hue='dropout',
-                                 palette='RdYlBu', bins=50,
-                                 binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
+    histplot_hyperparam = corai.Distplot_hyper_param(estimator=estim_hyper_param)
+    histplot_hyperparam.hist(column_name_draw='train_time',
+                             separators_plot=None,
+                             hue='dropout',
+                             palette='RdYlBu', bins=50,
+                             binrange=None, stat='count', multiple="stack", kde=False, path_save_plot=None)
 
-        histplot_hyperparam.hist(column_name_draw='loss_validation',
-                                 separators_plot=None,
-                                 hue='lr',
-                                 palette='RdYlBu', bins=20,
-                                 binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
+    histplot_hyperparam.hist(column_name_draw='loss_validation',
+                             separators_plot=None,
+                             hue='lr',
+                             palette='RdYlBu', bins=20,
+                             binrange=None, stat='count', multiple="dodge", kde=True, path_save_plot=None)
 
-        scatplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
-        scatplot_hyperparam.scatter(column_name_draw='loss_training', second_column_to_draw_abscissa='loss_validation',
-                                    hue='train_time', hue_norm=(0, 2), legend=False)
+    scatplot_hyperparam = corai.Relplot_hyper_param(estimator=estim_hyper_param)
+    scatplot_hyperparam.scatter(column_name_draw='loss_training', second_column_to_draw_abscissa='loss_validation',
+                                hue='train_time', hue_norm=(0, 2), legend=False)
 
-        #################### finding the best model:
-        df_best = estim_hyper_param.get_best_by(metrics='loss_training', count=3)
-        print(df_best.to_string())
-        index_best = df_best.index[0]
-        path2net_best = os.path.join(FOLDER_PATH_MODEL, f"model_{index_best}.pth")
-        path2estim_best = os.path.join(FOLDER_PATH_ESTIM, f"estim_{index_best}.json")
+    #################### finding the best model:
+    df_best = estim_hyper_param.get_best_by(metrics='loss_training', count=3)
+    print(df_best.to_string())
+    index_best = df_best.index[0]
+    path2net_best = os.path.join(FOLDER_PATH_MODEL, f"model_{index_best}.pth")
+    path2estim_best = os.path.join(FOLDER_PATH_ESTIM, f"estim_{index_best}.json")
 
-        config_architecture_second_elmt = lambda param: config_architecture(param)[1]  # fetch only the class
-        best_model = create_model_by_index(index_best, JSON_PARAM_PATH,
-                                           path2net_best, config_architecture_second_elmt,
-                                           mapping_names2functions=mapping_names2functions)
+    config_architecture_second_elmt = lambda param: config_architecture(param)[1]  # fetch only the class
+    best_model = create_model_by_index(index_best, JSON_PARAM_PATH,
+                                       path2net_best, config_architecture_second_elmt,
+                                       mapping_names2functions=mapping_names2functions)
 
 
-        # plotting history of this model
-        estimator_history =  Estim_history.from_json(path2estim_best, compressed=False)
-        history_plot = corai.Relplot_history(estimator_history)
-        history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot='L4', log_axis_for_loss=True,
-                                                log_axis_for_second_axis=True)
-        # history_plot.lineplot(log_axis_for_loss=True)
+    # plotting history of this model
+    estimator_history =  Estim_history.from_json(path2estim_best, compressed=False)
+    history_plot = corai.Relplot_history(estimator_history)
+    history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot='L4', log_axis_for_loss=True,
+                                            log_axis_for_second_axis=True)
+    # history_plot.lineplot(log_axis_for_loss=True)
 
-        # plotting the prediciton of this model
-        nn_plot_prediction_vs_true(net=best_model, plot_xx=plot_xx,
-                                   plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy, device=device)
+    # plotting the prediciton of this model
+    nn_plot_prediction_vs_true(net=best_model, plot_xx=plot_xx,
+                               plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy, device=device)
 
-        APlot.show_plot()
+    APlot.show_plot()

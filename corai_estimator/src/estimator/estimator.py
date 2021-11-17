@@ -3,8 +3,8 @@ import os
 
 import pandas as pd
 
-import corai_error
 from corai_error import Error_type_setter, Error_not_allowed_input
+from corai_util.tools.src.function_iterable import sorted_alphanumeric
 from corai_util.tools.src.function_json import zip_json, unzip_json
 
 
@@ -46,11 +46,11 @@ class Estimator(object):
         # this is for the print function.
         # We want the estimator to inherit the properties from DF!
         return repr(self.df)
-    
+
     # section ######################################################################
     #  #############################################################################
     # constructors
-    
+
     @classmethod
     def from_csv(cls, path, **kwargs):
         """
@@ -146,7 +146,8 @@ class Estimator(object):
         estimators = []
 
         # collect all the estimators from the folder
-        for file in os.listdir(path):
+        for file in sorted_alphanumeric(os.listdir(path)):  # sort in this way to conserve the order
+            # when creating the dataframes (and be able to match index of the df with the nb of the file)
             estimator = cls.from_json(path=os.path.join(path, file), compressed=compress, **kwargs)
             # added the parameter compressed. What happens in the case when the parameter compressed is not expected.
             estimators.append(estimator)
@@ -278,9 +279,6 @@ class Estimator(object):
         self.df[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
         return
 
-
-
-    
     def order(self, column_names, ascending=True, inplace=False):
         """
             Order the dataframe by the column_names. Uses the method sort_values of pandas.
@@ -313,7 +311,7 @@ class Estimator(object):
         Dependencies:
             order, sort_values (pandas).
         """
-        count = min(count, len(self.df)) # verification there are enough rows.
+        count = min(count, len(self.df))  # verification there are enough rows.
 
         sorted_df = self.order(column_names=metrics, ascending=ascending, inplace=inplace_sort)
         if inplace_sort:
@@ -443,7 +441,7 @@ class Estimator(object):
     # section ######################################################################
     #  #############################################################################
     #  get/set
-    
+
     @property
     def df(self):
         # getter for df.

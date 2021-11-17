@@ -2,6 +2,7 @@ import bisect  # for finding position in a list
 import collections  # for the method is_a_container
 import itertools  # for roundrobin
 import warnings
+import re
 
 import numpy as np
 from corai_error import Error_not_allowed_input
@@ -285,3 +286,11 @@ def is_np_arr_constant(arr, tol):
 # print(is_np_arr_constant(arr, 0.))
 # print(is_np_arr_constant(arr, 0.5))
 # print(is_np_arr_constant(arr, 2.))
+
+
+
+
+def sorted_alphanumeric(data):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(data, key=alphanum_key)
