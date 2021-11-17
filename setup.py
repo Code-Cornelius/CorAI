@@ -21,7 +21,7 @@ setuptools.setup(
     ],
     install_requires=[
         'setuptools>=56.0.0',
-        'matplotlib==3.2.2',
+        'matplotlib>=3.3.1',
         'numpy>=1.21.0',
         'pandas>=1.2.3',
         'seaborn>=0.11.1',
