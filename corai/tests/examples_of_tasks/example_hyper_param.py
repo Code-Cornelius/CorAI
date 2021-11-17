@@ -13,11 +13,12 @@ from corai_util.tools import function_dict
 from corai_util.tools import function_writer
 from corai_util.tools.src.function_dict import \
     replace_function_names_to_functions
+from corai_util.tools.src.function_writer import factory_fct_linked_path
 
 ROOTPATH = os.path.dirname(os.path.abspath(__file__))
-PATH_FOLDER_ESTIMS = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_history")
-PATH_FOLDER_MODELS = os.path.join(ROOTPATH, "example_hyper_param_sin_estim_models")
 
+linker_estims = factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_history")
+linker_models = factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_models")
 PATH_JSON_PARAMS = os.path.join(ROOTPATH, "other_csv_from_examples", "param_hyper_param_tuning.json")
 
 NEW_DATASET = False
@@ -134,8 +135,8 @@ def generate_estims_history():
                                                         silent=True, hyper_param=params)
         estims.append(estimator_history)
         if SAVE_TO_FILE:
-            estimator_history.to_json(path=os.path.join(PATH_FOLDER_ESTIMS, f"estim_{i}.json"), compress=False)
-            net.save_net(path=os.path.join(PATH_FOLDER_MODELS, f"model_{i}.pth"))
+            estimator_history.to_json(path=linker_estims([f"estim_{i}.json"]), compress=False)
+            net.save_net(path=linker_models([f"model_{i}.pth"]))
     return estims
 
 
@@ -145,7 +146,7 @@ if __name__ == '__main__':
         print("Training.")
         estims = generate_estims_history()
     print("Plotting.")
-    estim_hyper_param = corai.Estim_hyper_param.from_folder(PATH_FOLDER_ESTIMS,
+    estim_hyper_param = corai.Estim_hyper_param.from_folder(linker_estims(['']),
                                                             metric_names=["loss_validation", "loss_training"],
                                                             flg_time=True, compressed=False)
 
@@ -199,8 +200,8 @@ if __name__ == '__main__':
     df_best = estim_hyper_param.get_best_by(metrics='loss_validation', count=3)
     print(df_best.to_string())
     index_best = df_best.index[0]  # best model
-    path2net_best = os.path.join(PATH_FOLDER_MODELS, f"model_{index_best}.pth")
-    path2estim_best = os.path.join(PATH_FOLDER_ESTIMS, f"estim_{index_best}.json")
+    path2net_best = linker_models([f"model_{index_best}.pth"])
+    path2estim_best = linker_estims([f"estim_{index_best}.json"])
 
     config_architecture_second_elmt = lambda param: config_architecture(param)[1]  # fetch only the class
     best_model = create_model_by_index(index_best, PATH_JSON_PARAMS,
