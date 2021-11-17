@@ -11,14 +11,11 @@ from corai import create_model_by_index, nn_plot_prediction_vs_true
 from corai_plot import APlot
 from corai_util.tools import function_dict
 from corai_util.tools import function_writer
-from corai_util.tools.src.function_dict import \
-    replace_function_names_to_functions
-from corai_util.tools.src.function_writer import factory_fct_linked_path
 
 ROOTPATH = os.path.dirname(os.path.abspath(__file__))
 
-linker_estims = factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_history")
-linker_models = factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_models")
+linker_estims = function_writer.factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_history")
+linker_models = function_writer.factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_models")
 PATH_JSON_PARAMS = os.path.join(ROOTPATH, "other_csv_from_examples", "param_hyper_param_tuning.json")
 
 NEW_DATASET = False
@@ -86,7 +83,7 @@ mapping_names2functions = {'tanh': torch.tanh, 'celu': torch.tanh, 'relu': torch
 
 def config_architecture(params):
     params = params.copy()
-    replace_function_names_to_functions(params, mapping_names2functions, silent=True)
+    function_dict.replace_function_names_to_functions(params, mapping_names2functions, silent=True)
 
     # config of the architecture:
     input_size = 1
