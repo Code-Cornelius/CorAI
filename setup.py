@@ -21,11 +21,11 @@ setuptools.setup(
     ],
     install_requires=[
         'setuptools>=56.0.0',
-        'matplotlib==3.2.2',
+        'matplotlib>=3.3.1',
         'numpy>=1.21.0',
         'pandas>=1.2.3',
         'seaborn>=0.11.1',
-        'torch>=1.9.0+cu102',
+        'torch>=1.8.1+cu102',
         'sklearn>=0.0',
         'scikit-learn>=0.23.2',
         'tqdm>=4.61.1',
