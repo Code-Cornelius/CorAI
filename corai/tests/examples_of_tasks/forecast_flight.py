@@ -48,7 +48,7 @@ if __name__ == '__main__':
                                              criterion=criterion, optim_wrapper=optim_wrapper,
                                              metrics=metrics)
 
-    Parent = corai.GRU
+    Parent = corai.One_hidden_recurrent
     rnn_class = nn.GRU
 
     seq_nn = [

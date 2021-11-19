@@ -64,7 +64,7 @@ if __name__ == '__main__':
                                                  output_time_series_len=lookforward_window,
                                                  nb_output_consider=40,
                                                  hidden_size=hidden_size, dropout=dropout,
-                                                 Parent=corai.LSTM, rnn_class=nn.LSTM)()),
+                                                 Parent=corai.Two_hidden_recurrent, rnn_class=nn.LSTM)()),
         # walrus operator, new in 3.9 python.
         corai.Reshape([-1, model.output_len]),
         nn.Linear(model.output_len, 1000, bias=True),

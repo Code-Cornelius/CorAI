@@ -10,7 +10,8 @@ from corai.src.classes.architecture.savable_net import Savable_net
 class RNN(Savable_net, metaclass=ABCMeta):
     """
     Abstract form that depends on a rnn_class given in the constructor.
-        GRU and LSTM are very close in terms of architecture. This factory allows to construct one or other at will.
+        GRU and LSTM are very close in terms of architecture.
+        This factory allows to construct one or the other at will.
 
     One can construct from factory_parameterised_rnn
     """
@@ -113,7 +114,8 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
                              output_time_series_len=1, nb_output_consider=1, hidden_size=150, dropout=0.,
                              * , rnn_class, Parent):
     """
-    GRU and LSTM are very close in terms of architecture. This factory allows to construct one or the other at will.
+    GRU and LSTM are very close in terms of architecture.
+    This factory allows to construct one or the other at will.
 
     Args:
         input_dim:
@@ -127,8 +129,11 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
         dropout: In [0,1].
         activation_fct:
         hidden_FC:
-        rnn_class: module either RNN OR LSTM
-        Parent:  GRU OR LSTM the special classes.
+        rnn_class: module where the parameters are. Can be:
+            https://pytorch.org/docs/stable/generated/torch.nn.RNN.html
+            https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html#torch.nn.LSTM
+            https://pytorch.org/docs/stable/generated/torch.nn.GRU.html#torch.nn.GRU
+        Parent:  one_hidden_recurrent OR two_hidden_recurrent; special classes creating the hidden parameters.
 
     Returns:
 

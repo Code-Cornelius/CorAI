@@ -1,3 +1,3 @@
-from .gru import GRU
+from .one_hidden_recurrent import One_hidden_recurrent
 from .rnn import RNN, factory_parametrised_RNN
-from .lstm import LSTM
+from .two_hidden_recurrent import Two_hidden_recurrent

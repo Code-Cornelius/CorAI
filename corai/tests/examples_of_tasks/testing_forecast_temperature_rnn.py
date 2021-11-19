@@ -5,7 +5,6 @@ import torch.nn as nn
 from sklearn.preprocessing import MinMaxScaler
 
 import corai
-from corai import LSTM
 from corai_plot import APlot
 
 # set seed for pytorch.
@@ -55,7 +54,7 @@ if __name__ == '__main__':
                                                  output_time_series_len=lookforward_window,
                                                  nb_output_consider=lookforward_window,
                                                  hidden_size=hidden_size, dropout=dropout,
-                                                 Parent=LSTM, rnn_class=nn.LSTM)()),  # walrus operator
+                                                 Parent=corai.Two_hidden_recurrent, rnn_class=nn.LSTM)()),  # walrus operator
         corai.Reshape([-1, model.output_len]),
         nn.Linear(model.output_len, hidden_FC, bias=True),
         nn.CELU(),
