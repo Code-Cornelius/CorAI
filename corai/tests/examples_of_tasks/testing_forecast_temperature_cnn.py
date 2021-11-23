@@ -11,7 +11,7 @@ from corai_plot import APlot
 corai.set_seeds(42)
 
 # Import Data
-TEMP_DATA = pd.read_csv("../../research_on_time_series_forecasting/daily_min_temperatures.csv")
+TEMP_DATA = pd.read_csv("daily_min_temperatures.csv")
 
 ############################## GLOBAL PARAMETERS
 device = corai.pytorch_device_setting('gpu')
