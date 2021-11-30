@@ -2,23 +2,23 @@
 # adds on from https://pytorch-lightning.readthedocs.io/en/latest/starter/introduction_guide.html
 
 import os
-import time
 import sys
+import time
+
 import numpy as np
 import torch
+from pytorch_lightning import LightningModule, LightningDataModule
 from pytorch_lightning import seed_everything, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
-import corai_plot.tests.test_displayableplot
-from pytorch_lightning import LightningModule, LightningDataModule
 from pytorch_lightning.callbacks import ProgressBar
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.callbacks.progress.tqdm_progress import Tqdm, convert_inf
+from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 from torch import nn
-from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 import corai
+import corai_plot.tests.test_displayableplot
 from corai import decorator_train_disable_no_grad
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
@@ -26,8 +26,6 @@ AVAIL_GPUS = 0
 BATCH_SIZE = 200
 
 seed_everything(42, workers=True)
-
-
 
 
 # section ######################################################################
@@ -66,7 +64,6 @@ class Sinus_model(LightningModule):
         loss = self.criterion(logits, y)
 
         self.log(name="train_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
-        # wip add another loss
         return loss
 
     def validation_step(self, batch, batch_nb):
@@ -75,7 +72,6 @@ class Sinus_model(LightningModule):
         loss = self.criterion(logits, y)
 
         self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
-
         return loss
 
     def test_step(self, batch, batch_idx):
@@ -187,15 +183,15 @@ activation_functions = [torch.tanh, torch.tanh, torch.relu]
 dropout = 0.
 epochs = 7500
 
-# Init our model
+############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
                           lr=0.01, weight_decay=0.0000001)
 
-# Init the Early Stopper https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.early_stopping.html#pytorch_lightning.callbacks.early_stopping.EarlyStopping
+############################### Init the Early Stopper https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.early_stopping.html#pytorch_lightning.callbacks.early_stopping.EarlyStopping
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100, verbose=False, mode="min", )
 
 logger = CSVLogger("logs")
-logger_tf = TensorBoardLogger("tb_logs", name="my_model")
+logger_tf = TensorBoardLogger("./lightning_logs/")
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
 trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=epochs, logger=[logger, logger_tf],

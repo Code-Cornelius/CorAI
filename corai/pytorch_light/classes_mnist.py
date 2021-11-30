@@ -169,7 +169,6 @@ class LitProgressBar(ProgressBar):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
     def init_validation_tqdm(self):
         """ Override this to customize the tqdm bar for validation. """
         bar = tqdm(disable=True)
