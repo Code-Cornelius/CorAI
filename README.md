@@ -12,7 +12,11 @@ It is now separated in the corresponding libraries, and there are tests for most
 Incorporate new financial functions, as well as neural networks functions. Estimator reworked.
 * *version 1.303*: Release in November 2021.
 The name of the library changed, most objects are simply exposed at the surface of the import. 
-Pip downloading incorporated. 
+Pip downloading incorporated.
+* *version 1.400*: Release in December 2021. In this version, the library should have 
+mostly correct utilities,  and we incorporated the usage of PyTorch Lightning 
+into the functionalities of CorAI. Lightning avoids some boilplates and has the same ideas
+as we had in CorAI, so we decide to reuse it.
 * *version 1.600* : Expected release: Summer 2022.
 3D plots.
 
@@ -29,7 +33,7 @@ Finally, we are trying to incorporate some C++ routines in the code for very eff
  
 ### How to use the Library?
 
-    pip install Corai>=1.3
+    pip install Corai>=1.303
 
 ### Structure of the Project and how to import
 

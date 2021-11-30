@@ -98,8 +98,8 @@ optim_wrapper = corai.Optim_wrapper(optimiser,
 - define the `early_stoppers`:
 
 ```python
-early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-int(1E-6))
-early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-int(1E-6))
+early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-1E-6)
+early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-1E-6)
 early_stoppers = (early_stop_train, early_stop_valid)
 ```
 

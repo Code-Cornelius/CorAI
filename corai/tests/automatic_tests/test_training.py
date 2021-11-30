@@ -114,8 +114,8 @@ class Test_regression(TestCase):
         sigma = 0.01  # Noise level
         device = pytorch_device_setting('cpu')
         SILENT = False
-        early_stop_train = Early_stopper_training(patience=20, silent=SILENT, delta=-int(1E-6))
-        early_stop_valid = Early_stopper_validation(patience=20, silent=SILENT, delta=-int(1E-6))
+        early_stop_train = Early_stopper_training(patience=20, silent=SILENT, delta=-1E-6)
+        early_stop_valid = Early_stopper_validation(patience=20, silent=SILENT, delta=-1E-6)
         self.early_stoppers = (early_stop_train, early_stop_valid)
         ############################# DATA CREATION
         # exact grid
@@ -194,7 +194,7 @@ class Test_regression(TestCase):
 
 
         except AssertionError:
-            early_stoppers = (Early_stopper_training(patience=20, silent=True, delta=-int(1E-6)),)
+            early_stoppers = (Early_stopper_training(patience=20, silent=True, delta=-1E-6),)
 
             (net, estimator_history) = nn_kfold_train(self.train_X, self.train_Y, self.Class_Parametrized_NN,
                                                       param_train=self.param_training,

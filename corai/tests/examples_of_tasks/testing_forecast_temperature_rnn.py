@@ -16,8 +16,8 @@ TEMP_DATA = pd.read_csv("daily_min_temperatures.csv")
 ############################## GLOBAL PARAMETERS
 device = corai.pytorch_device_setting('gpu')
 SILENT = False
-early_stop_train = corai.Early_stopper_training(patience=100, silent=SILENT, delta=-int(1E-2))
-early_stop_valid = corai.Early_stopper_validation(patience=100, silent=SILENT, delta=-int(1E-2))
+early_stop_train = corai.Early_stopper_training(patience=100, silent=SILENT, delta=-1E-2)
+early_stop_valid = corai.Early_stopper_validation(patience=100, silent=SILENT, delta=-1E-2)
 early_stoppers = (early_stop_train, early_stop_valid)
 metrics = ()
 ##########################################  DATA PARAMETERS:

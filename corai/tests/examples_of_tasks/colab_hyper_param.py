@@ -28,8 +28,8 @@ n_samples = 2000  # Number of training samples
 sigma = 0.01  # Noise level
 device = corai.pytorch_device_setting()
 SILENT = False
-early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-int(1E-6))
-early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-int(1E-6))
+early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-1E-6)
+early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-1E-6)
 early_stoppers = (early_stop_train, early_stop_valid)
 ############################# DATA CREATION
 # exact grid

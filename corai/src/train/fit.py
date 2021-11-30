@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 from corai_util.tools import function_iterable
 from tqdm import tqdm
 
-from corai.src.classes.fast_tensor_dataloader import FastTensorDataLoader
+from corai.src.classes.fasttensordataloader import FastTensorDataLoader
 from corai.src.classes.training_stopper.early_stopper_vanilla import Early_stopper_vanilla
 from corai.src.util_train import decorator_train_disable_no_grad
 

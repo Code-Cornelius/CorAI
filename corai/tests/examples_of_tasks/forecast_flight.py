@@ -16,8 +16,8 @@ flight_data = sns.load_dataset("flights")
 ##########################################  GLOBAL PARAMETERS
 device = corai.pytorch_device_setting('gpu')
 SILENT = False
-early_stop_train = corai.Early_stopper_training(patience=400, silent=SILENT, delta=-int(1E-2))
-early_stop_valid = corai.Early_stopper_validation(patience=400, silent=SILENT, delta=-int(1E-2))
+early_stop_train = corai.Early_stopper_training(patience=400, silent=SILENT, delta=-1E-2)
+early_stop_valid = corai.Early_stopper_validation(patience=400, silent=SILENT, delta=-1E-2)
 early_stoppers = (early_stop_train, early_stop_valid)
 metrics = ()
 ##########################################  DATA PARAMETERS:
