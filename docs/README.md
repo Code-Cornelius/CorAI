@@ -1,16 +1,10 @@
 # Structure of the tutorials:
 
-- `how_to_use_a_venv.md`
-- `how_to_use_estimators_and_plotters.md`
-- `tutorial_colab.md`
-- Training: `corai/Tutorial_training.md`,
-- Metric: `corai/src/classes/metric/tutorial_metric.md`,
-- Early_stopper: `corai/src/classes/training_stopper/tutorial_early_stopping.md`.
+- [`docs/how_to_use_a_venv.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/docs/how_to_use_a_venv.md)
+- [`docs/how_to_use_estimators_and_plotters.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/docs/how_to_use_estimators_and_plotters.md)
+- [`docs/tutorial_colab.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/docs/tutorial_colab.md)
+- Training: [`docs/Tutorial_training.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/docs/tutorial_training.md)
 
-
-- Using Savable_net: `corai/src/classes/architecture/how_new_architectures.md`,
-- Estimator history: `corai/src/classes/estimator/history/Tutorial_estim_history.md`,
-- Estimator history: `corai/src/classes/estimator/history/Tutorial_estim_history.md`,
-- Estimator hyper-param: `corai/src/classes/estimator/hyper_parameters/Tutorial_estim_hyperparameter.md`,
-
-# todo add direct links towards these tutorials.
+- Using Savable_net: [`corai/src/classes/architecture/how_new_architectures.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/architecture/how_new_architectures.md)
+- Estimator history: [`corai/src/classes/estimator/history/Tutorial_estim_history.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/estimator/history/tutorial_estim_history.md)
+- Estimator hyper-param: [`corai/src/classes/estimator/hyper_parameters/Tutorial_estim_hyperparameter.md`.](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/estimator/hyper_parameters/tutorial_estim_hyperparameter.md)
