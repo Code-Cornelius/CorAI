@@ -16,6 +16,8 @@ from torch import nn
 import corai
 import corai_plot.tests.test_displayableplot
 from corai import decorator_train_disable_no_grad
+from corai.pytorch_light.progressbar_without_val_without_batch_update import \
+    Progressbar_without_val_without_batch_update
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = 0
