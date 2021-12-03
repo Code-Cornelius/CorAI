@@ -47,7 +47,7 @@ class MNISTModel(LightningModule):
         # considered a hyperparameter to the LightningModule
         self.save_hyperparameters(ignore=["data_dir"])
 
-    def forward(self, x):
+    def forward(self, x): # forward not even required if the forward path is simply self.model(x).
         x = self.model(x)
         x = F.log_softmax(x, dim=1)
 

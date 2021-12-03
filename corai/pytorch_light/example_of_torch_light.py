@@ -19,10 +19,11 @@ seed_everything(42, workers=True)
 mnist_model = MNISTModel(learning_rate=0.001)
 
 ############################### Init the Early Stopper https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.early_stopping.html#pytorch_lightning.callbacks.early_stopping.EarlyStopping
+# min_delta always positive
 early_stop_val_acc = EarlyStopping(monitor="val_acc", min_delta=0.01, patience=10, verbose=False, mode="max", )
 # stopping_threshold = 0.9)
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.01, patience=10, verbose=False, mode="min", )
-early_stop_train_loss = EarlyStopping(monitor="train_loss", min_delta=-0.001, patience=10, verbose=False, mode="min", )
+early_stop_train_loss = EarlyStopping(monitor="train_loss", min_delta=0.001, patience=10, verbose=False, mode="min", )
 
 ###############################Init the loggers and checkpoints
 logger = CSVLogger("logs")

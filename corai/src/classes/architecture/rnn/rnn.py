@@ -1,10 +1,9 @@
 from abc import ABCMeta, abstractmethod
 
 import torch
-import torch.nn as nn
-from corai_error import Error_type_setter
 
 from corai.src.classes.architecture.savable_net import Savable_net
+from corai_error import Error_type_setter
 
 
 class RNN(Savable_net, metaclass=ABCMeta):
@@ -15,6 +14,7 @@ class RNN(Savable_net, metaclass=ABCMeta):
 
     One can construct from factory_parameterised_rnn
     """
+
     def __init__(self):
         assert self.nb_output_consider <= self.input_time_series_len, \
             "The nb of output to consider {h_n} needs to be smaller than the sequence length."
@@ -28,7 +28,7 @@ class RNN(Savable_net, metaclass=ABCMeta):
                                           bidirectional=self.bidirectional,
                                           batch_first=True)
 
-        self.output_len = self.hidden_size * self.nb_directions * self.nb_output_consider # dim of output of forward.
+        self.output_len = self.hidden_size * self.nb_directions * self.nb_output_consider  # dim of output of forward.
 
     def forward(self, time_series):
         """
@@ -38,7 +38,7 @@ class RNN(Savable_net, metaclass=ABCMeta):
         Returns:
         """
         batch_size = 1, time_series.shape[0], 1
-        h0 = self.get_hidden_states(batch_size) # polymorphism for gru and lstm
+        h0 = self.get_hidden_states(batch_size)  # polymorphism for gru and lstm
 
         out, _ = self.stacked_rnn(time_series, h0)  # shape of out is  N,L,Hidden_size * nb_direction
 
@@ -112,7 +112,7 @@ class RNN(Savable_net, metaclass=ABCMeta):
 
 def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectional=False, input_time_series_len=1,
                              output_time_series_len=1, nb_output_consider=1, hidden_size=150, dropout=0.,
-                             * , rnn_class, Parent):
+                             *, rnn_class, Parent):
     """
     GRU and LSTM are very close in terms of architecture.
     This factory allows to construct one or the other at will.
