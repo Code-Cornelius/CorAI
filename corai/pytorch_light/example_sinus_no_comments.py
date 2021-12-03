@@ -2,7 +2,6 @@
 # adds on from https://pytorch-lightning.readthedocs.io/en/latest/starter/introduction_guide.html
 
 import os
-import sys
 import time
 
 import numpy as np
@@ -10,12 +9,9 @@ import torch
 from pytorch_lightning import LightningModule, LightningDataModule
 from pytorch_lightning import seed_everything, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.callbacks import ProgressBar
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-from pytorch_lightning.callbacks.progress.tqdm_progress import Tqdm, convert_inf
 from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 from torch import nn
-from tqdm import tqdm
 
 import corai
 import corai_plot.tests.test_displayableplot
@@ -75,10 +71,6 @@ class Sinus_model(LightningModule):
         return loss
 
     def test_step(self, batch, batch_idx):
-        # x, y = batch
-        # logits = self(x)
-        # loss = F.nll_loss(logits, y)
-        # self.log("test_loss", loss)
         return self.validation_step(batch, batch_idx)
 
     def configure_optimizers(self):
@@ -114,38 +106,6 @@ class MyDataModule(LightningDataModule):
         # return DataLoader(self.mnist_test, batch_size=BATCH_SIZE)
         return corai.FastTensorDataLoader(self.input, self.output,
                                           batch_size=BATCH_SIZE)
-
-
-class LitProgressBar(ProgressBar):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def init_validation_tqdm(self):
-        """ Override this to customize the tqdm bar for validation. """
-        bar = tqdm(disable=True)
-        return bar
-
-    def init_train_tqdm(self):
-        """Override this to customize the tqdm bar for training."""
-        bar = Tqdm(desc="Training", position=(2 * self.process_position), disable=self.is_disabled,
-                   leave=True, dynamic_ncols=True, file=sys.stdout, colour='blue')
-        return bar
-
-    def on_train_start(self, trainer, pl_module):
-        super().on_train_start(trainer, pl_module)
-        self.main_progress_bar = self.init_train_tqdm()
-
-    def on_train_epoch_start(self, trainer, pl_module):
-        super().on_train_epoch_start(trainer, pl_module)
-        self.main_progress_bar.set_description(f"Epoch {trainer.current_epoch}")
-
-    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
-        super().on_train_batch_end(trainer, pl_module, outputs, batch, batch_idx)
-        total_batches = self.total_train_batches + self.total_val_batches
-        total_batches = convert_inf(total_batches)
-        if self._should_update(self.train_batch_idx, total_batches):
-            self._update_bar(self.main_progress_bar)
-            self.main_progress_bar.set_postfix(self.get_metrics(trainer, pl_module))
 
 
 # section ######################################################################
@@ -198,7 +158,7 @@ trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=epochs, logger=[logger, logger_tf]
                   # progress_bar_refresh_rate=50, # Ignored when a custom progress bar is passed to callbacks.
                   # progress bar over the batches, but is deprecated needs to find alternative.
                   log_every_n_steps=1,
-                  callbacks=[early_stop_val_loss, LitProgressBar(refresh_rate=10),
+                  callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
                              chckpnt,
                              ])
 sinus_data = MyDataModule(xx, yy)

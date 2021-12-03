@@ -7,7 +7,9 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 
-from corai.pytorch_light.classes_mnist import *
+from corai.pytorch_light.classes_mnist_with_comments import *
+from corai.pytorch_light.progressbar_without_val_without_batch_update import \
+    Progressbar_without_val_without_batch_update
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = min(1, torch.cuda.device_count())
@@ -37,10 +39,9 @@ trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=100, logger=[logger, logger_tf],
                   # progress bar over the batches, but is deprecated needs to find alternative.
                   log_every_n_steps=1, precision=16,
                   callbacks=[early_stop_val_acc, early_stop_val_loss, early_stop_train_loss,
-                             LitProgressBar(refresh_rate=10),
+                             Progressbar_without_val_without_batch_update(refresh_rate=10),
                              chckpnt])
 mnist_data_module = MyDataModule()
-
 
 ############################### Train the model
 start_time = time.perf_counter()
