@@ -4,15 +4,20 @@ from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.loggers.base import rank_zero_experiment
 from pytorch_lightning.utilities import rank_zero_only
 
+import corai_plot
+
 
 class History_dict(LightningLoggerBase):
-    def __init__(self, aplot=None):
+    def __init__(self, aplot_flag=False):
         super().__init__()
 
         self.history = collections.defaultdict(list)
         # The defaultdict will create an entry with an empty list if they key is missing when trying to access
 
-        self.aplot = aplot # plot only when it is given.
+        if aplot_flag:
+            self.aplot = corai_plot.APlot(how=(1, 1))
+        else:
+            self.aplot = None
 
     @property
     def name(self):

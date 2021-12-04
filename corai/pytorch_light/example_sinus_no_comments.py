@@ -16,8 +16,10 @@ from torch import nn
 import corai
 import corai_plot.tests.test_displayableplot
 from corai import decorator_train_disable_no_grad
+from corai.pytorch_light.history_dict import History_dict
 from corai.pytorch_light.progressbar_without_val_without_batch_update import \
     Progressbar_without_val_without_batch_update
+from corai_plot import APlot
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = 0
@@ -33,7 +35,7 @@ seed_everything(42, workers=True)
 
 class Sinus_model(LightningModule):
     def __init__(self, input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
-                 lr, weight_decay):
+                 lr, weight_decay, aplot_flag = False):
         super().__init__()
         self.model = corai.factory_parametrised_FC_NN(param_input_size=input_size,
                                                       param_list_hidden_sizes=hidden_sizes,
@@ -49,6 +51,11 @@ class Sinus_model(LightningModule):
         self.lr = lr
         self.weight_decay = weight_decay
 
+        if aplot_flag:
+            self.aplot = corai_plot.APlot(how=(1, 1))
+        else:
+            self.aplot = None
+
     def forward(self, x):
         return self.model(x)
 
@@ -58,18 +65,21 @@ class Sinus_model(LightningModule):
 
     def training_step(self, batch, batch_nb):
         x, y = batch
-        logits = self(x)
-        loss = self.criterion(logits, y)
+        y_hat = self(x)
+        loss = self.criterion(y_hat, y)
 
         self.log(name="train_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_nb):
         x, y = batch
-        logits = self(x)
-        loss = self.criterion(logits, y)
+        y_hat = self(x)
+        loss = self.criterion(y_hat, y)
 
         self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
+        x_sort , order = torch.sort(x.view(-1)) # sort values that are randomly ordered
+        self.plot_prediction(x_sort, y.view(-1)[order], y_hat.view(-1)[order])
+
         return loss
 
     def test_step(self, batch, batch_idx):
@@ -77,6 +87,20 @@ class Sinus_model(LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
+
+    def plot_prediction(self, inputs, true, prediction):
+        if self.aplot is not None:
+            self.aplot._axs[0].clear()
+            # plot prediction
+            self.aplot.uni_plot(0, inputs, true,
+                                dict_plot_param={'color': None, 'linestyle': '-', 'linewidth': 1.0, 'markersize': 0.,
+                                                 'label': 'True Values'})
+            self.aplot.uni_plot(0, inputs, prediction,
+                                dict_plot_param={'color': None, 'linestyle': '--', 'linewidth': 2., 'markersize': 0.,
+                                                 'label': 'Prediction After training'},
+                                dict_ax={'title': "Prediction over Validation Set", 'xlabel': 'Time Axis',
+                                         'ylabel': 'Value'})
+            self.aplot.show_and_continue()
 
 
 class MyDataModule(LightningDataModule):
@@ -147,22 +171,22 @@ epochs = 7500
 
 ############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
-                          lr=0.01, weight_decay=0.0000001)
+                          lr=0.01, weight_decay=0.0000001, aplot_flag = True)
 
-############################### Init the Early Stopper https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.early_stopping.html#pytorch_lightning.callbacks.early_stopping.EarlyStopping
-early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100, verbose=False, mode="min", )
+############################### Init the Early Stopper
+period_log = 1
+early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100// period_log, verbose=False, mode="min", )
 
 logger = CSVLogger("logs")
 logger_tf = TensorBoardLogger("./lightning_logs/")
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
-trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=epochs, logger=[logger, logger_tf],
+trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=epochs, logger=[logger, logger_tf, History_dict(aplot_flag=True)],
                   # progress_bar_refresh_rate=50, # Ignored when a custom progress bar is passed to callbacks.
                   # progress bar over the batches, but is deprecated needs to find alternative.
-                  log_every_n_steps=1,
+                  log_every_n_steps=period_log, check_val_every_n_epoch=period_log,
                   callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
-                             chckpnt,
-                             ])
+                             chckpnt,])
 sinus_data = MyDataModule(xx, yy)
 
 start_time = time.perf_counter()
