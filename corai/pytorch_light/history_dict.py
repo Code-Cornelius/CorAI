@@ -9,8 +9,8 @@ class History_dict(LightningLoggerBase):
     def __init__(self):
         super().__init__()
 
-        self.history = collections.defaultdict(lambda: [])  # copy not necessary here
-        # The defaultdict in contrast will simply create any items that you try to access
+        self.history = collections.defaultdict(list)
+        # The defaultdict will create an entry with an empty list if they key is missing when trying to access
 
     @property
     def name(self):
