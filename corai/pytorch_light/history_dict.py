@@ -71,7 +71,7 @@ class History_dict(LightningLoggerBase):
             self.aplot._axs[0].clear()
 
             # plot losses
-            if len(epochs_loss) > 1: # make the test so it does not plot in the case of empty loss.
+            if len(epochs_loss) > 1:  # make the test so it does not plot in the case of empty loss.
                 self.aplot.uni_plot(0, epochs_loss, loss_train,
                                     dict_plot_param={'color': 'blue', 'linestyle': '-', 'linewidth': 2.5,
                                                      'markersize': 0.,
