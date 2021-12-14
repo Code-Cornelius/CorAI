@@ -76,6 +76,8 @@ class Sinus_model(LightningModule):
         loss = self.criterion(y_hat, y)
 
         self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
+
+        # plot the prediction, dynamical evolution through epochs
         x_sort, order = torch.sort(x.view(-1))  # sort values that are randomly ordered
         self.plot_prediction(x_sort, y.view(-1)[order], y_hat.view(-1)[order])
 
@@ -116,22 +118,14 @@ class MyDataModule(LightningDataModule):
         self.val_in = self.input[training_size:]
         self.val_out = self.output[training_size:]
 
-    # train_dataloader(), val_dataloader(), and test_dataloader() all return PyTorch DataLoader instances
-    # that are created by wrapping their respective datasets that we prepared in setup()
     def train_dataloader(self):
-        # return DataLoader(self.mnist_train, batch_size=BATCH_SIZE)
-        return corai.FastTensorDataLoader(self.train_in, self.train_out,
-                                          batch_size=BATCH_SIZE)
+        return corai.FastTensorDataLoader(self.train_in, self.train_out, batch_size=BATCH_SIZE)
 
     def val_dataloader(self):
-        # return DataLoader(self.mnist_val, batch_size=BATCH_SIZE)
-        return corai.FastTensorDataLoader(self.val_in, self.val_out,
-                                          batch_size=BATCH_SIZE)
+        return corai.FastTensorDataLoader(self.val_in, self.val_out, batch_size=BATCH_SIZE)
 
     def test_dataloader(self):
-        # return DataLoader(self.mnist_test, batch_size=BATCH_SIZE)
-        return corai.FastTensorDataLoader(self.input, self.output,
-                                          batch_size=BATCH_SIZE)
+        return corai.FastTensorDataLoader(self.input, self.output, batch_size=BATCH_SIZE)
 
 
 # section ######################################################################
