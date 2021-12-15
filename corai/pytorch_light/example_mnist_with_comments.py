@@ -25,7 +25,7 @@ mnist_model = MNISTModel(learning_rate=0.001)
 # https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.early_stopping.html#pytorch_lightning.callbacks.early_stopping.EarlyStopping
 # they say absolute different but it is difference.
 
-period_log = 1
+period_log = 2
 # divide the patience bc:
 # "It must be noted that the patience parameter counts the number of validation checks
 # with no improvement, and not the number of training epochs."
@@ -45,10 +45,12 @@ chckpnt = ModelCheckpoint(monitor="val_acc", mode="max", verbose=True)
 ############################### Initialize a trainer # logger :
 # https://pytorch-lightning.readthedocs.io/en/stable/extensions/logging.html#logging-frequency
 # https://pytorch-lightning.readthedocs.io/en/stable/common/trainer.html
-trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=100, logger=[logger, logger_tf, History_dict(aplot_flag=True)],
+trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=100,
                   # progress_bar_refresh_rate=50, # Ignored when a custom progress bar is passed to callbacks.
                   # progress bar over the batches, but is deprecated needs to find alternative.
-                  log_every_n_steps=period_log, check_val_every_n_epoch=period_log,
+                  logger=[logger, logger_tf,
+                          History_dict(aplot_flag=True, frequency_epoch_logging=period_log)],
+                  check_val_every_n_epoch=period_log,
                   # Both same period in order to have the same logged values
                   precision=16,
                   callbacks=[early_stop_val_acc, early_stop_val_loss, early_stop_train_loss,

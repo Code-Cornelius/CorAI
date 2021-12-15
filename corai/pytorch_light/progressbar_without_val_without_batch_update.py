@@ -1,11 +1,11 @@
 import sys
 
 from pytorch_lightning.callbacks import ProgressBar
-from pytorch_lightning.callbacks.progress.tqdm_progress import Tqdm, convert_inf
+from pytorch_lightning.callbacks.progress.tqdm_progress import Tqdm, convert_inf, TQDMProgressBar
 from tqdm import tqdm
 
 
-class Progressbar_without_val_without_batch_update(ProgressBar):
+class Progressbar_without_val_without_batch_update(TQDMProgressBar):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

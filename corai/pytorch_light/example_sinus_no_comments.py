@@ -168,18 +168,18 @@ sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activat
                           lr=0.01, weight_decay=0.0000001, aplot_flag=True)
 
 ############################### Init the Early Stopper
-period_log = 1
+period_log = 20
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100 // period_log, verbose=False,
                                     mode="min", )
 
-logger = CSVLogger("logs")
+logger = CSVLogger("./csv_logs/")
 logger_tf = TensorBoardLogger("./lightning_logs/")
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
-trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=epochs, logger=[logger, logger_tf, History_dict(aplot_flag=True)],
-                  # progress_bar_refresh_rate=50, # Ignored when a custom progress bar is passed to callbacks.
-                  # progress bar over the batches, but is deprecated needs to find alternative.
-                  log_every_n_steps=period_log, check_val_every_n_epoch=period_log,
+trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=epochs,
+                  logger=[logger, logger_tf,
+                          History_dict(aplot_flag=True, frequency_epoch_logging=period_log)],
+                  check_val_every_n_epoch=period_log,
                   callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
                              chckpnt, ])
 sinus_data = MyDataModule(xx, yy)
