@@ -2,6 +2,8 @@ import functools
 import time
 
 import corai_util.tools
+import signal
+import logging
 
 
 def Memoization(key_names):
@@ -103,29 +105,27 @@ def estimation_remaining_time_computation(total_nb_tries, multiplicator_factor, 
 
     return decorator_prediction_total_time
 
-# test
-# import numpy as np
-#
-# N1 = 10
-# N2 = 10
-# total_nb_tries = N1 * N2
-# actual_state = [0]
-#
-#
-#
-#
-#
-#
-# @prediction_total_time(total_nb_tries = total_nb_tries,
-#                        multiplicator_factor = 1,
-#                        actual_state = actual_state)
-# def f():
-#     A = np.full((10000,1000),10)
-#     np.exp(A)
-#
-#
-#
-# for j in range(N1):
-#     for i in range(N2):
-#         actual_state[0] += 1
-#         f()
+
+class DelayedKeyboardInterrupt:
+    """
+    Semantics:
+        Class to be used to delay a keyboard interrupt for a critical section.
+
+    How to use:
+    with DelayedKeyboardInterrupt():
+        # critical section
+    """
+
+    def __enter__(self):
+        self.signal_received = False
+        self.old_handler = signal.signal(signal.SIGINT, self.handler)
+
+    def handler(self, sig, frame):
+        self.signal_received = (sig, frame)
+        logging.debug('Cannot interrupt while handling files. '
+                      'The interrupt will be delayed until file operations are finished')
+
+    def __exit__(self, type, value, traceback):
+        signal.signal(signal.SIGINT, self.old_handler)
+        if self.signal_received:
+            self.old_handler(*self.signal_received)

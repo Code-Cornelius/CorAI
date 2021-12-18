@@ -2,6 +2,7 @@ import pandas as pd
 
 from corai_error import Error_type_setter
 from corai_estimator import Estimator
+from corai_util.tools.src.decorator import DelayedKeyboardInterrupt
 
 
 class Estim_history(Estimator):
@@ -38,16 +39,18 @@ class Estim_history(Estimator):
         Returns:`
             Void
         """
-        attrs = {'metric_names': self.metric_names,
-                 'validation': self.validation,
-                 'best_epoch': self.list_best_epoch,
-                 'time': self.list_train_times,
-                 'hyper_params': self.hyper_params,
-                 'best_fold': self.best_fold,
-                 }
-        ######## debugging advice:
-        # if not serializable, check hyper_params that might contain wrong type objects.
-        super().to_json(path, compress, attrs)
+        # use delayed keyboard interrupt to assure the file saving is not interrupted
+        with DelayedKeyboardInterrupt():
+            attrs = {'metric_names': self.metric_names,
+                     'validation': self.validation,
+                     'best_epoch': self.list_best_epoch,
+                     'time': self.list_train_times,
+                     'hyper_params': self.hyper_params,
+                     'best_fold': self.best_fold,
+                     }
+            ######## debugging advice:
+            # if not serializable, check hyper_params that might contain wrong type objects.
+            super().to_json(path, compress, attrs)
 
     @classmethod
     def from_json(cls, path, compressed=True):
@@ -60,18 +63,20 @@ class Estim_history(Estimator):
         Returns:
             Void
         """
-        attrs = super().from_json_attributes(path, compressed)
-        estimator = super().from_json(path)
+        # use delayed keyboard interrupt to assure that data is not lost between loading and saving
+        with DelayedKeyboardInterrupt():
+            attrs = super().from_json_attributes(path, compressed)
+            estimator = super().from_json(path)
 
-        estimator.metric_names = attrs['metric_names']
-        estimator.validation = attrs['validation']
-        estimator.list_best_epoch = attrs['best_epoch']
-        estimator.hyper_params = attrs['hyper_params']
-        estimator.best_fold = attrs['best_fold']
-        estimator.list_train_times = attrs['time']
+            estimator.metric_names = attrs['metric_names']
+            estimator.validation = attrs['validation']
+            estimator.list_best_epoch = attrs['best_epoch']
+            estimator.hyper_params = attrs['hyper_params']
+            estimator.best_fold = attrs['best_fold']
+            estimator.list_train_times = attrs['time']
 
-        estimator.to_json(path=path, compress=compressed)
-        return estimator
+            estimator.to_json(path=path, compress=compressed)
+            return estimator
 
     def get_col_metric_names(self):
         """
