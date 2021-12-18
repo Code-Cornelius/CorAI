@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from corai_error import Error_not_allowed_input
+from corai_estimator import Estimator
 from corai_util.tools.src.function_file import remove_files_from_dir
 
 from corai.src.classes.estimator.history.estim_history import Estim_history
@@ -97,6 +99,27 @@ class Test_estim_history(TestCase):
 
         print(new_estim)
         remove_files_from_dir(folder_path=FOLDER_PATH, file_start="", file_extension="")
+
+
+    def test_cannot_save_empty_estimator(self):
+        file_name = "test.json"
+
+        path = os.path.join(FOLDER_PATH, file_name)
+        estimator = Estim_history(metric_names=metric_names, validation=True)
+
+        self.assertRaises(Error_not_allowed_input, estimator.to_csv, path)
+        self.assertRaises(Error_not_allowed_input, estimator.to_json, path)
+
+
+    def test_cannot_load_empty_file(self):
+        json_empty_file = "empty_file.json"
+        csv_empty_file = "empty_file.csv"
+
+        path_json = os.path.join(FOLDER_PATH, json_empty_file)
+        path_csv = os.path.join(FOLDER_PATH, csv_empty_file)
+
+        self.assertRaises(Error_not_allowed_input, Estimator.from_json, path_json)
+        self.assertRaises(Error_not_allowed_input, Estimator.from_csv, path_csv)
 
     def test_test_Test(self):
         estimator = Estim_history(metric_names=metric_names, validation=True,

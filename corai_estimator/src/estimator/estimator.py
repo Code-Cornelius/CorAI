@@ -396,6 +396,9 @@ class Estimator(object):
         Returns:
 
         """
+        if self.df.empty:
+            raise Error_not_allowed_input("Cannot save an empty dataframe.")
+
         directory_where_to_save = os.path.dirname(path)
         if not os.path.exists(directory_where_to_save):
             if directory_where_to_save != '':
@@ -424,6 +427,9 @@ class Estimator(object):
             attrs = {'name': self.name}
             super().to_json(path, compress, attrs)
         """
+        if self.df.empty:
+            raise Error_not_allowed_input("Cannot save an empty dataframe.")
+
         json_df = self.df.to_json(orient='split', index=False)
         parsed = json.loads(json_df)
         parsed['attrs'] = attrs
