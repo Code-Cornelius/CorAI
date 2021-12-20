@@ -1,9 +1,9 @@
 import functools
 import time
+import warnings
 
 import corai_util.tools
 import signal
-import logging
 
 
 def Memoization(key_names):
@@ -112,8 +112,11 @@ class DelayedKeyboardInterrupt:
         Class to be used to delay a keyboard interrupt for a critical section.
 
     How to use:
-    with DelayedKeyboardInterrupt():
-        # critical section
+        with DelayedKeyboardInterrupt():
+            # critical section
+
+    Reference:
+        http://stackoverflow.com/a/21919644/487556
     """
 
     def __enter__(self):
@@ -122,10 +125,24 @@ class DelayedKeyboardInterrupt:
 
     def handler(self, sig, frame):
         self.signal_received = (sig, frame)
-        logging.debug('Cannot interrupt while handling files. '
-                      'The interrupt will be delayed until file operations are finished')
+        warnings.warn('Cannot interrupt while handling files.'
+                      ' The interrupt will be delayed until file operations are finished')
 
     def __exit__(self, type, value, traceback):
         signal.signal(signal.SIGINT, self.old_handler)
         if self.signal_received:
             self.old_handler(*self.signal_received)
+
+def decorator_delayed_keyboard_interrupt(func):
+    """
+    Decorator to use around a function that should not be interrupted by a keyboard interrupt.
+
+    Args:
+        func: function to wrap.
+    """
+    @functools.wraps(func)
+    def wrapper_delayed_keyboard_interrupt(*args, **kwargs):
+        with DelayedKeyboardInterrupt():  # https://stackoverflow.com/questions/60018578/what-does-model-eval-do-in-pytorch
+            return func(*args, **kwargs)
+
+    return wrapper_delayed_keyboard_interrupt
