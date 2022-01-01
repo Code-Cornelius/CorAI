@@ -2,35 +2,25 @@
 
 ### Available version
 
-* *version 1.000* :  Released in September 2020. 
-It was released in order for me to have a stable version that was compatible with my summer projects. 
-There is still a lot to do on it. 
-* *version 1.142* : Released in June 2021. 
-The library is better documented, and better structured.
-It is now separated in the corresponding libraries, and there are tests for most of the functions.
-* *version 1.222* : Release in October 2021.
-Incorporate new financial functions, as well as neural networks functions. Estimator reworked.
-* *version 1.303*: Release in November 2021.
-The name of the library changed, most objects are simply exposed at the surface of the import. 
-Pip downloading incorporated.
-* *version 1.400*: Release in December 2021. In this version, the library should have 
-mostly correct utilities,  and we incorporated the usage of PyTorch Lightning 
-into the functionalities of CorAI. Lightning avoids some boilplates and has the same ideas
-as we had in CorAI, so we decide to reuse it.
-* *version 1.600* : Expected release: Summer 2022.
-3D plots.
-
+* *version 1.303*: Release in November 2021. The name of the library changed, most objects are simply exposed at the
+  surface of the import. Pip downloading incorporated.
+* *version 1.304*: Release in January 2022. Dependencies to other libraries are lowered for increased compatibility.
+* *version 1.400*: Release in March 2022. In this version, the library should have mostly correct utilities, and we
+  incorporated the usage of PyTorch Lightning into the functionalities of CorAI. Lightning avoids some boilplates and
+  has the same ideas as we had in CorAI, so we decide to reuse it.
+* *version 1.600* : Expected release: Winter 2023. 3D plots.
 
 ### General information
 
-The aim of this repository is to automatise and optimise classical python routines. 
-We detail here the different directories available, which depends on the intended usage. 
+The aim of this repository is to automatise and optimise classical python routines. We detail here the different
+directories available, which depends on the intended usage.
 
-Some functions are simple classical routines. 
-Other files offer more advanced code, involving wrappers classes, classes objects, metaclasses…
+Some functions are simple classical routines. Other files offer more advanced code, involving wrappers classes, classes
+objects, metaclasses…
 
-Finally, we are trying to incorporate some C++ routines in the code for very efficient code. This part is still in the project phase.
- 
+Finally, we are trying to incorporate some C++ routines in the code for very efficient code. This part is still in the
+project phase.
+
 ### How to use the Library?
 
     pip install Corai>=1.303
@@ -38,6 +28,7 @@ Finally, we are trying to incorporate some C++ routines in the code for very eff
 ### Structure of the Project and how to import
 
 The main structure is the following:
+
 ```
 Project
 ├── corai_error 
@@ -159,8 +150,6 @@ Project
 
 However, one can import the meaningful objects in the following way, where one `from path import object`:
 
-
-
 ```
 Project
 ├── corai_error 
@@ -248,7 +237,6 @@ Project
       └── operator.py
 ```
 
-
 a) For example, in order to import `benchmarking.py`, one should write:  `from corai_util.tools import benchmarking`.
 
 Also, the corai libraries are codependent in the following way:
@@ -263,9 +251,11 @@ graph TD;
 
 ```
 
-* All libraries start with the name `corai_{NAME LIBRARY}`, except for the machine learning / pytorch library, which is just corai.
+* All libraries start with the name `corai_{NAME LIBRARY}`, except for the machine learning / pytorch library, which is
+  just corai.
 
-In the future we will explain better how to use imports. For now, everything is exposed in `corai`and in the other library, you might have to import the module first in this fashion:
+In the future we will explain better how to use imports. For now, everything is exposed in `corai`and in the other
+library, you might have to import the module first in this fashion:
 
 ```
 from corai import module
@@ -288,11 +278,10 @@ function = module.function
 function()
 ```
 
-
-
 ## corai_error
 
-Custom errors for better handling of errors in the library. They all inherit from the built-in exception and intends to make the code clearer.
+Custom errors for better handling of errors in the library. They all inherit from the built-in exception and intends to
+make the code clearer.
 
 * **Error_convergence** inherits from Exception,
 * **Error_not_allowed_input** inherits from ValueError,
@@ -304,25 +293,26 @@ Custom errors for better handling of errors in the library. They all inherit fro
 ## corai_estimator
 
 * **Estimator** : A class that intends to make dataframes more accessible.
-* **Plotters** : Classes of objects that extend the behavior of seaborns' in-built functions. 
-  We used seaborn's names for the classes and methods. 
-  We rely on polymorphism to adapt behavior of general functions to each case's need.
-  
+* **Plotters** : Classes of objects that extend the behavior of seaborns' in-built functions. We used seaborn's names
+  for the classes and methods. We rely on polymorphism to adapt behavior of general functions to each case's need.
+
 ## corai_metaclass
-Metaclasses are most the times unnecessary. However, in some cases, they carry the exact idea needed for some design. 
+
+Metaclasses are most the times unnecessary. However, in some cases, they carry the exact idea needed for some design.
 For now, we only use metaclasses for `APlot`, where it allows a registration pattern for all plots.
 
 ## corai
-It should be imported as the alias: `corai`, as a reference to Cornelius AI. It is possible to use all the functions and tools (everything is exposed to the root) by using `corai.name_fct`. 
-However, if one wants to be clearer in the code, one can also use `corai.folder.name_fct` as it is exposed in the structure above.
 
+It should be imported as the alias: `corai`, as a reference to Cornelius AI. It is possible to use all the functions and
+tools (everything is exposed to the root) by using `corai.name_fct`. However, if one wants to be clearer in the code,
+one can also use `corai.folder.name_fct` as it is exposed in the structure above.
 
 ## corai_plot
+
 `colors_seaborn.py` gives a presentation of the different (personal) favorite palette of seaborn.
 
 ## corai_util
 
-
-We created two original objects. 
+We created two original objects.
 
 * **APlot** : A class that simplifies drawing using the library matplotlib ; 
