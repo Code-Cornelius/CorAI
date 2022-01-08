@@ -43,3 +43,25 @@
 *Verify if it is L2 error or L2 squared. Indeed, we should say MSE and not L2.
 * asserts when reading loading json for estimator history to avoid obscure error message.
 * dtype for the architectures.
+
+
+
+
+Work January CorAI 1.400:
+
+
+
+- using history without training: there is an example, it shows that CorAI not adapted. Construct adaptors to not have to change fundamentally the code.
+- logger custom -> estim_history. Two things:
+  * from the logger, save it into the right format,
+  * Transform the saved data + YAML with h.p.s into estim_history,
+- logger bug with logging metrics, we need to aggregate result perhaps?
+- logger more general,
+- progressbar more general,
+- explain the classes what they do,
+- add the classes to the ASCII tree,
+- expose classes (config + `__init__.py`),
+- no compression parameter: write comment `create_model_by_index`,
+- update tutorial collab,
+
+- RNN parameters are not used. Clean the file.

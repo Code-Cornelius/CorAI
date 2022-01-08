@@ -4,11 +4,10 @@ from copy import deepcopy
 
 import torch
 import torch.nn as nn
-# my lib
-from corai_error import Error_type_setter
-from corai_util.tools.src.function_writer import list_of_dicts_to_json
 
 from corai.src.util_train import decorator_train_disable_no_grad
+# my lib
+from corai_error import Error_type_setter
 
 
 class Savable_net(nn.Module):
@@ -35,10 +34,16 @@ class Savable_net(nn.Module):
         Constructor for Neural Network.
         """
         super().__init__()
-        self.predict_fct = predict_fct # put None if you want to keep default
+        self.predict_fct = predict_fct  # put None if you want to keep default
         # best parameters, keeps track in case of early stopping.
         self.best_weights = None  # init the field best weights.
         self.best_epoch = 0
+
+    @property
+    def device(self):
+        # device of the model:
+        # https://stackoverflow.com/questions/58926054/how-to-get-the-device-type-of-a-pytorch-module-conveniently
+        return next(self.parameters()).device
 
     def prediction(self, out):
         """returns the class predicted for each element of the tensor."""
@@ -74,7 +79,7 @@ class Savable_net(nn.Module):
     def update_best_weights(self, epoch):
         # : We decide to keep a copy instead of saving the model in a file
         # because we might not want to save this model (E.G. if we do a K-FOLD)
-        self.best_weights = deepcopy(self.state_dict()) # used in early stoppers.
+        self.best_weights = deepcopy(self.state_dict())  # used in early stoppers.
         self.best_epoch = epoch
 
     # section ######################################################################

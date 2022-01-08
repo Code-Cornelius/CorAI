@@ -144,6 +144,7 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
             self.input_dim = input_dim
             self.output_dim = output_dim
 
+            # todo are these parameters used?
             self.input_time_series_len = input_time_series_len
             self.output_time_series_len = output_time_series_len
 
