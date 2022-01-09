@@ -63,5 +63,6 @@ Work January CorAI 1.400:
 - expose classes (config + `__init__.py`),
 - no compression parameter: write comment `create_model_by_index`,
 - update tutorial collab,
+- checkpoint for saving net based on metrics
 
 - RNN parameters are not used. Clean the file.

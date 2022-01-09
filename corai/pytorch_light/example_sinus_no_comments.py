@@ -15,6 +15,7 @@ from torch import nn
 
 import corai
 import corai_plot.tests.test_displayableplot
+from config import ROOT_DIR
 from corai import decorator_train_disable_no_grad
 from corai.pytorch_light.history_dict import History_dict
 from corai.pytorch_light.progressbar_without_val_without_batch_update import \
@@ -24,6 +25,7 @@ PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = 0
 BATCH_SIZE = 200
 
+OUT_PATH = os.path.join(ROOT_DIR, 'corai', 'pytorch_light', 'out')
 seed_everything(42, workers=True)
 
 
@@ -166,22 +168,23 @@ epochs = 7500
 ############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
                           lr=0.01, weight_decay=0.0000001, aplot_flag=True)
-
 ############################### Init the Early Stopper
 period_log = 20
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100 // period_log, verbose=False,
                                     mode="min", )
 
-logger = CSVLogger("./csv_logs/")
-logger_tf = TensorBoardLogger("./lightning_logs/")
+logger = CSVLogger(os.path.join(OUT_PATH, 'csv_logs'))
+logger_tf = TensorBoardLogger(os.path.join(OUT_PATH, 'lightning_logs'))
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
-trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=epochs,
-                  logger=[logger, logger_tf,
-                          History_dict(aplot_flag=True, frequency_epoch_logging=period_log)],
-                  check_val_every_n_epoch=period_log,
-                  callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
-                             chckpnt, ])
+trainer = Trainer(
+    default_root_dir=OUT_PATH,
+    gpus=AVAIL_GPUS, max_epochs=epochs,
+    logger=[logger, logger_tf,
+            History_dict(aplot_flag=True, frequency_epoch_logging=period_log)],
+    check_val_every_n_epoch=period_log,
+    callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
+               chckpnt, ])
 sinus_data = MyDataModule(xx, yy)
 
 start_time = time.perf_counter()

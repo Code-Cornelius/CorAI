@@ -1,4 +1,5 @@
 import pandas as pd
+import torch
 
 from corai_error import Error_type_setter
 from corai_estimator import Estimator
@@ -77,6 +78,71 @@ class Estim_history(Estimator):
 
         estimator.to_json(path=path, compress=compressed)
         return estimator
+
+    @classmethod
+    @decorator_delayed_keyboard_interrupt
+    def from_pl_logs(cls, log_path, checkpoint_path):
+        """
+        Semantics:
+            Initialise an Estim_history from a python_light csv log file containing metrics and a checkpoint file.
+        Args:
+            log_path: Path to a csv file containing the metrics.
+            checkpoint_path: Path to the checkpoint file of the model.
+
+        Returns:
+            An Estim_history.
+        """
+        estimator = super().from_csv(log_path)
+        checkpoint = torch.load(checkpoint_path)
+
+        # artificially insert fold column with 0 as value for compatibility
+        estimator.df['fold'] = 0
+        estimator.hyper_params = checkpoint['hyper_parameters']
+        estimator.metric_names, estimator.validation = Estim_history.deconstruct_column_names(estimator.df.columns)
+
+        # assume one fold case
+        estimator.list_best_epoch = [checkpoint['epoch']]
+        estimator.best_fold = 0
+
+        return estimator
+
+    @staticmethod
+    def deconstruct_column_names(column_names):
+        """
+            Semantics:
+                Collect information about the metric names and whether validation is used from column names
+            Assumption:
+                - The column name has ["train", "training", "val", "validation"] separated by "_" either
+                before or after the metric name
+                - If a metric has both training and validation values the metric name used will be the same
+            Args:
+                column_names([str]): List of column names.
+            Returns:
+                metric_names([str]): List of the metric names.
+                validation(bool): Flag to specify validation.
+        """
+        val_keywords = ["val", "validation"]
+        train_keywords = ["train", "training"]
+        ignore = ["epoch", "fold", "step"]
+        validation = False
+        metric_names = set()
+        for name in column_names:
+            if name in ignore:
+                continue
+            components = name.split("_")
+            for val_keyword in val_keywords:
+                if val_keyword in components:
+                    validation = True
+                    break
+
+            # remove keywords from metric name
+            metric_name = '_'.join([comp for comp in components if comp not in val_keywords+train_keywords])
+
+            metric_names.add(metric_name)
+
+        # TODO: check whether validation cuts the number of metric names in half
+        return list(metric_names), validation
+
 
     def get_col_metric_names(self):
         """
