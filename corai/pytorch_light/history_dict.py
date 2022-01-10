@@ -159,7 +159,8 @@ class History_dict(LightningLoggerBase):
 
         checkpoint = torch.load(checkpoint.best_model_path)
         estimator.hyper_params = Estim_history.serialize_hyper_parameters(self.hyper_params)
-        estimator.metric_names, estimator.validation = Estim_history.deconstruct_column_names(estimator.df.columns)
+        estimator.metric_names, estimator.validation, estimator.df.columns =\
+            Estim_history.deconstruct_column_names(estimator.df.columns)
 
         # assume one fold case
         estimator.list_best_epoch = [checkpoint['epoch']]
