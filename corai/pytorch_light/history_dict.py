@@ -79,9 +79,6 @@ class History_dict(LightningLoggerBase):
                 else:
                     raise KeyError("The key does not exist in history.")
 
-    def log_hyperparams(self, params):
-        pass
-
     def plot_history_prediction(self):
         # TODO CHOICE SCORE TO PLOT
         # losses
