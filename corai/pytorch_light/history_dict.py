@@ -60,8 +60,8 @@ class History_dict(LightningLoggerBase):
                     self.history['epoch'].append(metric_value)
                 else:
                     pass
-
-        self.plot_history_prediction()
+        if step > 100:
+            self.plot_history_prediction()
         return
 
     def log_hyperparams(self, params):
@@ -83,12 +83,14 @@ class History_dict(LightningLoggerBase):
             else:
                 raise KeyError("The key does not exist in history.")
         else:
-            res = [] * len(keys)
+            res = [0] * len(keys)
+            print(len(keys))
             for i, key in enumerate(keys):
-                if keys in self.history:
+                if key in self.history:
                     res[i] = self.history[key]
                 else:
                     raise KeyError("The key does not exist in history.")
+            return res
 
     def plot_history_prediction(self):
         # TODO CHOICE SCORE TO PLOT
