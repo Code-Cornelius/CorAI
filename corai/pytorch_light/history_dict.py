@@ -64,7 +64,18 @@ class History_dict(LightningLoggerBase):
         self.plot_history_prediction()
         return
 
+    def log_hyperparams(self, params):
+        pass
+
     def fetch_score(self, keys):
+        """
+
+        Args:
+            keys (str or list<str>): the keys to fetch the result.
+
+        Returns:
+
+        """
         # string or list of strings
         if isinstance(keys, str):
             if keys in self.history:
