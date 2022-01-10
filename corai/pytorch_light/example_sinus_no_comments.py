@@ -72,12 +72,13 @@ class Sinus_model(LightningModule):
         self.log(name="train_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
         return loss
 
-    def validation_step(self, batch, batch_nb):
+    def validation_step(self, batch, batch_nb, log=True):
         x, y = batch
         y_hat = self(x)
         loss = self.criterion(y_hat, y)
 
-        self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
+        if log:
+            self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
 
         # plot the prediction, dynamical evolution through epochs
         x_sort, order = torch.sort(x.view(-1))  # sort values that are randomly ordered
@@ -86,7 +87,7 @@ class Sinus_model(LightningModule):
         return loss
 
     def test_step(self, batch, batch_idx):
-        return self.validation_step(batch, batch_idx)
+        return self.validation_step(batch, batch_idx, log=False)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
@@ -163,7 +164,7 @@ output_size = 1
 biases = [True, True, True, True]
 activation_functions = [torch.tanh, torch.tanh, torch.relu]
 dropout = 0.
-epochs = 5
+epochs = 50
 
 ############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
@@ -188,6 +189,7 @@ sinus_data = MyDataModule(xx, yy)
 
 start_time = time.perf_counter()
 trainer.fit(sinus_model, datamodule=sinus_data)
+
 print("Total time training: ", time.perf_counter() - start_time, " seconds.")
 
 print(trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data))
@@ -196,16 +198,7 @@ corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
                                  plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
                                  device=device)
 
-# estimator = Estim_history.from_pl_logs(log_path=log_path, checkpoint_path=ckpt)
 
-# 1. checkpointer
-# use checkpoints directly, possible?
-# save and load cktpts.
-
-# 2. history dict
-# self.history has all information.
-# use this information to transform it into estim_hist
-# calling the method written above, you can save the estim_hist.
-
+estim_hist = logger_custom.to_estim_history(checkpoint=chckpnt)
 
 corai_plot.APlot.show_plot()

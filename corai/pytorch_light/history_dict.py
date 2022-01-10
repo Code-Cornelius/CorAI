@@ -1,5 +1,9 @@
 import collections
 
+import pandas as pd
+import torch
+
+from corai import Estim_history
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.loggers.base import rank_zero_experiment
 from pytorch_lightning.utilities import rank_zero_only
@@ -117,6 +121,28 @@ class History_dict(LightningLoggerBase):
                                              'yscale': 'log'})
             self.aplot.show_legend()
             self.aplot.show_and_continue()
+
+    def to_estim_history(self, checkpoint):
+        """
+            Transform a history dict to an Estim_history using a checkpoint.
+        Args:
+            checkpoint: Pytorch lightning checkpoint.
+        Returns:
+            An Estim_history.
+        """
+        df = pd.DataFrame(self.history)
+        estimator = Estim_history(df=df)
+
+        estimator.df['fold'] = 0
+
+        checkpoint = torch.load(checkpoint.best_model_path)
+        estimator.hyper_params = checkpoint['hyper_parameters']
+        estimator.metric_names, estimator.validation = Estim_history.deconstruct_column_names(estimator.df.columns)
+
+        # assume one fold case
+        estimator.list_best_epoch = [checkpoint['epoch']]
+        estimator.best_fold = 0
+        return estimator
 
 
 ######### the plotting would for now look like:
