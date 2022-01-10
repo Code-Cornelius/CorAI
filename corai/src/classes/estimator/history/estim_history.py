@@ -97,12 +97,13 @@ class Estim_history(Estimator):
 
         # artificially insert fold column with 0 as value for compatibility
         estimator.df['fold'] = 0
-        estimator.hyper_params = checkpoint['hyper_parameters']
+        estimator.hyper_params = Estim_history.serialize_hyper_parameters(['hyper_parameters'])
         estimator.metric_names, estimator.validation = Estim_history.deconstruct_column_names(estimator.df.columns)
 
         # assume one fold case
         estimator.list_best_epoch = [checkpoint['epoch']]
         estimator.best_fold = 0
+        estimator.list_train_times = []
 
         return estimator
 
@@ -142,6 +143,16 @@ class Estim_history(Estimator):
 
         # TODO: check whether validation cuts the number of metric names in half
         return list(metric_names), validation
+
+    @staticmethod
+    def serialize_hyper_parameters(hyper_parameters):
+        activation_funcs = hyper_parameters['activation_functions']
+        for i, activation_func in enumerate(activation_funcs):
+            components = str(activation_func).split(' ')
+            hyper_parameters['activation_functions'][i] = components[2]
+
+        return hyper_parameters
+
 
 
     def get_col_metric_names(self):

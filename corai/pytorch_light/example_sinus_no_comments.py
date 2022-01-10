@@ -139,7 +139,6 @@ class MyDataModule(LightningDataModule):
 def exact_solution(x):
     return torch.sin(x)
 
-
 ############################## GLOBAL PARAMETERS
 n_samples = 2000  # Number of training samples
 sigma = 0.01  # Noise level
@@ -200,5 +199,5 @@ corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
 
 
 estim_hist = logger_custom.to_estim_history(checkpoint=chckpnt)
-
+estim_hist.to_json(os.path.join(OUT_PATH, 'estims', 'estim1.json'))
 corai_plot.APlot.show_plot()

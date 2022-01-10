@@ -19,6 +19,7 @@ class History_dict(LightningLoggerBase):
     def __init__(self, aplot_flag=False, frequency_epoch_logging=1):
         super().__init__()
 
+        self.hyper_params = None
         self.history = collections.defaultdict(list)
         # The defaultdict will create an entry with an empty list if they key is missing when trying to access
         self.freq_epch = frequency_epoch_logging
@@ -69,7 +70,7 @@ class History_dict(LightningLoggerBase):
         return
 
     def log_hyperparams(self, params):
-        pass
+        self.hyper_params = params
 
     def fetch_score(self, keys):
         """
@@ -136,12 +137,14 @@ class History_dict(LightningLoggerBase):
         estimator.df['fold'] = 0
 
         checkpoint = torch.load(checkpoint.best_model_path)
-        estimator.hyper_params = checkpoint['hyper_parameters']
+        estimator.hyper_params = Estim_history.serialize_hyper_parameters(self.hyper_params)
         estimator.metric_names, estimator.validation = Estim_history.deconstruct_column_names(estimator.df.columns)
 
         # assume one fold case
         estimator.list_best_epoch = [checkpoint['epoch']]
         estimator.best_fold = 0
+        estimator.list_train_times = []
+
         return estimator
 
 
