@@ -163,7 +163,7 @@ output_size = 1
 biases = [True, True, True, True]
 activation_functions = [torch.tanh, torch.tanh, torch.relu]
 dropout = 0.
-epochs = 7500
+epochs = 5
 
 ############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
@@ -174,14 +174,13 @@ early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=
                                     mode="min", )
 
 logger = CSVLogger(os.path.join(OUT_PATH, 'csv_logs'))
-logger_tf = TensorBoardLogger(os.path.join(OUT_PATH, 'lightning_logs'))
+logger_custom = History_dict(aplot_flag=True, frequency_epoch_logging=period_log)
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
 trainer = Trainer(
     default_root_dir=OUT_PATH,
     gpus=AVAIL_GPUS, max_epochs=epochs,
-    logger=[logger, logger_tf,
-            History_dict(aplot_flag=True, frequency_epoch_logging=period_log)],
+    logger=[logger, logger_custom],
     check_val_every_n_epoch=period_log,
     callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
                chckpnt, ])
@@ -196,5 +195,17 @@ print(trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data))
 corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
                                  plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
                                  device=device)
+
+# estimator = Estim_history.from_pl_logs(log_path=log_path, checkpoint_path=ckpt)
+
+# 1. checkpointer
+# use checkpoints direclty, possible?
+# save and load cktpts.
+
+# 2. history dict
+# self.history has all information.
+# use this information to transform it into estim_hist
+# calling the method written above, you can save the estim_hist.
+
 
 corai_plot.APlot.show_plot()

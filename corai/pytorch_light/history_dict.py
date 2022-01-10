@@ -7,6 +7,10 @@ from pytorch_lightning.utilities import rank_zero_only
 import corai_plot
 
 
+
+# https://github.com/PyTorchLightning/pytorch-lightning/issues/1173
+# check LightningLoggerBase
+# write by hand how to do it.
 class History_dict(LightningLoggerBase):
     def __init__(self, aplot_flag=False, frequency_epoch_logging=1):
         super().__init__()
@@ -63,6 +67,7 @@ class History_dict(LightningLoggerBase):
     def fetch_score(self, keys):
         # string or list of strings
         if isinstance(keys, str):
+            if keys in self.history...
             return self.history[keys]
         else:
             return [self.history[key] for key in keys]
