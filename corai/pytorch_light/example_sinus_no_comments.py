@@ -21,9 +21,8 @@ from corai.pytorch_light.history_dict import History_dict
 from corai.pytorch_light.progressbar_without_val_without_batch_update import \
     Progressbar_without_val_without_batch_update
 
-PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = 0
-BATCH_SIZE = 200
+BATCH_SIZE = 200000
 
 OUT_PATH = os.path.join(ROOT_DIR, 'corai', 'pytorch_light', 'out')
 seed_everything(42, workers=True)
@@ -46,9 +45,9 @@ class Sinus_model(LightningModule):
                                                       param_predict_fct=None)()
 
         # By default, every parameter of the __init__ method will be
-        # considered a hyperparameter to the LightningModule
-        self.save_hyperparameters(ignore=["input_size"])
-        self.criterion = nn.MSELoss(reduction='sum')
+        # considered a hyper-parameter to the LightningModule
+        self.save_hyperparameters(ignore=["input_size", "aplot_flag"])
+        self.criterion = nn.MSELoss(reduction='mean')
         self.lr = lr
         self.weight_decay = weight_decay
 
@@ -163,13 +162,13 @@ output_size = 1
 biases = [True, True, True, True]
 activation_functions = [torch.tanh, torch.tanh, torch.relu]
 dropout = 0.
-epochs = 50
+epochs = 5
 
 ############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
-                          lr=0.01, weight_decay=0.0000001, aplot_flag=True)
+                          lr=0.1, weight_decay=0.0000001, aplot_flag=True)
 ############################### Init the Early Stopper
-period_log = 1
+period_log =1
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100 // period_log, verbose=False,
                                     mode="min", )
 
@@ -182,13 +181,15 @@ trainer = Trainer(
     gpus=AVAIL_GPUS, max_epochs=epochs,
     logger=[logger, logger_custom],
     check_val_every_n_epoch=period_log,
+    num_sanity_val_steps=0,
     callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
                chckpnt, ])
 sinus_data = MyDataModule(xx, yy)
 
 start_time = time.perf_counter()
 trainer.fit(sinus_model, datamodule=sinus_data)
-
+final_time = time.perf_counter() - start_time
+#TODO add this final time to chktpt?
 print("Total time training: ", time.perf_counter() - start_time, " seconds.")
 
 print(trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data))
@@ -197,7 +198,25 @@ corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
                                  plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
                                  device=device)
 
+# todo issue with the name of columns
+estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt)
+estimator_history.to_json(os.path.join(OUT_PATH, 'estims', 'estim1.json'), compress=False)
+history_plot = corai.Relplot_history(estimator_history)
+history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot=None, log_axis_for_loss=True)
+history_plot.lineplot(log_axis_for_loss=True)
 
-estim_hist = logger_custom.to_estim_history(checkpoint=chckpnt)
-estim_hist.to_json(os.path.join(OUT_PATH, 'estims', 'estim1.json'))
+corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
+                                 plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
+                                 device=device)
 corai_plot.APlot.show_plot()
+
+# todo path, maybe we could use the functions we wrote  `factory_fct_linked_path`
+
+# TODO UNWANTED OUTPUT IN CONSOL, WHERE FROM?
+#  Total time training:  2.2748919  seconds.
+#  Testing: 100%|██████████| 1/1 [00:00<00:00,  4.85it/s]--------------------------------------------------------------------------------
+#  DATALOADER:0 TEST RESULTS
+#  {}
+#  --------------------------------------------------------------------------------
+#  Testing: 100%|██████████| 1/1 [00:00<00:00,  4.83it/s]
+#  [{}]

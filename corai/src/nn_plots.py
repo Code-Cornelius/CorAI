@@ -78,13 +78,14 @@ def nn_plot_prediction_vs_true(*, net, plot_xx, plot_yy=None, plot_yy_noisy=None
                                         })
     if plot_yy is not None:
         aplot.uni_plot(nb_ax=0, xx=plot_xx, yy=plot_yy,
-                       dict_plot_param={"color": "orange",
+                       dict_plot_param={"color": "blue",
                                         "linewidth": 1,
+                                        "linestyle":"--",
                                         "label": "Solution"
                                         })
 
     aplot.uni_plot(nb_ax=0, xx=plot_xx, yy=plot_yy_pred,
-                   dict_plot_param={"color": "c",
+                   dict_plot_param={"color": "orange",
                                     "linewidth": 2,
                                     "label": "Predicted Data used for Training"
                                     }, dict_ax={"xlabel": "Time", "ylabel": "Estimation",

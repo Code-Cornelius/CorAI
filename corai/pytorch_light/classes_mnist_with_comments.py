@@ -69,7 +69,7 @@ class MNISTModel(LightningModule):
         # Before 1.2, optimizer.step() was calling optimizer.zero_grad() internally. From 1.2, it is left to the user’s expertise.
         return loss
 
-    def validation_step(self, batch, batch_nb):
+    def validation_step(self, batch, batch_nb): # validation step is done after the optimisation step.
         x, y = batch
         logits = self(x)
         loss = F.nll_loss(logits, y)
@@ -77,8 +77,9 @@ class MNISTModel(LightningModule):
         preds = torch.argmax(logits, dim=1)
         acc = accuracy(preds, y)
 
-        self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True) # step means batch
-        self.log(name="val_acc", value=acc, prog_bar=True, on_step=False, on_epoch=True)  # step means batch
+        self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
+        self.log(name="val_acc", value=acc, prog_bar=True, on_step=False, on_epoch=True)  # step is when you call vali or train step.
+        # on_epoch means it will return the average over batches.
 
         return loss
 

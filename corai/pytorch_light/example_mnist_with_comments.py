@@ -56,6 +56,8 @@ trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=100,
                   callbacks=[early_stop_val_acc, early_stop_val_loss, early_stop_train_loss,
                              Progressbar_without_val_without_batch_update(refresh_rate=10),
                              chckpnt])
+# num_sanity_val_steps Sanity check runs n validation batches before starting the training routine.
+# auto_scale_batch_size="binsearch"
 mnist_data_module = MyDataModule()
 
 ############################### Train the model

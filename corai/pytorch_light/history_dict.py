@@ -2,32 +2,42 @@ import collections
 
 import pandas as pd
 import torch
-
-from corai import Estim_history
 from pytorch_lightning.loggers import LightningLoggerBase
 from pytorch_lightning.loggers.base import rank_zero_experiment
 from pytorch_lightning.utilities import rank_zero_only
 
 import corai_plot
+from corai import Estim_history
 
 
-
-# https://github.com/PyTorchLightning/pytorch-lightning/issues/1173
-# check LightningLoggerBase
-# write by hand how to do it.
 class History_dict(LightningLoggerBase):
-    def __init__(self, aplot_flag=False, frequency_epoch_logging=1):
+    # for this class to work properly, logs from validation_step should contain an entry from below in their name.
+    val_keywords = ['val', 'validation']
+
+    def __init__(self, aplot_flag=False, frequency_epoch_logging=1, metrics_plot=['train_loss', 'val_loss'],
+                 validation_test=True):
+        # frequency_epoch_logging = check_val_every_n_epoch from trainer.
+        # metrics_plot are the metrics that will be plot at each iteration of the evolution of the loss. Iterable.
         super().__init__()
 
         self.hyper_params = None
         self.history = collections.defaultdict(list)
         # The defaultdict will create an entry with an empty list if they key is missing when trying to access
         self.freq_epch = frequency_epoch_logging
-
         if aplot_flag:
             self.aplot = corai_plot.APlot(how=(1, 1))
+            self.colors = corai_plot.AColorsetDiscrete("Dark2")
         else:
             self.aplot = None
+
+        self.metrics_name_for_plot = metrics_plot
+        # adding a zero to the metrics with validation inside
+        # (this is because pytorch lightning does validation after the optimisation step).
+        for name in self.metrics_name_for_plot:  # this is done such that we can use fetch_score method in the plotting method.
+            if any(val_keyword in name for val_keyword in History_dict.val_keywords):
+                self.history[name] = [0]
+            else:
+                self.history[name] = []
 
     @property
     def name(self):
@@ -45,81 +55,84 @@ class History_dict(LightningLoggerBase):
 
     @rank_zero_only
     def log_metrics(self, metrics, step):
-        # metrics is a dictionary of metric names and values
+        """
+        Args:
+            metrics (dictionary): contains at least the metric name (one metric), the value and the epoch nb.
+            step: number of steps went through (validation or training).
 
-        # frequency check
+        """
+
+        # frequency check. This ensures that the number of logs for train and validation are equal.
         if ((metrics['epoch'] + 1) % self.freq_epch) != 0:
             # + 1 accounts for the shift with the frequency of validation step, in trainer
-            # check_val_every_n_epoch = self.freq_epch
-
+            # ~~~~~~~~~~~~~~~~~~~~~~ check_val_every_n_epoch = self.freq_epch ~~~~~~~~~~~~~~~~~~
             return
 
-        # fetch all metrics
+        # fetch all metrics. We use append (complexity amortized O(1)).
         for metric_name, metric_value in metrics.items():
             if metric_name != 'epoch':
                 self.history[metric_name].append(metric_value)
-            else:  # case epoch. We want to avoid adding multiple times the same. It happens for multiple losses.
+            else:  # case epoch. We want to avoid adding multiple times the same.
+                # It happens when multiple losses are logged.
                 if (not len(self.history['epoch']) or  # len == 0:
-                        not self.history['epoch'][-1] == metric_value
-                ):  # the last values of epochs is not the one we are currently trying to add.
+                        not self.history['epoch'][-1] == metric_value):
+                    # the last values of epochs is not the one we are currently trying to add.
                     self.history['epoch'].append(metric_value)
                 else:
                     pass
-        if step > 100:
-            self.plot_history_prediction()
+        self.plot_history_prediction()
         return
 
     def log_hyperparams(self, params):
         self.hyper_params = params
 
-    def fetch_score(self, keys):
+    def _get_history_one_key(self, key):
+        if key in self.history:
+            if any(val_keyword in key for val_keyword in History_dict.val_keywords):
+                return self.history[key][:-1]  # returns and stop iter
+            return self.history[key]  # did not the val key word.
+        else:
+            raise KeyError("The key does not exist in history.")
+
+    def fetch_score(self, keys, remove_last_validation=False):
         """
 
         Args:
             keys (str or list<str>): the keys to fetch the result.
+            remove_last_validation (bool): if true, will give the losses excluding last values,
+                for metrics including the word validation in their name.
 
         Returns:
+            list of lists of score.
 
         """
         # string or list of strings
         if isinstance(keys, str):
-            if keys in self.history:
-                return self.history[keys]
-            else:
-                raise KeyError("The key does not exist in history.")
+            return [self._get_history_one_key(keys)]
         else:
             res = [0] * len(keys)
-            print(len(keys))
             for i, key in enumerate(keys):
-                if key in self.history:
-                    res[i] = self.history[key]
-                else:
-                    raise KeyError("The key does not exist in history.")
+                res[i] = self._get_history_one_key(key)
             return res
 
     def plot_history_prediction(self):
-        # TODO CHOICE SCORE TO PLOT
         # losses
-        epochs_loss, loss_train, loss_val = self.fetch_score(['epoch', 'train_loss', 'val_loss'])
-        # TODO problem! since the dict is a defaultdict, if these keys do not exists, it returns simply an empty list!
-        if len(epochs_loss) == len(loss_train) == len(loss_val) and self.aplot is not None:
+        epochs_loss, = self.fetch_score(['epoch'])
+        losses = self.fetch_score(self.metrics_name_for_plot, remove_last_validation=True)
+        len_loss = [len(lst) for lst in losses]
+        if self.aplot is not None and max(len_loss) == min(len_loss) == len(epochs_loss):
             # plot the prediction:
             self.aplot._axs[0].clear()
 
             # plot losses
             if len(epochs_loss) > 1:  # make the test so it does not plot in the case of empty loss.
-                self.aplot.uni_plot(0, epochs_loss, loss_train,
-                                    dict_plot_param={'color': 'blue', 'linestyle': '-', 'linewidth': 2.5,
-                                                     'markersize': 0.,
-                                                     'label': 'Training Loss'},
-                                    dict_ax={'title': "History Training", 'xlabel': 'Epochs', 'ylabel': 'Loss',
-                                             'yscale': 'log'})
-                self.aplot.uni_plot(0, epochs_loss, loss_val,  # logging after the call: we miss one value
-                                    dict_plot_param={'color': 'orange', 'linestyle': '-', 'linewidth': 2.5,
-                                                     'markersize': 0.,
-                                                     'label': 'Validation Loss'},
-                                    dict_ax={'title': "History Training", 'xlabel': 'Epochs', 'ylabel': 'Loss',
-                                             'yscale': 'log'})
+                for i, (color, loss) in enumerate(zip(self.colors, losses)):
+                    self.aplot.uni_plot(0, epochs_loss, loss,
+                                        dict_plot_param={'color': color, 'linestyle': '-', 'linewidth': 2.5,
+                                                         'markersize': 0.,
+                                                         'label': self.metrics_name_for_plot[i]},
+                                        dict_ax={'title': "History Training", 'xlabel': 'Epochs', 'ylabel': 'Loss',
+                                                 'yscale': 'log'})
             self.aplot.show_legend()
             self.aplot.show_and_continue()
 
@@ -130,7 +143,15 @@ class History_dict(LightningLoggerBase):
             checkpoint: Pytorch lightning checkpoint.
         Returns:
             An Estim_history.
+
+        Preconditions:
+            The column name has ["train", "training", "val", "validation"] separated by "_" either
+                    before or after the metric name. For example, train_loss is valid, but trainLoss is not.
         """
+        # from init, there is one entry more in the training metrics. We delete the last entry of each list with validation in the name of the metric.
+        for key in self.history:
+            if any(val_keyword in key for val_keyword in History_dict.val_keywords):  # case val
+                self.history[key] = self.history[key][:-1]  # remove last entry of the list
         df = pd.DataFrame(self.history)
         estimator = Estim_history(df=df)
 
@@ -143,19 +164,6 @@ class History_dict(LightningLoggerBase):
         # assume one fold case
         estimator.list_best_epoch = [checkpoint['epoch']]
         estimator.best_fold = 0
-        estimator.list_train_times = []
+        estimator.list_train_times = []  # todo
 
         return estimator
-
-
-######### the plotting would for now look like:
-
-"""
-loss = loggers[1].history['train_loss']
-loss_epochs = loggers[1].history['epoch']
-aplot = corai_plot.APlot(how=(1, 1))
-aplot.uni_plot(0, loss_epochs, loss,
-               dict_plot_param={'color': None, 'linestyle': '-', 'linewidth': 2.5, 'markersize': 0.,
-                                'label': 'Training Loss'},
-               dict_ax={'title': "History Training", 'xlabel': 'Epochs', 'ylabel': 'Loss', 'yscale': 'log'})
-aplot.show_legend()"""

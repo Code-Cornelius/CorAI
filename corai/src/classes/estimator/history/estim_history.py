@@ -1,9 +1,12 @@
+import json
+
 import pandas as pd
 import torch
 
 from corai_error import Error_type_setter
 from corai_estimator import Estimator
 from corai_util.tools.src.decorator import decorator_delayed_keyboard_interrupt
+from corai_util.tools.src.function_iterable import is_iterable
 
 
 class Estim_history(Estimator):
@@ -110,17 +113,17 @@ class Estim_history(Estimator):
     @staticmethod
     def deconstruct_column_names(column_names):
         """
-            Semantics:
-                Collect information about the metric names and whether validation is used from column names
-            Assumption:
-                - The column name has ["train", "training", "val", "validation"] separated by "_" either
-                before or after the metric name
-                - If a metric has both training and validation values the metric name used will be the same
-            Args:
-                column_names([str]): List of column names.
-            Returns:
-                metric_names([str]): List of the metric names.
-                validation(bool): Flag to specify validation.
+        Semantics:
+            Collect information about the metric names and whether validation is used from column names
+        Assumption:
+            - The column name has ["train", "training", "val", "validation"] separated by "_" either
+            before or after the metric name. For example, train_loss is valid, but trainLoss is not.
+            - If a metric has both training and validation values the metric name used will be the same
+        Args:
+            column_names([str]): List of column names.
+        Returns:
+            metric_names([str]): List of the metric names.
+            validation(bool): Flag to specify validation.
         """
         val_keywords = ["val", "validation"]
         train_keywords = ["train", "training"]
@@ -128,30 +131,56 @@ class Estim_history(Estimator):
         validation = False
         metric_names = set()
         for name in column_names:
-            if name in ignore:
+            if name in ignore: # we continue to not add these columns to the metric_names.
                 continue
             components = name.split("_")
-            for val_keyword in val_keywords:
-                if val_keyword in components:
-                    validation = True
-                    break
+            if any(val_keyword in components for val_keyword in val_keywords):
+                validation = True
 
             # remove keywords from metric name
-            metric_name = '_'.join([comp for comp in components if comp not in val_keywords+train_keywords])
+            metric_name = '_'.join(
+                [word for word in components  # components is the name split.
+                 if word not in val_keywords + train_keywords]) # check if word is in the keywords. If it is, discard.
 
-            metric_names.add(metric_name)
+            metric_names.add(metric_name) # there might be train_loss, val_loss. We only want it once.
 
-        # TODO: check whether validation cuts the number of metric names in half
         return list(metric_names), validation
 
     @staticmethod
     def serialize_hyper_parameters(hyper_parameters):
-        activation_funcs = hyper_parameters['activation_functions']
-        for i, activation_func in enumerate(activation_funcs):
-            components = str(activation_func).split(' ')
-            hyper_parameters['activation_functions'][i] = components[2]
+        if isinstance(hyper_parameters,dict):
+            for key,value in hyper_parameters.items():
+                if is_iterable(value):
+                    hyper_parameters[key] = [Estim_history.serialize_hyper_parameters([hp_value]) for hp_value in value]
+                    # : calls with [.] to make it iterable.
+                elif not Estim_history.is_jsonable(value):
+                    components = str(value).split(' ')
+                    hyper_parameters[key] = components[2] # 2nd elmnt  which is the one we want
+            return hyper_parameters
 
-        return hyper_parameters
+        else: # iterable case
+            for i, elmnt in enumerate(hyper_parameters):
+                if is_iterable(elmnt):
+                    hyper_parameters[i] = [Estim_history.serialize_hyper_parameters([smaller_elmt]) for smaller_elmt in elmnt]
+                elif not Estim_history.is_jsonable(elmnt):
+                    components = str(elmnt).split(' ')
+                    hyper_parameters[i] = components[2]  # 2nd elmnt  which is the one we want
+                if len(hyper_parameters) == 1: # we unpack the list if it was not a list in the first place
+                    hyper_parameters = hyper_parameters[0]
+            return hyper_parameters
+
+
+    @staticmethod
+    def is_jsonable(x):
+        # todo move to somewhere else in utils.
+        # reference
+        # https://stackoverflow.com/questions/42033142/is-there-an-easy-way-to-check-if-an-object-is-json-serializable-in-python
+
+        try:
+            json.dumps(x)
+            return True
+        except:
+            return False
 
 
 
