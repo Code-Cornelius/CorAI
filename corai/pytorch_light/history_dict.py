@@ -67,10 +67,17 @@ class History_dict(LightningLoggerBase):
     def fetch_score(self, keys):
         # string or list of strings
         if isinstance(keys, str):
-            if keys in self.history...
-            return self.history[keys]
+            if keys in self.history:
+                return self.history[keys]
+            else:
+                raise KeyError("The key does not exist in history.")
         else:
-            return [self.history[key] for key in keys]
+            res = [] * len(keys)
+            for i, key in enumerate(keys):
+                if keys in self.history:
+                    res[i] = self.history[key]
+                else:
+                    raise KeyError("The key does not exist in history.")
 
     def log_hyperparams(self, params):
         pass

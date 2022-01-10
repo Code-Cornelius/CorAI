@@ -169,7 +169,7 @@ epochs = 5
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
                           lr=0.01, weight_decay=0.0000001, aplot_flag=True)
 ############################### Init the Early Stopper
-period_log = 20
+period_log = 1
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100 // period_log, verbose=False,
                                     mode="min", )
 
@@ -199,7 +199,7 @@ corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
 # estimator = Estim_history.from_pl_logs(log_path=log_path, checkpoint_path=ckpt)
 
 # 1. checkpointer
-# use checkpoints direclty, possible?
+# use checkpoints directly, possible?
 # save and load cktpts.
 
 # 2. history dict
