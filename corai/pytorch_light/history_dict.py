@@ -131,7 +131,7 @@ class History_dict(LightningLoggerBase):
                                         dict_plot_param={'color': color, 'linestyle': '-', 'linewidth': 2.5,
                                                          'markersize': 0.,
                                                          'label': self.metrics_name_for_plot[i]},
-                                        dict_ax={'title': "History Training", 'xlabel': 'Epochs', 'ylabel': 'Loss',
+                                        dict_ax={'title': "Dynamical Image of History Training", 'xlabel': 'Epochs', 'ylabel': 'Loss',
                                                  'yscale': 'log'})
             self.aplot.show_legend()
             self.aplot.show_and_continue()

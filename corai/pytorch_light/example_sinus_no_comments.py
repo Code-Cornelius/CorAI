@@ -100,7 +100,7 @@ class Sinus_model(LightningModule):
             self.aplot.uni_plot(0, inputs, prediction,
                                 dict_plot_param={'color': None, 'linestyle': '--', 'linewidth': 2., 'markersize': 0.,
                                                  'label': 'Prediction After training'},
-                                dict_ax={'title': "Prediction over Validation Set", 'xlabel': 'Time Axis',
+                                dict_ax={'title': "Dynamical Image of Prediction over Validation Set", 'xlabel': 'Time Axis',
                                          'ylabel': 'Value'})
             self.aplot.show_legend()
             self.aplot.show_and_continue()
@@ -135,41 +135,36 @@ class MyDataModule(LightningDataModule):
 
 # Define the exact solution
 def exact_solution(x):
-    return torch.sin(x)
+    return torch.sin(4 * x)
 
 ############################## GLOBAL PARAMETERS
-n_samples = 2000  # Number of training samples
-sigma = 0.01  # Noise level
-device = corai.pytorch_device_setting('cpu')
-SILENT = False
-early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-1E-6)
-early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-1E-6)
-early_stoppers = (early_stop_train, early_stop_valid)
+n_samples = 5000  # Number of training samples
+sigma = 0.1  # Noise level
 ############################# DATA CREATION
 # exact grid
-plot_xx = torch.linspace(0, 2 * np.pi, 1000).reshape(-1, 1)
+plot_xx = torch.linspace(0, 1/2 * np.pi, 1000).reshape(-1, 1)
 plot_yy = exact_solution(plot_xx).reshape(-1, )
 plot_yy_noisy = (exact_solution(plot_xx) + sigma * torch.randn(plot_xx.shape)).reshape(-1, )
 
 # random points for training
-xx = 2 * np.pi * torch.rand((n_samples, 1))
+xx = 1 / 2 *  np.pi * torch.rand((n_samples, 1))
 yy = exact_solution(xx) + sigma * torch.randn(xx.shape)
 
 input_size = 1
-hidden_sizes = [32, 64, 32]
+hidden_sizes = [8, 16, 8]
 output_size = 1
 biases = [True, True, True, True]
-activation_functions = [torch.tanh, torch.tanh, torch.relu]
+activation_functions = [torch.tanh, torch.tanh, torch.tanh]
 dropout = 0.
-epochs = 5
+epochs = 5000
 
 ############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
-                          lr=0.1, weight_decay=0.0000001, aplot_flag=True)
+                          lr=0.001, weight_decay=0.00001, aplot_flag=True)
 ############################### Init the Early Stopper
-period_log =1
-early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100 // period_log, verbose=False,
-                                    mode="min", )
+period_log =20
+early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
+                                    verbose=False, mode="min", )
 
 logger = CSVLogger(pl_linker(['out', 'csv_logs']))
 logger_custom = History_dict(aplot_flag=True, frequency_epoch_logging=period_log)
@@ -192,8 +187,7 @@ print("Total time training: ", time.perf_counter() - start_time, " seconds.")
 
 
 corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
-                                 plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
-                                 device=device)
+                                 plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy)
 
 estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt, train_time=final_time)
 estimator_history.to_json(pl_linker(['out', 'estims', 'estim1.json']), compress=False)
@@ -217,10 +211,6 @@ history_plot = corai.Relplot_history(estimator_history)
 history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot=None, log_axis_for_loss=True)
 history_plot.lineplot(log_axis_for_loss=True)
 
-# todo dynamic plot titles
-corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
-                                 plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
-                                 device=device)
 corai_plot.APlot.show_plot()
 
 

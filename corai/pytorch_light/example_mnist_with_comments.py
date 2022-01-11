@@ -22,6 +22,7 @@ seed_everything(42, workers=True)
 mnist_model = MNISTModel(learning_rate=0.001)
 
 ############################### Init the Early Stopper
+# min_delta: if positive: asks for improvement in direction of mode. If negative, it verifies model does not unlearn.
 # https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.early_stopping.html#pytorch_lightning.callbacks.early_stopping.EarlyStopping
 # they say absolute different but it is difference.
 
