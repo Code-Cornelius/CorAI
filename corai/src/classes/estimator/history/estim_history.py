@@ -7,6 +7,7 @@ from corai_error import Error_type_setter
 from corai_estimator import Estimator
 from corai_util.tools.src.decorator import decorator_delayed_keyboard_interrupt
 from corai_util.tools.src.function_iterable import is_iterable
+from corai_util.tools.src.function_json import is_jsonable
 
 
 class Estim_history(Estimator):
@@ -161,7 +162,7 @@ class Estim_history(Estimator):
                 if is_iterable(value):
                     hyper_parameters[key] = [Estim_history.serialize_hyper_parameters([hp_value]) for hp_value in value]
                     # : calls with [.] to make it iterable.
-                elif not Estim_history.is_jsonable(value):
+                elif not is_jsonable(value):
                     components = str(value).split(' ')
                     hyper_parameters[key] = components[2] # 2nd elmnt  which is the one we want
             return hyper_parameters
@@ -170,25 +171,13 @@ class Estim_history(Estimator):
             for i, elmnt in enumerate(hyper_parameters):
                 if is_iterable(elmnt):
                     hyper_parameters[i] = [Estim_history.serialize_hyper_parameters([smaller_elmt]) for smaller_elmt in elmnt]
-                elif not Estim_history.is_jsonable(elmnt):
+                elif not is_jsonable(elmnt):
                     components = str(elmnt).split(' ')
                     hyper_parameters[i] = components[2]  # 2nd elmnt  which is the one we want
                 if len(hyper_parameters) == 1: # we unpack the list if it was not a list in the first place
                     hyper_parameters = hyper_parameters[0]
             return hyper_parameters
 
-
-    @staticmethod
-    def is_jsonable(x):
-        # todo move to somewhere else in utils.
-        # reference
-        # https://stackoverflow.com/questions/42033142/is-there-an-easy-way-to-check-if-an-object-is-json-serializable-in-python
-
-        try:
-            json.dumps(x)
-            return True
-        except:
-            return False
 
 
 

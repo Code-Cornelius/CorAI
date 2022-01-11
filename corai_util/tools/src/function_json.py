@@ -54,3 +54,13 @@ def unzip_json(json_to_unzip):
         raise RuntimeError("Could interpret the unzipped contents")
 
     return json_to_unzip
+
+
+def is_jsonable(x):
+    # reference
+    # https://stackoverflow.com/questions/42033142/is-there-an-easy-way-to-check-if-an-object-is-json-serializable-in-python
+    try:
+        json.dumps(x)
+        return True
+    except:
+        return False

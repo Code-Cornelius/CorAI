@@ -136,11 +136,12 @@ class History_dict(LightningLoggerBase):
             self.aplot.show_legend()
             self.aplot.show_and_continue()
 
-    def to_estim_history(self, checkpoint):
+    def to_estim_history(self, checkpoint, train_time):
         """
             Transform a history dict to an Estim_history using a checkpoint.
         Args:
             checkpoint: Pytorch lightning checkpoint.
+            train_time: The time taken for the training.
         Returns:
             An Estim_history.
 
@@ -165,6 +166,6 @@ class History_dict(LightningLoggerBase):
         # assume one fold case
         estimator.list_best_epoch = [checkpoint['epoch']]
         estimator.best_fold = 0
-        estimator.list_train_times = []  # todo
+        estimator.list_train_times = [train_time]
 
         return estimator

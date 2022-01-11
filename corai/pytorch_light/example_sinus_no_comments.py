@@ -1,11 +1,10 @@
 # example from: https://pytorch-lightning.readthedocs.io/en/latest/notebooks/lightning_examples/mnist-hello-world.html
 # adds on from https://pytorch-lightning.readthedocs.io/en/latest/starter/introduction_guide.html
-
-import os
 import time
 
 import numpy as np
 import torch
+from corai_util.tools.src.function_writer import factory_fct_linked_path
 from pytorch_lightning import LightningModule, LightningDataModule
 from pytorch_lightning import seed_everything, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -24,7 +23,7 @@ from corai.pytorch_light.progressbar_without_val_without_batch_update import \
 AVAIL_GPUS = 0
 BATCH_SIZE = 200000
 
-OUT_PATH = os.path.join(ROOT_DIR, 'corai', 'pytorch_light', 'out')
+pl_linker = factory_fct_linked_path(ROOT_DIR, 'corai/pytorch_light/')
 seed_everything(42, workers=True)
 
 
@@ -86,7 +85,7 @@ class Sinus_model(LightningModule):
         return loss
 
     def test_step(self, batch, batch_idx):
-        return self.validation_step(batch, batch_idx, log=False)
+        return self.validation_step(batch, batch_idx, log=True)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
@@ -172,12 +171,12 @@ period_log =1
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=0.0, patience=100 // period_log, verbose=False,
                                     mode="min", )
 
-logger = CSVLogger(os.path.join(OUT_PATH, 'csv_logs'))
+logger = CSVLogger(pl_linker(['out', 'csv_logs']))
 logger_custom = History_dict(aplot_flag=True, frequency_epoch_logging=period_log)
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
 trainer = Trainer(
-    default_root_dir=OUT_PATH,
+    default_root_dir=pl_linker(['out']),
     gpus=AVAIL_GPUS, max_epochs=epochs,
     logger=[logger, logger_custom],
     check_val_every_n_epoch=period_log,
@@ -189,34 +188,39 @@ sinus_data = MyDataModule(xx, yy)
 start_time = time.perf_counter()
 trainer.fit(sinus_model, datamodule=sinus_data)
 final_time = time.perf_counter() - start_time
-#TODO add this final time to chktpt?
 print("Total time training: ", time.perf_counter() - start_time, " seconds.")
 
-print(trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data))
 
 corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
                                  plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
                                  device=device)
 
-# todo issue with the name of columns
-estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt)
-estimator_history.to_json(os.path.join(OUT_PATH, 'estims', 'estim1.json'), compress=False)
+estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt, train_time=final_time)
+estimator_history.to_json(pl_linker(['out', 'estims', 'estim1.json']), compress=False)
+
+# TODO: find a solution for this
+#   when test is called it will log more info into the hist_dict, causing the internal arrays to be of different
+#   sizes and breaking the initialisation of the dataframe used for estim_history
+#   the solution with the log flag form validation_step will cause the unwanted print
+#   Total time training:  2.2748919  seconds.
+#   --------------------------------------------------------------------------------
+#   Testing: 100%|██████████| 1/1 [00:00<00:00,  4.85it/s]
+#   --------------------------------------------------------------------------------
+#   DATALOADER:0 TEST RESULTS
+#   {}
+#   --------------------------------------------------------------------------------
+#   Testing: 100%|██████████| 1/1 [00:00<00:00,  4.83it/s]
+#   [{}]
+print(trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data))
+
 history_plot = corai.Relplot_history(estimator_history)
 history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot=None, log_axis_for_loss=True)
 history_plot.lineplot(log_axis_for_loss=True)
 
+# todo dynamic plot titles
 corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
                                  plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy,
                                  device=device)
 corai_plot.APlot.show_plot()
 
-# todo path, maybe we could use the functions we wrote  `factory_fct_linked_path`
 
-# TODO UNWANTED OUTPUT IN CONSOL, WHERE FROM?
-#  Total time training:  2.2748919  seconds.
-#  Testing: 100%|██████████| 1/1 [00:00<00:00,  4.85it/s]--------------------------------------------------------------------------------
-#  DATALOADER:0 TEST RESULTS
-#  {}
-#  --------------------------------------------------------------------------------
-#  Testing: 100%|██████████| 1/1 [00:00<00:00,  4.83it/s]
-#  [{}]
