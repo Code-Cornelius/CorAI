@@ -1,9 +1,7 @@
 import numpy as np
 import seaborn as sns
-import matplotlib.pyplot as plt
 
 from corai.src.classes.estimator.history.plot_estim_history import Plot_estim_history
-
 from corai_estimator import Relplot_estimator
 from corai_plot import AColorsetContinuous, APlot
 
@@ -28,8 +26,17 @@ class Relplot_history(Plot_estim_history, Relplot_estimator):
                     'basex': 10, 'basey': 10}
         return fig_dict
 
-    def draw_two_metrics_same_plot(self, key_for_second_axis_plot=None, log_axis_for_loss=True,
-                                   log_axis_for_second_axis=False):
+    def draw_two_metrics_same_plot(self,
+                                   key_for_second_axis_plot=None,
+                                   log_axis_for_loss=True,
+                                   log_axis_for_second_axis=False,
+                                   key_first_axis=None):
+        # Plots one loss per axis. If training AND validation are available, both plotted.
+        # In order to plot a second loss on the opposite y-axis, provide its name.
+
+        first_key_train = 'loss_training' if key_first_axis is None else key_first_axis
+        first_key_val = 'loss_validation' if key_first_axis is None else key_first_axis[
+                                                                         :-len('training')] + 'validation'
         aplot = APlot()
 
         # adjusting the linewidth depending on nb of plots:
@@ -59,7 +66,7 @@ class Relplot_history(Plot_estim_history, Relplot_estimator):
                                              "linewidth": linewidth,
                                              "label": f"Loss for Training nb {i + 1}"}
 
-            aplot.uni_plot(nb_ax=0, xx=evolution_xx, yy=self.get_data2evolution(coloured_data, 'loss_training'),
+            aplot.uni_plot(nb_ax=0, xx=evolution_xx, yy=self.get_data2evolution(coloured_data, first_key_train),
                            dict_plot_param=dict_plot_param_loss_training,
                            dict_ax={'title': "Training of a Neural Network, evolution wrt epochs.",
                                     'xlabel': "Epochs", 'ylabel': "Loss",
@@ -92,7 +99,7 @@ class Relplot_history(Plot_estim_history, Relplot_estimator):
                                                    "linewidth": linewidth,
                                                    "label": f"Loss for Validation nb {i + 1}"
                                                    }
-                aplot.uni_plot(nb_ax=0, xx=evolution_xx, yy=self.get_data2evolution(coloured_data, 'loss_validation'),
+                aplot.uni_plot(nb_ax=0, xx=evolution_xx, yy=self.get_data2evolution(coloured_data, first_key_val),
                                dict_plot_param=dict_plot_param_loss_validation)
                 if key_for_second_axis_plot is not None:
                     assert self.estimator.contains(f"{key_for_second_axis_plot}_validation"), \
@@ -120,8 +127,16 @@ class Relplot_history(Plot_estim_history, Relplot_estimator):
     def lineplot(self, log_axis_for_loss=True):
         #### data processing
         name_col_loss = self.estimator.get_col_metric_names()
-        df_to_plot = self.estimator.df.melt(id_vars=['epoch', 'fold'], value_vars=name_col_loss,
-                                            var_name='loss type', value_name='loss value')
+        try:
+            df_to_plot = self.estimator.df.melt(id_vars=['epoch', 'fold'], value_vars=name_col_loss,
+                                                var_name='loss type', value_name='loss value')
+        except KeyError:  # keyerror may arise when the losses do not exist in the df.
+            # Then we remove loss_training and loss_validation.
+            name_col_loss.remove('loss_training')
+            name_col_loss.remove('loss_validation')
+            df_to_plot = self.estimator.df.melt(id_vars=['epoch', 'fold'], value_vars=name_col_loss,
+                                                var_name='loss type', value_name='loss value')
+
         # slice if loss type contains training
         row_indexes_training = df_to_plot[(df_to_plot['loss type'].str.contains('training'))].index
         row_indexes_validati = df_to_plot.index.difference(row_indexes_training)
@@ -152,7 +167,7 @@ class Relplot_history(Plot_estim_history, Relplot_estimator):
 
         g.fig.tight_layout()
         axs = g.axes.flatten()
-        g._legend._loc = 1 # upper right, where there should be nothing.
+        g._legend._loc = 1  # upper right, where there should be nothing.
 
         if len(self.estimator.list_best_epoch) > 0:
             for i in range(len(axs)):  # plot lines of best NN:
