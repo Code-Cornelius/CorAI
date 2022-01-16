@@ -62,5 +62,5 @@ Work January CorAI 1.400:
 
 - update tutorial collab,
 - examples for loading things in pl checkpoints which are Bianca path dependent.
-
+- add types to the different models architecture.
 - RNN parameters are not used. Clean the file.

@@ -151,7 +151,7 @@ xx = 1 / 2 *  np.pi * torch.rand((n_samples, 1))
 yy = exact_solution(xx) + sigma * torch.randn(xx.shape)
 
 input_size = 1
-hidden_sizes = [8, 16, 8]
+hidden_sizes = [4, 8, 4]
 output_size = 1
 biases = [True, True, True, True]
 activation_functions = [torch.tanh, torch.tanh, torch.tanh]
@@ -166,14 +166,13 @@ period_log =20
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
                                     verbose=False, mode="min", )
 
-logger = CSVLogger(pl_linker(['out', 'csv_logs']))
 logger_custom = History_dict(aplot_flag=True, frequency_epoch_logging=period_log)
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
 trainer = Trainer(
     default_root_dir=pl_linker(['out']),
     gpus=AVAIL_GPUS, max_epochs=epochs,
-    logger=[logger, logger_custom],
+    logger=[logger_custom],
     check_val_every_n_epoch=period_log,
     num_sanity_val_steps=0,
     callbacks=[early_stop_val_loss, Progressbar_without_val_batch_update(refresh_rate=10),

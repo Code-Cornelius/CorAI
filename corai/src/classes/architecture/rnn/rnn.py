@@ -31,6 +31,10 @@ class RNN(Savable_net, metaclass=ABCMeta):
             packed together in a tuple:
                 time_series (tensor): shape batch size N,  Length sequence, Linput_dim
                 h0 (tensor): shape (self.num_layers * self.nb_directions, 1, self.hidden_size)
+            The reason why the two parameters are packed together is in order to
+            be able to associate RNN with free_nn, which only accepts functions of 1 input.
+            If some other applications require to have two inputs,
+            just add an adaptor layer (not the most efficient way of doing it indeed).
 
         Examples:
             h0 can be created as:

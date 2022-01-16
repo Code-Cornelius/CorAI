@@ -48,7 +48,7 @@ class History_dict(LightningLoggerBase):
 
     @property
     def name(self):
-        return "Logger_custom_plot"
+        return "Corai_History_Dict_Logger"
 
     @property
     def version(self):
@@ -94,22 +94,23 @@ class History_dict(LightningLoggerBase):
         self.hyper_params = params
 
     def _get_history_one_key(self, key):
+        # Removes last point from validation scores.
         if key in self.history:
             if any(val_keyword in key for val_keyword in History_dict.val_keywords):
-                return self.history[key][:-1]  # returns and stop iter
+                return self.history[key][:-1]  # returns and stop iter. All apart from last point.
+
             return self.history[key]  # did not the val key word.
+
         else:
             raise KeyError("The key does not exist in history.")
 
-    def fetch_score(self, keys, remove_last_validation=False):
+    def fetch_score(self, keys):
         """
         Semantics:
-            Gets the score if exists in the history.
+            Gets the score if exists in the history. Removes last point from validation scores.
 
         Args:
             keys (str or list<str>): the keys to fetch the result.
-            remove_last_validation (bool): if true, will give the losses excluding last values,
-                for metrics including the word validation in their name.
 
         Returns:
             list of lists of score.
@@ -126,7 +127,7 @@ class History_dict(LightningLoggerBase):
 
     def plot_history_prediction(self):
         epochs_loss, = self.fetch_score(['epoch'])
-        losses = self.fetch_score(self.metrics_name_for_plot, remove_last_validation=True)
+        losses = self.fetch_score(self.metrics_name_for_plot)
         len_loss = [len(lst) for lst in losses]
         if self.aplot is not None and max(len_loss) == min(len_loss) == len(epochs_loss):
             # plot the prediction:
