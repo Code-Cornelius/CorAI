@@ -14,8 +14,7 @@ class History_dict(LightningLoggerBase):
     # for this class to work properly, logs from validation_step should contain an entry from below in their name.
     val_keywords = ['val', 'validation']
 
-    def __init__(self, aplot_flag=False, frequency_epoch_logging=1, metrics_plot=['train_loss', 'val_loss'],
-                 validation_test=True):
+    def __init__(self, aplot_flag=False, frequency_epoch_logging=1, metrics_plot=['train_loss', 'val_loss']):
         # frequency_epoch_logging = check_val_every_n_epoch from trainer.
         # metrics_plot are the metrics that will be plot at each iteration of the evolution of the loss. Iterable.
         super().__init__()
@@ -83,7 +82,7 @@ class History_dict(LightningLoggerBase):
         self.plot_history_prediction()
         return
 
-    def log_hyperparams(self, params):
+    def log_hyperparams(self, params, *args, **kwargs):
         self.hyper_params = params
 
     def _get_history_one_key(self, key):
@@ -149,21 +148,23 @@ class History_dict(LightningLoggerBase):
             The column name has ["train", "training", "val", "validation"] separated by "_" either
                     before or after the metric name. For example, train_loss is valid, but trainLoss is not.
         """
-        # from init, there is one entry more in the training metrics. We delete the last entry of each list with validation in the name of the metric.
+
+        # from init, there is one entry more in the training metrics.
+        # We delete the last entry of each list with validation in the name of the metric.
         for key in self.history:
             if any(val_keyword in key for val_keyword in History_dict.val_keywords):  # case val
                 self.history[key] = self.history[key][:-1]  # remove last entry of the list
         df = pd.DataFrame(self.history)
         estimator = Estim_history(df=df)
 
-        estimator.df['fold'] = 0
+        estimator.df['fold'] = 0  # estimator have been written so the fold column exist.
 
         checkpoint = torch.load(checkpoint.best_model_path)
         estimator.hyper_params = Estim_history.serialize_hyper_parameters(self.hyper_params)
         estimator.metric_names, estimator.validation, estimator.df.columns =\
             Estim_history.deconstruct_column_names(estimator.df.columns)
 
-        # assume one fold case
+        # assumes one fold case
         estimator.list_best_epoch = [checkpoint['epoch']]
         estimator.best_fold = 0
         estimator.list_train_times = [train_time]

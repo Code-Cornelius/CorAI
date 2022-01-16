@@ -1,5 +1,3 @@
-import json
-
 import pandas as pd
 import torch
 
@@ -102,9 +100,8 @@ class Estim_history(Estimator):
         # artificially insert fold column with 0 as value for compatibility
         estimator.df['fold'] = 0
         estimator.hyper_params = Estim_history.serialize_hyper_parameters(['hyper_parameters'])
-        estimator.metric_names, estimator.validation, estimator.df.columns\
+        estimator.metric_names, estimator.validation, estimator.df.columns \
             = Estim_history.deconstruct_column_names(estimator.df.columns)
-
 
         # assume one fold case
         estimator.list_best_epoch = [checkpoint['epoch']]
@@ -138,7 +135,7 @@ class Estim_history(Estimator):
         new_column_names = []
         for name in column_names:
             validation_local = False
-            if name in ignore: # we continue to not add these columns to the metric_names.
+            if name in ignore:  # we continue to not add these columns to the metric_names.
                 new_column_names.append(name)
                 continue
             components = name.split("_")
@@ -149,37 +146,39 @@ class Estim_history(Estimator):
             # remove keywords from metric name
             metric_name = '_'.join(
                 [word for word in components  # components is the name split.
-                 if word not in val_keywords + train_keywords]) # check if word is in the keywords. If it is, discard.
+                 if word not in val_keywords + train_keywords])  # check if word is in the keywords. If it is, discard.
             new_column_names.append(Estim_history.generate_column_name(metric_name, validation_local))
-            metric_names.add(metric_name) # there might be train_loss, val_loss. We only want it once.
+            metric_names.add(metric_name)  # there might be train_loss, val_loss. We only want it once.
 
         return list(metric_names), validation, new_column_names
 
     @staticmethod
     def serialize_hyper_parameters(hyper_parameters):
         if isinstance(hyper_parameters, dict):
-            for key,value in hyper_parameters.items():
+            for key, value in hyper_parameters.items():
                 if is_iterable(value):
                     hyper_parameters[key] = [Estim_history.serialize_hyper_parameters([hp_value]) for hp_value in value]
                     # : calls with [.] to make it iterable.
                 elif not is_jsonable(value):
                     components = str(value).split(' ')
-                    hyper_parameters[key] = components[2] # 2nd elmnt  which is the one we want
+                    hyper_parameters[key] = components[
+                        2]  # 2nd elmnt  which is the one we want when the object is a function.
+                    # We did not test it in other cases....
             return hyper_parameters
 
-        else: # iterable case
+        else:  # iterable case
             for i, elmnt in enumerate(hyper_parameters):
                 if is_iterable(elmnt):
-                    hyper_parameters[i] = [Estim_history.serialize_hyper_parameters([smaller_elmt]) for smaller_elmt in elmnt]
+                    hyper_parameters[i] = [Estim_history.serialize_hyper_parameters([smaller_elmt]) for smaller_elmt in
+                                           elmnt]
                 elif not is_jsonable(elmnt):
                     components = str(elmnt).split(' ')
-                    hyper_parameters[i] = components[2]  # 2nd elmnt  which is the one we want
-                if len(hyper_parameters) == 1: # we unpack the list if it was not a list in the first place
+                    hyper_parameters[i] = components[
+                        2]  # 2nd elmnt  which is the one we want when the object is a function.
+                    # We did not test it in other cases....
+                if len(hyper_parameters) == 1:  # we unpack the list if it was not a list in the first place
                     hyper_parameters = hyper_parameters[0]
             return hyper_parameters
-
-
-
 
     def get_col_metric_names(self):
         """

@@ -1,16 +1,19 @@
 # example from: https://pytorch-lightning.readthedocs.io/en/latest/notebooks/lightning_examples/mnist-hello-world.html
 # adds on from https://pytorch-lightning.readthedocs.io/en/latest/starter/introduction_guide.html
+import os
 import time
 
+import torch
 from pytorch_lightning import seed_everything, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 
-from corai.pytorch_light.classes_mnist_with_comments import *
-from corai.pytorch_light.history_dict import History_dict
-from corai.pytorch_light.progressbar_without_val_without_batch_update import \
+from corai.src.classes.pl.history_dict import History_dict
+from corai.src.classes.pl.progressbar_without_val_without_batch_update import \
     Progressbar_without_val_without_batch_update
+from corai.tests.pytorch_light.classes_mnist_with_comments import MNISTModel
+from corai.tests.pytorch_light.example_sinus_no_comments import MyDataModule
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = min(1, torch.cuda.device_count())

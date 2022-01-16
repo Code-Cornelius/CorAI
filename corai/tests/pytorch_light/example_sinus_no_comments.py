@@ -16,8 +16,8 @@ import corai
 import corai_plot.tests.test_displayableplot
 from config import ROOT_DIR
 from corai import decorator_train_disable_no_grad
-from corai.pytorch_light.history_dict import History_dict
-from corai.pytorch_light.progressbar_without_val_without_batch_update import \
+from corai.src.classes.pl.history_dict import History_dict
+from corai.src.classes.pl.progressbar_without_val_without_batch_update import \
     Progressbar_without_val_without_batch_update
 
 AVAIL_GPUS = 0
