@@ -13,58 +13,59 @@ from src.rc_class.plot_util import plot_prediction
 from src.rc_class.util import *
 from src.rc_class.windowcreatorrc import WindowCreatorRC
 
+
 # section ######################################################################
 #  #############################################################################
 #  CHOICE global parameters
-NEW_DATASET = False
-ROOTPATH = os.path.dirname(os.path.abspath(__file__))  # get current location
-linker_estims = function_writer.factory_fct_linked_path(ROOTPATH, "hp_optimisation_saving/estims")
-linker_models = function_writer.factory_fct_linked_path(ROOTPATH, "hp_optimisation_saving/models")
-PATH_JSON_PARAMS = os.path.join(ROOTPATH, "hp_optimisation_saving", "param_hyper_param_tuning.json")
-
-device = corai.pytorch_device_setting('cpu')
-corai.set_seeds(42)  # reset later
-SILENT = False
-dtype = torch.float32
-washout = 50
-lookforward_window = 1
-nb_sample_point_ts = 800
-model_choice = 3
-hidden_dim = 64
-dim, nb_dim = [1], 1
-nb_batch = 1
+# NEW_DATASET = False
+# ROOTPATH = os.path.dirname(os.path.abspath(__file__))  # get current location
+# linker_estims = function_writer.factory_fct_linked_path(ROOTPATH, "hp_optimisation_saving/estims")
+# linker_models = function_writer.factory_fct_linked_path(ROOTPATH, "hp_optimisation_saving/models")
+# PATH_JSON_PARAMS = os.path.join(ROOTPATH, "hp_optimisation_saving", "param_hyper_param_tuning.json")
+#
+# device = corai.pytorch_device_setting('cpu')
+# corai.set_seeds(42)  # reset later
+# SILENT = False
+# dtype = torch.float32
+# washout = 50
+# lookforward_window = 1
+# nb_sample_point_ts = 800
+# model_choice = 3
+# hidden_dim = 64
+# dim, nb_dim = [1], 1
+# nb_batch = 1
 
 # section ######################################################################
 #  #############################################################################
 #  CREATE DATASET
-train_length = int(nb_sample_point_ts * 0.8)  # 80%
-test_length = nb_sample_point_ts - train_length
-plotting_points_starting_point = int(train_length * 0.5)  # 50% of the training set.
-pre_scaled_inputs, pre_scaled_outputs = simple_equation_of_input((nb_batch, nb_sample_point_ts, nb_dim), dim)
-
-#  SPLIT DATA
-(inputs_train, outputs_train, inputs_test,
- outputs_test) = split_train_validation(train_length, pre_scaled_inputs, pre_scaled_outputs)
-input_dim = inputs_train.shape[2]
-output_dim = outputs_train.shape[2]
-
-# Rescaling
-minimax_in = MinMaxScaler(feature_range=(-1., 1.))
-minimax_out = MinMaxScaler(feature_range=(-1., 1.))
-
-inputs_train_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_in, inputs_train, True)
-outputs_train_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_out, outputs_train, True)
-inputs_test_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_in, inputs_test, False)
-outputs_test_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_out, outputs_test, False)
-
-WindowCreatorRC.assert_length(washout, lookforward_window, train_length, test_length)  # assert length are correct
-# do not change the parameters lookback_windows and lookforward_window, as the code is not adapted for it.
-wc = WindowCreatorRC(input_dim=input_dim, output_dim=output_dim, lookback_window=1,
-                     lookforward_window=lookforward_window, lag_last_pred_fut=lookforward_window,
-                     type_window="Moving", batch_first=True, washout=washout)
-
-inputs_train_scaled, outputs_train_scaled = wc.create_input_sequences(inputs_train_scaled, outputs_train_scaled)
-inputs_test_scaled, outputs_test_scaled = wc.create_input_sequences(inputs_test_scaled, outputs_test_scaled)
+# train_length = int(nb_sample_point_ts * 0.8)  # 80%
+# test_length = nb_sample_point_ts - train_length
+# plotting_points_starting_point = int(train_length * 0.5)  # 50% of the training set.
+# pre_scaled_inputs, pre_scaled_outputs = simple_equation_of_input((nb_batch, nb_sample_point_ts, nb_dim), dim)
+#
+# #  SPLIT DATA
+# (inputs_train, outputs_train, inputs_test,
+#  outputs_test) = split_train_validation(train_length, pre_scaled_inputs, pre_scaled_outputs)
+# input_dim = inputs_train.shape[2]
+# output_dim = outputs_train.shape[2]
+#
+# # Rescaling
+# minimax_in = MinMaxScaler(feature_range=(-1., 1.))
+# minimax_out = MinMaxScaler(feature_range=(-1., 1.))
+#
+# inputs_train_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_in, inputs_train, True)
+# outputs_train_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_out, outputs_train, True)
+# inputs_test_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_in, inputs_test, False)
+# outputs_test_scaled = flatten_batches_timeseries4scaling_back_normal(minimax_out, outputs_test, False)
+#
+# WindowCreatorRC.assert_length(washout, lookforward_window, train_length, test_length)  # assert length are correct
+# # do not change the parameters lookback_windows and lookforward_window, as the code is not adapted for it.
+# wc = WindowCreatorRC(input_dim=input_dim, output_dim=output_dim, lookback_window=1,
+#                      lookforward_window=lookforward_window, lag_last_pred_fut=lookforward_window,
+#                      type_window="Moving", batch_first=True, washout=washout)
+#
+# inputs_train_scaled, outputs_train_scaled = wc.create_input_sequences(inputs_train_scaled, outputs_train_scaled)
+# inputs_test_scaled, outputs_test_scaled = wc.create_input_sequences(inputs_test_scaled, outputs_test_scaled)
 
 
 # section ######################################################################

@@ -59,51 +59,8 @@ Project
 │  │     └── register.py
 │  └── tests
 │
-├── corai
-│  ├── src
-│  │  ├── classes
-│  │  │  ├── architecture
-│  │  │  │  ├── rnn
-│  │  │  │  │  ├── one_hidden_recurrent.py
-│  │  │  │  │  ├── rnn.py
-│  │  │  │  │  └── two_hidden_recurrent.py
-│  │  │  │  ├── conv2dlstm.py
-│  │  │  │  ├── free_nn.py
-│  │  │  │  ├── fully_connected.py
-│  │  │  │  ├── reshape.py
-│  │  │  │  ├── residual_split.py
-│  │  │  │  └── savable_net.py
-│  │  │  ├── estimator
-│  │  │  │  ├── history
-│  │  │  │  │  ├── estim_history.py
-│  │  │  │  │  ├── plot_estim_history.py
-│  │  │  │  │  └── relplot_history.py
-│  │  │  │  └── hyper_parameters
-│  │  │  │     ├── distplot_hyper_param.py
-│  │  │  │     ├── estim_hyper_param.py
-│  │  │  │     ├── plot_estim_hyper_param.py
-│  │  │  │     └── relplot_hyper_param.py
-│  │  │  ├── metric
-│  │  │  │  └── metric.py
-│  │  │  ├── training_stopper
-│  │  │  │  ├── early_stopper.py
-│  │  │  │  ├── early_stopper_training.py
-│  │  │  │  ├── early_stopper_validation.py
-│  │  │  │  └── early_stopper_vanilla.py
-│  │  │  ├── fast_tensor_dataloader.py
-│  │  │  ├── optim_wrapper.py
-│  │  │  └── windowcreator.py
-│  │  ├── nn_plots.py
-│  │  ├── train
-│  │  │  ├── fit.py
-│  │  │  ├── kfold_training.py
-│  │  │  ├── nntrainparameters.py
-│  │  │  └── train.py
-│  │  ├── data_processing_fct.py
-│  │  ├── methods_train.py
-│  │  └── util_train.py
-│  └── tests
-│
+// corai, visible below
+|
 ├── corai_plot 
 │  ├── src
 │  │  ├── acolor
@@ -168,9 +125,9 @@ Project
 │
 ├── corai
 │  ├── (architecture)
-│  │  ├── GRU
+│  │  ├── One_hidden_recurrent
 │  │  ├── RNN, factory_parametrised_RNN
-│  │  ├── LSTM
+│  │  ├── Two_hidden_recurrent
 │  │  ├── Savable_net
 │  │  ├── Residual_split
 │  │  ├── Reshape
@@ -191,6 +148,9 @@ Project
 │  │  ├── Early_stopper_training
 │  │  ├── Early_stopper_validation
 │  │  └── Early_stopper_vanilla
+│  ├── (pytorch_lightning = pl)
+│  │  ├── History_dict
+│  │  └── Progressbar_without_val_batch_update
 │  ├── FastTensorDataLoader
 │  ├── Optim_wrapper
 │  ├── Windowcreator

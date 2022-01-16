@@ -53,15 +53,14 @@ Work January CorAI 1.400:
 
 - using history without training: there is an example, it shows that CorAI not adapted. Construct adaptors to not have
   to change fundamentally the code.
-- explain the classes what they do,
+
 - for hyperparam tuning:
   - make an example, where I do not use anything complicated.
     - I need two examples, one using pl,
     - one using no training and building from scratch estimator. The logger could be use, and manually compute losses.
   - you can use the two previous examples.
-- add the classes to the ASCII tree,
-- expose classes (config + `__init__.py`),
+
 - update tutorial collab,
-- examples for loading things in pl checkpoints are Bianca path dependent.
+- examples for loading things in pl checkpoints which are Bianca path dependent.
 
 - RNN parameters are not used. Clean the file.
