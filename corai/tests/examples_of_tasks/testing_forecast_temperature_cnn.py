@@ -61,11 +61,8 @@ if __name__ == '__main__':
         corai.Two_hidden_recurrent(num_layers, int(bidirectional) + 1, hidden_size),
         (model := corai.factory_parametrised_RNN(input_dim=input_dim, output_dim=output_dim,
                                                  num_layers=num_layers, bidirectional=bidirectional,
-                                                 input_time_series_len=57,
-                                                 output_time_series_len=lookforward_window,
                                                  nb_output_consider=40,
-                                                 hidden_size=hidden_size, dropout=dropout,
-                                                 Parent=corai.Two_hidden_recurrent, rnn_class=nn.LSTM)()),
+                                                 hidden_size=hidden_size, dropout=dropout, rnn_class=nn.LSTM)()),
         # walrus operator, new in 3.9 python.
         corai.Reshape([-1, model.output_len]),
         nn.Linear(model.output_len, 1000, bias=True),

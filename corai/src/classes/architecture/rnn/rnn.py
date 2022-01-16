@@ -13,8 +13,6 @@ class RNN(Savable_net, metaclass=ABCMeta):
     """
 
     def __init__(self):
-        assert self.nb_output_consider <= self.input_time_series_len, \
-            "The nb of output to consider {h_n} needs to be smaller than the sequence length."
         super().__init__(predict_fct=None)  # predict is identity
 
         self.nb_directions = int(self.bidirectional) + 1
@@ -96,16 +94,6 @@ class RNN(Savable_net, metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def input_time_series_len(self):
-        return self._input_time_series_len
-
-    @property
-    @abstractmethod
-    def output_time_series_len(self):
-        return self._output_time_series_len
-
-    @property
-    @abstractmethod
     def nb_output_consider(self):
         return self._nb_output_consider
 
@@ -115,9 +103,8 @@ class RNN(Savable_net, metaclass=ABCMeta):
         return self._nn_class
 
 
-def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectional=False, input_time_series_len=1,
-                             output_time_series_len=1, nb_output_consider=1, hidden_size=150, dropout=0.,
-                             *, rnn_class, Parent):
+def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectional=False, nb_output_consider=1,
+                             hidden_size=150, dropout=0., *, rnn_class):
     """
     GRU and LSTM are very close in terms of architecture.
     This factory allows to construct one or the other at will.
@@ -127,8 +114,6 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
         output_dim:
         num_layers:
         bidirectional:
-        input_time_series_len:
-        output_time_series_len:
         nb_output_consider:
         hidden_size:
         dropout: In [0,1].
@@ -138,7 +123,6 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
             https://pytorch.org/docs/stable/generated/torch.nn.RNN.html
             https://pytorch.org/docs/stable/generated/torch.nn.LSTM.html#torch.nn.LSTM
             https://pytorch.org/docs/stable/generated/torch.nn.GRU.html#torch.nn.GRU
-        Parent:  one_hidden_recurrent OR two_hidden_recurrent; special classes creating the hidden parameters.
 
     Returns:
 
@@ -148,10 +132,6 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
         def __init__(self):
             self.input_dim = input_dim
             self.output_dim = output_dim
-
-            # todo are these parameters used?
-            self.input_time_series_len = input_time_series_len
-            self.output_time_series_len = output_time_series_len
 
             self.nb_output_consider = nb_output_consider
 
@@ -237,29 +217,6 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
                 else:
                     raise Error_type_setter(f"Argument is not an {str(float)}.")
 
-        @property
-        def input_time_series_len(self):
-            return self._input_time_series_len
-
-        @input_time_series_len.setter
-        def input_time_series_len(self, new_input_time_series_len):
-            assert new_input_time_series_len > 0, "input_time_series_len should be strictly positive."
-            if isinstance(new_input_time_series_len, int):
-                self._input_time_series_len = new_input_time_series_len
-            else:
-                raise Error_type_setter(f"Argument is not an {str(int)}.")
-
-        @property
-        def output_time_series_len(self):
-            return self._output_time_series_len
-
-        @output_time_series_len.setter
-        def output_time_series_len(self, new_output_time_series_len):
-            assert new_output_time_series_len > 0, "output_time_series_len should be strictly positive."
-            if isinstance(new_output_time_series_len, int):
-                self._output_time_series_len = new_output_time_series_len
-            else:
-                raise Error_type_setter(f"Argument is not an {str(int)}.")
 
         @property
         def nb_output_consider(self):

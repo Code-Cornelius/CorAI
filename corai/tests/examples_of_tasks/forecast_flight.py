@@ -35,31 +35,27 @@ if __name__ == '__main__':
     hidden_size = 128
     output_size = 1
     dropout = 0.01
-    epochs = 80000
+    epochs = 800
     batch_size = 120
     hidden_FC = 128
 
     optimiser = torch.optim.Adam
     criterion = nn.MSELoss(reduction='sum')
-    dict_optimiser = {"lr": 0.00005, "weight_decay": 1E-6}
+    dict_optimiser = {"lr": 0.0001, "weight_decay": 1E-6}
     optim_wrapper = corai.Optim_wrapper(optimiser, dict_optimiser)
 
     param_training = corai.NNTrainParameters(batch_size=batch_size, epochs=epochs, device=device,
                                              criterion=criterion, optim_wrapper=optim_wrapper,
                                              metrics=metrics)
 
-    Parent = corai.One_hidden_recurrent
-    rnn_class = nn.GRU
 
     seq_nn = [
         corai.One_hidden_recurrent(num_layers, int(bidirectional) + 1, hidden_size),
         (model := corai.factory_parametrised_RNN(input_dim=input_size, output_dim=output_size,
                                                  num_layers=num_layers, bidirectional=bidirectional,
-                                                 input_time_series_len=lookback_window,
-                                                 output_time_series_len=lookforward_window,
                                                  nb_output_consider=lookforward_window,
                                                  hidden_size=hidden_size, dropout=dropout,
-                                                 Parent=Parent, rnn_class=rnn_class)()),  # walrus operator
+                                                 rnn_class=nn.GRU)()),  # walrus operator
         corai.Reshape([-1, model.output_len]),
         nn.Linear(model.output_len, hidden_FC, bias=True),
         nn.CELU(),
