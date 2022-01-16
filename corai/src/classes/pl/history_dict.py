@@ -102,7 +102,8 @@ class History_dict(LightningLoggerBase):
             return self.history[key]  # did not the val key word.
 
         else:
-            raise KeyError("The key does not exist in history.")
+            raise KeyError(f"The key {key} does not exist in history. "
+                           f"If key is supposed to exist, has it been passed to the constructor of the logger?")
 
     def fetch_score(self, keys):
         """
