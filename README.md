@@ -23,7 +23,7 @@ project phase.
 
 ### How to use the Library?
 
-    pip install Corai>=1.303
+    pip install Corai>=1.304
 
 ### Structure of the Project and how to import
 
@@ -64,9 +64,9 @@ Project
 │  │  ├── classes
 │  │  │  ├── architecture
 │  │  │  │  ├── rnn
-│  │  │  │  │  ├── gru.py
-│  │  │  │  │  ├── lstm.py
-│  │  │  │  │  └── rnn.py
+│  │  │  │  │  ├── one_hidden_recurrent.py
+│  │  │  │  │  ├── rnn.py
+│  │  │  │  │  └── two_hidden_recurrent.py
 │  │  │  │  ├── conv2dlstm.py
 │  │  │  │  ├── free_nn.py
 │  │  │  │  ├── fully_connected.py

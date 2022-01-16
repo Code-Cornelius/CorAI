@@ -52,6 +52,7 @@ if __name__ == '__main__':
     rnn_class = nn.GRU
 
     seq_nn = [
+        corai.One_hidden_recurrent(num_layers, int(bidirectional) + 1, hidden_size),
         (model := corai.factory_parametrised_RNN(input_dim=input_size, output_dim=output_size,
                                                  num_layers=num_layers, bidirectional=bidirectional,
                                                  input_time_series_len=lookback_window,
@@ -93,8 +94,10 @@ if __name__ == '__main__':
     window = corai.Windowcreator(input_dim=input_size, output_dim=1, lookback_window=lookback_window,
                                  lag_last_pred_fut=lookforward_window,
                                  lookforward_window=lookforward_window, type_window="Moving")
-    (data_training_X, data_training_Y) = window.create_input_sequences(train_data_normalized.unsqueeze(0),  # unsqueeze bc batch size missing.
-                                                                       train_data_normalized[:, 0].unsqueeze(0).unsqueeze(2))
+    (data_training_X, data_training_Y) = window.create_input_sequences(train_data_normalized.unsqueeze(0),
+                                                                       # unsqueeze bc batch size missing.
+                                                                       train_data_normalized[:, 0].unsqueeze(
+                                                                           0).unsqueeze(2))
     # : output that we take only prediction qte and unsqueeze it to match dimensions.
 
     indices_train = torch.arange(len(data_training_X) - lookback_window)

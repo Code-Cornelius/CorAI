@@ -28,7 +28,7 @@
   function that can take any keyword argument and has a behavior depending on that? like colors, linewidth etc...
 
   - change the nb_ax by index_ax.
-  - homogeneous input, not nb_ax then xx then xx then nb_ax. It should always be the same order. A possibility would be
+  - homogeneous input, not nb_ax then xx but xx then nb_ax. It should always be the same order. A possibility would be
     to put first the data, then the axis.
   - change return to give an ax. such that one can continue drawing on an axis!
   - what is happening with bis axis is a bit obscure. Let s clarify it. Not sure how.
@@ -49,10 +49,16 @@
 
 Work January CorAI 1.400:
 
+- remove the two types of RNN, and only have one type which take in input the hidden states.
 
-
-- using history without training: there is an example, it shows that CorAI not adapted. Construct adaptors to not have to change fundamentally the code.
+- using history without training: there is an example, it shows that CorAI not adapted. Construct adaptors to not have
+  to change fundamentally the code.
 - explain the classes what they do,
+- for hyperparam tuning:
+  - make an example, where I do not use anything complicated.
+    - I need two examples, one using pl,
+    - one using no training and building from scratch estimator. The logger could be use, and manually compute losses.
+  - you can use the two previous examples.
 - add the classes to the ASCII tree,
 - expose classes (config + `__init__.py`),
 - update tutorial collab,

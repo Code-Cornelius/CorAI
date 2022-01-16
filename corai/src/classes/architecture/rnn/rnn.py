@@ -8,11 +8,8 @@ from corai_error import Error_type_setter
 
 class RNN(Savable_net, metaclass=ABCMeta):
     """
-    Abstract form that depends on a rnn_class given in the constructor.
-        GRU and LSTM are very close in terms of architecture.
-        This factory allows to construct one or the other at will.
-
-    One can construct from factory_parameterised_rnn
+    One can construct from factory_parameterised_rnn.
+    The forward takes only one input, time_series and h0 being together in a tuple.
     """
 
     def __init__(self):
@@ -30,16 +27,24 @@ class RNN(Savable_net, metaclass=ABCMeta):
 
         self.output_len = self.hidden_size * self.nb_directions * self.nb_output_consider  # dim of output of forward.
 
-    def forward(self, time_series):
+    def forward(self, time_series_and_h0):
         """
         Args:
-            time_series: shape batch size N,  Length sequence, Linput_dim
+            packed together in a tuple:
+                time_series (tensor): shape batch size N,  Length sequence, Linput_dim
+                h0 (tensor): shape (self.num_layers * self.nb_directions, 1, self.hidden_size)
 
+        Examples:
+            h0 can be created as:
+            batch_size = (1,batch_nb,1)
+            hidden_state_0 = nn.Parameter(torch.randn(self.num_layers * self.nb_directions,
+                                                       1,  # repeated later to have batch size
+                                                       self.hidden_size),
+                                           requires_grad=True)  # parameters are moved to device and learn.
+            hidden_state_0.repeat(batch_size)
         Returns:
         """
-        batch_size = 1, time_series.shape[0], 1
-        h0 = self.get_hidden_states(batch_size)  # polymorphism for gru and lstm
-
+        time_series, h0 = time_series_and_h0  # unpacking
         out, _ = self.stacked_rnn(time_series, h0)  # shape of out is  N,L,Hidden_size * nb_direction
 
         if self.bidirectional:
@@ -139,7 +144,7 @@ def factory_parametrised_RNN(input_dim=1, output_dim=1, num_layers=1, bidirectio
 
     """
 
-    class Parametrised_RNN(Parent):
+    class Parametrised_RNN(RNN):
         def __init__(self):
             self.input_dim = input_dim
             self.output_dim = output_dim

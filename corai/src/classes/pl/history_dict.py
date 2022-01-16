@@ -7,11 +7,19 @@ from pytorch_lightning.loggers.base import rank_zero_experiment
 from pytorch_lightning.utilities import rank_zero_only
 
 import corai_plot
-from corai import Estim_history
+from corai.src.classes.estimator.history import Estim_history
 
 
 class History_dict(LightningLoggerBase):
-    # for this class to work properly, logs from validation_step should contain an entry from below in their name.
+    """
+    Useful class that is at the same time:
+        - helper to save the history of training somewhere on the heap instead of in a file.
+        - helper to plot the evolution of the losses DURING training,
+        - adaptor from a dictionnary with results to estim_history class.
+    """
+
+    # for this class to work properly, when one logs from the validation_step,
+    # it should contain in the string (name) one sub-string from the list below.
     val_keywords = ['val', 'validation']
 
     def __init__(self, aplot_flag=False, frequency_epoch_logging=1, metrics_plot=['train_loss', 'val_loss']):
@@ -95,6 +103,8 @@ class History_dict(LightningLoggerBase):
 
     def fetch_score(self, keys, remove_last_validation=False):
         """
+        Semantics:
+            Gets the score if exists in the history.
 
         Args:
             keys (str or list<str>): the keys to fetch the result.
@@ -115,7 +125,6 @@ class History_dict(LightningLoggerBase):
             return res
 
     def plot_history_prediction(self):
-        # losses
         epochs_loss, = self.fetch_score(['epoch'])
         losses = self.fetch_score(self.metrics_name_for_plot, remove_last_validation=True)
         len_loss = [len(lst) for lst in losses]
@@ -130,7 +139,8 @@ class History_dict(LightningLoggerBase):
                                         dict_plot_param={'color': color, 'linestyle': '-', 'linewidth': 2.5,
                                                          'markersize': 0.,
                                                          'label': self.metrics_name_for_plot[i]},
-                                        dict_ax={'title': "Dynamical Image of History Training", 'xlabel': 'Epochs', 'ylabel': 'Loss',
+                                        dict_ax={'title': "Dynamical Image of History Training", 'xlabel': 'Epochs',
+                                                 'ylabel': 'Loss',
                                                  'yscale': 'log'})
             self.aplot.show_legend()
             self.aplot.show_and_continue()
@@ -161,7 +171,7 @@ class History_dict(LightningLoggerBase):
 
         checkpoint = torch.load(checkpoint.best_model_path)
         estimator.hyper_params = Estim_history.serialize_hyper_parameters(self.hyper_params)
-        estimator.metric_names, estimator.validation, estimator.df.columns =\
+        estimator.metric_names, estimator.validation, estimator.df.columns = \
             Estim_history.deconstruct_column_names(estimator.df.columns)
 
         # assumes one fold case

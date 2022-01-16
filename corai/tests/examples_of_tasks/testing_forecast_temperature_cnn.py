@@ -58,6 +58,7 @@ if __name__ == '__main__':
         nn.MaxPool1d(kernel_size=5, stride=2, padding=1),
         nn.BatchNorm1d(input_dim),
         corai.Reshape([-1, 57, input_dim]),
+        corai.Two_hidden_recurrent(num_layers, int(bidirectional) + 1, hidden_size),
         (model := corai.factory_parametrised_RNN(input_dim=input_dim, output_dim=output_dim,
                                                  num_layers=num_layers, bidirectional=bidirectional,
                                                  input_time_series_len=57,

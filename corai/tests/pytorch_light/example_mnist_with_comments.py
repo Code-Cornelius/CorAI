@@ -10,8 +10,8 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 
 from corai.src.classes.pl.history_dict import History_dict
-from corai.src.classes.pl.progressbar_without_val_without_batch_update import \
-    Progressbar_without_val_without_batch_update
+from corai.src.classes.pl.progressbar_without_val_batch_update import \
+    Progressbar_without_val_batch_update
 from corai.tests.pytorch_light.classes_mnist_with_comments import MNISTModel
 from corai.tests.pytorch_light.example_sinus_no_comments import MyDataModule
 
@@ -58,7 +58,7 @@ trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=100,
                   # Both same period in order to have the same logged values
                   precision=16,
                   callbacks=[early_stop_val_acc, early_stop_val_loss, early_stop_train_loss,
-                             Progressbar_without_val_without_batch_update(refresh_rate=10),
+                             Progressbar_without_val_batch_update(refresh_rate=10),
                              chckpnt])
 # num_sanity_val_steps Sanity check runs n validation batches before starting the training routine.
 # auto_scale_batch_size="binsearch"

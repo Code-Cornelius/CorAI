@@ -5,7 +5,11 @@ from pytorch_lightning.callbacks.progress.tqdm_progress import Tqdm, convert_inf
 from tqdm import tqdm
 
 
-class Progressbar_without_val_without_batch_update(TQDMProgressBar):
+class Progressbar_without_val_batch_update(TQDMProgressBar):
+    """
+    This progressbar has disabled the validation tqdm bar, which is not useful when there is not a lot of data.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

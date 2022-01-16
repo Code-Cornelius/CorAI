@@ -17,8 +17,8 @@ import corai_plot.tests.test_displayableplot
 from config import ROOT_DIR
 from corai import decorator_train_disable_no_grad
 from corai.src.classes.pl.history_dict import History_dict
-from corai.src.classes.pl.progressbar_without_val_without_batch_update import \
-    Progressbar_without_val_without_batch_update
+from corai.src.classes.pl.progressbar_without_val_batch_update import \
+    Progressbar_without_val_batch_update
 
 AVAIL_GPUS = 0
 BATCH_SIZE = 200000
@@ -176,7 +176,7 @@ trainer = Trainer(
     logger=[logger, logger_custom],
     check_val_every_n_epoch=period_log,
     num_sanity_val_steps=0,
-    callbacks=[early_stop_val_loss, Progressbar_without_val_without_batch_update(refresh_rate=10),
+    callbacks=[early_stop_val_loss, Progressbar_without_val_batch_update(refresh_rate=10),
                chckpnt, ])
 sinus_data = MyDataModule(xx, yy)
 
