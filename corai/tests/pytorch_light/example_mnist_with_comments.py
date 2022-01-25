@@ -57,6 +57,10 @@ trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=100,
                   check_val_every_n_epoch=period_log,
                   # Both same period in order to have the same logged values
                   precision=16,
+                  # precision of the data. Check last ten seconds of:
+                  # https://www.youtube.com/watch?v=d-2EHvJX03Y&ab_channel=PyTorchLightning
+                  # does not affect the size of weights or the size used inside optimizer.
+                  profile=True,  # or define profiler = AdvancedProfiler(); profiler = profiler; for more granularity.
                   callbacks=[early_stop_val_acc, early_stop_val_loss, early_stop_train_loss,
                              Progressbar_without_val_batch_update(refresh_rate=10),
                              chckpnt])
