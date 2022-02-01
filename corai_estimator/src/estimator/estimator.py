@@ -279,6 +279,21 @@ class Estimator(object):
         self.df[new_column_names] = self.apply_function_upon_data(separators, fct, **kwargs)
         return
 
+    def merge_columns(self, column_names):
+        """
+        Semantics:
+            Create a new column containing the values from column_names as a tuple. The name of the new column
+            will be a combination of the column names using '-' as a separator.
+        Args:
+            column_names(str): The names of the columns to be merged.
+
+        Returns:
+            Void
+        """
+        new_column_name = "-".join(column_names)
+        self.df[new_column_name] = [z for z in zip(*[self.df[column].values for column in column_names])]
+
+
     def order(self, column_names, ascending=True, inplace=False):
         """
             Order the dataframe by the column_names. Uses the method sort_values of pandas.
