@@ -6,7 +6,7 @@
   surface of the import. Pip downloading incorporated.
 * *version 1.304*: Release in January 2022. Dependencies to other libraries are lowered for increased compatibility.
 * *version 1.400*: Release in March 2022. In this version, the library should have mostly correct utilities, and we
-  incorporated the usage of PyTorch Lightning into the functionalities of CorAI. Lightning avoids some boilplates and
+  incorporated the usage of PyTorch Lightning into the functionalities of CorAI. Lightning avoids some boiler plates and
   has the same ideas as we had in CorAI, so we decide to reuse it.
 * *version 1.600* : Expected release: Winter 2023. 3D plots.
 
@@ -23,7 +23,7 @@ project phase.
 
 ### How to use the Library?
 
-    pip install Corai>=1.304
+    pip install Corai>=1.400
 
 ### Structure of the Project and how to import
 

@@ -23,7 +23,7 @@ from corai.src.classes.pl.progressbar_without_val_batch_update import \
 AVAIL_GPUS = 0
 BATCH_SIZE = 200000
 
-pl_linker = factory_fct_linked_path(ROOT_DIR, 'corai/pytorch_light/')
+path_linker = factory_fct_linked_path(ROOT_DIR, 'corai/pytorch_light/')
 seed_everything(42, workers=True)
 
 
@@ -160,7 +160,7 @@ epochs = 5000
 
 ############################### Init our model
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
-                          lr=0.001, weight_decay=0.00001, aplot_flag=True)
+                          lr=0.01, weight_decay=0.00001, aplot_flag=True)
 ############################### Init the Early Stopper
 period_log =20
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
@@ -170,7 +170,7 @@ logger_custom = History_dict(aplot_flag=True, frequency_epoch_logging=period_log
 chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
 
 trainer = Trainer(
-    default_root_dir=pl_linker(['out']),
+    default_root_dir=path_linker(['out']),
     gpus=AVAIL_GPUS, max_epochs=epochs,
     logger=[logger_custom],
     check_val_every_n_epoch=period_log,
@@ -189,21 +189,8 @@ corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
                                  plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy)
 
 estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt, train_time=final_time)
-estimator_history.to_json(pl_linker(['out', 'estims', 'estim1.json']), compress=False)
+estimator_history.to_json(path_linker(['out', 'estims', 'estim1.json']), compress=False)
 
-# TODO: find a solution for this
-#   when test is called it will log more info into the hist_dict, causing the internal arrays to be of different
-#   sizes and breaking the initialisation of the dataframe used for estim_history
-#   the solution with the log flag form validation_step will cause the unwanted print
-#   Total time training:  2.2748919  seconds.
-#   --------------------------------------------------------------------------------
-#   Testing: 100%|██████████| 1/1 [00:00<00:00,  4.85it/s]
-#   --------------------------------------------------------------------------------
-#   DATALOADER:0 TEST RESULTS
-#   {}
-#   --------------------------------------------------------------------------------
-#   Testing: 100%|██████████| 1/1 [00:00<00:00,  4.83it/s]
-#   [{}]
 print(trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data))
 
 history_plot = corai.Relplot_history(estimator_history)

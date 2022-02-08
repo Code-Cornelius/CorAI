@@ -44,23 +44,15 @@
 * asserts when reading loading json for estimator history to avoid obscure error message.
 * dtype for the architectures.
 
-
-
-
 Work January CorAI 1.400:
+Before the final release where we have the pl incorporated, we need two main things:
+-make sure that history is usable, there are examples and no bugs. -hyperparameter tuning is usable and easy.
 
-- remove the two types of RNN, and only have one type which take in input the hidden states.
+details
 
-- using history without training: there is an example, it shows that CorAI not adapted. Construct adaptors to not have
-  to change fundamentally the code.
-
+- using history without training: there is an example, it shows that CorAI not adapted.
 - for hyperparam tuning:
   - make an example, where I do not use anything complicated.
     - I need two examples, one using pl,
     - one using no training and building from scratch estimator. The logger could be use, and manually compute losses.
   - you can use the two previous examples.
-
-- update tutorial collab,
-- examples for loading things in pl checkpoints which are Bianca path dependent.
-- add types to the different models architecture.
-- RNN parameters are not used. Clean the file.
