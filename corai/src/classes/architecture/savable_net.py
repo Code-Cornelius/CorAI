@@ -1,5 +1,6 @@
 # global libraries
 import os
+import sys
 from copy import deepcopy
 
 import torch
@@ -43,7 +44,11 @@ class Savable_net(nn.Module):
     def device(self):
         # device of the model:
         # https://stackoverflow.com/questions/58926054/how-to-get-the-device-type-of-a-pytorch-module-conveniently
-        return next(self.parameters()).device
+        try:
+            return next(self.parameters()).device
+        except StopIteration:
+            print("\nPROBLEM DEVICE NO NEXT PARAMETER, PROGRAM WILL CRASH.")
+            sys.exit(1)
 
     def prediction(self, out):
         """returns the class predicted for each element of the tensor."""
