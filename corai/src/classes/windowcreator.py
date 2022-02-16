@@ -70,6 +70,11 @@ class Windowcreator(object):
             from https://stackabuse.com/time-series-prediction-using-lstm-with-pytorch-in-python/?fbclid=IwAR17NoARUlBsBLzanKmyuvmCXfU6Rxc69T9BZpowXfSUSYQNEFzl2pfDhSo
 
         """
+        # we return data with same type as input
+        dtype = input_data.dtype
+        if output_data is not None:
+            assert (dtype == output_data.dtype, "Data Input/Output should have the same dtype.")
+
         nb_batch = input_data.shape[0]  # N as in documentation.
         L = input_data.shape[1]  # L as in documentation.
 
@@ -83,9 +88,9 @@ class Windowcreator(object):
         # one time series from the batches we gave (first component).
         # but we do the same for all time-series. Hence the nb_batch.
         # However we do not care in the end what data comes from what batch and we flatten the dimensions together.
-        data_X = torch.zeros(nb_batch, nb_data, self.lookback_window, self.input_dim)
+        data_X = torch.zeros(nb_batch, nb_data, self.lookback_window, self.input_dim, dtype=dtype)
         if output_data is not None:
-            data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim)
+            data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim, dtype=dtype)
 
         for i in tqdm(range(nb_data), disable=self.silent):
             data_X[:, i, :, :] = input_data[:, i:i + self.lookback_window, :]  # add dimension of nb_data

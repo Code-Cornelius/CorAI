@@ -56,6 +56,7 @@ class MNISTModel(LightningModule):
     def training_step(self, batch, batch_nb):
         # for details about optimization step:
         # https://pytorch-lightning.readthedocs.io/en/latest/common/optimizers.html
+        # for manual backward: https://pytorch-lightning.readthedocs.io/en/latest/common/optimizers.html#manual-optimization
         x, y = batch
         logits = self(x)
         loss = F.nll_loss(logits, y)
