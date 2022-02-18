@@ -4,12 +4,10 @@ import time
 
 import numpy as np
 import torch
-from corai_util.tools.src.function_writer import factory_fct_linked_path
 from pytorch_lightning import LightningModule, LightningDataModule
 from pytorch_lightning import seed_everything, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 from torch import nn
 
 import corai
@@ -19,6 +17,7 @@ from corai import decorator_train_disable_no_grad
 from corai.src.classes.pl.history_dict import History_dict
 from corai.src.classes.pl.progressbar_without_val_batch_update import \
     Progressbar_without_val_batch_update
+from corai_util.tools.src.function_writer import factory_fct_linked_path
 
 AVAIL_GPUS = 0
 BATCH_SIZE = 200000
@@ -100,7 +99,8 @@ class Sinus_model(LightningModule):
             self.aplot.uni_plot(0, inputs, prediction,
                                 dict_plot_param={'color': None, 'linestyle': '--', 'linewidth': 2., 'markersize': 0.,
                                                  'label': 'Prediction After training'},
-                                dict_ax={'title': "Dynamical Image of Prediction over Validation Set", 'xlabel': 'Time Axis',
+                                dict_ax={'title': "Dynamical Image of Prediction over Validation Set",
+                                         'xlabel': 'Time Axis',
                                          'ylabel': 'Value'})
             self.aplot.show_legend()
             self.aplot.show_and_continue()
@@ -137,17 +137,18 @@ class MyDataModule(LightningDataModule):
 def exact_solution(x):
     return torch.sin(4 * x)
 
+
 ############################## GLOBAL PARAMETERS
 n_samples = 5000  # Number of training samples
 sigma = 0.1  # Noise level
 ############################# DATA CREATION
 # exact grid
-plot_xx = torch.linspace(0, 1/2 * np.pi, 1000).reshape(-1, 1)
+plot_xx = torch.linspace(0, 1 / 2 * np.pi, 1000).reshape(-1, 1)
 plot_yy = exact_solution(plot_xx).reshape(-1, )
 plot_yy_noisy = (exact_solution(plot_xx) + sigma * torch.randn(plot_xx.shape)).reshape(-1, )
 
 # random points for training
-xx = 1 / 2 *  np.pi * torch.rand((n_samples, 1))
+xx = 1 / 2 * np.pi * torch.rand((n_samples, 1))
 yy = exact_solution(xx) + sigma * torch.randn(xx.shape)
 
 input_size = 1
@@ -162,7 +163,7 @@ epochs = 5000
 sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
                           lr=0.01, weight_decay=0.00001, aplot_flag=True)
 ############################### Init the Early Stopper
-period_log =20
+period_log = 20
 early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
                                     verbose=False, mode="min", )
 
@@ -182,8 +183,9 @@ sinus_data = MyDataModule(xx, yy)
 start_time = time.perf_counter()
 trainer.fit(sinus_model, datamodule=sinus_data)
 final_time = time.perf_counter() - start_time
-print("Total time training: ", time.perf_counter() - start_time, " seconds.")
-
+train_time = np.round(time.perf_counter() - start_time, 4)
+print("Total time training: ", train_time, " seconds. In average, it took: ",
+      np.round(train_time / trainer.current_epoch, 4), " seconds per epochs.")
 
 corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
                                  plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy)
@@ -198,5 +200,3 @@ history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot=None, log_axis_
 history_plot.lineplot(log_axis_for_loss=True)
 
 corai_plot.APlot.show_plot()
-
-
