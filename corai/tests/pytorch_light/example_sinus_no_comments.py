@@ -13,16 +13,16 @@ from torch import nn
 import corai
 import corai_plot.tests.test_displayableplot
 from config import ROOT_DIR
-from corai import decorator_train_disable_no_grad
+from corai import decorator_train_disable_no_grad, Estim_history
 from corai.src.classes.pl.history_dict import History_dict
 from corai.src.classes.pl.progressbar_without_val_batch_update import \
     Progressbar_without_val_batch_update
+from corai.tests.sinus_dataset_generator import data_sinus
 from corai_util.tools.src.function_writer import factory_fct_linked_path
 
-AVAIL_GPUS = 0
-BATCH_SIZE = 200000
-
-path_linker = factory_fct_linked_path(ROOT_DIR, 'corai/pytorch_light/')
+path_linker = factory_fct_linked_path(ROOT_DIR, 'corai/tests/pytorch_light/')
+history_path = path_linker(['out', 'estim', 'estim_1.json'])
+model_path = path_linker(['out', 'model', ''])
 seed_everything(42, workers=True)
 
 
@@ -42,9 +42,7 @@ class Sinus_model(LightningModule):
                                                       param_dropout=dropout,
                                                       param_predict_fct=None)()
 
-        # By default, every parameter of the __init__ method will be
-        # considered a hyper-parameter to the LightningModule
-        self.save_hyperparameters(ignore=["input_size", "aplot_flag"])
+        self.save_hyperparameters()
         self.criterion = nn.MSELoss(reduction='mean')
         self.lr = lr
         self.weight_decay = weight_decay
@@ -107,10 +105,11 @@ class Sinus_model(LightningModule):
 
 
 class MyDataModule(LightningDataModule):
-    def __init__(self, x, y):
+    def __init__(self, x, y, batch_size):
         super().__init__()
         self.input = x
         self.output = y
+        self.batch_size = batch_size
 
     def setup(self, stage=None):
         training_size = int(90. / 100. * len(self.input))
@@ -120,83 +119,84 @@ class MyDataModule(LightningDataModule):
         self.val_out = self.output[training_size:]
 
     def train_dataloader(self):
-        return corai.FastTensorDataLoader(self.train_in, self.train_out, batch_size=BATCH_SIZE)
+        return corai.FastTensorDataLoader(self.train_in, self.train_out, batch_size=self.batch_size)
 
     def val_dataloader(self):
-        return corai.FastTensorDataLoader(self.val_in, self.val_out, batch_size=BATCH_SIZE)
+        return corai.FastTensorDataLoader(self.val_in, self.val_out, batch_size=self.batch_size)
 
     def test_dataloader(self):
-        return corai.FastTensorDataLoader(self.input, self.output, batch_size=BATCH_SIZE)
+        return corai.FastTensorDataLoader(self.input, self.output, batch_size=self.batch_size)
 
 
-# section ######################################################################
-#  #############################################################################
-#  code
+if __name__ == '__main__':
+    ############################# DATA CREATION
+    train_X, train_Y, testing_X, testing_Y, plot_xx, plot_yy, plot_yy_noisy, xx, yy = data_sinus()
 
-# Define the exact solution
-def exact_solution(x):
-    return torch.sin(4 * x)
+    ############################# parameters for model
 
+    input_size = 1
+    hidden_sizes = [4, 8, 4]
+    output_size = 1
+    biases = [True, True, True, True]
+    activation_functions = [torch.tanh, torch.tanh, torch.tanh]
+    dropout = 0.
+    epochs = 5000
+    AVAIL_GPUS = 0
+    BATCH_SIZE = 200000
 
-############################## GLOBAL PARAMETERS
-n_samples = 5000  # Number of training samples
-sigma = 0.1  # Noise level
-############################# DATA CREATION
-# exact grid
-plot_xx = torch.linspace(0, 1 / 2 * np.pi, 1000).reshape(-1, 1)
-plot_yy = exact_solution(plot_xx).reshape(-1, )
-plot_yy_noisy = (exact_solution(plot_xx) + sigma * torch.randn(plot_xx.shape)).reshape(-1, )
+    ############################### Init our model
+    sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
+                              lr=0.01, weight_decay=0.00001, aplot_flag=True)
+    ############################### Init the Early Stopper
+    period_log = 20
+    early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
+                                        verbose=False, mode="min", )
 
-# random points for training
-xx = 1 / 2 * np.pi * torch.rand((n_samples, 1))
-yy = exact_solution(xx) + sigma * torch.randn(xx.shape)
+    logger_custom = History_dict(metrics=["val_loss", "train_loss"], aplot_flag=True,
+                                 frequency_epoch_logging=period_log, )
+    chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=1,
+                              dirpath=path_linker(['out', 'model']))
 
-input_size = 1
-hidden_sizes = [4, 8, 4]
-output_size = 1
-biases = [True, True, True, True]
-activation_functions = [torch.tanh, torch.tanh, torch.tanh]
-dropout = 0.
-epochs = 5000
+    trainer = Trainer(default_root_dir=path_linker(['out']),
+                      gpus=AVAIL_GPUS, max_epochs=epochs,
+                      logger=[logger_custom],
+                      check_val_every_n_epoch=period_log,
+                      num_sanity_val_steps=0,
+                      callbacks=[early_stop_val_loss, Progressbar_without_val_batch_update(refresh_rate=10),
+                                 chckpnt, ])
+    sinus_data = MyDataModule(xx, yy, BATCH_SIZE)
 
-############################### Init our model
-sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
-                          lr=0.01, weight_decay=0.00001, aplot_flag=True)
-############################### Init the Early Stopper
-period_log = 20
-early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
-                                    verbose=False, mode="min", )
+    # section ######################################################################
+    #  #############################################################################
+    #  Training
 
-logger_custom = History_dict(aplot_flag=True, frequency_epoch_logging=period_log)
-chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=3)
+    start_time = time.perf_counter()
+    trainer.fit(sinus_model, datamodule=sinus_data)
+    final_time = time.perf_counter() - start_time
+    train_time = np.round(time.perf_counter() - start_time, 2)
+    print("Total time training: ", train_time, " seconds. In average, it took: ",
+          np.round(train_time / trainer.current_epoch, 4), " seconds per epochs.")
+    estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt, train_time=final_time)
+    estimator_history.to_json(history_path, compress=False)
+    trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data)
 
-trainer = Trainer(
-    default_root_dir=path_linker(['out']),
-    gpus=AVAIL_GPUS, max_epochs=epochs,
-    logger=[logger_custom],
-    check_val_every_n_epoch=period_log,
-    num_sanity_val_steps=0,
-    callbacks=[early_stop_val_loss, Progressbar_without_val_batch_update(refresh_rate=10),
-               chckpnt, ])
-sinus_data = MyDataModule(xx, yy)
+    # section ######################################################################
+    #  #############################################################################
+    #  plot
 
-start_time = time.perf_counter()
-trainer.fit(sinus_model, datamodule=sinus_data)
-final_time = time.perf_counter() - start_time
-train_time = np.round(time.perf_counter() - start_time, 4)
-print("Total time training: ", train_time, " seconds. In average, it took: ",
-      np.round(train_time / trainer.current_epoch, 4), " seconds per epochs.")
+    corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx, plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy)
+    history_plot = corai.Relplot_history(estimator_history)
+    history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot=None, log_axis_for_loss=True)
+    history_plot.lineplot(log_axis_for_loss=True)
 
-corai.nn_plot_prediction_vs_true(net=sinus_model, plot_xx=plot_xx,
-                                 plot_yy=plot_yy, plot_yy_noisy=plot_yy_noisy)
+    # section ######################################################################
+    #  #############################################################################
+    #  Loading the model back
 
-estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt, train_time=final_time)
-estimator_history.to_json(path_linker(['out', 'estims', 'estim1.json']), compress=False)
+    # TODO WE WANT TO BE ABLE TO CHOSE WHERE THE CHECKPT IS LOCATED. IN EXAMPLE_HP and in the SINUS_EXAMPLE.
+    model = Sinus_model.load_from_checkpoint(chckpnt.best_model_path)
+    # OR
+    model = Sinus_model.load_from_checkpoint(model_path + "epoch=739-step=739.ckpt")
+    estim = Estim_history.from_json(history_path, compressed=False)
 
-print(trainer.test(model=sinus_model, ckpt_path="best", dataloaders=sinus_data))
-
-history_plot = corai.Relplot_history(estimator_history)
-history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot=None, log_axis_for_loss=True)
-history_plot.lineplot(log_axis_for_loss=True)
-
-corai_plot.APlot.show_plot()
+    corai_plot.APlot.show_plot()

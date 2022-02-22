@@ -3,6 +3,7 @@
 import os
 import time
 
+import numpy as np
 import torch
 from pytorch_lightning import seed_everything, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -12,12 +13,11 @@ from pytorch_lightning.loggers import CSVLogger, TensorBoardLogger
 from corai.src.classes.pl.history_dict import History_dict
 from corai.src.classes.pl.progressbar_without_val_batch_update import \
     Progressbar_without_val_batch_update
-from corai.tests.pytorch_light.classes_mnist_with_comments import MNISTModel
-from corai.tests.pytorch_light.example_sinus_no_comments import MyDataModule
+from corai.tests.pytorch_light.classes_mnist_with_comments import MNISTModel, MyDataModule
 
 PATH_DATASETS = os.environ.get("PATH_DATASETS", ".")
 AVAIL_GPUS = min(1, torch.cuda.device_count())
-BATCH_SIZE = 512 if AVAIL_GPUS else 256
+BATCH_SIZE = 2048 if AVAIL_GPUS else 1024
 
 seed_everything(42, workers=True)
 
@@ -61,7 +61,7 @@ trainer = Trainer(gpus=AVAIL_GPUS, max_epochs=100,
                   # https://www.youtube.com/watch?v=d-2EHvJX03Y&ab_channel=PyTorchLightning
                   # does not affect the size of weights or the size used inside optimizer.
                   # However, data is casted to precision, so more data can fit at once during one update.
-                  profile=True,  # or define profiler = AdvancedProfiler(); profiler = profiler; for more granularity.
+                  # profiler='simple',  # or define profiler = AdvancedProfiler(); profiler = profiler; for more granularity.
                   callbacks=[early_stop_val_acc, early_stop_val_loss, early_stop_train_loss,
                              Progressbar_without_val_batch_update(refresh_rate=10),
                              chckpnt])
@@ -72,7 +72,10 @@ mnist_data_module = MyDataModule()
 ############################### Train the model
 start_time = time.perf_counter()
 trainer.fit(mnist_model, datamodule=mnist_data_module)
-print("Total time training: ", time.perf_counter() - start_time, " seconds.")
+final_time = time.perf_counter() - start_time
+train_time = np.round(time.perf_counter() - start_time, 2)
+print("Total time training: ", train_time, " seconds. In average, it took: ",
+      np.round(train_time / trainer.current_epoch, 4), " seconds per epochs.")
 #################
 
 
