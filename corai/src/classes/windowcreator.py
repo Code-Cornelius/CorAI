@@ -193,7 +193,7 @@ class Windowcreator(object):
         input_prediction = data_start.clone()
         prediction = torch.zeros(1, self.lookforward_window * nb_of_cycle_pred, self.output_dim)
 
-        for i in range(nb_of_cycle_pred):
+        for i in tqdm(range(nb_of_cycle_pred)):
             indices_in = slice(i * self.lookforward_window,
                                i * self.lookforward_window + self.lookback_window)
             #  : we start at the lookforward_window * i and need lookback_window elements.

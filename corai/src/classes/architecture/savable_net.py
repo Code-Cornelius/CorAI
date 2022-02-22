@@ -47,7 +47,7 @@ class Savable_net(nn.Module):
         try:
             return next(self.parameters()).device
         except StopIteration:
-            print("\nPROBLEM DEVICE NO NEXT PARAMETER, PROGRAM WILL CRASH.")
+            print("\n From Savable Net: no next parameter to determine the device. Program exits with error code 1.")
             sys.exit(1)
 
     def prediction(self, out):

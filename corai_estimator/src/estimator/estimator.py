@@ -102,7 +102,7 @@ class Estimator(object):
             raise Error_not_allowed_input("The input json file cannot be empty")
 
         dataframe = pd.read_json(path, orient='split')
-        return cls(df=dataframe)
+        return cls(df=dataframe, **kwargs)
 
     @staticmethod
     def from_json_attributes(path, compress):
@@ -121,7 +121,11 @@ class Estimator(object):
         with open(path, 'r') as file:  # read file
             df_info = json.load(file)
             if compress:  # decompress
-                df_info = unzip_json(df_info)
+                try:
+                    df_info = unzip_json(df_info)
+                except KeyError as e:
+                    print("Original caught error: ", e)
+                    raise KeyError("Potentially, there is an issue with the compression parameter")
             attrs = df_info['attrs']  # retrieve the attributes (metadata)
             del df_info['attrs']  # deletes them from the loaded json
 

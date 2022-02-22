@@ -251,7 +251,7 @@ class APlot(Displayable_plot, metaclass=Register):
             nb_ax = self.__check_axs(nb_ax)
             if not bis_y_axis:  # bis is plot on second axis.
                 out = self._axs[nb_ax].plot(xx, yy, **dict_plot_param)
-                self._axs[nb_ax].grid(True)
+                self._axs[nb_ax].grid(True)  # grid is reenabled if you call first axis after second axis.
             else:
                 out = self._axs_bis[nb_ax].plot(xx, yy, **dict_plot_param)
                 self._axs[nb_ax].grid(False)

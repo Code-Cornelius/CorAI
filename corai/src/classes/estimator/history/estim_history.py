@@ -9,12 +9,13 @@ from corai_util.tools.src.function_json import is_jsonable
 
 
 class Estim_history(Estimator):
-    NAMES_COLUMNS = {'fold', 'epoch'}
+    CORE_COL = {'fold', 'epoch'}
 
-    def __init__(self, df=None, metric_names=None, validation=True, hyper_params=None):
-        if df is not None:
-            super().__init__(df=df)
-            return
+    def __init__(self, metric_names, validation, df=None, hyper_params={}.copy()):
+        # we require from the df to be either empty, or have columns with the names of metric_names, in the format from
+        # `_generate_all_column_names()`: lossName_training, or lossName_validation.
+        # it is possible to automatically create the right collumn names from a df with:
+        # `Estim_history.deconstruct_column_names(df.columns)`
 
         # metric names contain all ["L1","L4"...] but not the loss used for back prop.
         self.metric_names = metric_names
@@ -25,8 +26,11 @@ class Estim_history(Estimator):
         self.best_fold = -1  # negative strictly number means no best_fold found yet. Will be set in
         # train_kfold_a_fold_after_split
 
-        df_column_names = self._generate_all_column_names()
-        super().__init__(df=pd.DataFrame(columns=df_column_names))
+        if df is not None:
+            super().__init__(df=df)
+        else:
+            df_column_names = self._generate_all_column_names()
+            super().__init__(df=pd.DataFrame(columns=df_column_names))
 
     # section ######################################################################
     #  #############################################################################
@@ -69,10 +73,10 @@ class Estim_history(Estimator):
         """
 
         attrs = super().from_json_attributes(path, compressed)
-        estimator = super().from_json(path)
+        estimator = super().from_json(path,
+                                      validation=attrs['validation'],
+                                      metric_names=attrs['metric_names'])
 
-        estimator.metric_names = attrs['metric_names']
-        estimator.validation = attrs['validation']
         estimator.list_best_epoch = attrs['best_epoch']
         estimator.hyper_params = attrs['hyper_params']
         estimator.best_fold = attrs['best_fold']
@@ -114,7 +118,8 @@ class Estim_history(Estimator):
     def deconstruct_column_names(column_names):
         """
         Semantics:
-            Collect information about the metric names and whether validation is used from column names
+            Collect information about the metric names and whether validation is used from column names.
+            This method is used when constructing the metrics_names back from the columns of a dataframe.
         Assumption:
             - The column name has ["train", "training", "val", "validation"] separated by "_" either
             before or after the metric name. For example, train_loss is valid, but trainLoss is not.
@@ -123,8 +128,9 @@ class Estim_history(Estimator):
             column_names([str]): List of column names.
         Returns:
             metric_names([str]): List of the metric names.
+            new_column_names([str]): List of column names respecting the current format.
             validation(bool): Flag to specify validation.
-                new_column_names([str]): List of column names respecting the current format.
+
         """
         val_keywords = ["val", "validation"]
         train_keywords = ["train", "training"]
@@ -147,10 +153,11 @@ class Estim_history(Estimator):
             metric_name = '_'.join(
                 [word for word in components  # components is the name split.
                  if word not in val_keywords + train_keywords])  # check if word is in the keywords. If it is, discard.
+
             new_column_names.append(Estim_history.generate_column_name(metric_name, validation_local))
             metric_names.add(metric_name)  # there might be train_loss, val_loss. We only want it once.
 
-        return list(metric_names), validation, new_column_names
+        return list(metric_names), new_column_names, validation
 
     @staticmethod
     def serialize_hyper_parameters(hyper_parameters):
@@ -161,9 +168,8 @@ class Estim_history(Estimator):
                     # : calls with [.] to make it iterable.
                 elif not is_jsonable(value):
                     components = str(value).split(' ')
-                    hyper_parameters[key] = components[
-                        2]  # 2nd elmnt  which is the one we want when the object is a function.
-                    # We did not test it in other cases....
+                    hyper_parameters[key] = components[2]  # 2nd elmnt  which is the one
+                    # we want when the object is a function. We did not test it in other cases....
             return hyper_parameters
 
         else:  # iterable case
@@ -233,7 +239,7 @@ class Estim_history(Estimator):
             self.metric_names
             self.validation
         """
-        df_column_names = list(Estim_history.NAMES_COLUMNS.copy()) + self.get_col_metric_names()
+        df_column_names = list(Estim_history.CORE_COL.copy()) + self.get_col_metric_names()
 
         return df_column_names
 
@@ -304,7 +310,11 @@ class Estim_history(Estimator):
 
     def get_values_fold_epoch_col(self, fold, epoch, column):
         index = self._index_mask(fold, epoch)
-        return self.df.loc[:, column][index].values[0]
+        try:
+            res = self.df.loc[:, column][index].values[0]
+        except IndexError:
+            raise IndexError("Possible issue: the data given does not have the requested epoch or loss type inside.")
+        return res
 
     def get_values_fold_col(self, fold, column):
         index = self._fold_mask(fold)
@@ -334,3 +344,14 @@ class Estim_history(Estimator):
             self._best_fold = new_best_fold
         else:
             raise Error_type_setter(f"Argument is not an {str(int)}.")
+
+    @property
+    def validation(self):
+        return self._validation
+
+    @validation.setter
+    def validation(self, new_validation):
+        if isinstance(new_validation, bool):
+            self._validation = new_validation
+        else:
+            raise Error_type_setter(f"validation is not an {str(bool)}.")
