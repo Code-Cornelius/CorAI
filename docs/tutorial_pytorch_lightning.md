@@ -16,3 +16,8 @@ A logger, including a live performance checker and is convertible to `Estimator_
 # progressbar_without_val_batch_update
 
 It replaces the original progressbar, which is buggy on IDE.
+
+# How to create models?
+
+Create a pytorch lightning module and inside, put the model you are interested in. This model should derive
+from `Savable_net`.

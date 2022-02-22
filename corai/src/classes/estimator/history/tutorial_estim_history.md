@@ -18,7 +18,28 @@ In order to initialise an `Estim_history` one will need three things:
   `corai/src/classes/estimator/hyper_parameters/Tutorial_estim_hyperparameter.md`
 
 ```python
-estimator_history = corai.Estim_hystory(metric_names, validation, hyper_params)
+estimator_history = corai.Estim_history(metric_names, validation, hyper_params)
+```
+
+## 1.1 Initialise directly the data
+
+When one has the data directly, he can create the `Estim_history` with the data at once:
+
+```python
+df = pd.DataFrame(self.history)
+df['fold'] = 0  # estimators require a fold column.
+
+hyper_params = Estim_history.serialize_hyper_parameters(self.hyper_params)  # put the parameters in correct form
+# we rename the columns so they suit the standard of estimators.
+metric_names, columns, validation = Estim_history.deconstruct_column_names(df.columns)
+df.columns = columns
+estimator = Estim_history(df=df, metric_names=metric_names, validation=validation, hyper_params=hyper_params)
+
+# assumes one fold case
+estimator.list_best_epoch.append(best_epoch)
+estimator.list_train_times.append(train_time)
+
+estimator.best_fold = 0
 ```
 
 ### 2. Handling data
@@ -38,6 +59,12 @@ parameters will be necessary:
 - the `fold_time`, this is an `int` representing the training time in seconds.
 - optionally, one can pass the `period_kept_data` argument. This is also an `int` and it dictates which rows to keep.
   For example, if `period_kept_data` is 5 then only the rows 0...5...10...15... will be kept.
+
+finally, one needs to update the `best_fold`:
+
+```python
+estimator.best_fold = 0
+```
 
 ```python
 estimator_history.append(history, fold_best_epoch, fold_time, period_kept_data)
