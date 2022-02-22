@@ -23,6 +23,7 @@ from corai_util.tools.src.function_writer import factory_fct_linked_path
 path_linker = factory_fct_linked_path(ROOT_DIR, 'corai/tests/pytorch_light/')
 history_path = path_linker(['out', 'estim', 'estim_1.json'])
 model_path = path_linker(['out', 'model', ''])
+model_name = 'sinus_model'
 seed_everything(42, workers=True)
 
 
@@ -67,13 +68,12 @@ class Sinus_model(LightningModule):
         self.log(name="train_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
         return loss
 
-    def validation_step(self, batch, batch_nb, log=True):
+    def validation_step(self, batch, batch_nb):
         x, y = batch
         y_hat = self(x)
         loss = self.criterion(y_hat, y)
 
-        if log:
-            self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
+        self.log(name="val_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
 
         # plot the prediction, dynamical evolution through epochs
         x_sort, order = torch.sort(x.view(-1))  # sort values that are randomly ordered
@@ -82,7 +82,12 @@ class Sinus_model(LightningModule):
         return loss
 
     def test_step(self, batch, batch_idx):
-        return self.validation_step(batch, batch_idx, log=True)
+        x, y = batch
+        y_hat = self(x)
+        loss = self.criterion(y_hat, y)
+
+        # will print to the console
+        self.log(name="test_loss", value=loss, prog_bar=True, on_step=False, on_epoch=True)
 
     def configure_optimizers(self):
         return torch.optim.Adam(self.parameters(), lr=self.lr, weight_decay=self.weight_decay)
@@ -150,12 +155,13 @@ if __name__ == '__main__':
     ############################### Init the Early Stopper
     period_log = 20
     early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
-                                        verbose=False, mode="min", )
+                                        verbose=False, mode="min")
 
     logger_custom = History_dict(metrics=["val_loss", "train_loss"], aplot_flag=True,
                                  frequency_epoch_logging=period_log, )
+
     chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=1,
-                              dirpath=path_linker(['out', 'model']))
+                              dirpath=path_linker(['out', 'model']), filename=model_name)
 
     trainer = Trainer(default_root_dir=path_linker(['out']),
                       gpus=AVAIL_GPUS, max_epochs=epochs,
@@ -163,7 +169,7 @@ if __name__ == '__main__':
                       check_val_every_n_epoch=period_log,
                       num_sanity_val_steps=0,
                       callbacks=[early_stop_val_loss, Progressbar_without_val_batch_update(refresh_rate=10),
-                                 chckpnt, ])
+                                 chckpnt,])
     sinus_data = MyDataModule(xx, yy, BATCH_SIZE)
 
     # section ######################################################################
@@ -196,7 +202,7 @@ if __name__ == '__main__':
     # TODO WE WANT TO BE ABLE TO CHOSE WHERE THE CHECKPT IS LOCATED. IN EXAMPLE_HP and in the SINUS_EXAMPLE.
     model = Sinus_model.load_from_checkpoint(chckpnt.best_model_path)
     # OR
-    model = Sinus_model.load_from_checkpoint(model_path + "epoch=739-step=739.ckpt")
+    model = Sinus_model.load_from_checkpoint(model_path + model_name + '.ckpt')
     estim = Estim_history.from_json(history_path, compressed=False)
 
     corai_plot.APlot.show_plot()
