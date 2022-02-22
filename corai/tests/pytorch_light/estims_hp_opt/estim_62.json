@@ -1,0 +1,83 @@
+{
+  "columns": [
+    "epoch",
+    "loss_validation",
+    "loss_training",
+    "fold"
+  ],
+  "data": [
+    [
+      20,
+      null,
+      0.5004786253,
+      0
+    ],
+    [
+      40,
+      0.5494360328,
+      0.4978437424,
+      0
+    ],
+    [
+      60,
+      0.5508329868,
+      0.4978654087,
+      0
+    ],
+    [
+      80,
+      0.550430119,
+      0.4978463054,
+      0
+    ],
+    [
+      100,
+      0.5502799153,
+      0.4978437722,
+      0
+    ],
+    [
+      120,
+      0.5502820015,
+      0.4978438318,
+      0
+    ]
+  ],
+  "attrs": {
+    "metric_names": [
+      "loss"
+    ],
+    "validation": true,
+    "best_epoch": [
+      20
+    ],
+    "time": [
+      0.5196169999999967
+    ],
+    "hyper_params": {
+      "input_size": 1,
+      "hidden_sizes": [
+        2,
+        32,
+        2
+      ],
+      "output_size": 1,
+      "biases": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "activation_functions": [
+        "relu",
+        "relu",
+        "relu"
+      ],
+      "dropout": 0.5,
+      "lr": 0.1,
+      "weight_decay": 1e-05,
+      "aplot_flag": false
+    },
+    "best_fold": 0
+  }
+}

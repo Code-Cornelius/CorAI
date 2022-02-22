@@ -1,6 +1,5 @@
 import os
 
-import numpy as np
 import torch
 from torch import nn
 from tqdm import tqdm
@@ -8,60 +7,25 @@ from tqdm import tqdm
 import corai
 from corai import Estim_history
 from corai import create_model_by_index, nn_plot_prediction_vs_true
+from corai.tests.sinus_dataset_generator import data_sinus
 from corai_plot import APlot
 from corai_util.tools import function_dict
 from corai_util.tools import function_writer
 
-ROOTPATH = os.path.dirname(os.path.abspath(__file__))
-
-linker_estims = function_writer.factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_history")
-linker_models = function_writer.factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_models")
-PATH_JSON_PARAMS = os.path.join(ROOTPATH, "other_csv_from_examples", "param_hyper_param_tuning.json")
-
-NEW_DATASET = False
-SAVE_TO_FILE = True
-
-
-# Define the exact solution
-def exact_solution(x):
-    return torch.sin(x)
-
-
-def L4loss(net, xx, yy):
-    return torch.norm(net.nn_predict(xx) - yy, 4)
-
-
-L4metric = corai.Metric('L4', L4loss)
-metrics = (L4metric,)
-
 ############################## GLOBAL PARAMETERS
-n_samples = 2000  # Number of training samples
-sigma = 0.01  # Noise level
+NEW_DATASET = True
+SAVE_TO_FILE = True
 device = corai.pytorch_device_setting('cpu')
 SILENT = False
-early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-1E-6)
-early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-1E-6)
-early_stoppers = (early_stop_train, early_stop_valid)
 ############################# DATA CREATION
-# exact grid
-plot_xx = torch.linspace(0, 2 * np.pi, 1000).reshape(-1, 1)
-plot_yy = exact_solution(plot_xx).reshape(-1, )
-plot_yy_noisy = (exact_solution(plot_xx) + sigma * torch.randn(plot_xx.shape)).reshape(-1, )
-
-# random points for training
-xx = 2 * np.pi * torch.rand((n_samples, 1))
-yy = exact_solution(xx) + sigma * torch.randn(xx.shape)
-
-# slicing:
-training_size = int(90. / 100. * n_samples)
-train_X = xx[:training_size, :]
-train_Y = yy[:training_size, :]
-
-testing_X = xx[training_size:, :]
-testing_Y = yy[training_size:, :]
-
-##### end data
-
+train_X, train_Y, testing_X, testing_Y, plot_xx, plot_yy, plot_yy_noisy, xx, yy = data_sinus()
+############################# paths definition
+ROOTPATH = os.path.dirname(os.path.abspath(__file__))
+linker_estims = function_writer.factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_history")
+linker_models = function_writer.factory_fct_linked_path(ROOTPATH, "example_hyper_param_sin_estim_models")
+PATH_JSON_PARAMS = function_writer.factory_fct_linked_path(ROOTPATH, "other_csv_from_examples") \
+    (["param_hyper_param_tuning.json"])
+############################# grid search arguments
 params_options = {
     "architecture": ["fcnn"],
     "seed": [42, 124],
@@ -70,10 +34,10 @@ params_options = {
     "dropout": [0., 0.2, 0.5],
     "list_hidden_sizes": [[2, 4, 2], [4, 8, 4], [16, 32, 16], [2, 32, 2], [32, 128, 32]],
 }
-# convert parameters to the product of the parameters
+############################## convert parameters to the product of the parameters
 hyper_params = function_dict.parameter_product(params_options)
 
-# save the parameters
+############################# save the parameters
 function_writer.list_of_dicts_to_json(hyper_params, file_name=PATH_JSON_PARAMS)
 print(f"File {PATH_JSON_PARAMS} has been updated.")
 print(f"    Number of configurations: {len(hyper_params)}.")
@@ -102,6 +66,13 @@ def config_architecture(params):
     criterion = nn.MSELoss(reduction='sum')
     dict_optimiser = {"lr": params["lr"], "weight_decay": 0.0000001}
     optim_wrapper = corai.Optim_wrapper(optimiser, dict_optimiser)
+
+    def L4loss(net, xx, yy):
+        return torch.norm(net.nn_predict(xx) - yy, 4)
+
+    L4metric = corai.Metric('L4', L4loss)
+    metrics = (L4metric,)
+
     param_nntrainprameters = corai.NNTrainParameters(batch_size=batch_size, epochs=epochs, device=device,
                                                      criterion=criterion, optim_wrapper=optim_wrapper,
                                                      metrics=metrics)
@@ -115,13 +86,17 @@ def config_architecture(params):
     return param_nntrainprameters, Class_Parametrized_NN
 
 
-def generate_estims_history():
+def generate_estims_history(hyper_params, config_architecture):
     estims = []
     for i, params in enumerate(tqdm(hyper_params)):
         # set seed for pytorch.
         corai.set_seeds(params["seed"])
 
         param_training, Class_Parametrized_NN = config_architecture(params)
+
+        early_stop_train = corai.Early_stopper_training(patience=20, silent=SILENT, delta=-1E-6)
+        early_stop_valid = corai.Early_stopper_validation(patience=20, silent=SILENT, delta=-1E-6)
+        early_stoppers = (early_stop_train, early_stop_valid)
 
         (net, estimator_history) = corai.nn_kfold_train(train_X, train_Y,
                                                         Class_Parametrized_NN,
@@ -141,7 +116,7 @@ if __name__ == '__main__':
 
     if NEW_DATASET:
         print("Training.")
-        estims = generate_estims_history()
+        estims = generate_estims_history(hyper_params, config_architecture)
     print("Plotting.")
     estim_hyper_param = corai.Estim_hyper_param.from_folder(linker_estims(['']),
                                                             metric_names=["loss_validation", "loss_training"],
@@ -211,7 +186,7 @@ if __name__ == '__main__':
     history_plot = corai.Relplot_history(estimator_history)
     history_plot.draw_two_metrics_same_plot(key_for_second_axis_plot='L4', log_axis_for_loss=True,
                                             log_axis_for_second_axis=True)
-    # history_plot.lineplot(log_axis_for_loss=True)
+    history_plot.lineplot(log_axis_for_loss=True)
 
     # plotting the prediciton of this model
     nn_plot_prediction_vs_true(net=best_model, plot_xx=plot_xx,
