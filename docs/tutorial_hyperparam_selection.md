@@ -54,9 +54,54 @@ estimator_history.to_json(linker_estims([f'estim_{i}.json']), compress=False)
 estims.append(estimator_history)
 ```
 
+In this case scenario, notice that you need to give to the method `to_estim_history` a checkpoint. The checkpoint is
+used to store the parameters. The hyperparameters are stored inside the estimator and inside the checkpoint:
+be careful to save all the parameters that are needed in the class
+(without ignored parameters: `self.save_hyperparameters()`)
+otherwise it will not be possible to reconstruct the model.
+
 ## When one has just a model: from scratch
 
 ```python
+def generate_estims_history(hyper_params, input_train, output_train, input_test, output_test,
+                            config_architecture, linker_estims, linker_models,
+                            metrics, silent):
+   estims = []
+   nb_epochs = 1
+   nb_prediction = 1, 1  # train , val
+   for i, params in enumerate(tqdm(hyper_params)):
+      current_model = config_architecture(params, input_train.shape[2], output_train.shape[2])
+
+      corai.set_seeds(params["seed"])  # set seed for pytorch.
+      ########################################################### training
+      start_train_fold_time = time.time()
+      _ = current_model(input_train, output_train)
+      end_train_fold_time = time.time() - start_train_fold_time
+
+      ########################################################### saving the results
+      errL2_train, errL2_val = L2loss(current_model, input_train, output_train), L2loss(current_model, input_test,
+                                                                                        output_test)
+      errL4_train, errL4_val = L4loss(current_model, input_train, output_train), L4loss(current_model, input_test,
+                                                                                        output_test)
+      dict_data = {'L2_training': [errL2_train.item()], 'L2_validation': [errL2_val.item()],
+                   'L4_validation': [errL4_val.item()], 'L4_training': [errL4_train.item()], 'epoch': [nb_epochs]}
+
+      df = pd.DataFrame(dict_data)
+      df['fold'] = 0  # estimators require a fold column.
+
+      # we rename the columns so they suit the standard of estimators.
+      metric_names, columns, validation = Estim_history.deconstruct_column_names(df.columns)
+      df.columns = columns
+      estimator = Estim_history(df=df, metric_names=[metric.name for metric in metrics], validation=validation,
+                                hyper_params=params)
+      estimator.list_best_epoch.append(1)
+      estimator.list_train_times.append(end_train_fold_time)
+      estimator.best_fold = 0
+      estims.append(estimator)  # add to the list of estimators
+      ########################################################### saving
+      estimator.to_json(path=linker_estims([f"estim_{i}.json"]), compress=False)
+      current_model.save_net(path=linker_models([f"model_{i}.pth"]))
+   return estims
 ```
 
 # Conclusion
