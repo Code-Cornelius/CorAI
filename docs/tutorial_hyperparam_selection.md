@@ -1,17 +1,18 @@
-Hyperparameter selection is extremely important for deployment. One trains the model for a variety of hyperparameters
+Hyperparameter selection is extremely important for deployment. One can train the model for a variety of hyperparameters
 and see which one gives the best result. The question that remains, how to do this efficiently?
 
 # Grid Search
 
 We develop an efficient tool when one uses a grid search. An example lies for CorAI pipeline
-in `tests\examples_of_tasks\example_hyper_param.py` and with PL in `tests\pytorch_light\example_hyper_param.py`. The
-object used for comparison is the `Estim_hyper_param ` which can be instantiated by giving a path to a folder full of
+in [`corai/tests/examples_of_tasks/example_hyper_param.py`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/tests/examples_of_tasks/example_hyper_param.py)
+and with PL in [`corai/tests/pytorch_light/example_hyper_param.py`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/tests/pytorch_light/example_hyper_param.py).
+The object used for comparison is the `Estim_hyper_param ` which can be instantiated by giving a path to a folder full of
 estimators history where the data lies. In the following, we distinguish multiple cases how one could want to create
 estimators.
 
 In order to see the global idea of how to iterate over different models and other tricks, please refer
-to   `corai/src/classes/estimator/history/Tutorial_estim_hyperparameter.md`. In this tutorial, we mainly focus on
-alternative ways to create `Estim_history` and `Estim_hyper_param`.
+to   [`corai/src/classes/estimator/hyper_parameters/tutorial_estim_hyperparameter.md`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/estimator/hyper_parameters/tutorial_estim_hyperparameter.md). 
+In this tutorial, we mainly focus on alternative ways to create `Estim_history` and `Estim_hyper_param`.
 
 ## From nn_kfold
 
@@ -42,16 +43,11 @@ from corai_util.tools import function_writer
 
 linker_estims = function_writer.factory_fct_linked_path(ROOTPATH, "histories_path")
 linker_models = function_writer.factory_fct_linked_path(ROOTPATH, "models_path")
-start_time = time.perf_counter()
+
 trainer.fit(sinus_model, datamodule=sinus_data)
-final_time = time.perf_counter() - start_time
-train_time = np.round(time.perf_counter() - start_time, 2)
-print("Total time training: ", train_time, " seconds. In average, it took: ",
-      np.round(train_time / trainer.current_epoch, 4), " seconds per epochs.")
+
 estimator_history = logger_custom.to_estim_history(checkpoint=chckpnt, train_time=final_time)
 estimator_history.to_json(linker_estims([f'estim_{i}.json']), compress=False)
-# todo the model path
-estims.append(estimator_history)
 ```
 
 In this case scenario, notice that you need to give to the method `to_estim_history` a checkpoint. The checkpoint is

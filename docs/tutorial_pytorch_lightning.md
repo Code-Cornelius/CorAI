@@ -1,6 +1,6 @@
 # Pytorch Lightning (PL)
 
-Pytorch lightning is a library that reduces the boilerplate of Pytorch. We consider that this project is robust and
+Pytorch lightning is a library that provides a high-level interface for of Pytorch. We consider that this project is robust and
 efficient in its task, and for this reason we incorparate it in our projects. The idea is that it does some work we were
 trying to do ourselves: `metrics`, `early_stoppers`...
 

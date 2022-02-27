@@ -1,6 +1,6 @@
 # Hyper-parameters example
 
-The tutorial follows closely the `tests/example_hyper_param.py` file.
+The tutorial follows closely the [`/corai/tests/examples_of_tasks/example_hyper_param.py`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/tests/examples_of_tasks/example_hyper_param.py) file.
 
 ### 0. Setup (Grid search)
 
@@ -292,5 +292,5 @@ where we order the performances.
 ### More info:
 
 - The `net` can be saved to file for later use. For more details
-  check: `corai/src/classes/architecture/how_to_new_architectures.md`
-- For more details on estimators check: `corai_estimator/how_to_use_estimators_and_plotters.md`.
+  check: [`corai/src/classes/architecture/how_new_architectures.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/architecture/how_new_architectures.md)
+- For more details on estimators check: [`docs/how_to_use_estimators_and_plotters.md`,](https://github.com/Code-Cornelius/CorAI/blob/master/docs/how_to_use_estimators_and_plotters.md).

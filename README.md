@@ -13,7 +13,7 @@
 ### General information
 
 The aim of this repository is to automatise and optimise classical python routines. We detail here the different
-directories available, which depends on the intended usage.
+directories available.
 
 Some functions are simple classical routines. Other files offer more advanced code, involving wrappers classes, classes
 objects, metaclasses…
@@ -23,7 +23,7 @@ project phase.
 
 ### How to use the Library?
 
-    pip install Corai>=1.400
+    pip install corai>=1.400
 
 ### Structure of the Project and how to import
 

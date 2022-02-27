@@ -8,8 +8,7 @@ python3 -m venv name_of_your_environment
 ```
 
 2. ### Activate the virtual environment
-To activate the environment, check the command here: https://docs.python.org/3/
-library/venv.html. On unix systems using bash or zsh it is the following command:
+To activate the environment, check the command [here][docs]. On unix systems using bash or zsh it is the following command:
 ```commandline
 source name_of_your_environment/bin/activate
 ```
@@ -86,3 +85,4 @@ deactivate
     One can also use '>=' instead of '==', in order to allow for any version bigger or equal to the one specified. 
 
 [pypi]: https://pypi.org/
+[docs]: https://docs.python.org/3/library/venv.html
