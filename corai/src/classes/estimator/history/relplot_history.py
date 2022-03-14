@@ -181,6 +181,7 @@ class Relplot_history(Plot_estim_history, Relplot_estimator):
                 axs[i].plot(np.full(len(ylim), self.estimator.list_best_epoch[i]), ylim, **dict_plot_param)
 
         g.set(yscale=yscale)
+        # you could use plot.set_yscale(value='log', basey=2) as well
         return
 
 

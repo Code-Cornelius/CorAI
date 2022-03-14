@@ -25,6 +25,10 @@ project phase.
 
     pip install Corai>=1.400
 
+If the server does not have access to this module, one can download it by hand with:
+
+    git clone https://github.com/Code-Cornelius/CorAI.git
+
 ### Structure of the Project and how to import
 
 The main structure is the following:
