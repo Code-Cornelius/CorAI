@@ -18,12 +18,15 @@ from corai.src.classes.pl.history_dict import History_dict
 from corai.src.classes.pl.progressbar_without_val_batch_update import \
     Progressbar_without_val_batch_update
 from corai.tests.sinus_dataset_generator import data_sinus
+from corai_util.tools.src.function_file import remove_file
 from corai_util.tools.src.function_writer import factory_fct_linked_path
 
 path_linker = factory_fct_linked_path(ROOT_DIR, 'corai/tests/pytorch_light/')
 history_path = path_linker(['out', 'estim', 'estim_1.json'])
 model_path = path_linker(['out', 'model', ''])
 model_name = 'sinus_model'
+# if set to True, the model will be overwritten, otherwise the new model will be saved with 'model_name-vx'
+OVERWRITE = True
 seed_everything(42, workers=True)
 
 
@@ -162,6 +165,11 @@ if __name__ == '__main__':
 
     chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=1,
                               dirpath=path_linker(['out', 'model']), filename=model_name)
+
+    # If a model already exists and the overwrite flag is on, delete the preivious model to present pl to save a new
+    # version
+    if OVERWRITE:
+        remove_file(model_path + model_name + '.ckpt')
 
     trainer = Trainer(default_root_dir=path_linker(['out']),
                       gpus=AVAIL_GPUS, max_epochs=epochs,
