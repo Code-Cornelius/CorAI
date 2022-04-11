@@ -8,18 +8,16 @@ import matplotlib.pyplot as plt
 from PIL import ImageChops, Image  # image comparison
 
 import os
-import pathlib
 # other files
 from corai_plot import APlot
 from config import ROOT_DIR
-from corai_metaclass import Register, deco_register, dict_register_classes
 
 """
     Auto
     False - manual testing 
-          - save the file and check manually if the behaviour is as expected
+          - the test saves the file in-place where the original baseline image is and the users has to check manually if the behaviour is as expected
     True - automatic testing
-         - save the file with test_name and compare against manually approved correct image 
+         - save the file with test_name and compare against manually approved correct image, then the image is automatically deleted.
     ! Only use false locally    
 """
 
@@ -469,7 +467,26 @@ class Test_APlot(TestCase):
     def test_hist(self):
         aplot = APlot()
         aplot.hist(self.yy)
-        self.image_name = "plot_hist"
+        self.image_name = "image_hist"
+        self.check_plot()
+
+    def test_hist_different_scale(self):
+        aplot = APlot()
+        aplot.hist(self.yy, dict_param_hist={'total_number_of_simulations': 50000})
+        self.image_name = "image_hist_diff_scale"
+        self.check_plot()
+
+    def test_hist_no_cum(self):
+        aplot = APlot()
+        aplot.hist(self.yy, dict_param_hist={'cumulative': False})
+        self.image_name = "image_hist_no_cum"
+        self.check_plot()
+
+    def test_hist_no_cum_pathological(self):
+        aplot = APlot()
+        aplot.hist(self.yy, dict_param_hist={'cumulative': False,
+                                             "total_number_of_simulations": 500000.})
+        self.image_name = "image_hist_no_cum_diff_scale"
         self.check_plot()
 
     def test_plot_function(self):

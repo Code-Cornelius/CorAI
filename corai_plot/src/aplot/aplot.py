@@ -617,7 +617,7 @@ class APlot(Displayable_plot, metaclass=Register):
 
         """
         dict_plot_param = {'color': 'darkorange', 'marker': 'o', 'linestyle': '-', 'markersize': 1,
-                           'label': "Cumulative ratio"}
+                           'label': "Cumulative ratio", 'linewidth': 2}
         dict_ax = {'ylabel': "Cumulative ratio", 'ylim': [0, 1.1]}
 
         if total_cumul is None:
@@ -643,6 +643,7 @@ class APlot(Displayable_plot, metaclass=Register):
                                'range': None,
                                'label': 'Histogram',
                                'cumulative': True}
+            you can give to the dict the key: total_number_of_simulations which is the renormalisation factor.
             dict_ax: dictionary for the parameters for axis customization.
 
         Returns:
@@ -668,15 +669,22 @@ class APlot(Displayable_plot, metaclass=Register):
 
         function_dict.up(dict_param_hist, APlot.DEFAULT_DICT_HIST_PARAM)
 
+        # we verify if cumulative is False. If it is, we remove it from the dictionary, as well as the rescaling argument.
+        if 'cumulative' in dict_param_hist:
+            if not dict_param_hist['cumulative']:  # case false:
+                dict_param_hist.pop('cumulative')
+                if 'total_number_of_simulations' in dict_param_hist:
+                    dict_param_hist.pop('total_number_of_simulations')
+
         try:
             # if doesn't pop, it will be catch by except.
-            # that way we delete from dict_param_hist the parameter cumulative so we can give it to the plot.
+            # that way we delete from dict_param_hist the parameter cumulative so we can give the dict to the plot.
             if dict_param_hist.pop('cumulative'):
                 try:
                     total_cumul = dict_param_hist.pop('total_number_of_simulations')
                     values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)
                     # : values and base are the height and bounds of each bins.
-                    self.cumulative_plot(base, data, nb_ax=nb_ax, total_cumul=total_cumul)
+                    self.cumulative_plot(base, values, nb_ax=nb_ax, total_cumul=total_cumul)
 
                 except KeyError:  # no total number of simulation
                     values, base, _ = self._axs[nb_ax].hist(data, **dict_param_hist)

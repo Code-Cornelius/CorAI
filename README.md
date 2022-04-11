@@ -275,8 +275,12 @@ one can also use `corai.folder.name_fct` as it is exposed in the structure above
 
 `colors_seaborn.py` gives a presentation of the different (personal) favorite palette of seaborn.
 
+* **APlot** : A class that simplifies drawing using the library matplotlib ;
+
+There is no automatic tests because the images on the server of github and the images generated locally are not matching
+due to O.S. differences. Hence, it is not possible (or cumbersome) to automatically verify that the generated images are
+matching. However, the tests exist and can be run.
+
 ## corai_util
 
-We created two original objects.
 
-* **APlot** : A class that simplifies drawing using the library matplotlib ; 
