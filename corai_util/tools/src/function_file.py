@@ -18,6 +18,20 @@ def remove_files_from_dir(folder_path, file_start, file_extension):
             os.remove(file_path)
 
 
+def remove_file(file_path):
+    """
+    Semantics:
+        Wrapper around os to remove a file. It will call remove only if they file exists, nothing otherwise.
+
+    Args:
+        file_path: The full path to the file.
+
+    Returns:
+        Void.
+    """
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
 def is_empty_file(path):
     """
     Semantics:

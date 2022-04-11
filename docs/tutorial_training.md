@@ -70,7 +70,7 @@ L4metric = corai.Metric('L4', L4loss)
 metrics = (L4metric,)  # tuple of metrics
 ```
 
-One needs as well to define how the optimisation step is undergone. This is specified through the `Optim_wrapper`
+One needs to also define how the optimisation step is performed. This is specified through the `Optim_wrapper`
 parameter.
 
 - define the `Optim_wrapper`:
@@ -164,15 +164,16 @@ net, value_metric_for_best_net = corai.train_kfold_a_fold_after_split(train_X, t
 ### Automatically reload models when parameters are stored in a json.
 
 It is possible to directly recreate a model by simply specifying where to find the hyper-parameters of the models.
-There is a tutorial about `parameter_product` that does create such json file in `corai/src/classes/estimator/history/Tutorial_estim_hyperparameter.md`.
+There is a tutorial about `parameter_product` that does create such json file in
+[`corai/src/classes/estimator/hyper_parameters/tutorial_estim_hyperparameter.md`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/estimator/hyper_parameters/tutorial_estim_hyperparameter.md).
 
 The function to recreate the model is `create_model_by_index` that lies in `util_train.py`.
 
 ### Next steps:
 
 - The `net` can be saved to file for later use. For more details check:
-  `corai/src/classes/architecture/how_new_architectures.md`
+  [`corai/src/classes/architecture/how_new_architectures.md`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/architecture/how_new_architectures.md)
 - The results can be used for plotting:
-  `corai/src/classes/estimator/history/Tutorial_estim_history.md`,
-  `corai/src/classes/estimator/history/Tutorial_estim_hyperparameter.md`
+  [`corai/src/classes/estimator/hyper_parameters/tutorial_estim_hyperparameter.md`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/estimator/hyper_parameters/tutorial_estim_hyperparameter.md),
+  [`corai/src/classes/estimator/history/tutorial_estim_history.md`](https://github.com/Code-Cornelius/CorAI/blob/master/corai/src/classes/estimator/history/tutorial_estim_history.md)
 

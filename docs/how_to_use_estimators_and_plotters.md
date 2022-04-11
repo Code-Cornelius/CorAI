@@ -2,11 +2,11 @@ This is a tutorial on the how to use the classes from this library.
 
 Estimators and Plotters are an efficient way to use dataframes. Dataframes from pandas are simple containers that lack
 some global structure and efficient ways to plot data. In order to fill this gap, estimators are wrappers around
-dataframes that $ allow storing metadata and grant some useful methods. Also, sometimes dataframe's extremely flexible
+dataframes that allow storing metadata and grant some useful methods. Also, sometimes dataframe's extremely flexible
 structure shall be restricted and one would wish to enforce a given pattern for all dataset of the same type. This is
 doable with estimators.
 
-On the other hand, plotters contain estimators and offer an automatic way to plot certain type of representation of the
+On the other hand, plotters contain estimators and offer an automatic way to plot certain types of representation of the
 data.
 
 # ESTIMATORS
@@ -24,10 +24,9 @@ Distplot_estimator Child Class         | Distplot_function_name |
 
 And the order for inheritance should be first the specific plot_estim, then the type of plot. 
 That way, if one wants to rely on specific behavior from plot_estim, it is set before reaching the level of relplot.
-The usage of `super().` is recommended.
+The usage of `super()` is recommended.
 
-Mermaid diagrams: https://mermaid-js.github.io/mermaid/#/
-Easily instalable in Pycharm.
+This file makes use of [Mermaid diagrams][merm] which can be easily installed in Pycharm.
 
 We follow UML class diagrams: https://mermaid-js.github.io/mermaid/#/classDiagram
 https://en.wikipedia.org/wiki/Class_diagram
@@ -37,13 +36,13 @@ https://en.wikipedia.org/wiki/Class_diagram
 
 ### Basic Structure diagram of the plotter. 
 
-Typical diamond form where the left wing (`Plot_estim_function_name`) indicates the common behavior of plotting 
+Typical diamond where the left wing (`Plot_estim_function_name`) indicates the common behavior of plotting 
 a certain function, and the right wing (`Typeplot_estimator`) indicates the way to plot such type of plot. 
 
 Example: 
 * `Plot_estim_function_name` would be `Plot_estim_benchmark`.
 * `Typeplot_estimator` would be `Relplot_estimator`.
-*`Typelot_function_name` would become `Relplot_benchmark` .
+* `Typelot_function_name` would become `Relplot_benchmark` .
   
 ```mermaid
 classDiagram
@@ -218,3 +217,5 @@ classDiagram
 [comment]: <> (Statistic_estimator:       +int age Statistic_estimator:       +String gender Statistic_estimator:       +isMammal&#40;&#41;)
 
 [comment]: <> (Statistic_estimator:       +mate&#40;&#41;       )
+
+[merm]: https://mermaid-js.github.io/mermaid/#/
