@@ -279,7 +279,7 @@ class APlot(Displayable_plot, metaclass=Register):
     # Methods for customization
     
     @staticmethod
-    def update_dict_ax(axis, dict_ax, xx, yy):
+    def update_dict_ax(axis, dict_ax, xx, yy, how):
         """
         Semantics:
             benefit from the automatic ax configuration without having to write it all oneself.
@@ -296,6 +296,8 @@ class APlot(Displayable_plot, metaclass=Register):
                 ylim (None)
                 parameters (None)
                 name_parameters (None)
+            xx,yy: is the data, useful for getting properties of the plot
+            how: as above, used for adapting the parameters used to the plot
 
 
 
@@ -387,14 +389,16 @@ class APlot(Displayable_plot, metaclass=Register):
             SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM = 1.2
 
             axis.text(left + (right - left) * COEF_PUT_TO_LEFT,
-                      bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER + interpolation_factor * (
-                              (top - bottom) * SPEED_PUTTING_DOWN_WRT_NB_PARAM - STARTING_VALUE_PUTTING_TEXT_LOWER)),
+                      (1. + 0.25 * how[1]) * (bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER +
+                                                        interpolation_factor * ((top - bottom) *
+                                                                                SPEED_PUTTING_DOWN_WRT_NB_PARAM -
+                                                                                STARTING_VALUE_PUTTING_TEXT_LOWER))),
                       sous_text,
                       fontsize=APlot.FONTSIZE - 2)
             plt.subplots_adjust(
-                bottom=STARTING_VALUE_SUBPLOT_ADJUST +
-                       interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST) *
-                       SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM,
+                bottom=(0.25 * how[1]) * (STARTING_VALUE_SUBPLOT_ADJUST +
+                                          interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST) *
+                                          SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM),
                 wspace=0.25, hspace=0.5)
             # bottom is how much low;
             # wspace : the amount of width reserved for blank space between subplots
@@ -433,7 +437,7 @@ class APlot(Displayable_plot, metaclass=Register):
             - do not set xint = True, for same reason as above
             - labels are overlapping, since the two axis are sharing the figure.
             - do not put twice parameters, as if they are on the same figure, the parameters should be the same.
-            Also, they are written on the graph independently so it would difficult to put them at the exact right place. 
+            Also, they are written on the graph independently so it would difficult to put them at the exact right place.
             Prefer putting parameters on the main axis.
 
         Returns:
@@ -463,7 +467,7 @@ class APlot(Displayable_plot, metaclass=Register):
         # update the default dict with the passed parameters.
         # It changes self.saved_dict_ax_params.list_dicts_parameters_for_each_axs[nb_ax].
         dict_parameters_for_the_ax.update(dict_ax)
-        self.update_dict_ax(axis, dict_parameters_for_the_ax, xx, yy)
+        self.update_dict_ax(axis, dict_parameters_for_the_ax, xx, yy, self._how)
         return
 
     def show_legend(self, nb_ax=None, loc='best'):
