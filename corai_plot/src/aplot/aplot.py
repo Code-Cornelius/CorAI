@@ -389,16 +389,16 @@ class APlot(Displayable_plot, metaclass=Register):
             SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM = 1.2
 
             axis.text(left + (right - left) * COEF_PUT_TO_LEFT,
-                      (1. + 0.25 * how[1]) * (bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER +
-                                                        interpolation_factor * ((top - bottom) *
-                                                                                SPEED_PUTTING_DOWN_WRT_NB_PARAM -
-                                                                                STARTING_VALUE_PUTTING_TEXT_LOWER))),
+                      (1. + 0.5 * (how[1] - 1)) * (bottom - (STARTING_VALUE_PUTTING_TEXT_LOWER +
+                                                             interpolation_factor * ((top - bottom) *
+                                                                                     SPEED_PUTTING_DOWN_WRT_NB_PARAM -
+                                                                                     STARTING_VALUE_PUTTING_TEXT_LOWER))),
                       sous_text,
                       fontsize=APlot.FONTSIZE - 2)
             plt.subplots_adjust(
-                bottom=(0.25 * how[1]) * (STARTING_VALUE_SUBPLOT_ADJUST +
-                                          interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST) *
-                                          SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM),
+                bottom=(1. - 0.15 * (how[1] - 1)) * (STARTING_VALUE_SUBPLOT_ADJUST +
+                                                     interpolation_factor * (0.35 - STARTING_VALUE_SUBPLOT_ADJUST) *
+                                                     SPEED_PUTTING_PLOT_HIGHER_WRT_NB_PARAM),
                 wspace=0.25, hspace=0.5)
             # bottom is how much low;
             # wspace : the amount of width reserved for blank space between subplots
