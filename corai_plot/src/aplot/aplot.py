@@ -352,6 +352,10 @@ class APlot(Displayable_plot, metaclass=Register):
                 and dict_ax['name_parameters'] is not None:
             parameters = dict_ax['parameters']
             name_parameters = dict_ax['name_parameters']
+            assert len(parameters) == len(name_parameters), f"The number of parameters given to dict_ax['parameters'], " \
+                                                            f"does not match the number of parameters given to dict_ax['name_parameters']. " \
+                                                            f"One has length {len(parameters)} and the other one {len(name_parameters)}."
+
             nb_parameters = len(parameters)
             MAX_NUMBER_PARAMETER = 24
             sous_text = ' Parameters: \n'
