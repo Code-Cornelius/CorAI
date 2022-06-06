@@ -142,7 +142,7 @@ def decorator_delayed_keyboard_interrupt(func):
     """
     @functools.wraps(func)
     def wrapper_delayed_keyboard_interrupt(*args, **kwargs):
-        with DelayedKeyboardInterrupt():  # https://stackoverflow.com/questions/60018578/what-does-model-eval-do-in-pytorch
+        with DelayedKeyboardInterrupt():
             return func(*args, **kwargs)
 
     return wrapper_delayed_keyboard_interrupt

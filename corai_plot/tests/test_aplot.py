@@ -14,14 +14,14 @@ from config import ROOT_DIR
 
 """
     Auto
-    False - manual testing 
-          - the test saves the file in-place where the original baseline image is and the users has to check manually if the behaviour is as expected
-    True - automatic testing
-         - save the file with test_name and compare against manually approved correct image, then the image is automatically deleted.
-    ! Only use false locally    
+        False - manual testing 
+              - the test saves the file in-place where the original baseline image is and the users has to check manually if the behaviour is as expected
+        True - automatic testing
+             - save the file with test_name and compare against manually approved correct image, then the image is automatically deleted.
+        ! Only use false locally    
 """
 
-AUTO = True
+AUTO = True  # should we True for auto testing.
 DELETE_TEST_PLOT = True
 PATH = os.path.join(ROOT_DIR, 'corai_plot', 'tests', 'image_reference_test_plot')
 

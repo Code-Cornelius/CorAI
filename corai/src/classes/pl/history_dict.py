@@ -36,7 +36,7 @@ class History_dict(LightningLoggerBase):
         # there will be a bug.
         super().__init__()
 
-        self.hyper_params = None
+        self.hyper_params = {}  # by default a dictionary because it is the way it is stored.
         self.history = {}
         # The defaultdict will create an entry with an empty list if they key is missing when trying to access
         self.freq_epch = frequency_epoch_logging
@@ -162,6 +162,9 @@ class History_dict(LightningLoggerBase):
     def to_estim_history(self, checkpoint, train_time):
         """
             Transform a history dict to an Estim_history using a checkpoint.
+            The history_dict could have multiple different column names, like train_loss and val_loss.
+            This naming is not suited for estim_history, and so we convert the namings with the function
+            `deconstruct_column_names`
         Args:
             checkpoint: Pytorch lightning checkpoint. It has the model inside.
             train_time: The time taken for the training.
@@ -172,7 +175,7 @@ class History_dict(LightningLoggerBase):
 
         # from init, there is one entry more in the validation metrics.
         # We delete the last entry of each list with validation in the name of the metric.
-        list_length_assertion = []  # fetch the different lenght to assert it
+        list_length_assertion = []  # fetch the different length to assert it
         for key in self.history:
             if any(val_keyword in key for val_keyword in History_dict.val_keywords):  # case val
                 self.history[key] = self.history[key][:-1]  # remove last entry of the list

@@ -73,7 +73,7 @@ class Windowcreator(object):
         # we return data with same type as input
         dtype = input_data.dtype
         if output_data is not None:
-            assert (dtype == output_data.dtype, "Data Input/Output should have the same dtype.")
+            assert dtype == output_data.dtype, "Data Input/Output should have the same dtype."
 
         nb_batch = input_data.shape[0]  # N as in documentation.
         L = input_data.shape[1]  # L as in documentation.

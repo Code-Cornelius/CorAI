@@ -65,7 +65,8 @@ def list_of_dicts_to_json(list_of_dicts, file_name="config.json", compress=False
     with open(file_name, 'w') as file:
         json.dump(list_of_dicts, file)
 
-def json2python(path, compress = False):
+
+def json2python(path, compress=False):
     with open(path, 'r') as file:
         dict = json.load(file)
         if compress:
@@ -75,11 +76,25 @@ def json2python(path, compress = False):
 
 
 def factory_fct_linked_path(ROOT_DIR, path_to_folder):
+    """
+    Semantics:
+
+    Args:
+        ROOT_DIR: Path to the root of the project.
+        path_to_folder: a path written in the format you want because we use the function os.path.join to link it.
+
+    Returns:
+        The linker
+    Examples:
+              linked_path = factory_fct_linked_path(ROOT_DIR, "path/a"):
+              path_save_history = linked_path(['plots', f"best_score_{nb}.pth"])
+              #and ROOT_DIR should be imported from a script at the root where it is written:
+
+              import os
+              ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+    """
     # example:
-    #   path_save_history = linked_path(['plots', f"best_score_{nb}"])
-    # and ROOT_DIR should be imported from a script at the root where it is written:
-    # import os
-    # ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+
     PATH_TO_ROOT = os.path.join(ROOT_DIR, path_to_folder)
 
     def linked_path(path):
@@ -90,4 +105,3 @@ def factory_fct_linked_path(ROOT_DIR, path_to_folder):
         return os.path.join(PATH_TO_ROOT, *path)
 
     return linked_path
-

@@ -118,18 +118,26 @@ class Test_estim_history(TestCase):
         path_json = os.path.join(FOLDER_PATH, json_empty_file)
         path_csv = os.path.join(FOLDER_PATH, csv_empty_file)
 
+        # creates empty files
+        with open(path_json, "w") as _:
+            pass
+        with open(path_csv, "w") as _:
+            pass
+
         self.assertRaises(Error_not_allowed_input, Estimator.from_json, path_json)
         self.assertRaises(Error_not_allowed_input, Estimator.from_csv, path_csv)
+
+        remove_files_from_dir(folder_path=FOLDER_PATH, file_start="", file_extension="")
 
     def test_test_Test(self):
         estimator = Estim_history(metric_names=metric_names, validation=True,
                                   hyper_params={'optim': 'adam',
-                                                       'lr': 0.7,
-                                                       'layers': [12, 10]})
+                                                'lr': 0.7,
+                                                'layers': [12, 10]})
 
         history = translate_history_to_dataframe(train_history, 0, True)
-        estimator.append(history, fold_best_epoch= 2, fold_time= 3)
-        estimator.best_fold = 0 # manually set, normally set during training.
+        estimator.append(history, fold_best_epoch=2, fold_time=3)
+        estimator.best_fold = 0  # manually set, normally set during training.
 
         file_path1 = os.path.join(FOLDER_PATH, "estim_1.json")
         estimator.to_json(file_path1)

@@ -116,7 +116,7 @@ class Estimator(object):
 
         """
         if os.path.getsize(path) <= 0:
-            raise Error_not_allowed_input("The input json file cannot be empty")
+            raise Error_not_allowed_input("The input json file cannot be empty.")
 
         with open(path, 'r') as file:  # read file
             df_info = json.load(file)
@@ -125,7 +125,7 @@ class Estimator(object):
                     df_info = unzip_json(df_info)
                 except KeyError as e:
                     print("Original caught error: ", e)
-                    raise KeyError("Potentially, there is an issue with the compression parameter")
+                    raise KeyError("Potentially, there is an issue with the compression parameter.")
             attrs = df_info['attrs']  # retrieve the attributes (metadata)
             del df_info['attrs']  # deletes them from the loaded json
 
