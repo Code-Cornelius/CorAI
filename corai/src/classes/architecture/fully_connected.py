@@ -76,14 +76,15 @@ class Fully_connected_NN(Savable_net, metaclass=ABCMeta):
     def nb_of_params(self):
         self._nb_of_parameters = Fully_connected_NN.compute_nb_of_params(input_size=self.input_size,
                                                                          list_hidden_sizes=self.list_hidden_sizes,
-                                                                         output_size=self.output_size)
+                                                                         output_size=self.output_size,
+                                                                         list_biases=self.list_biases)
         return self._nb_of_parameters
 
     @staticmethod
     def compute_nb_of_params(input_size, list_hidden_sizes, output_size, list_biases):
         # https://math.stackexchange.com/questions/3335072/how-many-parameters-does-the-neural-network-have
         # wip explain
-        # do the same method but not static, and calling this method with the right parameters
+        # do the same method but not static, and calling this method with the right parameters (IT WORKS)
 
         # make sure it is well documented, and that we know how to create this model, an example of dict_fc_param is:
         # {'list_hidden_sizes': [32, 16, 8, 4],
@@ -98,8 +99,9 @@ class Fully_connected_NN(Savable_net, metaclass=ABCMeta):
             size += list_hidden_sizes[i - 1] * list_hidden_sizes[i]
 
         size += list_hidden_sizes[-1] * output_size
-
-        size += np.sum(list_hidden_sizes * list_biases[:-1]) + output_size * list_biases[-1]  # the biases
+        size += np.sum([list_hidden_sizes[i] * list_biases[i] for i in range(len(list_hidden_sizes))]) + output_size * \
+                list_biases[-1]
+        # the biases added
         return size
 
     # section ######################################################################
@@ -136,8 +138,6 @@ class Fully_connected_NN(Savable_net, metaclass=ABCMeta):
         # pass through the output layer
         out = self._layers[-1](out)
         return out
-
-
 
 
 # section ######################################################################
@@ -252,7 +252,5 @@ def factory_parametrised_FC_NN(param_input_size, param_list_hidden_sizes, param_
                 self._dropout = new_dropout
             else:
                 raise Error_type_setter(f"Argument is not an {str(float)}.")
-
-
 
     return Parametrised_FC_NN

@@ -155,6 +155,7 @@ if __name__ == '__main__':
     ############################### Init our model
     sinus_model = Sinus_model(input_size, hidden_sizes, output_size, biases, activation_functions, dropout,
                               lr=0.01, weight_decay=0.00001, aplot_flag=True)
+    print("Number of parameters in the mode: ", sinus_model.model.nb_of_params())
     ############################### Init the Early Stopper
     period_log = 20
     early_stop_val_loss = EarlyStopping(monitor="val_loss", min_delta=1E-3, patience=100 // period_log,
@@ -166,7 +167,7 @@ if __name__ == '__main__':
     chckpnt = ModelCheckpoint(monitor="val_loss", mode="min", verbose=False, save_top_k=1,
                               dirpath=path_linker(['out', 'model']), filename=model_name)
 
-    # If a model already exists and the overwrite flag is on, delete the preivious model to present pl to save a new
+    # If a model already exists and the `OVERWRITE` flag is on, delete the previous model to present pl to save a new
     # version
     if OVERWRITE:
         remove_file(model_path + model_name + '.ckpt')
