@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABCMeta
 
+import numpy as np
 import torch.nn as nn
 # my lib
 from corai_error import Error_type_setter
@@ -79,15 +80,27 @@ class Fully_connected_NN(Savable_net, metaclass=ABCMeta):
         return self._nb_of_parameters
 
     @staticmethod
-    def compute_nb_of_params(input_size, list_hidden_sizes, output_size):
+    def compute_nb_of_params(input_size, list_hidden_sizes, output_size, list_biases):
+        # https://math.stackexchange.com/questions/3335072/how-many-parameters-does-the-neural-network-have
+        # wip explain
+        # do the same method but not static, and calling this method with the right parameters
+
+        # make sure it is well documented, and that we know how to create this model, an example of dict_fc_param is:
+        # {'list_hidden_sizes': [32, 16, 8, 4],
+        #  'list_biases': [True, True, True, True, True],
+        #  'activation_functions': [torch.tanh, torch.tanh, torch.tanh, torch.tanh, torch.nn.Softplus()],
+        #  'dropout': 0., }
+        # insist why there is one more bias than hidden_size in documentation of this class
+
         size = input_size * list_hidden_sizes[0]
 
         for i in range(1, len(list_hidden_sizes)):
             size += list_hidden_sizes[i - 1] * list_hidden_sizes[i]
 
         size += list_hidden_sizes[-1] * output_size
-        return size
 
+        size += np.sum(list_hidden_sizes * list_biases[:-1]) + output_size * list_biases[-1]  # the biases
+        return size
 
     # section ######################################################################
     #  #############################################################################
