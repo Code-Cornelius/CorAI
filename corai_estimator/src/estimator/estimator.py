@@ -105,12 +105,12 @@ class Estimator(object):
         return cls(df=dataframe, **kwargs)
 
     @staticmethod
-    def from_json_attributes(path, compress):
+    def from_json_attributes(path: str, compress: bool):
         """
             Retrieve extra attributes from a json dataframe and write the json back to the file.
         Args:
             path: The path to the file
-            compress: Whether or not compression is applied
+            compress: Whether compression is applied
 
         Returns:
 
@@ -205,7 +205,6 @@ class Estimator(object):
         """
         Semantics:
             adaptor for the method append from DF at the estimator level.
-            We make it an in place operation.
 
         Args:
             appending_df: the df to append to the self object.
@@ -478,7 +477,7 @@ class Estimator(object):
         if isinstance(new_df, pd.DataFrame):
             self._df = new_df
         else:
-            raise Error_type_setter('Argument is not an Dataframe.')
+            raise Error_type_setter('Argument is not a Dataframe.')
 
     @property
     def columns(self):

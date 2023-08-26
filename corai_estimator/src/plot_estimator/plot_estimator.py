@@ -1,4 +1,5 @@
 # normal libraries
+import typing
 from abc import abstractmethod
 
 import pandas as pd
@@ -41,7 +42,7 @@ class Plot_estimator(Root_plot_estimator):
 
     # it can be changed by self.COLORMAP; setting it allows to always use the same colormaps.
 
-    def __init__(self, estimator, grouping_by=None, **kwargs):
+    def __init__(self, estimator: Estimator, grouping_by: typing.Iterable[str] = None, **kwargs):
         """
         Args:
             estimator (corai_estimator.src.estimator.estimator):

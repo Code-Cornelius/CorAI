@@ -26,7 +26,6 @@ setuptools.setup(
         'pandas>=1.2.3',
         'seaborn>=0.11.1',
         'torch>=1.8.1+cu102',
-        'sklearn>=0.0',
         'scikit-learn>=0.23.2',
         'tqdm>=4.61.1',
         'Keras>=2.4.3',

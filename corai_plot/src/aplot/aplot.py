@@ -53,6 +53,8 @@ Examples:
                                            'markersize': 0.4,
                                            'label': "plot"
                                            }
+                                           
+       if you do not want any parameter set None
             
         setting for figure:
             given by the class Dict_ax_for_APlot
@@ -164,15 +166,14 @@ class APlot(Displayable_plot, metaclass=Register):
                 # self._axs are stored line by line. ROW MAJOR.
                 self._axs = self._axs.flatten()
 
-            # now, self.axs is always a list (uni dimensional).
+            # self.axs is always a list (uni dimensional).
             self._nb_of_axs = how[0] * how[1]  # nb of axes
 
-            # for the axs_bis, I store the axs inside this guy:
+            # I store the axs inside the same list of axis, where there is a correspondance:
             self._axs_bis = [None] * self._nb_of_axs  # a list full of zeros.
 
-            # we set the default param of the fig:
+            # We set the default param of the fig as a list of dicts.
             self.saved_dict_ax_params = Dict_ax_for_APlot(nb_of_axs=self._nb_of_axs)
-            # : it is a list of dicts.
 
             # Each element gives the config for the corresponding axes
             # through a dictionary defined by default in the relevant class.
@@ -975,6 +976,14 @@ class APlot(Displayable_plot, metaclass=Register):
     def get_y_lim(self, nb_ax):
         nb_ax = self.__check_axs(nb_ax)
         return self._axs[nb_ax].get_ylim()
+
+    @property
+    def axs(self):
+        return self._axs
+
+    @axs.setter
+    def axs(self, new_axs):
+        raise PermissionError("It is not allowed to change the axis.")
 
 # test:
 #

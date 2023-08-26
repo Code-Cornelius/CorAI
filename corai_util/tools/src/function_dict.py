@@ -28,8 +28,8 @@ def parameter_product(parameter_options):
     """
     Function to compute the product between lists of parameters
     Args:
-        parameter_options: a dictionary composed of possible parameters. Each parameter should have a list of
-            the values said parameter can take
+        parameter_options (dict<str,list>): a dictionary composed of possible parameters.
+        Each parameter should have a list of the values said parameter can take
 
     Returns:
         A list of dictionaries. Each dictionary will contain a unique combination of the parameters.

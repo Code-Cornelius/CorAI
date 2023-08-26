@@ -39,7 +39,7 @@ class Relplot_benchmark_array(Plot_estim_benchmark_array, Relplot_estimator):
         title = self.generate_title(parameters=grouped_data_by, parameters_value=key,
                                     before_text="Benchmark")
         fig_dict = {'title': title,
-                    'xlabel': self.EVOLUTION_COLUMN,
+                    'xlabel': Relplot_benchmark_array.EVOLUTION_COLUMN,
                     'ylabel': 'Comput. Time',
                     'xscale': 'log', 'yscale': 'log',
                     'basex': 2, 'basey': 10
