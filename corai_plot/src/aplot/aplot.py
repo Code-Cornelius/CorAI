@@ -69,7 +69,7 @@ For now are supported the features:
             -3D Plots
 """
 
-
+# TODO SET FONTSIZE AS PARAMETER
 class APlot(Displayable_plot, metaclass=Register):
     """
     Semantics:
@@ -727,6 +727,7 @@ class APlot(Displayable_plot, metaclass=Register):
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         return
 
+    # TODO BUG THIS TURNS ON THE GRID ON THE PLOT
     def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy()):
         """
         Semantics:
