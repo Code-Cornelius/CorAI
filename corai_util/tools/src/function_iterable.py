@@ -249,43 +249,12 @@ def raise_if_not_all_None(list_parameters):
 
 def is_np_arr_constant(arr, tol):
     """
-    Condition if all values are equal (up to some allowed error).
+    Checks if all values in an array are equal. Verify if the difference between the max and the min is larger than a certain threshold `tol`.
     Args:
-        arr:
-        tol: percent error of the mean, unless the mean is zero, then it is the exact value.
-
-    Returns:
-
+        arr: the array to verify.
+        tol: threshold difference between max and min for an array to be considered as not constant.
     """
-    the_mean = np.mean(arr)
-    if the_mean <= 1E-8: # threshold.
-        cdt1 = arr <= tol
-        cdt2 = arr >= -tol
-    else:
-        cdt1 = np.abs(arr - the_mean) <= abs(the_mean) * tol
-        cdt2 = np.abs(arr - the_mean) >= -abs(the_mean) * tol
-    if np.all(cdt1 & cdt2):
-        return True
-    else:
-        return False
-
-# print(1)
-# arr = np.array([1, 2, 3])
-# print(is_np_arr_constant(arr, 0.1))
-# print(is_np_arr_constant(arr, 0.5))
-# print(is_np_arr_constant(arr, 5.))
-#
-# print(2)
-# arr = np.array([-1, -2, -3])
-# print(is_np_arr_constant(arr, 0.1))
-# print(is_np_arr_constant(arr, 0.5))
-# print(is_np_arr_constant(arr, 5.))
-#
-# print(3)
-# arr = np.array([-1, 1, -2, 2])
-# print(is_np_arr_constant(arr, 0.))
-# print(is_np_arr_constant(arr, 0.5))
-# print(is_np_arr_constant(arr, 2.))
+    return np.max(arr) - np.min(arr) < tol
 
 
 
