@@ -69,7 +69,6 @@ For now are supported the features:
             -3D Plots
 """
 
-# TODO SET FONTSIZE AS PARAMETER
 class APlot(Displayable_plot, metaclass=Register):
     """
     Semantics:
@@ -126,7 +125,8 @@ class APlot(Displayable_plot, metaclass=Register):
     def __init__(self, how=(1, 1),
                  datax=None, datay=None,
                  figsize=(7, 5),
-                 sharex=False, sharey=False):
+                 sharex=False, sharey=False,
+                 fontsize=FONTSIZE):
         """
         If datay (and potentially datax) is given, APlot plots directly. Allows quick plotting.
 
@@ -139,6 +139,9 @@ class APlot(Displayable_plot, metaclass=Register):
             sharey: for sharing the same Y axis for two axes. This can be used for having two plots, different X-axis, sharing the same Y-axis.
         """
         super().__init__()
+
+        # Shadow class parameter with object parameter.
+        FONTSIZE = fontsize
 
         # quick plot
         if datay is not None:
@@ -727,7 +730,6 @@ class APlot(Displayable_plot, metaclass=Register):
         self.__my_plotter(nb_ax, xx, yy, dict_plot_param)
         return
 
-    # TODO BUG THIS TURNS ON THE GRID ON THE PLOT
     def plot_vertical_line(self, x, yy, nb_ax=0, dict_plot_param=DEFAULT_DICT_PLOT_PARAM.copy()):
         """
         Semantics:

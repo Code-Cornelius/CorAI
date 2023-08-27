@@ -28,9 +28,9 @@ PATH = os.path.join(ROOT_DIR, 'corai_plot', 'tests', 'image_reference_test_plot'
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 def image_comparison(path1, path2):
-    im1 = Image.open(path1).convert('RGB')  # we open the image with RGB code,
-    # because some times there is noise on the image
-    im2 = Image.open(path2).convert('RGB')  # same
+    # we open the image with RGB code to ensure the colors are correct during testing
+    im1 = Image.open(path1).convert('RGB')
+    im2 = Image.open(path2).convert('RGB')
     diff = ImageChops.difference(im2, im1)
     if diff.getbbox():  # if images are different
         return False
@@ -51,6 +51,8 @@ class Test_APlot(TestCase):
                 if file.startswith("test") and file.endswith(".png"):
                     file_path = os.path.join(PATH, file)
                     os.remove(file_path)
+        APlot.show_plot()
+
 
     def check_plot(self):
         image_path = os.path.join(PATH, f"{self.image_name}.png")
@@ -73,7 +75,7 @@ class Test_APlot(TestCase):
         self.image_name = "image_xx_yy"
         self.check_plot()
 
-
+    # TODO: rename this test
     def test_set_dict_ax_and_bis_each_parameter_only_first_two_axis_same_graph(self):
         # first, trying every simple possibility for dict_ax
         yy = np.abs(np.cos(self.xx)) + 1
@@ -164,7 +166,7 @@ class Test_APlot(TestCase):
                 self.image_name = f"image_set_dict_ax_parameter_{i}"
                 self.check_plot()
 
-
+        # TODO why is this commented out
         # with self.subTest('parameters not good length'):
         #     aplot = APlot()
         #
@@ -280,6 +282,7 @@ class Test_APlot(TestCase):
             self.image_name = "image_set_dict_ax_yscale_2_different"
             self.check_plot()
 
+        # TODO: why are these commented out
         # with self.subTest('xint same'):
         #     aplot = APlot()
         #
@@ -346,7 +349,7 @@ class Test_APlot(TestCase):
             self.image_name = "image_set_dict_ax_ylim_2"
             self.check_plot()
 
-
+    # TODO: this test is wrong
     def test_show_legend_for_two_axis(self):
         yy = np.abs(np.cos(self.xx)) + 1
         # second, try the same as before where the second axis is also setting another characteristic.
