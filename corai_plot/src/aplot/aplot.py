@@ -867,6 +867,26 @@ class APlot(Displayable_plot, metaclass=Register):
         self.set_dict_ax(nb_ax=nb_ax, dict_ax=dict_ax, bis_y_axis=False)
         return self._axs[nb_ax]
 
+    #### TODO BE VERY CAREFUL ABOUT WHAT REPRESENTS AN X AND WHAT IS AN Y
+    # filled contour plots contourf  https://matplotlib.org/stable/gallery/images_contours_and_fields/contourf_demo.html#sphx-glr-gallery-images-contours-and-fields-contourf-demo-py
+    # put labels on the lines https://matplotlib.org/stable/gallery/images_contours_and_fields/contour_demo.html#sphx-glr-gallery-images-contours-and-fields-contour-demo-py
+
+    ##### EXAMPLE THAT CAN BE USED
+    # abscissa = np.stack(np.meshgrid(np.linspace(-1,1,100), np.linspace(-30,30,100)), axis = -1 )
+    # yy = multivariate_normal.pdf(abscissa, mean = [0., 0.], cov = [[1.0, 0.0], [0.0, 10.0]])
+    #
+    #
+    #
+    # # These things are the same.
+    # np.stack(np.meshgrid([0,1,2], [-1,0,1]) ) -  np.mgrid[0:3:1, -1:2:1].transpose(0,2,1)
+    #
+    #
+    #
+    # aplot = APlot()
+    # aplot.plot_contour(np.linspace(-1,1,100), np.linspace(-30,30,100), yy,
+    #                    nb_of_level= 100)
+    # aplot.show_plot()
+
     def plot_contour(self, xx, yy, zz, nb_ax=0, dict_plot_param=None, dict_ax=None,
                      nb_of_level=10, show_colorbar=True):
         """ dict_plot_param with CMAP. If not given, inferno is used (from dict_3D)."""
