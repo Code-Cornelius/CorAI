@@ -1,4 +1,8 @@
-import argparse
+############################################################
+# Using VAE, we learn the distribution of the MNIST dataset.
+# Check the resulting images from the training to see the outcome.
+############################################################
+
 import torch
 import torch.utils.data
 from torch import nn, optim
@@ -18,40 +22,42 @@ corai.set_seeds(seed)
 torch.manual_seed(seed)
 
 
-kwargs = {}
 train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('data', train=True, download=True,
                    transform=transforms.ToTensor()),
-    batch_size=batch_size, shuffle=True, **kwargs)
+    batch_size=batch_size, shuffle=True)
 test_loader = torch.utils.data.DataLoader(
     datasets.MNIST('data', train=False, transform=transforms.ToTensor()),
-    batch_size=batch_size, shuffle=True, **kwargs)
+    batch_size=batch_size, shuffle=True)
 
 
 class VAE(nn.Module):
     def __init__(self):
         super(VAE, self).__init__()
 
-        self.fc1 = nn.Linear(784, 400)
+        self.input_layer = nn.Linear(784, 400)
 
-        self.fc21 = nn.Linear(400, 20)
-        self.fc22 = nn.Linear(400, 20)
+        # Encoded with 20 features.
+        self.in_layer_mean = nn.Linear(400, 20)
+        self.in_layer_logvar = nn.Linear(400, 20)
 
-        self.fc3 = nn.Linear(20, 400)
-        self.fc4 = nn.Linear(400, 784)
+        self.in_decode_layer = nn.Linear(20, 400)
+        self.last_decode_layer = nn.Linear(400, 784)
 
     def encode(self, x):
-        h1 = F.relu(self.fc1(x))
-        return self.fc21(h1), self.fc22(h1)
+        h1 = F.relu(self.input_layer(x))
+        return self.in_layer_mean(h1), self.in_layer_logvar(h1)
 
     def reparameterize(self, mu, logvar):
+        # 0.5 to remove the square. We compute the logvar so the variance is always positive.
         std = torch.exp(0.5 * logvar)
+        # Generate a random point.
         eps = torch.randn_like(std)
         return mu + eps * std
 
     def decode(self, z):
-        h3 = F.relu(self.fc3(z))
-        return torch.sigmoid(self.fc4(h3))
+        h3 = F.relu(self.in_decode_layer(z))
+        return torch.sigmoid(self.last_decode_layer(h3))
 
     def forward(self, x):
         mu, logvar = self.encode(x.view(-1, 784))
@@ -107,6 +113,7 @@ def test(epoch):
             test_loss += loss_function(recon_batch, data, mu, logvar).item()
             if i == 0:
                 n = min(data.size(0), 8)
+                # We concatenate the original image with the reconstructed one.
                 comparison = torch.cat([data[:n],
                                         recon_batch.view(batch_size, 1, 28, 28)[:n]])
                 save_image(comparison.cpu(),
@@ -120,6 +127,8 @@ if __name__ == "__main__":
     for epoch in range(1, epochs + 1):
         train(epoch)
         test(epoch)
+        # We generate 64 images with 20 random points (the dimension of our latent space)
+        # and decode them to see how the model is doing.
         with torch.no_grad():
             sample = torch.randn(64, 20).to(device)
             sample = model.decode(sample).cpu()
