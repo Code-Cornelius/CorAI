@@ -1,4 +1,7 @@
+from enum import Enum, auto
+
 import torch
+from torch import Tensor
 from tqdm import tqdm
 
 
@@ -11,48 +14,79 @@ class WindowCreator(object):
     References:
         https://www.tensorflow.org/tutorials/structured_data/time_series#2_split
 
-    Todos:
-        todo not sure how increasing window work...
     """
 
-    def __init__(self, input_dim, output_dim,
-                 lookback_window,
-                 lookforward_window=0, lag_last_pred_fut=1,
-                 type_window="Moving",
-                 batch_first=True, silent=False):
-        """Look inside the class to see what the parameters correspond to."""
+    class AllowedType(Enum):
+        MOVING = auto()
+        INCREASING = auto()
 
-        assert type_window == "Increasing" or type_window == "Moving", "Only two types supported."
-        assert not (type_window == "Increasing" and lookback_window != 0), "Increasing so window ==0."
-        assert not (type_window == "Moving" and lookback_window == 0), "Moving so window > 0."
+        @staticmethod
+        def condition_moving(lookback_window):
+            return lookback_window == 0
 
-        assert (lookforward_window <= lag_last_pred_fut), \
-            "lag_last_pred_fut is at least as long as lookforward_window. " \
+        @staticmethod
+        def condition_increasing(lookback_window):
+            return lookback_window != 0
+
+    def __init__(self, input_dim: int,
+                 output_dim: int,
+                 lookback_window: int,
+                 lookforward_window: int = 0,
+                 end_pred_window: int = 1,
+                 window_type: AllowedType = AllowedType.MOVING,
+                 batch_first: bool = True, silent: bool = False):
+        """
+        
+        Args:
+            input_dim: dimension of input
+            output_dim: dimension of output
+            lookback_window:  how many steps in the back the input should have. For example, if we try to predict v3, a window of 2 means we will use v1 and v2.
+            lookforward_window: how far in the future do we predict. If we have knowledge until v3, a window of 3 means we predict v6.
+            end_pred_window: difference of steps between the last known data's time and the last prediction's time.
+                In other words,  end_pred_window := t+h - t where `t+h` represents the prediction's time using data until time `t`.
+            window_type: type of windows.
+            batch_first: 
+            silent: 
+        
+        Examples:
+            Assuming we have u[0],u[1],u[2]. We predict u[4]. Then, 
+                end_pred_window = 2
+                lookforward_window = 1
+        """
+
+        assert window_type in WindowCreator.AllowedType, \
+            "type_window should be of type `AllowedType`."
+
+        assert not (window_type == WindowCreator.AllowedType.INCREASING
+                    and WindowCreator.AllowedType.condition_increasing(lookback_window)), \
+            "Increasing so window == 0."
+
+        assert not (window_type == WindowCreator.AllowedType.MOVING
+                    and WindowCreator.AllowedType.condition_moving(lookback_window)), \
+            "Moving so window > 0."
+
+        assert (lookforward_window <= end_pred_window), \
+            "end_pred_window is at least as long as lookforward_window. " \
             "It correspond to the maximal lag between the last seen data  and the maximum prediction required." \
             "There might be a mismatch if one requires a prediction at time +1."
+
         # Window parameters.
-        self.input_dim = input_dim  # dimension of input
-        self.output_dim = output_dim  # dimension of output
-        self.lookback_window = lookback_window  # how many steps in the back input should have.
-        self.lookforward_window = lookforward_window  # how many steps in the future should be predicted.
-        self.type_window = type_window  # type of windows
-        self.lag_last_pred_fut = lag_last_pred_fut  # difference in time between last known data and last prediction.
-        # in other words,  lag_last_pred_fut = t+h - t where t+h is predicted, t is known.
-        # lag_last_pred_fut might be different from lookforward window if we are not predicting the +1 step, but the +2 step.
-        # in this example: u[0],u[1],u[2]. We predict u[4].
-        # Then,  lag_last_pred_fut = 2; lookforward_window = 1.
-
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.lookback_window = lookback_window
+        self.lookforward_window = lookforward_window
+        self.type_window = window_type
+        self.end_pred_window = end_pred_window
         self.batch_first = batch_first
-
         self.silent = silent
 
         # Parameters of the slices
-        self.complete_window_data = self.lookback_window + self.lag_last_pred_fut
+        self.complete_window_data = self.lookback_window + self.end_pred_window
 
-    def create_input_sequences(self, input_data, output_data=None):
+    def create_input_sequences(self, input_data: torch.tensor, output_data: torch.tensor = None):
         """
         Semantics:
-            create the dataset for training. Give time-series as u[t], v[t], without any time difference.
+            create the dataset for training. Give time-series as u[t], v[t], without any time difference. If there is, add padding to reflect it.
             They should be of matching size, and the function will deduce which values correspond to which, by the windows given at initialisation.
 
         Args:
@@ -62,8 +96,8 @@ class WindowCreator(object):
 
         Returns:
             Two tensors with the data split in this shape:
-                [batch size, sequence, dim output]
-            only data_x is no output_data given.
+                [batch size, sequence, dimension]
+            only data_x if no output_data passed.
 
         References :
             from https://stackabuse.com/time-series-prediction-using-lstm-with-pytorch-in-python/?fbclid=IwAR17NoARUlBsBLzanKmyuvmCXfU6Rxc69T9BZpowXfSUSYQNEFzl2pfDhSo
@@ -77,53 +111,57 @@ class WindowCreator(object):
         nb_batch = input_data.shape[0]  # N as in documentation.
         L = input_data.shape[1]  # L as in documentation.
 
-        nb_data = L - self.complete_window_data + 1  # nb of data - the window, but there is always one data so +1.
-        # nb_data represents the amount of different input to the learning algo.
+        # We will get length time series minus the window size plus one number of points.
+        nb_data = L - self.complete_window_data + 1
 
         self._assert_cdt_create_sequences(L, input_data, output_data)
 
-        # in the following, we have data as nb_batch and as nb_data.
-        # nb_data corresponds to how many samples of observation we create out of
-        # one time series from the batches we gave (first component).
-        # but we do the same for all time-series. Hence the nb_batch.
-        # However we do not care in the end what data comes from what batch and we flatten the dimensions together.
+        # Assuming our data is two time series stacked (u1,u2,u3;v1,v2,v3), with shape (2,3,D_in), then for all time series,
+        # we construct the different time series that will be used for training.
+        # For example, using a lookback_window of 1, nb_data = 2 and:
+        #   (u1,u2,u3;v1,v2,v3) -> (u1,u2;v1,v2), (u2,u3;v2,v3).
+        # We flatten the resulting tensor along the batching dimension.
         data_X = torch.zeros(nb_batch, nb_data, self.lookback_window, self.input_dim, dtype=dtype)
         if output_data is not None:
-            data_Y = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim, dtype=dtype)
+            data_Y: Tensor = torch.zeros(nb_batch, nb_data, self.lookforward_window, self.output_dim, dtype=dtype)
 
         for i in tqdm(range(nb_data), disable=self.silent):
-            data_X[:, i, :, :] = input_data[:, i:i + self.lookback_window, :]  # add dimension of nb_data
+            data_X[:, i, :, :] = input_data[:, i:i + self.lookback_window, :]
 
             if output_data is not None:
-                slice_out = slice(i + self.lookback_window + self.lag_last_pred_fut - self.lookforward_window,
-                                  i + self.lookback_window + self.lag_last_pred_fut)
+                # For v1, v2, v3, v4, v5, v6. lookback = 2, lookforward = 2, end_pred_window = 3, then:
+                # v1, v2, -> v4, v5,
+                # v2, v3, -> v5, v6.
+                slice_out = slice(i + self.lookback_window + self.end_pred_window - self.lookforward_window,
+                                  i + self.lookback_window + self.end_pred_window)
                 data_Y[:, i, :, :] = output_data[:, slice_out, :]  # add dimension of nb_data
 
         data_X = torch.flatten(data_X, start_dim=0, end_dim=1)
 
         if not self.batch_first:
-            data_X = data_X.transpose(0, 1)  # swaping dimensions.
+            data_X = data_X.transpose(0, 1)  # Resulting tensor has dimension (sequence, batch, dim input).
         if output_data is not None:
             data_Y = torch.flatten(data_Y, start_dim=0, end_dim=1)
             return data_X, data_Y
 
-        return data_X
+        return data_X, None
 
-    def _assert_cdt_create_sequences(self, L, input_data, output_data=None):
-        assert self.lookback_window < L, \
-            f"lookback window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
-        assert self.lookforward_window < L, \
-            f"lookforward window is not smaller than data. Window size : {self.lookback_window}, Data length : {L}."
+    def _assert_cdt_create_sequences(self, sequence_len, input_data, output_data=None):
+        assert self.lookback_window < sequence_len, \
+            f"lookback window is not smaller than data. Window size : {self.lookback_window}, Data length : {sequence_len}."
+        assert self.lookforward_window < sequence_len, \
+            f"lookforward window is not smaller than data. Window size : {self.lookback_window}, Data length : {sequence_len}."
         assert input_data.shape[2] == self.input_dim, \
             f"Time-series input dimension not corresponding to the window's: {input_data.shape[2]}, {self.input_dim}."
         if output_data is not None:
             assert input_data.shape[0] == output_data.shape[0], \
-            f"Batch size not matching: {input_data.shape[0]}, {output_data.shape[0]}."
+                f"Batch size not matching: {input_data.shape[0]}, {output_data.shape[0]}."
             assert input_data.shape[1] == output_data.shape[1], \
                 f"Time-series length not matching: {input_data.shape[1]}, {output_data.shape[1]}."
             assert output_data.shape[2] == self.output_dim, \
                 f"Time-series output dimension not corresponding to the window's: {output_data.shape[2]}, {self.output_dim}."
 
+    # WIP IS THIS CORRECT
     def prediction_over_training_data(self, net, data, increase_data_for_pred, device):
         """
         Semantics:
@@ -165,6 +203,7 @@ class WindowCreator(object):
             prediction[:, indices_pred, :] = new_values
         return prediction
 
+    # WIP IS THIS CORRECT
     def prediction_recurrent(self, net, data_start, nb_of_cycle_pred, increase_data_for_pred=None, device='cpu'):
         """
         Semantics:
@@ -207,6 +246,7 @@ class WindowCreator(object):
             input_prediction = torch.cat((input_prediction, new_values), dim=1)
         return input_prediction[:, self.lookback_window:]  # remove the starting time series
 
+    # WIP IS THIS CORRECT
     def _adding_input_to_output(self, increase_data_for_pred, new_values, device):
         if increase_data_for_pred is not None:
             new_values = increase_data_for_pred(new_values.cpu().numpy()).to(device)
