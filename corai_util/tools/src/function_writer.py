@@ -75,29 +75,29 @@ def json2python(path, compress=False):
     return dict
 
 
-def factory_fct_linked_path(ROOT_DIR, path_to_folder):
+def factory_fct_linked_path(root, path_from_root):
     """
     Semantics:
+        Gives a way to create paths environment agnostic, where the root directory
+        is where the path starts.
 
     Args:
-        ROOT_DIR: Path to the root of the project.
-        path_to_folder: a path written in the format you want because we use the function os.path.join to link it.
+        root: path to the root of the project.
+        path_from_root: a path written in the format you want because we use the function os.path.join to link it.
 
     Returns:
         The linker
     Examples:
+        In order to save a file at ROOT_DIR/path/a/data.csv:
               linked_path = factory_fct_linked_path(ROOT_DIR, "path/a"):
-              path_save_history = linked_path(['plots', f"best_score_{nb}.pth"])
+              path_save_history = linked_path(['plots', f"data.csv"])
               #and ROOT_DIR should be imported from a script at the root where it is written:
-
-              import os
-              ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+                  import os
+                  ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
     """
-    # example:
+    PATH_TO_ROOT = os.path.join(root, path_from_root)
 
-    PATH_TO_ROOT = os.path.join(ROOT_DIR, path_to_folder)
-
-    def linked_path(path):
+    def linked_path(path):  # TODO CLARIFY WHETHER WE NEED '' AT THE END
         # a list of folders like: ['C','users','name'...]
         # when adding a '' at the end like
         #       path_to_directory = linker_path_to_result_file([path, ''])
