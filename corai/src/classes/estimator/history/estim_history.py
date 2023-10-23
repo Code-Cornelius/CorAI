@@ -17,7 +17,7 @@ class Estim_history(Estimator):
         # it is possible to automatically create the right collumn names from a df with:
         # `Estim_history.deconstruct_column_names(df.columns)`
 
-        # metric names contain all ["L1","L4"...] but not the loss used for back prop.
+        # metric names contain all ["L1","L4",...] but not the loss used for back prop.
         self.metric_names = metric_names
         self.validation = validation
         self.list_best_epoch = []  # list each entry corresponds to a fold
@@ -116,7 +116,7 @@ class Estim_history(Estimator):
 
     @staticmethod
     def deconstruct_column_names(column_names):
-        """
+        """ # wip explain what is the final format
         Semantics:
             Collect information about the metric names and whether validation is used from column names.
             This method is used when constructing the metrics_names back from the columns of a dataframe.
@@ -161,7 +161,12 @@ class Estim_history(Estimator):
 
     @staticmethod
     def serialize_hyper_parameters(hyper_parameters):
-        if isinstance(hyper_parameters, dict):
+        # wip there is a problem for strings. so one item is ['STRING'].
+        #  It gets decomposed and for each letter put into a [], so it is itself an interable.
+        if hyper_parameters is None:
+            return []  # no parameter saved.
+
+        elif isinstance(hyper_parameters, dict):
             for key, value in hyper_parameters.items():
                 if is_iterable(value):
                     hyper_parameters[key] = [Estim_history.serialize_hyper_parameters([hp_value]) for hp_value in value]
@@ -179,8 +184,8 @@ class Estim_history(Estimator):
                                            elmnt]
                 elif not is_jsonable(elmnt):
                     components = str(elmnt).split(' ')
-                    hyper_parameters[i] = components[
-                        2]  # 2nd elmnt  which is the one we want when the object is a function.
+                    hyper_parameters[i] = components[2]
+                    # : 2nd elmnt  which is the one we want when the object is a function.
                     # We did not test it in other cases....
                 if len(hyper_parameters) == 1:  # we unpack the list if it was not a list in the first place
                     hyper_parameters = hyper_parameters[0]

@@ -157,7 +157,7 @@ Project
 │  │  └── Progressbar_without_val_batch_update
 │  ├── FastTensorDataLoader
 │  ├── Optim_wrapper
-│  ├── Windowcreator
+│  ├── WindowCreator
 │  ├── nn_fit
 │  ├── nn_kfold_train, initialise_estimator, train_kfold_a_fold_after_split
 │  ├── NNTrainParameters

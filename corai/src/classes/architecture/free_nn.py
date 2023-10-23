@@ -9,6 +9,7 @@ from corai_util.tools import function_iterable
 from corai.src.classes.architecture.savable_net import Savable_net
 
 
+# TODO We could use that class to initialise MLP!
 class Free_NN(Savable_net, metaclass=ABCMeta):
     def __init__(self, predict_fct, *args, **kwargs):
         """
@@ -58,6 +59,8 @@ class Free_NN(Savable_net, metaclass=ABCMeta):
 def factory_parametrised_Free_NN(param_layers_instructions, param_predict_fct=None):
     class Parametrised_Free_NN(Free_NN):
         # defining attributes this way shadows the abstract properties from parents.
+
+        # TODO SELF HERE NO ?
         layers_instructions = param_layers_instructions
 
         def __init__(self):
@@ -66,6 +69,3 @@ def factory_parametrised_Free_NN(param_layers_instructions, param_predict_fct=No
             # : to initialize all the layers and dropout with respect to the parameters created.
 
     return Parametrised_Free_NN
-
-
-# channels is the depth of input.

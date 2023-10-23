@@ -1,6 +1,6 @@
 from .metric import *
 from .optim_wrapper import Optim_wrapper
-from .windowcreator import Windowcreator
+from .windowcreator import WindowCreator
 from .fasttensordataloader import FastTensorDataLoader
 
 from . import training_stopper

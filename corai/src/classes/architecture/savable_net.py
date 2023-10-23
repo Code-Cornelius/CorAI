@@ -69,8 +69,10 @@ class Savable_net(nn.Module):
             layer.bias.data.fill_(0)
 
     def save_net(self, path):
-        """Create a directory if the net is saved in a place where the directory does not exists.
-        Good practice is to use the extension .pth."""
+        """
+        Create a directory if the net is saved in a place where the directory does not exist.
+        Good practice is to use the extension .pt.
+        """
         directory_where_to_save = os.path.dirname(path)
         if not os.path.exists(directory_where_to_save):
             os.makedirs(directory_where_to_save)
@@ -80,6 +82,14 @@ class Savable_net(nn.Module):
     def load_net(self, path):
         self.load_state_dict(torch.load(path))
         return self
+
+    ######
+    # Something like this is nice:
+    # loaded_model = cls()
+    # res = loaded_model.load_state_dict(torch.load(PATH_TO_MODEL))
+    # if res.missing_keys:
+    #     raise AttributeError(f"Missing keys: {res.missing_keys}")
+    # return loaded_model
 
     def update_best_weights(self, epoch):
         # : We decide to keep a copy instead of saving the model in a file

@@ -37,6 +37,7 @@ class RNN(Savable_net, metaclass=ABCMeta):
             just add an adaptor layer (not the most efficient way of doing it indeed).
 
         Examples:
+            # WIP This needs to be updated, poorly written.
             h0 can be created as:
             batch_size = (1,batch_nb,1)
             hidden_state_0 = nn.Parameter(torch.randn(self.num_layers * self.nb_directions,

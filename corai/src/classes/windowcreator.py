@@ -2,12 +2,11 @@ import torch
 from tqdm import tqdm
 
 
-class Windowcreator(object):
+class WindowCreator(object):
     """
     Semantics:
         Helper class to create windows for prediction.
-        The object has to be used when X and Y datasets have the same length:
-            x1, x2, ... xn corresponds to a yn+1, ... ym.
+        Set the parameters of your dataset during initialisation and create the data with the methods.
 
     References:
         https://www.tensorflow.org/tutorials/structured_data/time_series#2_split

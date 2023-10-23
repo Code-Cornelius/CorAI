@@ -9,6 +9,8 @@ import corai_plot
 from corai.src.classes.estimator.history import Estim_history
 
 
+# TODO: allow for different styles for the different lines. This should be given as parameter to constructor.
+# TODO: clean this up and correct comments. Rename to TrainingHistoryLogger
 class History_dict(LightningLoggerBase):
     """
     Useful class that is at the same time:
@@ -58,20 +60,6 @@ class History_dict(LightningLoggerBase):
             else:
                 self.history[name] = []
 
-    @property
-    def name(self):
-        return "Corai_History_Dict_Logger"
-
-    @property
-    def version(self):
-        return "V1.0"
-
-    @property
-    @rank_zero_experiment
-    def experiment(self):
-        # Return the experiment object associated with this logger.
-        pass
-
     @rank_zero_only
     def log_metrics(self, metrics, step):
         """
@@ -81,25 +69,32 @@ class History_dict(LightningLoggerBase):
 
         """
 
+        # WIP Would be better to save epochs as something related to the metric directly. In a dict with key values pairs.
+        ## then you can do plot(dict.keys(), dict.values())
+
         # frequency check. This ensures that the number of logs for train and validation are equal.
         if ((metrics['epoch'] + 1) % self.freq_epch) != 0:
-            # + 1 accounts for the shift with the frequency of validation step, in trainer
+            # + 1 accounts for the shift with the frequency of validation step, in trainer of pytorch lightning.
             # ~~~~~~~~~~~~~~~~~~~~~~ check_val_every_n_epoch = self.freq_epch ~~~~~~~~~~~~~~~~~~
             return
 
-        # fetch all metrics. We use append (complexity amortized O(1)).
-        for metric_name, metric_value in metrics.items():
-            if metric_name != 'epoch':
-                self.history[metric_name].append(metric_value)
-            else:  # case epoch. We want to avoid adding multiple times the same.
-                # It happens when multiple losses are logged.
-                if (not len(self.history['epoch']) or  # len == 0:
-                        not self.history['epoch'][-1] == (metric_value + 1)):
-                    # the last values of epochs is not the one we are currently trying to add.
-                    self.history['epoch'].append(metric_value + 1)  # shift
-                else:
-                    pass
-        self.plot_history_prediction()
+        try:
+            # fetch all metrics. We use append (complexity amortized O(1)).
+            for metric_name, metric_value in metrics.items():
+                if metric_name != 'epoch':
+                    self.history[metric_name].append(metric_value)
+                else:  # case epoch. We want to avoid adding multiple times the same.
+                    # It happens when multiple losses are logged.
+                    if (not len(self.history['epoch']) or  # len == 0:
+                            not self.history['epoch'][-1] == (metric_value + 1)):
+                        # the last values of epochs is not the one we are currently trying to add.
+                        self.history['epoch'].append(metric_value + 1)  # shift
+                    else:
+                        pass
+            self.plot_history_prediction()
+        except KeyError as e:
+            raise AttributeError(
+                f"KeyError found, potentially you have not instantiated the logger with the key {e.args[0]}.")
         return
 
     def log_hyperparams(self, params, *args, **kwargs):
@@ -200,3 +195,17 @@ class History_dict(LightningLoggerBase):
         estimator.best_fold = 0
 
         return estimator
+
+    @property
+    def name(self):
+        return "Corai_History_Dict_Logger"
+
+    @property
+    def version(self):
+        return "V1.0"
+
+    @property
+    @rank_zero_experiment
+    def experiment(self):
+        # Return the experiment object associated with this logger.
+        pass

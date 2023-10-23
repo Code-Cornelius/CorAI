@@ -8,7 +8,7 @@ example:
                                                  num_layers=num_layers, bidirectional=bidirectional,
                                                  nb_output_consider=lookforward_window,
                                                  hidden_size=hidden_size, dropout=dropout,
-                                                 rnn_class=nn.GRU)()),  # walrus operator
+                                                 rnn_class=nn.GRU)()),  # walrus operator Python 3.8
         corai.Reshape([-1, model.output_len]),
         nn.Linear(model.output_len, hidden_FC, bias=True),
         nn.CELU(),
