@@ -87,8 +87,9 @@ if __name__ == '__main__':
     testing_data = torch.FloatTensor(testing_data)
 
     window = corai.WindowCreator(input_dim=input_dim, output_dim=1, lookback_window=lookback_window,
-                                 lag_last_pred_fut=lookforward_window,
-                                 lookforward_window=lookforward_window, type_window="Moving")
+                                 end_pred_window=lookforward_window,
+                                 lookforward_window=lookforward_window,
+                                 window_type=corai.WindowCreator.AllowedType.MOVING)
     (data_training_X,
      data_training_Y) = window.create_input_sequences(train_data_normalized.unsqueeze(0),
                                                       # unsqueeze bc batch size missing.

@@ -48,7 +48,6 @@ if __name__ == '__main__':
                                              criterion=criterion, optim_wrapper=optim_wrapper,
                                              metrics=metrics)
 
-
     seq_nn = [
         corai.One_hidden_recurrent(num_layers, int(bidirectional) + 1, hidden_size),
         (model := corai.factory_parametrised_RNN(input_dim=input_size, output_dim=output_size,
@@ -87,13 +86,17 @@ if __name__ == '__main__':
     testing_data = torch.FloatTensor(testing_data)
 
     # todo add parameter lag_last_pred_fut such that it is reflected on the plots.
-    window = corai.WindowCreator(input_dim=input_size, output_dim=1, lookback_window=lookback_window,
-                                 lag_last_pred_fut=lookforward_window,
-                                 lookforward_window=lookforward_window, type_window="Moving")
-    (data_training_X, data_training_Y) = window.create_input_sequences(train_data_normalized.unsqueeze(0),
-                                                                       # unsqueeze bc batch size missing.
-                                                                       train_data_normalized[:, 0].unsqueeze(
-                                                                           0).unsqueeze(2))
+    window = corai.WindowCreator(input_dim=input_size, output_dim=1,
+                                 lookback_window=lookback_window,
+                                 end_pred_window=lookforward_window,
+                                 lookforward_window=lookforward_window,
+                                 window_type=corai.WindowCreator.AllowedType.MOVING)
+    (data_training_X, data_training_Y) = (
+        window.create_input_sequences(train_data_normalized.unsqueeze(0),
+                                      # unsqueeze bc batch size missing.
+                                      train_data_normalized[:, 0]
+                                      .unsqueeze(0)
+                                      .unsqueeze(2)))
     # : output that we take only prediction qte and unsqueeze it to match dimensions.
 
     indices_train = torch.arange(len(data_training_X) - lookback_window)

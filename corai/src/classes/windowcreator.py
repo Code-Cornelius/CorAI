@@ -20,6 +20,10 @@ class WindowCreator(object):
         MOVING = auto()
         INCREASING = auto()
 
+        # Same as moving, but we do not truncate the first time series from the
+        # dataset where fewer data points are used to do prediction .
+        MOVING_INCLUDING_PADDED_SEQUENCES = auto()
+
         @staticmethod
         def condition_moving(lookback_window):
             return lookback_window == 0
@@ -161,14 +165,15 @@ class WindowCreator(object):
             assert output_data.shape[2] == self.output_dim, \
                 f"Time-series output dimension not corresponding to the window's: {output_data.shape[2]}, {self.output_dim}."
 
-    # WIP IS THIS CORRECT
+    # WIP IS THIS CORRECT, requires nn_predict mhm
     def prediction_over_training_data(self, net, data, increase_data_for_pred, device):
         """
         Semantics:
             predict the output by taking the input data and iterating over data by the window.
             Used to make prediction iteratively over known input.
-            In order to add the data that has not been forecasted (for example you predict 2D -> 1D,
-            the output is missing 1D for the future predictions), we use an adaptor. It is the parameter increase_data_for_pred.
+            In order to add the data that has not been forecasted
+            (for example you predict 2D -> 1D, the output is missing 1D for the future predictions),
+            we use an adaptor. It is the parameter increase_data_for_pred.
 
         Args:
             net (Savable_net): model with the method nn_predict.
